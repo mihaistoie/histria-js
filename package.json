@@ -1,0 +1,26 @@
+{
+  "name": "histria-utils",
+  "description": "Node Tools",
+  "version": "0.0.1",
+  "author": "Mihai STOIE <mihaistoie@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "del": "latest",
+    "dts-bundle": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-typescript": "latest",
+    "gulp-shell": "latest",
+    "run-sequence": "latest",
+    "merge2": "latest",
+    "mocha": "latest",
+    "gulp": "latest",
+    "typescript": "2.x.x",
+    "@types/node": "^6.0.45"
+  },
+  "typescript": {
+    "definition": "lib/definitions/histria-utils.d.ts"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha  test/**/*.test.js"
+  }
+}

@@ -97,7 +97,7 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
     }
 }
 
-function expandSchema(schema: any, model: any) {
+export function expandSchema(schema: any, model: any) {
     _expand$Ref(schema, [], model, schema.definitions);
 }
 

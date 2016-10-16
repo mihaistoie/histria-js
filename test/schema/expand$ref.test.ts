@@ -1,7 +1,7 @@
 
 import * as assert from 'assert';
 import * as mochaUtils from 'mocha';
-import * as schemaUtils from '../../src/schema/schema-utils';
+import * as schemaUtils from '../../src/lib/schema/schema-utils';
 
 
 describe('Expand Schema $ref', () => {

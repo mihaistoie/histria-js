@@ -5,21 +5,29 @@
   "author": "Mihai STOIE <mihaistoie@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "latest",
-    "power-assert": "latest",
-    "typescript": "2.x.x",
-    "@types/node": "latest",
+    "@types/assert": "latest",
     "@types/mocha": "latest",
-    "@types/power-assert": "latest"
+    "@types/node": "latest",
+    "ts-node": "latest",
+    "del": "latest",
+    "dts-bundle": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-typescript": "latest",
+    "gulp-shell": "latest",
+    "run-sequence": "latest",
+    "merge2": "latest",
+    "gulp": "latest",
+    "mocha": "latest",
+    "typescript": "2.x.x"
   },
   "typescript": {
     "definition": "lib/definitions/histria-utils.d.ts"
   },
-  "scripts": {
-    "test": "node_modules/.bin/mocha  test/**/*.test.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mihaistoie/histria-utils"
+  },
+  "scripts": {
+    "test": "mocha -r ts-node/register test/**/*.test.ts"
   }
 }

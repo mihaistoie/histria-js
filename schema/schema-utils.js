@@ -1,27 +1,21 @@
-
-import * as util from 'util';
-
-import { merge } from '../utils/helper'
-import { ApplicationError } from '../utils/errors'
-
-
-const
-    DEFINITION_STRING = '#/definitions/',
-    DEFINITION_STRING_LEN = DEFINITION_STRING.length;
-
+"use strict";
+const util = require('util');
+const helper_1 = require('../utils/helper');
+const errors_1 = require('../utils/errors');
+const DEFINITION_STRING = '#/definitions/', DEFINITION_STRING_LEN = DEFINITION_STRING.length;
 //reference :
 // schema_name"
 // schema_name.json"
 // schema.json#/definitions/definition_name"
 // #/definitions/definition_name"
-
-function _load$ref(reference: string, model: any, definitions: any): any {
+function _load$ref(reference, model, definitions) {
     let ii = reference.indexOf(DEFINITION_STRING);
-    let schemaId, defName: string;
+    let schemaId, defName;
     if (ii >= 0) {
         schemaId = reference.substr(0, ii);
         defName = reference.substr(ii + DEFINITION_STRING_LEN);
-    } else
+    }
+    else
         schemaId = reference;
     if (schemaId) {
         ii = schemaId.indexOf('.json');
@@ -29,32 +23,30 @@ function _load$ref(reference: string, model: any, definitions: any): any {
             schemaId = schemaId.substr(0, ii);
     }
     if (!schemaId && !defName)
-        throw new ApplicationError(util.format('Unsupported schema $ref : "%s"', reference));
+        throw new errors_1.ApplicationError(util.format('Unsupported schema $ref : "%s"', reference));
     let ref, def = definitions;
     if (schemaId) {
         ref = model[schemaId];
         if (!ref)
-            throw new ApplicationError(util.format('Schema not found "%s". ($ref : "%s")', schemaId, reference));
+            throw new errors_1.ApplicationError(util.format('Schema not found "%s". ($ref : "%s")', schemaId, reference));
         if (defName)
             def = ref.definitions;
     }
-
     if (defName && (!def || !def[defName]))
-        throw new ApplicationError(util.format('Definition not found "%s". ($ref : "%s")', defName, reference));
+        throw new errors_1.ApplicationError(util.format('Definition not found "%s". ($ref : "%s")', defName, reference));
     if (defName)
         ref = def[defName];
     return ref;
 }
-
-
-function _toMerge(item: any, callStack: string[], model, definitions): void {
+function _toMerge(item, callStack, model, definitions) {
     let toMerge = null;
     if (item.allOf) {
         toMerge = item.allOf;
         delete item.allOf;
-    } else if (item.$ref) {
+    }
+    else if (item.$ref) {
         if (callStack.indexOf(item.$ref) < 0) {
-            toMerge = [{ $ref: item.$ref }]
+            toMerge = [{ $ref: item.$ref }];
             delete item.$ref;
         }
     }
@@ -65,23 +57,21 @@ function _toMerge(item: any, callStack: string[], model, definitions): void {
                 let ref = _load$ref(ci.$ref, model, definitions);
                 newCallStack.push(ci.$ref);
                 delete ci.$ref;
-                merge(ref, ci);
+                helper_1.merge(ref, ci);
             }
             _expand$Ref(ci, newCallStack, model, definitions);
-            merge(ci, item);
+            helper_1.merge(ci, item);
         });
     }
-
 }
-
-
-function _expand$Ref(item: any, callStack: string[], model: any, definitions: any): void {
+function _expand$Ref(item, callStack, model, definitions) {
     let currentCallStack = callStack.slice(0);
     _toMerge(item, currentCallStack, model, definitions);
     let toExpand = null;
     if (item.properties) {
         toExpand = item;
-    } else if (item.type === 'array' && item.items) {
+    }
+    else if (item.type === 'array' && item.items) {
         toExpand = item.items;
     }
     if (toExpand && toExpand.properties) {
@@ -96,8 +86,7 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
         });
     }
 }
-
-export function expandSchema(schema: any, model: any) {
+function expandSchema(schema, model) {
     _expand$Ref(schema, [], model, schema.definitions);
 }
-
+exports.expandSchema = expandSchema;

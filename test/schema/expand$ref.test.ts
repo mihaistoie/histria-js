@@ -1,15 +1,16 @@
 
-import * as mocha from 'mocha';
-import * as assert from 'power-assert';
+import * as assert from 'assert';
+import * as mochaUtils from 'mocha';
 import * as schemaUtils from '../../src/schema/schema-utils';
 
+
 describe('Expand Schema $ref', () => {
-    it('Extract indexes', function () {
+    it('#/definitions test ', function () {
         let model = {};
         let schema = {
             properties: {
-                name: { $ref: '/definitions/#string' },
-                address: { $ref: '/definitions/#address' }
+                name: { $ref: '#/definitions/string' },
+                address: { $ref: '#/definitions/address' }
             },
             definitions: {
                 address: {
@@ -43,7 +44,7 @@ describe('Expand Schema $ref', () => {
             }
         };
         schemaUtils.expandSchema(schema, null);
-        assert.deepEqual(excepted, schema);
+        assert.deepEqual(schema, excepted);
 
     });
 

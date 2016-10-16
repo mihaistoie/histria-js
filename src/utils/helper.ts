@@ -14,4 +14,4 @@ var _merge = function (src: any, dst: any): void {
 };
 
 
-export var merge = merge;
+export var merge = _merge;

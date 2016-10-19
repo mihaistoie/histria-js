@@ -3,11 +3,10 @@ var _merge = function (src: any, dst: any): void {
     for (let p in src) {
         let pv = src[p];
         let ov = dst[p];
-
         if (pv === null) continue;
         if (typeof pv === 'object' && !Array.isArray(pv)) {
-            dst[p] = dst[p] || {};
-            _merge(pv, dst[p]);
+            ov = ov || {};
+            _merge(pv, ov);
         } else
             dst[p] = pv;
     }

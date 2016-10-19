@@ -13,6 +13,7 @@ gulp.task('clean', function () {
     return del([
         'lib/',
         './src/**/*.js',
+        './test/**/*.js',
         './src/**/*.d.ts',
         './index.js'
     ]);

@@ -1,4 +1,4 @@
-export declare class AnyState {
+export declare class State {
     protected _parent: any;
     protected _schema: any;
     protected _propertyName: string;
@@ -10,9 +10,9 @@ export declare class AnyState {
     isHidden: boolean;
     isMandatory: boolean;
 }
-export declare class StringState extends AnyState {
+export declare class StringState extends State {
 }
-export declare class NumericState extends AnyState {
+export declare class NumericState extends State {
 }
-export declare class EnumState extends AnyState {
+export declare class EnumState extends State {
 }

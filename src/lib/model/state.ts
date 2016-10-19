@@ -1,5 +1,6 @@
-export class AnyState {
-    protected _parent: any;
+import  {ObservableObject}  from './instance';
+export class State {
+    protected _parent: ObservableObject;
     protected _schema: any;
     protected _propertyName: string;
     protected _stateModel: any;
@@ -11,7 +12,7 @@ export class AnyState {
         that._stateModel.isMandatory = ps ? ps.isMandatory || false : false;
     }
 
-    constructor(parent: any, schema: any, propertyName: string) {
+    constructor(parent: ObservableObject, schema: any, propertyName: string) {
         let that = this;
         that._propertyName = propertyName;
         that._schema = schema;
@@ -31,7 +32,7 @@ export class AnyState {
     set isDisabled(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isDisabled) {
-            that._parent.stateChanged('isDisabled', value, that._stateModel.isDisabled)
+            that._parent.stateChanged(that._propertyName + '.isDisabled', value, that._stateModel.isDisabled)
             that._stateModel.isDisabled = value;
         }
     }
@@ -41,7 +42,7 @@ export class AnyState {
     set isHidden(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isHidden) {
-            that._parent.stateChanged('isHidden', value, that._stateModel.isHidden)
+            that._parent.stateChanged(that._propertyName + '.isHidden', value, that._stateModel.isHidden)
             that._stateModel.isHidden = value;
         }
     }
@@ -51,17 +52,17 @@ export class AnyState {
     set isMandatory(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isMandatory) {
-            that._parent.stateChanged('isMandatory', value, that._stateModel.isMandatory)
+            that._parent.stateChanged(that._propertyName + '.isMandatory', value, that._stateModel.isMandatory)
             that._stateModel.isMandatory = value;
         }
     }
 }
 
-export class StringState extends AnyState {
+export class StringState extends State {
 }
 
-export class NumericState extends AnyState {
+export class NumericState extends State {
 }
 
-export class EnumState extends AnyState {
+export class EnumState extends State {
 }

@@ -1,4 +1,4 @@
-import  {ObservableObject}  from './instance';
+import { ObservableObject } from './instance';
 export class State {
     protected _parent: ObservableObject;
     protected _schema: any;

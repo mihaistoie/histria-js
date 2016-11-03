@@ -1,6 +1,8 @@
 
 import * as util from 'util';
 
+
+import { JSONTYPES } from './schema-consts';
 import { merge } from '../utils/helper'
 import { ApplicationError } from '../utils/errors'
 
@@ -81,7 +83,7 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
     let toExpand = null;
     if (item.properties) {
         toExpand = item;
-    } else if (item.type === 'array' && item.items) {
+    } else if (item.type === JSONTYPES.array && item.items) {
         toExpand = item.items;
     }
     if (toExpand && toExpand.properties) {
@@ -89,12 +91,28 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
             let prop = toExpand.properties[name];
             if (prop.allOf || prop.$ref)
                 _toMerge(prop, callStack, model, definitions);
-            if (prop.type === 'array' && prop.items) {
+            if (prop.type === JSONTYPES.array && prop.items) {
                 if (prop.items.allOf || prop.items.$ref)
                     _toMerge(prop.items, callStack, model, definitions);
             }
         });
     }
+}
+
+
+export function typeOfProperty(propSchema: { type?: string, format?: string }): string {
+    let ps = propSchema.type || JSONTYPES.string;
+    if (!JSONTYPES[ps])
+        throw new ApplicationError(util.format('Unsupported schema type : "%s"', propSchema.type));
+    if (propSchema.format) {
+        if (ps === 'string') {
+            if (propSchema.format === JSONTYPES.date)
+                return JSONTYPES.date;
+            else if (propSchema.format === JSONTYPES.datetime)
+                return JSONTYPES.datetime;
+        }
+    }
+    return ps;
 }
 
 export function expandSchema(schema: any, model: any) {

@@ -7,6 +7,7 @@ var _merge = function (src: any, dst: any): void {
         if (typeof pv === 'object' && !Array.isArray(pv)) {
             ov = ov || {};
             _merge(pv, ov);
+            dst[p] = ov;
         } else
             dst[p] = pv;
     }

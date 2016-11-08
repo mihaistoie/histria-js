@@ -12,7 +12,12 @@ const
             "lastName": {
                 "title": "Last Name",
                 "type": "string"
+            },
+            "fullName": {
+                "title": "Full Name",
+                "type": "string"
             }
+            
         }
     };
 
@@ -28,6 +33,9 @@ export class User extends Instance {
     }
     public lastName(value?: string): Promise<string> {
         return this.getOrSetProperty('lastName', value);
+    }
+    public fullName(value?: string): Promise<string> {
+        return this.getOrSetProperty('fullName', value);
     }
 
 }

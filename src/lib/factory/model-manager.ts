@@ -1,7 +1,6 @@
 import * as util from 'util';
 
 export class ModelManager {
-    private _mapByName: any;
     private _mapByClass: Map<any, any>;
     private static singleton: ModelManager;
     constructor() {
@@ -17,18 +16,19 @@ export class ModelManager {
     }
     public registerClass(constructor: any, className: string, nameSpace: string) {
         let that = this;
-        that._mapByName = that._mapByName || {};
         that._mapByClass = new Map();
         let classInfo = {
             factory: constructor,
             name: className,
             nameSpace: nameSpace
         };
-        if (that._mapByName[className])
-            throw util.format('Duplicate class name: "%s".', className);
-        that._mapByName[className] = classInfo;
         that._mapByClass.set(constructor, classInfo);
-
     }
+    public rule(classOfInstance: any, ruleType: string, rule: any, ruleParams?: any) {
+        console.log('--------------------------------------------------');
+        console.log(rule);
+        console.log('--------------------------------------------------');
+
+    } 
 }
 

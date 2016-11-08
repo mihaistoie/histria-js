@@ -115,6 +115,19 @@ export function typeOfProperty(propSchema: { type?: string, format?: string }): 
     return ps;
 }
 
+
+export function isComplex(schema: any) {
+    return (schema.type === JSONTYPES.array || schema.type === JSONTYPES.object);
+}
+
+export function isArray(schema: any) {
+    return (schema.type === JSONTYPES.array);
+}
+
+export function isComposition(schema: any) {
+    return isComplex(schema) && !schema.reference;
+}
+
 export function expandSchema(schema: any, model: any) {
     _expand$Ref(schema, [], model, schema.definitions);
 }

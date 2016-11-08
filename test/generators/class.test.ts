@@ -1,7 +1,7 @@
 
 import * as assert from 'assert';
 import * as mochaUtils from 'mocha';
-import * as gen from '../../src/lib/transpiler/classgen';
+import * as gen from '../../src/lib/generators/classgen';
 
 
 describe('Generators', () => {

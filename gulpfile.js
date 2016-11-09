@@ -12,6 +12,7 @@ var shell = require('gulp-shell');
 gulp.task('clean', function () {
     return del([
         'lib/',
+        'tmptest/',
         './src/**/*.js',
         './test/**/*.js',
         './src/**/*.d.ts',

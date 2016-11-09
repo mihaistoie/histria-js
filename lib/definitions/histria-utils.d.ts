@@ -2,8 +2,9 @@
 
 declare module 'histria-utils' {
     export { Instance } from 'histria-utils/lib/model/base-object';
-    export { ModelManager } from 'histria-utils/lib/factory/model-manager';
+    export { ModelManager } from 'histria-utils/lib/model/model-manager';
     export { Transaction } from 'histria-utils/lib/factory/transaction';
+    export { propChanged, init, loadRules } from 'histria-utils/lib/model/rules';
 }
 
 declare module 'histria-utils/lib/model/base-object' {
@@ -27,11 +28,13 @@ declare module 'histria-utils/lib/model/base-object' {
     }
 }
 
-declare module 'histria-utils/lib/factory/model-manager' {
+declare module 'histria-utils/lib/model/model-manager' {
     export class ModelManager {
         constructor();
         createInstance<T>(classOfInstance: any, transaction: any, value: any): T;
         registerClass(constructor: any, className: string, nameSpace: string): void;
+        rulesForPropChange(classOfInstance: any, propertyName: string): any[];
+        addRule(classOfInstance: any, ruleType: string, rule: any, ruleParams?: any): void;
     }
 }
 
@@ -40,6 +43,12 @@ declare module 'histria-utils/lib/factory/transaction' {
         constructor();
         create<T>(classOfInstance: any): T;
     }
+}
+
+declare module 'histria-utils/lib/model/rules' {
+    export function propChanged(targetClass: any, ...properties: string[]): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    export function init(targetClass: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    export function loadRules(folder: string): Promise<void>;
 }
 
 declare module 'histria-utils/lib/model/instance' {

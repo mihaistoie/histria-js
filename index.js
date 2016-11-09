@@ -1,7 +1,11 @@
 "use strict";
 var base_object_1 = require('./lib/model/base-object');
 exports.Instance = base_object_1.Instance;
-var model_manager_1 = require('./lib/factory/model-manager');
+var model_manager_1 = require('./lib/model/model-manager');
 exports.ModelManager = model_manager_1.ModelManager;
 var transaction_1 = require('./lib/factory/transaction');
 exports.Transaction = transaction_1.Transaction;
+var rules_1 = require('./lib/model/rules');
+exports.propChanged = rules_1.propChanged;
+exports.init = rules_1.init;
+exports.loadRules = rules_1.loadRules;

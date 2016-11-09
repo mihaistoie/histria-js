@@ -1,6 +1,6 @@
 import * as util from 'util';
 import * as uuid from 'node-uuid';
-import { ModelManager } from './model-manager';
+import { ModelManager } from '../model/model-manager';
 
 export class Transaction {
     private _id: any;

@@ -34,6 +34,7 @@ declare module 'histria-utils/lib/model/model-manager' {
         createInstance<T>(classOfInstance: any, transaction: any, value: any): T;
         registerClass(constructor: any, className: string, nameSpace: string): void;
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
+        setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
         addRule(classOfInstance: any, ruleType: string, rule: any, ruleParams?: any): void;
     }
 }
@@ -46,6 +47,7 @@ declare module 'histria-utils/lib/factory/transaction' {
 }
 
 declare module 'histria-utils/lib/model/rules' {
+    export function title(targetClass: any, title: string, description: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function propChanged(targetClass: any, ...properties: string[]): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function init(targetClass: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function loadRules(folder: string): Promise<void>;

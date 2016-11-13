@@ -8,7 +8,7 @@ import { RULE_TRIGGERS } from '../consts/consts';
 
 //Title decorator
 // Allow title add a title && an description 
-export function title(targetClass: any, title: string, description: string) {
+export function title(targetClass: any, title: string, description?: string) {
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = new ModelManager();
         mm.setTitle(targetClass, target[propertyKey], title, description);

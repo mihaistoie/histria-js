@@ -9,8 +9,7 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 
 export class ModelManager {
     private _mapByClass: Map<any, any>;
-    // all rules an methods
-    private _allMethodsAndRules: Map<any, any>;
+    private _mapRules: Map<any, any>;
     private static singleton: ModelManager;
     constructor() {
         if (!ModelManager.singleton) {
@@ -23,17 +22,20 @@ export class ModelManager {
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value);
     }
-    public registerClass(constructor: any, className: string, nameSpace: string) {
+    public registerClass(constructor: any, nameSpace: string) {
         let that = this;
-        that._mapByClass = new Map();
-        let classInfo = {
+        that._mapByClass = that._mapByClass || new Map();
+        let ci = that._mapByClass.get(constructor);
+        if (ci) return;
+        ci = {
+            name: constructor.name,
             factory: constructor,
-            name: className,
             nameSpace: nameSpace,
             propChangeRules: {},
-            initRules: []
+            initRules: [],
+
         };
-        that._mapByClass.set(constructor, classInfo);
+        that._mapByClass.set(constructor, ci);
     }
     public rulesForPropChange(classOfInstance: any, propertyName: string): any[] {
         let that = this;
@@ -46,20 +48,33 @@ export class ModelManager {
         return res;
     }
     public setTitle(classOfInstance: any, method: any, title: string, description?: string) {
-
+        let that = this;
+        that._mapRules = that._mapRules || new Map();
+        let ri = that._mapRules.get(method);
+        if (!ri) {
+            ri = { rule: that, isDisabled: false, title: title, description: description };
+            that._mapRules.set(that, ri);
+        }
     }
+
     public addRule(classOfInstance: any, ruleType: string, rule: any, ruleParams?: any) {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return;
+        that._mapRules = that._mapRules || new Map();
+        let ri = that._mapRules.get(rule);
+        if (!ri) {
+            ri = { rule: rule, isDisabled: false, title: null, description: null };
+            that._mapRules.set(rule, ri);
+        }
 
         if (ruleType === RULE_TRIGGERS.PROP_CHANGED) {
             ruleParams && ruleParams.forEach(propName => {
                 ci.propChangeRules[propName] = ci.propChangeRules[propName] || [];
-                ci.propChangeRules[propName].push({ rule: rule, isDisabled: false });
+                ci.propChangeRules[propName].push(ri);
             });
         } else if (ruleType === RULE_TRIGGERS.INIT) {
-            ci.initRules.push({ rule: rule, isDisabled: false });
+            ci.initRules.push(ri);
         }
 
     }

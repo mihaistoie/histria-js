@@ -1,10 +1,11 @@
 import { User } from '../user';
-import { propChanged, init } from '../../../src/index';
+import { propChanged, init, title } from '../../../src/index';
 
 
 export class UserRules {
     @propChanged(User, 'firstName', 'lastName')
     @init(User)
+    @title(User, 'Update FullName = FirstName + LastName')
     static async updateFullName(user: User, callStackInfo: any): Promise<void> {
         let fn = await user.firstName();
         let ln = await user.lastName();

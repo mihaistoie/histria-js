@@ -39,4 +39,4 @@ export class User extends Instance {
     }
 
 }
-new ModelManager().registerClass(User, 'User', USER_SCHEMA.nameSpace);
+new ModelManager().registerClass(User, USER_SCHEMA.nameSpace);

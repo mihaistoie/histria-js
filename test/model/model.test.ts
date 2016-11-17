@@ -14,6 +14,13 @@ async function testUser(): Promise<void> {
     let fullName = await user.fullName();
     assert.equal(fullName, 'John', 'Rules call ');
 
+    await user.age.value(10.25);
+    let age = await user.age.value();
+    assert.equal(age, 10, 'Age set/get');
+
+    
+
+
     await user.lastName('Doe');                     // user.lastName = 'Doe';
     let fn = await user.firstName();                // fn = user.firstName;
     let ln = await user.lastName();                 // ln = user.lastName;

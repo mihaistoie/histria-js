@@ -87,7 +87,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
 
     code.push(_tab(1) + 'protected createStates() {');
     code.push(_tab(2) + 'let that = this;');
-    code.push(_tab(2) + util.format('that._state = new %sState(that, that._schema);', className, ));
+    code.push(_tab(2) + util.format('that._states = new %sState(that, that._schema);', className, ));
     code.push(_tab(1) + '}');
 
     Object.keys(schema.properties || {}).forEach(propName => {
@@ -117,7 +117,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
 
     code.push('}');
 
-    code.push(util.format('new ModelManager().registerClass(%s, \'%s\', %s_SCHEMA.nameSpace);', className, className, className.toUpperCase()));
+    code.push(util.format('new ModelManager().registerClass(%s, %s_SCHEMA.nameSpace);', className, className.toUpperCase()));
 
 
 }

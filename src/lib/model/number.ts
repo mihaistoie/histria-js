@@ -20,7 +20,7 @@ export class BaseNumberValue {
         that._parent = null;
     }
 
-    public value(value: number): Promise<number> {
+    public value(value?: number): Promise<number> {
         let that = this;
         if (value !== undefined) {
             //

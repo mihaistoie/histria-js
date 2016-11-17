@@ -1,10 +1,18 @@
-import { Instance, InstanceState, ModelManager, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from '../../src/index';
+import {
+    Instance, InstanceState, ModelManager,
+    State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+    IntegerValue, NumberValue
+} from '../../src/index';
 
 const
     USER_SCHEMA = {
         "type": "object",
         "nameSpace": "users",
         "properties": {
+            "age": {
+                "title": "Age",
+                "type": "integer"
+            },
             "firstName": {
                 "title": "First Name",
                 "type": "string"
@@ -23,7 +31,7 @@ const
             "firstName": {
                 "isMandatory": true
             },
-            "fullName" : {
+            "fullName": {
                 "isReadOnly": true
             }
         }
@@ -51,7 +59,10 @@ export class User extends Instance {
     }
     protected createStates() {
         let that = this;
-        that._states = new UserState(that, that._schema); 
+        that._states = new UserState(that, that._schema);
+    }
+    public get age(): IntegerValue {
+        return this._children.age;
     }
     public firstName(value?: string): Promise<string> {
         return this.getOrSetProperty('firstName', value);

@@ -21,33 +21,33 @@ export class InstanceState {
 			let cs = schema.properties[propName];
 			let propType = schemaUtils.typeOfProperty(cs);
 			if (cs.enum) {
-				that._states[propName] = new EnumState(that._parent, cs, propName);
+				that._states[propName] = new EnumState(that._parent, propName);
 			} else {
 				switch (propType) {
 					case JSONTYPES.integer:
-						that._states[propName] = new IntegerState(that._parent, cs, propName);
+						that._states[propName] = new IntegerState(that._parent, propName);
 						break;
 					case JSONTYPES.number:
-						that._states[propName] = new NumberState(that._parent, cs, propName);
+						that._states[propName] = new NumberState(that._parent, propName);
 						break;
 					case JSONTYPES.date:
-						that._states[propName] = new DateState(that._parent, cs, propName);
+						that._states[propName] = new DateState(that._parent, propName);
 						break;
 					case JSONTYPES.datetime:
-						that._states[propName] = new DateTimeState(that._parent, cs, propName);
+						that._states[propName] = new DateTimeState(that._parent, propName);
 						break;
 					case JSONTYPES.array:
 						break;
 					case JSONTYPES.object:
 						break;
 					case JSONTYPES.refobject:
-						that._states[propName] = new RefObjectState(that._parent, cs, propName);
+						that._states[propName] = new RefObjectState(that._parent, propName);
 						break;
 					case JSONTYPES.refarray:
-						that._states[propName] = new RefArrayState(that._parent, cs, propName);
+						that._states[propName] = new RefArrayState(that._parent, propName);
 						break;
 					default:
-						that._states[propName] = new StringState(that._parent, cs, propName);
+						that._states[propName] = new StringState(that._parent, propName);
 						break;
 				}
 			}
@@ -110,7 +110,7 @@ export class Instance implements ObservableObject {
 	}
 
 
-	protected async getOrSetProperty(propName: string, value?: any): Promise<any> {
+	public async getOrSetProperty(propName: string, value?: any): Promise<any> {
 		let that = this;
 		let propSchema = that._schema.properties[propName];
 		let mm = new ModelManager();

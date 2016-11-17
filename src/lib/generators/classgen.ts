@@ -100,7 +100,14 @@ export function generate(code: string[], schema: any, className: string, baseCla
                 code.push(_tab(1) + '}');
                 break;
             case JSONTYPES.integer:
+                code.push(_tab(1) + util.format('public get %s(): IntegerValue {', propName));
+                code.push(_tab(2) + util.format('return this._children.%s;', propName));
+                code.push(_tab(1) + '}');
+                break;
             case JSONTYPES.number:
+                code.push(_tab(1) + util.format('public get %s(): NumberValue {', propName));
+                code.push(_tab(2) + util.format('return this._children.%s;', propName));
+                code.push(_tab(1) + '}');
                 break;
         }
     });

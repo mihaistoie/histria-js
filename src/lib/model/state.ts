@@ -1,7 +1,6 @@
 import { ObservableObject } from './instance';
 export class State {
     protected _parent: ObservableObject;
-    protected _schema: any;
     protected _propertyName: string;
     protected _stateModel: any;
     protected init() {
@@ -12,10 +11,9 @@ export class State {
         that._stateModel.isReadOnly = that._stateModel.isReadOnly || false;
     }
 
-    constructor(parent: ObservableObject, schema: any, propertyName: string) {
+    constructor(parent: ObservableObject, propertyName: string) {
         let that = this;
         that._propertyName = propertyName;
-        that._schema = schema;
         that._parent = parent;
         that._stateModel = that._parent.modelState(propertyName);
         that.init();
@@ -24,7 +22,6 @@ export class State {
     public destroy() {
         let that = this;
         that._parent = null;
-        that._schema = null;
         that._stateModel = null;
 
     }

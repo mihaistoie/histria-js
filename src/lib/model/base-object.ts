@@ -4,6 +4,7 @@ import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';
 import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
+import { IntegerValue, NumberValue } from './number';
 import * as helper from '../utils/helper';
 import * as util from 'util';
 
@@ -90,10 +91,27 @@ export class Instance implements ObservableObject {
 		that._model = value;
 		if (that._children)
 			helper.destroy(that._children);
-		that.createStates();
 		that._children = {};
+		that._createProperties();
+		that.createStates();
+		
 	}
 	protected createStates() { }
+	private _createProperties() {
+		let that = this;
+		that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
+			let cs = that._schema.properties[propName];
+			let propType = schemaUtils.typeOfProperty(cs);
+			switch (propType) {
+				case JSONTYPES.integer:
+					that._children[propName] = new IntegerValue(that, propName);
+					break;
+				case JSONTYPES.number:
+					that._states[propName] = new NumberValue(that, propName);
+					break;
+			}
+		});
+	}
 
 	public modelState(propName: string): any {
 		let that = this;

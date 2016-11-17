@@ -9,7 +9,7 @@ describe('Generators', () => {
         let schema = { nameSpace: "Tiers",  type: 'object', properties: { country: { type: 'string' } } };
         let code = [];
         gen.generate(code, schema, 'Address', 'Instance');
-        //console.log(code.join('\n'))
+        console.log(code.join('\n'))
 
     });
 

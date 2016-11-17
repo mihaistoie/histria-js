@@ -6,4 +6,6 @@ export declare const JSONTYPES: {
     array: string;
     date: string;
     datetime: string;
+    refobject: string;
+    refarray: string;
 };

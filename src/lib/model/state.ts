@@ -6,18 +6,20 @@ export class State {
     protected _stateModel: any;
     protected init() {
         let that = this;
-        let ps = that._schema.states ? that._schema.state[that._propertyName] : null;
-        that._stateModel.isDisabled = ps ? ps.isDisabled || false : false;
-        that._stateModel.isHidden = ps ? ps.isHidden || false : false;
-        that._stateModel.isMandatory = ps ? ps.isMandatory || false : false;
+        that._stateModel.isDisabled = that._stateModel.isDisabled || false;
+        that._stateModel.isHidden = that._stateModel.isHidden || false;
+        that._stateModel.isMandatory = that._stateModel.isMandatory || false;
+        that._stateModel.isReadOnly = that._stateModel.isReadOnly || false;
     }
 
     constructor(parent: ObservableObject, schema: any, propertyName: string) {
         let that = this;
         that._propertyName = propertyName;
         that._schema = schema;
-        that.init();
+        that._parent = parent;
         that._stateModel = that._parent.modelState(propertyName);
+        that.init();
+
     }
     public destroy() {
         let that = this;
@@ -56,13 +58,42 @@ export class State {
             that._stateModel.isMandatory = value;
         }
     }
+    get isReadOnly() {
+        return this._stateModel.isReadOnly;
+    }
+    set isReadOnly(value: boolean) {
+        let that = this;
+        if (value !== that._stateModel.isReadOnly) {
+            that._parent.stateChanged(that._propertyName + '.isReadOnly', value, that._stateModel.isReadOnly)
+            that._stateModel.isReadOnly = value;
+        }
+    }
+
 }
 
 export class StringState extends State {
 }
 
-export class NumericState extends State {
+export class NumberState extends State {
+}
+
+export class IntegerState extends State {
+}
+
+export class DateState extends State {
+}
+
+export class DateTimeState extends State {
 }
 
 export class EnumState extends State {
+}
+
+export class ArrayState extends State {
+}
+
+export class RefObjectState extends State {
+}
+
+export class RefArrayState extends State {
 }

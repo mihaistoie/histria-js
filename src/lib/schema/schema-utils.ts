@@ -100,7 +100,7 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
 }
 
 
-export function typeOfProperty(propSchema: { type?: string, format?: string }): string {
+export function typeOfProperty(propSchema: { type?: string, format?: string, reference?: string }): string {
     let ps = propSchema.type || JSONTYPES.string;
     if (!JSONTYPES[ps])
         throw new ApplicationError(util.format('Unsupported schema type : "%s"', propSchema.type));
@@ -111,6 +111,14 @@ export function typeOfProperty(propSchema: { type?: string, format?: string }): 
             else if (propSchema.format === JSONTYPES.datetime)
                 return JSONTYPES.datetime;
         }
+    }
+    if (isComplex(propSchema) && propSchema.reference) {
+        if (isArray(propSchema))
+            return JSONTYPES.refarray;
+        else
+            return JSONTYPES.refobject;
+
+
     }
     return ps;
 }

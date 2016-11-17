@@ -10,10 +10,23 @@ export declare class State {
     isDisabled: boolean;
     isHidden: boolean;
     isMandatory: boolean;
+    isReadOnly: boolean;
 }
 export declare class StringState extends State {
 }
-export declare class NumericState extends State {
+export declare class NumberState extends State {
+}
+export declare class IntegerState extends State {
+}
+export declare class DateState extends State {
+}
+export declare class DateTimeState extends State {
 }
 export declare class EnumState extends State {
+}
+export declare class ArrayState extends State {
+}
+export declare class RefObjectState extends State {
+}
+export declare class RefArrayState extends State {
 }

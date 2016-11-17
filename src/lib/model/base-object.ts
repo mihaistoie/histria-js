@@ -2,8 +2,70 @@ import { ObservableObject, ObservableArray } from './instance';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
-
+import { JSONTYPES } from '../schema/schema-consts';
+import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
+import * as helper from '../utils/helper';
 import * as util from 'util';
+
+export class InstanceState {
+	protected _states: any;
+	private _schema: any;
+	private _parent: ObservableObject;
+
+	constructor(parent: ObservableObject, schema: any) {
+		let that = this;
+		that._states = {};
+		that._schema = schema;
+		that._parent = parent;
+		schema && schema.properties && Object.keys(schema.properties).forEach(propName => {
+			let cs = schema.properties[propName];
+			let propType = schemaUtils.typeOfProperty(cs);
+			if (cs.enum) {
+				that._states[propName] = new EnumState(that._parent, cs, propName);
+			} else {
+				switch (propType) {
+					case JSONTYPES.integer:
+						that._states[propName] = new IntegerState(that._parent, cs, propName);
+						break;
+					case JSONTYPES.number:
+						that._states[propName] = new NumberState(that._parent, cs, propName);
+						break;
+					case JSONTYPES.date:
+						that._states[propName] = new DateState(that._parent, cs, propName);
+						break;
+					case JSONTYPES.datetime:
+						that._states[propName] = new DateTimeState(that._parent, cs, propName);
+						break;
+					case JSONTYPES.array:
+						break;
+					case JSONTYPES.object:
+						break;
+					case JSONTYPES.refobject:
+						that._states[propName] = new RefObjectState(that._parent, cs, propName);
+						break;
+					case JSONTYPES.refarray:
+						that._states[propName] = new RefArrayState(that._parent, cs, propName);
+						break;
+					default:
+						that._states[propName] = new StringState(that._parent, cs, propName);
+						break;
+				}
+			}
+
+		});
+
+	}
+	public destroy() {
+		let that = this;
+		if (that._states) {
+			helper.destroy(that._states);
+			that._states = null;
+		}
+		that._schema = null;
+		that._parent = null;
+
+	}
+}
 
 export class Instance implements ObservableObject {
 	protected _parent: ObservableObject;
@@ -11,7 +73,7 @@ export class Instance implements ObservableObject {
 	protected _children: any;
 	protected _schema: any;
 	protected _model: any;
-	protected _state: any;
+	protected _states: InstanceState;
 	protected _propertyName: string;
 
 
@@ -24,12 +86,27 @@ export class Instance implements ObservableObject {
 	//called only on create or on load 
 	protected _setModel(value: any) {
 		let that = this;
-		let states = value.$states;
+		if (!value) throw "Invalid model (null)."
 		that._model = value;
+		if (that._children)
+			helper.destroy(that._children);
+		that.createStates();
 		that._children = {};
 	}
+	protected createStates() { }
+
 	public modelState(propName: string): any {
-		return null;
+		let that = this;
+		that._model.$states = that._model.$states || {};
+		let ss = that._model.$states[propName];
+		if (!ss) {
+			if (that._schema.states && that._schema.states[propName])
+				ss = helper.clone(that._schema.states[propName]);
+			else
+				ss = {};
+			that._model.$states[propName] = ss;
+		}
+		return ss;
 	}
 
 
@@ -74,14 +151,23 @@ export class Instance implements ObservableObject {
 		that._setModel(value);
 	}
 
-	public finalize() {
+	public dstroy() {
 		let that = this;
 		that._schema = null;
 		that._model = null;
-		that._state = null;
+		if (that._states) {
+			that._states.destroy();
+			that._states = null;
+		}
+		if (that._children) {
+			helper.destroy(that._children);
+			that._children = null;
+
+		}
 		that._parent = null;
 		that._parentArray = null;
 		that._propertyName = null;
 
 	}
 }
+

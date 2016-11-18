@@ -25,7 +25,7 @@ export class State {
         that._stateModel = null;
 
     }
-    get isDisabled() {
+    get isDisabled(): boolean {
         return this._stateModel.isDisabled;
     }
     set isDisabled(value: boolean) {
@@ -35,7 +35,7 @@ export class State {
             that._stateModel.isDisabled = value;
         }
     }
-    get isHidden() {
+    get isHidden(): boolean {
         return this._stateModel.isHidden;
     }
     set isHidden(value: boolean) {
@@ -45,7 +45,7 @@ export class State {
             that._stateModel.isHidden = value;
         }
     }
-    get isMandatory() {
+    get isMandatory(): boolean {
         return this._stateModel.isMandatory;
     }
     set isMandatory(value: boolean) {
@@ -55,7 +55,7 @@ export class State {
             that._stateModel.isMandatory = value;
         }
     }
-    get isReadOnly() {
+    get isReadOnly(): boolean {
         return this._stateModel.isReadOnly;
     }
     set isReadOnly(value: boolean) {
@@ -72,6 +72,21 @@ export class StringState extends State {
 }
 
 export class NumberState extends State {
+    protected init() {
+        super.init();
+        let that = this;
+        that._stateModel.decimals = that._stateModel.decimals || 0;
+    }    
+    get decimals(): number {
+        return this._stateModel.decimals;
+    }
+    set decimals(value: number) {
+        let that = this;
+        if (value !== that._stateModel.decimals) {
+            that._parent.stateChanged(that._propertyName + '.decimals', value, that._stateModel.decimals)
+            that._stateModel.decimals = value;
+        }
+    }
 }
 
 export class IntegerState extends State {

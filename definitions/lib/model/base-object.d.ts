@@ -19,8 +19,10 @@ export declare class Instance implements ObservableObject {
     protected init(): void;
     protected _setModel(value: any): void;
     protected createStates(): void;
+    private _createProperties();
     modelState(propName: string): any;
-    protected getOrSetProperty(propName: string, value?: any): Promise<any>;
+    getOrSetProperty(propName: string, value?: any): Promise<any>;
     constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any);
     dstroy(): void;
+    readonly states: InstanceState;
 }

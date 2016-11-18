@@ -21,3 +21,6 @@ exports.DateState = state_1.DateState;
 exports.DateTimeState = state_1.DateTimeState;
 exports.RefArrayState = state_1.RefArrayState;
 exports.RefObjectState = state_1.RefObjectState;
+var number_1 = require('./lib/model/number');
+exports.IntegerValue = number_1.IntegerValue;
+exports.NumberValue = number_1.NumberValue;

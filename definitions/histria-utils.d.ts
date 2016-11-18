@@ -6,6 +6,7 @@ declare module 'histria-utils' {
     export { Transaction } from 'histria-utils/lib/factory/transaction';
     export { propChanged, init, title, loadRules } from 'histria-utils/lib/model/rules';
     export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
+    export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
 }
 
 declare module 'histria-utils/lib/model/base-object' {
@@ -29,9 +30,10 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _setModel(value: any): void;
         protected createStates(): void;
         modelState(propName: string): any;
-        protected getOrSetProperty(propName: string, value?: any): Promise<any>;
+        getOrSetProperty(propName: string, value?: any): Promise<any>;
         constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any);
         dstroy(): void;
+        readonly states: InstanceState;
     }
 }
 
@@ -64,11 +66,10 @@ declare module 'histria-utils/lib/model/state' {
     import { ObservableObject } from 'histria-utils/lib/model/instance';
     export class State {
         protected _parent: ObservableObject;
-        protected _schema: any;
         protected _propertyName: string;
         protected _stateModel: any;
         protected init(): void;
-        constructor(parent: ObservableObject, schema: any, propertyName: string);
+        constructor(parent: ObservableObject, propertyName: string);
         destroy(): void;
         isDisabled: boolean;
         isHidden: boolean;
@@ -78,6 +79,8 @@ declare module 'histria-utils/lib/model/state' {
     export class StringState extends State {
     }
     export class NumberState extends State {
+        protected init(): void;
+        decimals: number;
     }
     export class IntegerState extends State {
     }
@@ -92,6 +95,25 @@ declare module 'histria-utils/lib/model/state' {
     export class RefObjectState extends State {
     }
     export class RefArrayState extends State {
+    }
+}
+
+declare module 'histria-utils/lib/model/number' {
+    import { Instance } from 'histria-utils/lib/model/base-object';
+    export class BaseNumberValue {
+        protected _parent: Instance;
+        protected _decimals: number;
+        protected _propertyName: string;
+        constructor(parent: Instance, propertyName: string);
+        protected init(): void;
+        destroy(): void;
+        value(value?: number): Promise<number>;
+        decimals: number;
+    }
+    export class IntegerValue extends BaseNumberValue {
+    }
+    export class NumberValue extends BaseNumberValue {
+        decimals: number;
     }
 }
 

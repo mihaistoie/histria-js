@@ -1,4 +1,6 @@
 
+import * as fs from 'fs';
+import * as path from 'path';
 import * as assert from 'assert';
 import * as mochaUtils from 'mocha';
 import * as gen from '../../src/lib/generators/classgen';
@@ -6,7 +8,7 @@ import * as gen from '../../src/lib/generators/classgen';
 
 describe('Generators', () => {
     it('Merge', function () {
-        let schema = {
+        let schema: any = {
             "type": "object",
             "nameSpace": "users",
             "properties": {
@@ -37,9 +39,46 @@ describe('Generators', () => {
                 }
             }
         };
+
+
         let code = [];
         gen.generate(code, schema, 'User', 'Instance');
-        console.log(code.join('\n'))
+        fs.writeFileSync(path.join(__dirname, 'model', 'user.ts'), code.join('\n'))
+        schema = {
+            "type": "object",
+            "nameSpace": "salesorder",
+            "properties": {
+                "netAmount": {
+                    "title": "Net Amount (excluding VAT)",
+                    "type": "number"
+                },
+                "vat": {
+                    "title": "VAT",
+                    "type": "number"
+                },
+                "grossAmount": {
+                    "title": "Gross Amount (including VAT)",
+                    "type": "number"
+                }
+            },
+            states: {
+                "netAmount": {
+                    "decimals": 2
+                },
+                "vat": {
+                    "decimals": 2
+                },
+                "grossAmount": {
+                    "decimals": 2
+                }
+
+            }
+        };
+
+
+        code = [];
+        gen.generate(code, schema, 'SalesOrder', 'Instance');
+        fs.writeFileSync(path.join(__dirname, 'model', 'salesorder.ts'), code.join('\n'))
 
     });
 

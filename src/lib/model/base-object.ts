@@ -92,9 +92,10 @@ export class Instance implements ObservableObject {
 		if (that._children)
 			helper.destroy(that._children);
 		that._children = {};
-		that._createProperties();
 		that.createStates();
+		that._createProperties();
 		
+
 	}
 	protected createStates() { }
 	private _createProperties() {
@@ -107,7 +108,7 @@ export class Instance implements ObservableObject {
 					that._children[propName] = new IntegerValue(that, propName);
 					break;
 				case JSONTYPES.number:
-					that._states[propName] = new NumberValue(that, propName);
+					that._children[propName] = new NumberValue(that, propName);
 					break;
 			}
 		});
@@ -186,6 +187,9 @@ export class Instance implements ObservableObject {
 		that._parentArray = null;
 		that._propertyName = null;
 
+	}
+	public get states(): InstanceState {
+		return <InstanceState>this._states;
 	}
 }
 

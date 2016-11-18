@@ -1,11 +1,10 @@
 import { ObservableObject } from './instance';
 export declare class State {
     protected _parent: ObservableObject;
-    protected _schema: any;
     protected _propertyName: string;
     protected _stateModel: any;
     protected init(): void;
-    constructor(parent: ObservableObject, schema: any, propertyName: string);
+    constructor(parent: ObservableObject, propertyName: string);
     destroy(): void;
     isDisabled: boolean;
     isHidden: boolean;
@@ -15,6 +14,8 @@ export declare class State {
 export declare class StringState extends State {
 }
 export declare class NumberState extends State {
+    protected init(): void;
+    decimals: number;
 }
 export declare class IntegerState extends State {
 }

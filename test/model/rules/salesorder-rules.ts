@@ -4,11 +4,14 @@ import { propChanged, init, title } from '../../../src/index';
 
 const
     VAT_TAX = 0.1;
-export class UserRules {
+
+
+export class SalesOrderRules {
+
     @propChanged(SalesOrder, 'netAmount')
     @title(SalesOrder, 'netAmount => vat,  grossAmount')
     static async netAmountChanged(so: SalesOrder, callStackInfo: any): Promise<void> {
-        return UserRules.calculateVatAndGrossAmont(so, callStackInfo);
+        return SalesOrderRules.calculateVatAndGrossAmont(so, callStackInfo);
     }
     @propChanged(SalesOrder, 'vat')
     @title(SalesOrder, 'vat => netAmount,  grossAmount')

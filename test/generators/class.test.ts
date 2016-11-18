@@ -42,7 +42,7 @@ describe('Generators', () => {
 
 
         let code = [];
-        gen.generate(code, schema, 'User', 'Instance');
+        gen.generate(code, schema, 'User', 'Instance', '../../../src/index');
         fs.writeFileSync(path.join(__dirname, 'model', 'user.ts'), code.join('\n'))
         schema = {
             "type": "object",
@@ -77,7 +77,7 @@ describe('Generators', () => {
 
 
         code = [];
-        gen.generate(code, schema, 'SalesOrder', 'Instance');
+        gen.generate(code, schema, 'SalesOrder', 'Instance', '../../../src/index');
         fs.writeFileSync(path.join(__dirname, 'model', 'salesorder.ts'), code.join('\n'))
 
     });

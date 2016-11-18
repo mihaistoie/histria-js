@@ -1,3 +1,9 @@
+import {
+	Instance, InstanceState, ModelManager,
+	State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	IntegerValue, NumberValue
+} from '../../../src/index';
+
 const
 	USER_SCHEMA = {
 		"type": "object",

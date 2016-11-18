@@ -38,7 +38,7 @@ async function testUser(): Promise<void> {
 async function testSales(): Promise<void> {
     let transaction = new Transaction();
     let so = transaction.create<SalesOrder>(SalesOrder);
-    
+
     await so.netAmount.value(100);
     let na = await so.netAmount.value();
     let vat = await so.vat.value();
@@ -46,7 +46,7 @@ async function testSales(): Promise<void> {
     assert.equal(na, 100, 'NetAmount after set netAmount');
     assert.equal(vat, 10, 'Vat after set netAmount');
     assert.equal(ga, 110, 'GrossAmount after set netAmount')
-    
+
     await so.vat.value(20);
     na = await so.netAmount.value();
     vat = await so.vat.value();
@@ -63,16 +63,19 @@ async function testSales(): Promise<void> {
     assert.equal(na, 300, 'NetAmount after set Vat');
     assert.equal(vat, 30, 'Vat after set Vat');
     assert.equal(ga, 330, 'GrossAmount after set Vat');
-    
+
     // decimals tests
-    await so.vat.value(33.33); 
+    await so.vat.value(33.33);
     na = await so.netAmount.value();
     assert.equal(na, 333.3, 'Decimals test');
 
-     so.netAmount.value(333.31);
-     vat = await so.vat.value();
-     assert.equal(vat, 33.33, 'Decimals test');
+    so.netAmount.value(333.31);
+    vat = await so.vat.value();
+    assert.equal(vat, 33.33, 'Decimals test');
 
+    await so.netAmount.decimals(1);
+    na = await so.netAmount.value();
+    assert.equal(na, 333.3, 'NetAmount after set Vat');
 }
 
 

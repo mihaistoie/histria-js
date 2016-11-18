@@ -9,8 +9,12 @@ export class BaseNumberValue {
     constructor(parent: Instance, propertyName: string) {
         let that = this;
         that._parent = parent;
+
         that._propertyName = propertyName;
         that.init();
+    }
+    protected _internalDecimals(): number {
+        return this._decimals;
     }
     private _round(value: number): number {
         let that = this;
@@ -19,7 +23,7 @@ export class BaseNumberValue {
             throw new ApplicationError(messages.numbers.notANumber);
         if (isNaN(value))
             throw new ApplicationError(messages.numbers.isNan);
-        return parseFloat(value.toFixed(that.decimals));
+        return parseFloat(value.toFixed(that._internalDecimals()));
     }
     protected init() {
         let that = this;
@@ -38,13 +42,14 @@ export class BaseNumberValue {
         }
         return that._parent.getOrSetProperty(that._propertyName, value);
     }
-    public get decimals(): number {
+    public async decimals(value: number): Promise<number> {
         let that = this;
+        if (value !== undefined) {
+            if (that._decimals != value) {
+                that._decimals = value;
+            }
+        }
         return that._decimals;
-    }
-    public set decimals(value: number) {
-        let that = this;
-        that._decimals = value;
     }
 
 }
@@ -53,13 +58,19 @@ export class IntegerValue extends BaseNumberValue {
 }
 
 export class NumberValue extends BaseNumberValue {
-    public get decimals(): number {
+    public async decimals(value: number): Promise<number> {
+        let that = this;
+        if (value !== undefined) {
+            if (that._parent.states[that._propertyName].decimals != value) {
+                that._parent.states[that._propertyName].decimals = value;
+                let val = await that.value();
+                await that.value(val)
+            }
+        }
+        return that._parent.states[that._propertyName].decimals;
+    }
+    protected _internalDecimals(): number {
         let that = this;
         return that._parent.states[that._propertyName].decimals;
     }
-    public set decimals(value: number) {
-        let that = this;
-        that._parent.states[that._propertyName].decimals = value;
-    }
-
 }

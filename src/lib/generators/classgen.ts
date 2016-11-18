@@ -9,8 +9,19 @@ function _tab(ident: number) {
     return res.join('');
 }
 
-export function generate(code: string[], schema: any, className: string, baseClass: string) {
+export function generate(code: string[], schema: any, className: string, baseClass: string, pathToLib?: string) {
     schema.nameSpace = schema.nameSpace || className;
+
+    pathToLib = pathToLib || 'histria--utils'
+    code.push('import {');
+    code.push(_tab(1) + 'Instance, InstanceState, ModelManager,');
+    code.push(_tab(1) + 'State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+    code.push(_tab(1) + 'IntegerValue, NumberValue');
+    code.push('} from \'' + pathToLib + '\';');
+    code.push('');
+
+
+
     code.push('const');
     code.push(_tab(1) + util.format('%s_SCHEMA = %s;', className.toUpperCase(), JSON.stringify(schema, null, _tab(2))));
     code.push('');

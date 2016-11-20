@@ -2,7 +2,7 @@
 export interface EventInfo {
     push(info: any): void
     pop(): void;
-    isTriggeredBy(): boolean;
+    isTriggeredBy(peopertyName: string, target: any): boolean;
 }
 
 export interface ObservableObject {

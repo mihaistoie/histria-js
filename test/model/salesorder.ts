@@ -9,6 +9,10 @@ const
 		"type": "object",
 		"nameSpace": "salesorder",
 		"properties": {
+			"ruleCount": {
+				"title": "Rule call count",
+				"type": "integer"
+			},
 			"netAmount": {
 				"title": "Net Amount (excluding VAT)",
 				"type": "number"
@@ -37,6 +41,9 @@ const
 	};
 
 export class SalesOrderState extends InstanceState {
+	public get ruleCount(): IntegerState {
+		return this._states.ruleCount;
+	}
 	public get netAmount(): NumberState {
 		return this._states.netAmount;
 	}
@@ -57,6 +64,9 @@ export class SalesOrder extends Instance {
 	protected createStates() {
 		let that = this;
 		that._states = new SalesOrderState(that, that._schema);
+	}
+	public get ruleCount(): IntegerValue {
+		return this._children.ruleCount;
 	}
 	public get netAmount(): NumberValue {
 		return this._children.netAmount;

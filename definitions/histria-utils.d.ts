@@ -126,7 +126,7 @@ declare module 'histria-utils/lib/model/instance' {
     export interface EventInfo {
         push(info: any): void;
         pop(): void;
-        isTriggeredBy(): boolean;
+        isTriggeredBy(peopertyName: string, target: any): boolean;
     }
     export interface ObservableObject {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

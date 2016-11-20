@@ -48,6 +48,10 @@ describe('Generators', () => {
             "type": "object",
             "nameSpace": "salesorder",
             "properties": {
+                "ruleCount": {
+                    "title": "Rule call count",
+                    "type": "integer"
+                },
                 "netAmount": {
                     "title": "Net Amount (excluding VAT)",
                     "type": "number"

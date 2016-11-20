@@ -11,20 +11,35 @@ import * as helper from '../utils/helper';
 import * as util from 'util';
 
 class InstanceEventInfo implements EventInfo {
+	private _stack: any[];
 	constructor() {
-
+		let that = this;
+		that._stack = [];
 	}
-	public push(info: any): void {
 
+	public push(info: any): void {
+		let that = this;
+		that._stack.push(info);
 	}
 	public pop(): void {
-
+		let that = this;
+		that._stack.pop();
 	}
-	public isTriggeredBy(): boolean {
+	public isTriggeredBy(propertyName: string, target: any): boolean {
+		let that = this;
+		let path = target.getPath();
+		let fp = path ? path + '.' + propertyName : propertyName;
+		for (let i = 0, len = that._stack.length; i < len; i++) {
+			let info = that._stack[i];
+			if (info && info.type === RULE_TRIGGERS.PROP_CHANGED) {
+				if (fp === info.path) return true;
+			}
+		}
 		return false;
 	}
 	public destroy() {
-
+		let that = this;
+		that._stack = null;
 	}
 }
 
@@ -93,7 +108,7 @@ export class Instance implements ObservableObject {
 	protected _parentArray: ObservableArray;
 	protected _children: any;
 	protected _schema: any;
-	private  _eventInfo: InstanceEventInfo;
+	private _eventInfo: InstanceEventInfo;
 	protected _model: any;
 	protected _states: InstanceState;
 	protected _propertyName: string;

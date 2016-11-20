@@ -31,7 +31,7 @@ export class State {
     set isDisabled(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isDisabled) {
-            that._parent.stateChanged(that._propertyName + '.isDisabled', value, that._stateModel.isDisabled)
+            that._parent.stateChanged(that._propertyName + '.isDisabled', value, that._stateModel.isDisabled);
             that._stateModel.isDisabled = value;
         }
     }
@@ -41,7 +41,7 @@ export class State {
     set isHidden(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isHidden) {
-            that._parent.stateChanged(that._propertyName + '.isHidden', value, that._stateModel.isHidden)
+            that._parent.stateChanged(that._propertyName + '.isHidden', value, that._stateModel.isHidden);
             that._stateModel.isHidden = value;
         }
     }
@@ -51,7 +51,7 @@ export class State {
     set isMandatory(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isMandatory) {
-            that._parent.stateChanged(that._propertyName + '.isMandatory', value, that._stateModel.isMandatory)
+            that._parent.stateChanged(that._propertyName + '.isMandatory', value, that._stateModel.isMandatory);
             that._stateModel.isMandatory = value;
         }
     }
@@ -61,7 +61,7 @@ export class State {
     set isReadOnly(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isReadOnly) {
-            that._parent.stateChanged(that._propertyName + '.isReadOnly', value, that._stateModel.isReadOnly)
+            that._parent.stateChanged(that._propertyName + '.isReadOnly', value, that._stateModel.isReadOnly);
             that._stateModel.isReadOnly = value;
         }
     }

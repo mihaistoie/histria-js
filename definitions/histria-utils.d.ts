@@ -10,7 +10,7 @@ declare module 'histria-utils' {
 }
 
 declare module 'histria-utils/lib/model/base-object' {
-    import { ObservableObject, ObservableArray } from 'histria-utils/lib/model/instance';
+    import { ObservableObject, ObservableArray, EventInfo } from 'histria-utils/lib/model/instance';
     export class InstanceState {
         protected _states: any;
         constructor(parent: ObservableObject, schema: any);
@@ -18,14 +18,17 @@ declare module 'histria-utils/lib/model/base-object' {
     }
     export class Instance implements ObservableObject {
         protected _parent: ObservableObject;
-        protected _parentArray: ObservableObject;
+        protected _parentArray: ObservableArray;
         protected _children: any;
         protected _schema: any;
         protected _model: any;
         protected _states: InstanceState;
         protected _propertyName: string;
-        propertyChanged(propName: string, value: any, oldValue: any, callStackInfo?: any): void;
-        stateChanged(propName: string, value: any, oldValue: any, callStackInfo?: any): void;
+        protected _getEventInfo(): EventInfo;
+        getPath(propName?: string): string;
+        getRoot(): ObservableObject;
+        propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
+        stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         protected init(): void;
         protected _setModel(value: any): void;
         protected createStates(): void;
@@ -105,27 +108,42 @@ declare module 'histria-utils/lib/model/number' {
         protected _decimals: number;
         protected _propertyName: string;
         constructor(parent: Instance, propertyName: string);
+        protected _internalDecimals(): number;
         protected init(): void;
         destroy(): void;
         value(value?: number): Promise<number>;
-        decimals: number;
+        decimals(value: number): Promise<number>;
     }
     export class IntegerValue extends BaseNumberValue {
     }
     export class NumberValue extends BaseNumberValue {
-        decimals: number;
+        decimals(value: number): Promise<number>;
+        protected _internalDecimals(): number;
     }
 }
 
 declare module 'histria-utils/lib/model/instance' {
+    export interface EventInfo {
+        push(info: any): void;
+        pop(): void;
+        isTriggeredBy(): boolean;
+    }
     export interface ObservableObject {
-        propertyChanged(propName: string, value: any, oldValue: any, callStackInfo?: any): void;
-        stateChanged(stateName: string, value: any, oldValue: any, callStackInfo?: any): void;
+        propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
+        stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
         modelState(propName: string): any;
+        getPath(propName?: string): string;
+        getRoot(): ObservableObject;
+    }
+    export interface ObservableArray {
+        propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
+        stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
+        getPath(item?: ObservableObject): string;
+        getRoot(): ObservableObject;
     }
     export interface ObservableArray {
         parent: ObservableObject;
-        propertyName: String;
+        propertyName: string;
     }
 }
 

@@ -1,12 +1,32 @@
-import { ObservableObject, ObservableArray } from './instance';
+import { ObservableObject, ObservableArray, EventInfo } from './instance';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';
+import { RULE_TRIGGERS } from '../consts/consts';
+
 import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
 import { IntegerValue, NumberValue } from './number';
 import * as helper from '../utils/helper';
 import * as util from 'util';
+
+class InstanceEventInfo implements EventInfo {
+	constructor() {
+
+	}
+	public push(info: any): void {
+
+	}
+	public pop(): void {
+
+	}
+	public isTriggeredBy(): boolean {
+		return false;
+	}
+	public destroy() {
+
+	}
+}
 
 export class InstanceState {
 	protected _states: any;
@@ -70,17 +90,39 @@ export class InstanceState {
 
 export class Instance implements ObservableObject {
 	protected _parent: ObservableObject;
-	protected _parentArray: ObservableObject;
+	protected _parentArray: ObservableArray;
 	protected _children: any;
 	protected _schema: any;
+	private  _eventInfo: InstanceEventInfo;
 	protected _model: any;
 	protected _states: InstanceState;
 	protected _propertyName: string;
-
-
-	public propertyChanged(propName: string, value: any, oldValue: any, callStackInfo?: any) {
+	protected _getEventInfo(): EventInfo {
+		let that = this;
+		let root = <Instance>that.getRoot();
+		if (root === this) {
+			if (!that._eventInfo)
+				that._eventInfo = new InstanceEventInfo();
+			return that._eventInfo;
+		} else
+			return root._getEventInfo();
 	}
-	public stateChanged(propName: string, value: any, oldValue: any, callStackInfo?: any) {
+
+	public getPath(propName?: string): string {
+		let that = this;
+		let root = that._parentArray ? that._parentArray.getPath(that) : (that._parent ? that._parent.getPath(that._propertyName) : '');
+		return propName ? (root ? (root + '.' + propName) : propName) : root;
+	}
+
+	public getRoot(): ObservableObject {
+		let that = this;
+		return that._parent ? that._parent.getRoot() : that;
+	}
+
+
+	public propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
+	}
+	public stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
 	}
 	protected init() {
 	}
@@ -94,7 +136,7 @@ export class Instance implements ObservableObject {
 		that._children = {};
 		that.createStates();
 		that._createProperties();
-		
+
 
 	}
 	protected createStates() { }
@@ -131,36 +173,42 @@ export class Instance implements ObservableObject {
 
 	public async getOrSetProperty(propName: string, value?: any): Promise<any> {
 		let that = this;
-		let propSchema = that._schema.properties[propName];
-		let mm = new ModelManager();
-		if (!propSchema)
-			throw new ApplicationError(util.format('Property not found: "%s".', propName));
-		if (schemaUtils.isComplex(propSchema)) {
-			if (value === undefined) {
+		let isSet = (value !== undefined), isComplex = false, propPath;
+		let eventInfo = that._getEventInfo();
+		if (isSet)
+			eventInfo.push({ path: that.getPath(propName), eventType: RULE_TRIGGERS.PROP_CHANGED });
+		try {
+			let propSchema = that._schema.properties[propName];
+			let mm = new ModelManager();
+			if (!propSchema)
+				throw new ApplicationError(util.format('Property not found: "%s".', propName));
+			if (schemaUtils.isComplex(propSchema)) {
+				isComplex = true;
+				if (isSet) {
+					if (schemaUtils.isArray(propSchema))
+						throw new ApplicationError(util.format('Can\'t set "%s", because is an array.', propName));
+					that._children[propName] = value;
+				}
 			} else {
-				if (schemaUtils.isArray(propSchema))
-					throw new ApplicationError(util.format('Can\'t set "%s", because is an array.', propName));
-				that._children[propName] = value;
-			}
-			return Promise.resolve(that._children[propName]);
-		} else {
-			if (value === undefined) {
-				// get
-			} else {
-				// set
-				if (that._model[propName] !== value) {
-					that._model[propName] = value;
-					let rules = mm.rulesForPropChange(that.constructor, propName);
-					if (rules.length) {
-						for (let i = 0, len = rules.length; i < len; i++) {
-							let rule = rules[i];
-							await rule(that, null);
+				if (isSet) {
+					// set
+					if (that._model[propName] !== value) {
+						that._model[propName] = value;
+						let rules = mm.rulesForPropChange(that.constructor, propName);
+						if (rules.length) {
+							for (let i = 0, len = rules.length; i < len; i++) {
+								let rule = rules[i];
+								await rule(that, eventInfo);
+							}
 						}
 					}
 				}
 			}
+		} finally {
+			if (isSet)
+				eventInfo.pop()
 		}
-		return that._model[propName];
+		return isComplex ? that._children[propName] : that._model[propName];
 
 	}
 	constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any) {
@@ -181,6 +229,11 @@ export class Instance implements ObservableObject {
 		if (that._children) {
 			helper.destroy(that._children);
 			that._children = null;
+
+		}
+		if (that._eventInfo) {
+			that._eventInfo.destroy();
+			that._eventInfo = null;
 
 		}
 		that._parent = null;

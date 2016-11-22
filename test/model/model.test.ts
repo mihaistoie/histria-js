@@ -45,16 +45,16 @@ async function testSales(): Promise<void> {
     let vat = await so.vat.value();
     let ga = await so.grossAmount.value();
     assert.equal(na, 100, 'NetAmount after set netAmount');
-    assert.equal(vat, 10, 'Vat after set netAmount');
-    assert.equal(ga, 110, 'GrossAmount after set netAmount')
+    assert.equal(vat, 19.3, 'Vat after set netAmount');
+    assert.equal(ga, 119.3, 'GrossAmount after set netAmount')
 
-    await so.vat.value(20);
+    await so.vat.value(38.6);
     na = await so.netAmount.value();
     vat = await so.vat.value();
     ga = await so.grossAmount.value();
     assert.equal(na, 200, 'NetAmount after set Vat');
-    assert.equal(vat, 20, 'Vat after set Vat');
-    assert.equal(ga, 220, 'GrossAmount after set Vat')
+    assert.equal(vat, 38.6, 'Vat after set Vat');
+    assert.equal(ga, 238.6, 'GrossAmount after set Vat')
 
     await so.grossAmount.value(330);
     na = await so.netAmount.value();
@@ -63,8 +63,8 @@ async function testSales(): Promise<void> {
 
     
 
-    assert.equal(na, 300, 'NetAmount after set Vat');
-    assert.equal(vat, 30, 'Vat after set Vat');
+    assert.equal(na, 276.61, 'NetAmount after set Vat');
+    assert.equal(vat, 53.39, 'Vat after set Vat');
     assert.equal(ga, 330, 'GrossAmount after set Vat');
 
     let rc = await so.ruleCount.value();
@@ -73,15 +73,15 @@ async function testSales(): Promise<void> {
     // decimals tests
     await so.vat.value(33.33);
     na = await so.netAmount.value();
-    assert.equal(na, 333.3, 'Decimals test');
+    assert.equal(na, 172.69, 'Decimals test');
 
-    so.netAmount.value(333.31);
+    so.netAmount.value(172.68);
     vat = await so.vat.value();
     assert.equal(vat, 33.33, 'Decimals test');
 
     await so.netAmount.decimals(1);
     na = await so.netAmount.value();
-    assert.equal(na, 333.3, 'NetAmount after set Vat');
+    assert.equal(na, 172.7, 'NetAmount after set Vat');
 }
 
 

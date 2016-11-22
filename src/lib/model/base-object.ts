@@ -31,7 +31,7 @@ class InstanceEventInfo implements EventInfo {
 		let fp = path ? path + '.' + propertyName : propertyName;
 		for (let i = 0, len = that._stack.length; i < len; i++) {
 			let info = that._stack[i];
-			if (info && info.type === RULE_TRIGGERS.PROP_CHANGED) {
+			if (info && info.eventType === RULE_TRIGGERS.PROP_CHANGED) {
 				if (fp === info.path) return true;
 			}
 		}

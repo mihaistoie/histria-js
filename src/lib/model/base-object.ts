@@ -3,7 +3,7 @@ import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';
-import { RULE_TRIGGERS } from '../consts/consts';
+import { RULE_TRIGGERS, ObjectStatus } from '../consts/consts';
 
 import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
 import { IntegerValue, NumberValue } from './number';
@@ -104,10 +104,16 @@ export class InstanceState {
 }
 
 export class Instance implements ObservableObject {
+	//used only in root
+	protected _status: ObjectStatus;
+
+
+	//when set _parent reset _rootCache
 	protected _parent: ObservableObject;
 	protected _parentArray: ObservableArray;
 	protected _children: any;
 	protected _schema: any;
+	protected _rootCache: ObservableObject;
 	private _eventInfo: InstanceEventInfo;
 	protected _model: any;
 	protected _states: InstanceState;
@@ -131,7 +137,9 @@ export class Instance implements ObservableObject {
 
 	public getRoot(): ObservableObject {
 		let that = this;
-		return that._parent ? that._parent.getRoot() : that;
+		if (!that._rootCache)
+			that._rootCache = that._parent ? that._parent.getRoot() : that;
+		return that._rootCache;
 	}
 
 
@@ -141,6 +149,7 @@ export class Instance implements ObservableObject {
 	}
 	protected init() {
 	}
+
 	//called only on create or on load 
 	protected _setModel(value: any) {
 		let that = this;
@@ -152,9 +161,15 @@ export class Instance implements ObservableObject {
 		that.createStates();
 		that._createProperties();
 
-
 	}
 	protected createStates() { }
+	
+	private _canExecutePropChangeRule() {
+		let that = this;
+		let root = <Instance>that.getRoot();
+		return root._status === ObjectStatus.idle;
+	}
+
 	private _createProperties() {
 		let that = this;
 		that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
@@ -209,11 +224,13 @@ export class Instance implements ObservableObject {
 					// set
 					if (that._model[propName] !== value) {
 						that._model[propName] = value;
-						let rules = mm.rulesForPropChange(that.constructor, propName);
-						if (rules.length) {
-							for (let i = 0, len = rules.length; i < len; i++) {
-								let rule = rules[i];
-								await rule(that, eventInfo);
+						if (that._canExecutePropChangeRule()) {
+							let rules = mm.rulesForPropChange(that.constructor, propName);
+							if (rules.length) {
+								for (let i = 0, len = rules.length; i < len; i++) {
+									let rule = rules[i];
+									await rule(that, eventInfo);
+								}
 							}
 						}
 					}
@@ -226,17 +243,19 @@ export class Instance implements ObservableObject {
 		return isComplex ? that._children[propName] : that._model[propName];
 
 	}
-	constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any) {
+	constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {isCreate: boolean, isRestore: boolean}) {
 		let that = this;
+		that._status = ObjectStatus.idle;
 		that._propertyName = propertyName;
 		that.init();
 		that._setModel(value);
 	}
 
-	public dstroy() {
+	public destroy() {
 		let that = this;
 		that._schema = null;
 		that._model = null;
+		that._rootCache = null;
 		if (that._states) {
 			that._states.destroy();
 			that._states = null;

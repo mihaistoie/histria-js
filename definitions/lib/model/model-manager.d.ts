@@ -3,7 +3,10 @@ export declare class ModelManager {
     private _mapRules;
     private static singleton;
     constructor();
-    createInstance<T>(classOfInstance: any, transaction: any, value: any): T;
+    createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {
+        isCreate: boolean;
+        isRestore: boolean;
+    }): T;
     registerClass(constructor: any, nameSpace: string): void;
     rulesForPropChange(classOfInstance: any, propertyName: string): any[];
     setTitle(classOfInstance: any, method: any, title: string, description?: string): void;

@@ -17,10 +17,10 @@ export class ModelManager {
         }
         return ModelManager.singleton;
     }
-    public createInstance<T>(classOfInstance: any, transaction: any, value: any): T {
+    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {isCreate: boolean, isRestore: boolean}): T {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
-        return new ci.factory(transaction, null, null, '', value);
+        return new ci.factory(transaction, null, null, '', value, options);
     }
     public registerClass(constructor: any, nameSpace: string) {
         let that = this;

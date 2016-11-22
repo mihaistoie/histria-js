@@ -11,7 +11,18 @@ export class Transaction {
 
     public create<T>(classOfInstance: any): T {
         let mm = new ModelManager();
-        let instance = mm.createInstance<T>(classOfInstance, this, {});
+        let instance = mm.createInstance<T>(classOfInstance, this, {}, { isCreate: true, isRestore: true });
         return instance;
     }
+    public restore<T>(classOfInstance: any, data: any): T {
+        let mm = new ModelManager();
+        let instance = mm.createInstance<T>(classOfInstance, this, data, { isCreate: true, isRestore: true });
+        return instance;
+    }
+    public load<T>(classOfInstance: any, data: any): T {
+        let mm = new ModelManager();
+        let instance = mm.createInstance<T>(classOfInstance, this, data, { isCreate: false, isRestore: false });
+        return instance;
+    }
+
 }

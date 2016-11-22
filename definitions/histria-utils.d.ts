@@ -11,16 +11,19 @@ declare module 'histria-utils' {
 
 declare module 'histria-utils/lib/model/base-object' {
     import { ObservableObject, ObservableArray, EventInfo } from 'histria-utils/lib/model/instance';
+    import { ObjectStatus } from 'histria-utils/lib/consts/consts';
     export class InstanceState {
         protected _states: any;
         constructor(parent: ObservableObject, schema: any);
         destroy(): void;
     }
     export class Instance implements ObservableObject {
+        protected _status: ObjectStatus;
         protected _parent: ObservableObject;
         protected _parentArray: ObservableArray;
         protected _children: any;
         protected _schema: any;
+        protected _rootCache: ObservableObject;
         protected _model: any;
         protected _states: InstanceState;
         protected _propertyName: string;
@@ -34,8 +37,11 @@ declare module 'histria-utils/lib/model/base-object' {
         protected createStates(): void;
         modelState(propName: string): any;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
-        constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any);
-        dstroy(): void;
+        constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
+            isCreate: boolean;
+            isRestore: boolean;
+        });
+        destroy(): void;
         readonly states: InstanceState;
     }
 }
@@ -43,7 +49,10 @@ declare module 'histria-utils/lib/model/base-object' {
 declare module 'histria-utils/lib/model/model-manager' {
     export class ModelManager {
         constructor();
-        createInstance<T>(classOfInstance: any, transaction: any, value: any): T;
+        createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {
+            isCreate: boolean;
+            isRestore: boolean;
+        }): T;
         registerClass(constructor: any, nameSpace: string): void;
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
         setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
@@ -55,6 +64,8 @@ declare module 'histria-utils/lib/factory/transaction' {
     export class Transaction {
         constructor();
         create<T>(classOfInstance: any): T;
+        restore<T>(classOfInstance: any, data: any): T;
+        load<T>(classOfInstance: any, data: any): T;
     }
 }
 
@@ -144,6 +155,18 @@ declare module 'histria-utils/lib/model/instance' {
     export interface ObservableArray {
         parent: ObservableObject;
         propertyName: string;
+    }
+}
+
+declare module 'histria-utils/lib/consts/consts' {
+    export const RULE_TRIGGERS: {
+        PROP_CHANGED: string;
+        INIT: string;
+    };
+    export enum ObjectStatus {
+        idle = 0,
+        restoring = 1,
+        loading = 2,
     }
 }
 

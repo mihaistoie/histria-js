@@ -123,6 +123,10 @@ export function typeOfProperty(propSchema: { type?: string, format?: string, ref
     return ps;
 }
 
+export function isHidden(propSchema: any): boolean {
+    return false;
+}
+
 
 export function isComplex(schema: any) {
     return (schema.type === JSONTYPES.array || schema.type === JSONTYPES.object);

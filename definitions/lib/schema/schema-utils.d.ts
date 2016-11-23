@@ -3,6 +3,7 @@ export declare function typeOfProperty(propSchema: {
     format?: string;
     reference?: string;
 }): string;
+export declare function isHidden(propSchema: any): boolean;
 export declare function isComplex(schema: any): boolean;
 export declare function isArray(schema: any): boolean;
 export declare function isComposition(schema: any): boolean;

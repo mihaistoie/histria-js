@@ -29,9 +29,9 @@ async function testUser(): Promise<void> {
     assert.equal(ln, 'Doe', 'Last Name set/get');
     assert.equal(fullName, 'John DOE', 'Rules call');
 
-    assert.equal(user.states.firstName.isMandatory, true, 'Init state (firstName.isMandatory) from schema');
-    assert.equal(user.states.fullName.isReadOnly, true, 'Init state (fullName.isReadOnly) from schema');
-    assert.equal(user.states.fullName.isHidden, false, 'Init state (fullName.isHidden) from schema');
+    assert.equal(user.$states.firstName.isMandatory, true, 'Init state (firstName.isMandatory) from schema');
+    assert.equal(user.$states.fullName.isReadOnly, true, 'Init state (fullName.isReadOnly) from schema');
+    assert.equal(user.$states.fullName.isHidden, false, 'Init state (fullName.isHidden) from schema');
 
 }
 

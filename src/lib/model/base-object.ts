@@ -1,11 +1,12 @@
-import { ObservableObject, ObservableArray, EventInfo } from './instance';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity } from './instance';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';
-import { RULE_TRIGGERS, ObjectStatus } from '../consts/consts';
+import { RULE_TRIGGERS } from '../consts/consts';
 
 import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
+import { Error } from './error';
 import { IntegerValue, NumberValue } from './number';
 import * as helper from '../utils/helper';
 import * as util from 'util';
@@ -103,6 +104,34 @@ export class InstanceState {
 	}
 }
 
+
+export class InstanceErrors {
+	protected _messages: any;
+	private _schema: any;
+	private _parent: ObservableObject;
+
+	constructor(parent: ObservableObject, schema: any) {
+		let that = this;
+		that._messages = {};
+		that._schema = schema;
+		that._parent = parent;
+		that._messages.$ = new Error(that._parent, '$');
+		schema && schema.properties && Object.keys(schema.properties).forEach(propName => {
+			that._messages = new Error(that._parent, propName);
+		});
+
+	}
+	public destroy() {
+		let that = this;
+		if (that._messages) {
+			helper.destroy(that._messages);
+			that._messages = null;
+		}
+		that._schema = null;
+		that._parent = null;
+	}
+}
+
 export class Instance implements ObservableObject {
 	//used only in root
 	protected _status: ObjectStatus;
@@ -117,6 +146,7 @@ export class Instance implements ObservableObject {
 	private _eventInfo: InstanceEventInfo;
 	protected _model: any;
 	protected _states: InstanceState;
+	protected _errors: InstanceErrors;
 	protected _propertyName: string;
 	protected _getEventInfo(): EventInfo {
 		let that = this;
@@ -159,11 +189,13 @@ export class Instance implements ObservableObject {
 			helper.destroy(that._children);
 		that._children = {};
 		that.createStates();
+		that.createErrors();
 		that._createProperties();
 
 	}
+	protected createErrors() { }
 	protected createStates() { }
-	
+
 	private _canExecutePropChangeRule() {
 		let that = this;
 		let root = <Instance>that.getRoot();
@@ -186,11 +218,22 @@ export class Instance implements ObservableObject {
 		});
 	}
 
+	public modelErrors(propName: string): { message: string, severity: MessageServerity }[] {
+		let that = this;
+		that._model.$errors = that._model.$errors || {};
+		if (propName === '$' && !that._parentArray && that._parent && that._propertyName) {
+			return that._parent.modelErrors(that._propertyName)
+		}
+		that._model.$errors[propName] = that._model.$errors[propName] || [];
+		return that._model.$errors[propName];
+	}
+
 	public modelState(propName: string): any {
 		let that = this;
 		that._model.$states = that._model.$states || {};
 		let ss = that._model.$states[propName];
 		if (!ss) {
+			//if $states[propName] not exists init using schema 
 			if (that._schema.states && that._schema.states[propName])
 				ss = helper.clone(that._schema.states[propName]);
 			else
@@ -224,6 +267,8 @@ export class Instance implements ObservableObject {
 					// set
 					if (that._model[propName] !== value) {
 						that._model[propName] = value;
+						// clear errors for propName
+						// execute rules
 						if (that._canExecutePropChangeRule()) {
 							let rules = mm.rulesForPropChange(that.constructor, propName);
 							if (rules.length) {
@@ -243,7 +288,7 @@ export class Instance implements ObservableObject {
 		return isComplex ? that._children[propName] : that._model[propName];
 
 	}
-	constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {isCreate: boolean, isRestore: boolean}) {
+	constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isCreate: boolean, isRestore: boolean }) {
 		let that = this;
 		that._status = ObjectStatus.idle;
 		that._propertyName = propertyName;
@@ -270,13 +315,22 @@ export class Instance implements ObservableObject {
 			that._eventInfo = null;
 
 		}
+		if (that._errors) {
+			that._errors.destroy();
+			that._errors = null;
+
+		}
 		that._parent = null;
 		that._parentArray = null;
 		that._propertyName = null;
 
 	}
-	public get states(): InstanceState {
+	public get $states(): InstanceState {
 		return <InstanceState>this._states;
 	}
+	public get $errors(): InstanceErrors {
+		return <InstanceErrors>this._errors;
+	}
+	
 }
 

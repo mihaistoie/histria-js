@@ -1,6 +1,6 @@
 import {
-	Instance, InstanceState, ModelManager,
-	State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	Instance, InstanceState, InstanceErrors, ModelManager,
+	Error, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 
@@ -51,6 +51,24 @@ export class UserState extends InstanceState {
 	}
 }
 
+export class UserErrors extends InstanceErrors {
+	public get $(): Error {
+		return this._messages.$;
+	}
+	public get age(): Error {
+		return this._messages.age;
+	}
+	public get firstName(): Error {
+		return this._messages.firstName;
+	}
+	public get lastName(): Error {
+		return this._messages.lastName;
+	}
+	public get fullName(): Error {
+		return this._messages.fullName;
+	}
+}
+
 export class User extends Instance {
 	protected init() {
 		super.init();
@@ -60,6 +78,10 @@ export class User extends Instance {
 	protected createStates() {
 		let that = this;
 		that._states = new UserState(that, that._schema);
+	}
+	protected createErrors() {
+		let that = this;
+		that._errors = new UserErrors(that, that._schema);
 	}
 	public get age(): IntegerValue {
 		return this._children.age;
@@ -73,8 +95,11 @@ export class User extends Instance {
 	fullName(value?: string): Promise<string> {
 		return this.getOrSetProperty('fullName', value);
 	}
-	public get states(): UserState {
+	public get $states(): UserState {
 		return <UserState>this._states;
+	}
+	public get $errors(): UserErrors {
+		return <UserErrors>this._errors;
 	}
 }
 new ModelManager().registerClass(User, USER_SCHEMA.nameSpace);

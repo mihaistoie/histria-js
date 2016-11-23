@@ -16,9 +16,8 @@ export class SalesOrderRules {
     @propChanged(SalesOrder, 'vat')
     @title(SalesOrder, 'vat => netAmount,  grossAmount')
     static async vatChanged(so: SalesOrder, eventInfo: any): Promise<void> {
-        if (eventInfo.isTriggeredBy('netAmount', so)) {
+        if (eventInfo.isTriggeredBy('netAmount', so))
             return;
-        }
         let vat = await so.vat.value();
         await so.netAmount.value(vat / VAT_TAX);
     }
@@ -26,9 +25,8 @@ export class SalesOrderRules {
     @propChanged(SalesOrder, 'grossAmount')
     @title(SalesOrder, 'grossAmount => vat,  netAmount')
     static async grossAmountChanged(so: SalesOrder, eventInfo: any): Promise<void> {
-        if (eventInfo.isTriggeredBy('netAmount', so)) {
+        if (eventInfo.isTriggeredBy('netAmount', so)) 
             return;
-        }
         let ga = await so.grossAmount.value();
         await so.netAmount.value(ga / (1 + VAT_TAX));
     }

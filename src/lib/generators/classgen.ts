@@ -14,8 +14,8 @@ export function generate(code: string[], schema: any, className: string, baseCla
 
     pathToLib = pathToLib || 'histria--utils'
     code.push('import {');
-    code.push(_tab(1) + 'Instance, InstanceState, ModelManager,');
-    code.push(_tab(1) + 'State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+    code.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
+    code.push(_tab(1) + 'Error, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
     code.push(_tab(1) + 'IntegerValue, NumberValue');
     code.push('} from \'' + pathToLib + '\';');
     code.push('');
@@ -28,6 +28,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
     code.push(util.format('export class %sState extends %sState {', className, baseClass));
     Object.keys(schema.properties || {}).forEach(propName => {
         let propSchema = schema.properties[propName];
+        if (schemaUtils.isHidden(propSchema)) return;
         let stype = schemaUtils.typeOfProperty(propSchema);
         if (propSchema.enum) {
             code.push(_tab(1) + util.format('public get %s(): EnumState {', propName));
@@ -79,12 +80,24 @@ export function generate(code: string[], schema: any, className: string, baseCla
         }
 
     });
+    code.push('}');
+
+    code.push('');
+    code.push(util.format('export class %sErrors extends %sErrors {', className, baseClass));
+    code.push(_tab(1) + util.format('public get %s(): Error {', '$'));
+    code.push(_tab(2) + util.format('return this._messages.%s;', '$'));
+    code.push(_tab(1) + '}');
+
+    Object.keys(schema.properties || {}).forEach(propName => {
+        let propSchema = schema.properties[propName];
+        if (schemaUtils.isHidden(propSchema)) return;
+        code.push(_tab(1) + util.format('public get %s(): Error {', propName));
+        code.push(_tab(2) + util.format('return this._messages.%s;', propName));
+        code.push(_tab(1) + '}');
+    });
 
     code.push('}');
     code.push('');
-
-
-
     code.push(util.format('export class %s extends %s {', className, baseClass));
     //add private 
 
@@ -101,8 +114,15 @@ export function generate(code: string[], schema: any, className: string, baseCla
     code.push(_tab(2) + util.format('that._states = new %sState(that, that._schema);', className, ));
     code.push(_tab(1) + '}');
 
+    code.push(_tab(1) + 'protected createErrors() {');
+    code.push(_tab(2) + 'let that = this;');
+    code.push(_tab(2) + util.format('that._errors = new %sErrors(that, that._schema);', className, ));
+    code.push(_tab(1) + '}');
+    
+
     Object.keys(schema.properties || {}).forEach(propName => {
         let propSchema = schema.properties[propName];
+        if (schemaUtils.isHidden(propSchema)) return;
         let stype = schemaUtils.typeOfProperty(propSchema);
         switch (stype) {
             case JSONTYPES.string:
@@ -122,8 +142,12 @@ export function generate(code: string[], schema: any, className: string, baseCla
                 break;
         }
     });
-    code.push(_tab(1) + util.format('public get states(): %sState {', className));
+    code.push(_tab(1) + util.format('public get $states(): %sState {', className));
     code.push(_tab(2) + util.format('return <%sState>this._states;', className));
+    code.push(_tab(1) + '}');
+
+    code.push(_tab(1) + util.format('public get $errors(): %sErrors {', className));
+    code.push(_tab(2) + util.format('return <%sErrors>this._errors;', className));
     code.push(_tab(1) + '}');
 
     code.push('}');

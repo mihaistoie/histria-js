@@ -61,16 +61,16 @@ export class NumberValue extends BaseNumberValue {
     public async decimals(value: number): Promise<number> {
         let that = this;
         if (value !== undefined) {
-            if (that._parent.states[that._propertyName].decimals != value) {
-                that._parent.states[that._propertyName].decimals = value;
+            if (that._parent.$states[that._propertyName].decimals != value) {
+                that._parent.$states[that._propertyName].decimals = value;
                 let val = await that.value();
                 await that.value(val)
             }
         }
-        return that._parent.states[that._propertyName].decimals;
+        return that._parent.$states[that._propertyName].decimals;
     }
     protected _internalDecimals(): number {
         let that = this;
-        return that._parent.states[that._propertyName].decimals;
+        return that._parent.$states[that._propertyName].decimals;
     }
 }

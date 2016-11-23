@@ -1,6 +1,6 @@
 import {
-	Instance, InstanceState, ModelManager,
-	State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	Instance, InstanceState, InstanceErrors, ModelManager,
+	Error, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../src/index';
 
@@ -26,7 +26,7 @@ const
 				"type": "number"
 			}
 		},
-		states: {
+		"states": {
 			"netAmount": {
 				"decimals": 2
 			},
@@ -36,7 +36,6 @@ const
 			"grossAmount": {
 				"decimals": 2
 			}
-
 		}
 	};
 
@@ -55,6 +54,24 @@ export class SalesOrderState extends InstanceState {
 	}
 }
 
+export class SalesOrderErrors extends InstanceErrors {
+	public get $(): Error {
+		return this._messages.$;
+	}
+	public get ruleCount(): Error {
+		return this._messages.ruleCount;
+	}
+	public get netAmount(): Error {
+		return this._messages.netAmount;
+	}
+	public get vat(): Error {
+		return this._messages.vat;
+	}
+	public get grossAmount(): Error {
+		return this._messages.grossAmount;
+	}
+}
+
 export class SalesOrder extends Instance {
 	protected init() {
 		super.init();
@@ -64,6 +81,10 @@ export class SalesOrder extends Instance {
 	protected createStates() {
 		let that = this;
 		that._states = new SalesOrderState(that, that._schema);
+	}
+	protected createErrors() {
+		let that = this;
+		that._errors = new SalesOrderErrors(that, that._schema);
 	}
 	public get ruleCount(): IntegerValue {
 		return this._children.ruleCount;
@@ -77,8 +98,11 @@ export class SalesOrder extends Instance {
 	public get grossAmount(): NumberValue {
 		return this._children.grossAmount;
 	}
-	public get states(): SalesOrderState {
+	public get $states(): SalesOrderState {
 		return <SalesOrderState>this._states;
+	}
+	public get $errors(): SalesOrderErrors {
+		return <SalesOrderErrors>this._errors;
 	}
 }
 new ModelManager().registerClass(SalesOrder, SALESORDER_SCHEMA.nameSpace);

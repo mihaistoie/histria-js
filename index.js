@@ -2,6 +2,7 @@
 var base_object_1 = require('./lib/model/base-object');
 exports.Instance = base_object_1.Instance;
 exports.InstanceState = base_object_1.InstanceState;
+exports.InstanceErrors = base_object_1.InstanceErrors;
 var model_manager_1 = require('./lib/model/model-manager');
 exports.ModelManager = model_manager_1.ModelManager;
 var transaction_1 = require('./lib/factory/transaction');
@@ -11,6 +12,8 @@ exports.propChanged = rules_1.propChanged;
 exports.init = rules_1.init;
 exports.title = rules_1.title;
 exports.loadRules = rules_1.loadRules;
+var error_1 = require('./lib/model/error');
+exports.Error = error_1.Error;
 var state_1 = require('./lib/model/state');
 exports.State = state_1.State;
 exports.StringState = state_1.StringState;

@@ -25,40 +25,40 @@ export class State {
         that._stateModel = null;
 
     }
-    get isDisabled(): boolean {
+    public get isDisabled(): boolean {
         return this._stateModel.isDisabled;
     }
-    set isDisabled(value: boolean) {
+    public set isDisabled(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isDisabled) {
             that._parent.stateChanged(that._propertyName + '.isDisabled', value, that._stateModel.isDisabled);
             that._stateModel.isDisabled = value;
         }
     }
-    get isHidden(): boolean {
+    public get isHidden(): boolean {
         return this._stateModel.isHidden;
     }
-    set isHidden(value: boolean) {
+    public set isHidden(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isHidden) {
             that._parent.stateChanged(that._propertyName + '.isHidden', value, that._stateModel.isHidden);
             that._stateModel.isHidden = value;
         }
     }
-    get isMandatory(): boolean {
+    public get isMandatory(): boolean {
         return this._stateModel.isMandatory;
     }
-    set isMandatory(value: boolean) {
+    public set isMandatory(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isMandatory) {
             that._parent.stateChanged(that._propertyName + '.isMandatory', value, that._stateModel.isMandatory);
             that._stateModel.isMandatory = value;
         }
     }
-    get isReadOnly(): boolean {
+    public get isReadOnly(): boolean {
         return this._stateModel.isReadOnly;
     }
-    set isReadOnly(value: boolean) {
+    public set isReadOnly(value: boolean) {
         let that = this;
         if (value !== that._stateModel.isReadOnly) {
             that._parent.stateChanged(that._propertyName + '.isReadOnly', value, that._stateModel.isReadOnly);
@@ -69,18 +69,103 @@ export class State {
 }
 
 export class StringState extends State {
+    protected init() {
+        super.init();
+        let that = this;
+        that._stateModel.maxLength = that._stateModel.maxLength || 0;
+        that._stateModel.minLength = that._stateModel.minLength || 0;
+
+    }
+    public get maxLength(): number {
+        return this._stateModel.maxLength;
+    }
+    public set maxLength(value: number) {
+        let that = this;
+        if (value !== that._stateModel.maxLength) {
+            that._parent.stateChanged(that._propertyName + '.maxLength', value, that._stateModel.maxLength)
+            that._stateModel.maxLength = value;
+        }
+    }
+    public get minLength(): number {
+        return this._stateModel.minLength;
+    }
+    public set minLength(value: number) {
+        let that = this;
+        if (value !== that._stateModel.minLength) {
+            that._parent.stateChanged(that._propertyName + '.minLength', value, that._stateModel.minLength)
+            that._stateModel.minLength = value;
+        }
+    }
+
 }
 
-export class NumberState extends State {
+
+export class NumberBaseState extends State {
+    protected init() {
+        super.init();
+        let that = this;
+        that._stateModel.exclusiveMaximum = that._stateModel.exclusiveMaximum;
+        that._stateModel.exclusiveMinimum = that._stateModel.exclusiveMinimum;
+        that._stateModel.minimum = that._stateModel.minimum;
+        that._stateModel.maximum = that._stateModel.maximum;
+    }
+
+    public get exclusiveMaximum(): boolean {
+        return this._stateModel.exclusiveMaximum;
+    }
+    public set exclusiveMaximum(value: boolean) {
+        let that = this;
+        if (value !== that._stateModel.exclusiveMaximum) {
+            that._parent.stateChanged(that._propertyName + '.exclusiveMaximum', value, that._stateModel.exclusiveMaximum)
+            that._stateModel.exclusiveMaximum = value;
+        }
+    }
+
+    public get exclusiveMinimum(): boolean {
+        return this._stateModel.exclusiveMinimum;
+    }
+    public set exclusiveMinimum(value: boolean) {
+        let that = this;
+        if (value !== that._stateModel.exclusiveMinimum) {
+            that._parent.stateChanged(that._propertyName + '.exclusiveMinimum', value, that._stateModel.exclusiveMinimum)
+            that._stateModel.exclusiveMinimum = value;
+        }
+    }
+
+    public get minimum(): number {
+        return this._stateModel.minimum;
+    }
+    public set minimum(value: number) {
+        let that = this;
+        if (value !== that._stateModel.minimum) {
+            that._parent.stateChanged(that._propertyName + '.minimum', value, that._stateModel.minimum)
+            that._stateModel.minimum = value;
+        }
+    }
+    
+    public get maximum(): number {
+        return this._stateModel.maximum;
+    }
+    public set maximum(value: number) {
+        let that = this;
+        if (value !== that._stateModel.maximum) {
+            that._parent.stateChanged(that._propertyName + '.maximum', value, that._stateModel.maximum)
+            that._stateModel.maximum = value;
+        }
+    }
+}
+
+
+export class NumberState extends NumberBaseState {
     protected init() {
         super.init();
         let that = this;
         that._stateModel.decimals = that._stateModel.decimals || 0;
-    }    
-    get decimals(): number {
+    }
+    public get decimals(): number {
         return this._stateModel.decimals;
     }
-    set decimals(value: number) {
+    public set decimals(value: number) {
         let that = this;
         if (value !== that._stateModel.decimals) {
             that._parent.stateChanged(that._propertyName + '.decimals', value, that._stateModel.decimals)
@@ -89,7 +174,13 @@ export class NumberState extends State {
     }
 }
 
-export class IntegerState extends State {
+export class IntegerState extends NumberBaseState {
+    protected init() {
+        super.init();
+        let that = this;
+        that._stateModel.decimals = that._stateModel.decimals || 0;
+    }
+    
 }
 
 export class DateState extends State {

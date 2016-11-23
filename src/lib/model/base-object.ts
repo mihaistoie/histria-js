@@ -117,7 +117,7 @@ export class InstanceErrors {
 		that._parent = parent;
 		that._messages.$ = new Error(that._parent, '$');
 		schema && schema.properties && Object.keys(schema.properties).forEach(propName => {
-			that._messages = new Error(that._parent, propName);
+			that._messages[propName] = new Error(that._parent, propName);
 		});
 
 	}
@@ -135,6 +135,7 @@ export class InstanceErrors {
 export class Instance implements ObservableObject {
 	//used only in root
 	protected _status: ObjectStatus;
+	protected _transaction: any;
 
 
 	//when set _parent reset _rootCache
@@ -268,7 +269,8 @@ export class Instance implements ObservableObject {
 					if (that._model[propName] !== value) {
 						that._model[propName] = value;
 						// clear errors for propName
-						// execute rules
+						that._errors[propName].error = '';
+						// execute rules 
 						if (that._canExecutePropChangeRule()) {
 							let rules = mm.rulesForPropChange(that.constructor, propName);
 							if (rules.length) {

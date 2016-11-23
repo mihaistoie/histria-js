@@ -86,13 +86,13 @@ export class User extends Instance {
 	public get age(): IntegerValue {
 		return this._children.age;
 	}
-	firstName(value?: string): Promise<string> {
+	public firstName(value?: string): Promise<string> {
 		return this.getOrSetProperty('firstName', value);
 	}
-	lastName(value?: string): Promise<string> {
+	public lastName(value?: string): Promise<string> {
 		return this.getOrSetProperty('lastName', value);
 	}
-	fullName(value?: string): Promise<string> {
+	public fullName(value?: string): Promise<string> {
 		return this.getOrSetProperty('fullName', value);
 	}
 	public get $states(): UserState {

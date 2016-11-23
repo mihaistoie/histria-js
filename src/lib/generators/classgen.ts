@@ -126,7 +126,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
         let stype = schemaUtils.typeOfProperty(propSchema);
         switch (stype) {
             case JSONTYPES.string:
-                code.push(_tab(1) + util.format('%s(value?: string): Promise<string> {', propName));
+                code.push(_tab(1) + util.format('public %s(value?: string): Promise<string> {', propName));
                 code.push(_tab(2) + util.format('return this.getOrSetProperty(\'%s\', value);', propName));
                 code.push(_tab(1) + '}');
                 break;

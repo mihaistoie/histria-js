@@ -1,4 +1,5 @@
 import { ObservableObject, MessageServerity } from './interfaces';
+
 export class ErrorState {
     private _errorModel: { message: string, severity: MessageServerity }[];
     private _parent: ObservableObject;

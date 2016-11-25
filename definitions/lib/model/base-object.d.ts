@@ -1,18 +1,6 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer } from './interfaces';
-export declare class InstanceState {
-    protected _states: any;
-    private _schema;
-    private _parent;
-    constructor(parent: ObservableObject, schema: any);
-    destroy(): void;
-}
-export declare class InstanceErrors {
-    protected _messages: any;
-    private _schema;
-    private _parent;
-    constructor(parent: ObservableObject, schema: any);
-    destroy(): void;
-}
+import { InstanceErrors } from './instance-errors';
+import { InstanceState } from './instance-state';
 export declare class Instance implements ObservableObject {
     protected _status: ObjectStatus;
     protected _transaction: any;

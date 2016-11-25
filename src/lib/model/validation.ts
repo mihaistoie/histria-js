@@ -2,7 +2,7 @@ import * as util from 'util';
 
 
 import { State, EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
-import { ErrorState } from './error';
+import { ErrorState } from './error-state';
 import { IntegerValue, NumberValue } from './number';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';

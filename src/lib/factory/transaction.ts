@@ -38,18 +38,18 @@ export class Transaction implements TransactionContainer {
         list.push(handler);
     }
 
-    public create<T>(classOfInstance: any): T {
+    public async create<T>(classOfInstance: any): Promise<T> {
         let mm = new ModelManager();
         let instance = mm.createInstance<T>(classOfInstance, this, {}, { isCreate: true, isRestore: true });
         return instance;
     }
-    public restore<T>(classOfInstance: any, data: any): T {
+    public async restore<T>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let instance = mm.createInstance<T>(classOfInstance, this, data, { isCreate: true, isRestore: true });
 
         return instance;
     }
-    public load<T>(classOfInstance: any, data: any): T {
+    public async load<T>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let instance = mm.createInstance<T>(classOfInstance, this, data, { isCreate: false, isRestore: false });
         return instance;

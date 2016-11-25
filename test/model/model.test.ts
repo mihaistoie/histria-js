@@ -10,7 +10,7 @@ import * as sorules from './rules/salesorder-rules';
 
 async function testUser(): Promise<void> {
     let transaction = new Transaction();
-    let user = transaction.create<User>(User);
+    let user = await transaction.create<User>(User);
     await user.firstName('John');                   // user.firstName = 'John';
 
     let fullName = await user.fullName();
@@ -38,7 +38,7 @@ async function testUser(): Promise<void> {
 async function testSales(): Promise<void> {
     
     let transaction = new Transaction();
-    let so = transaction.create<SalesOrder>(SalesOrder);
+    let so = await transaction.create<SalesOrder>(SalesOrder);
 
     await so.ruleCount.value(0);
     await so.netAmount.value(100);

@@ -24,6 +24,15 @@ export function propChanged(targetClass: any, ...properties: string[]) {
     }
 }
 
+//decorator for validate
+export function validate(targetClass: any, ...properties: string[]) {
+    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = new ModelManager();
+        properties = properties || [];
+        mm.addValidateRule(targetClass, target[propertyKey], properties);
+    }
+}
+
 //decorator for init
 export function init(targetClass: any) {
     let mm = new ModelManager();

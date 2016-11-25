@@ -38,6 +38,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _setModel(value: any): void;
         protected createErrors(): void;
         protected createStates(): void;
+        getSchema(propName?: string): any;
         modelErrors(propName: string): {
             message: string;
             severity: MessageServerity;
@@ -83,9 +84,10 @@ declare module 'histria-utils/lib/model/model-manager' {
         registerClass(constructor: any, nameSpace: string): void;
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
         setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
+        addValidateRule(classOfInstance: any, rule: any, ruleParams?: any): void;
         addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
     }
-    export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
+    export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
@@ -94,10 +96,10 @@ declare module 'histria-utils/lib/factory/transaction' {
         constructor(ctx?: UserContext);
         readonly context: UserContext;
         emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
-        subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, ...args) => Promise<void>): void;
-        create<T>(classOfInstance: any): T;
-        restore<T>(classOfInstance: any, data: any): T;
-        load<T>(classOfInstance: any, data: any): T;
+        subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
+        create<T>(classOfInstance: any): Promise<T>;
+        restore<T>(classOfInstance: any, data: any): Promise<T>;
+        load<T>(classOfInstance: any, data: any): Promise<T>;
         destroy(): void;
     }
 }
@@ -105,6 +107,7 @@ declare module 'histria-utils/lib/factory/transaction' {
 declare module 'histria-utils/lib/model/rules' {
     export function title(targetClass: any, title: string, description?: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function propChanged(targetClass: any, ...properties: string[]): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    export function validate(targetClass: any, ...properties: string[]): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function init(targetClass: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function loadRules(folder: string): Promise<void>;
 }

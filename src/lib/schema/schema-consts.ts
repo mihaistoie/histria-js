@@ -11,6 +11,12 @@ export const JSONTYPES =  {
     refarray: 'reference/array'
 }
 
+export const JSONFORMATS =  {
+    email: 'email',
+    json: 'json'
+}
+
+
 
 
 

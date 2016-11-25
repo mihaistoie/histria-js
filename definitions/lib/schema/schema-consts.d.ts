@@ -9,3 +9,7 @@ export declare const JSONTYPES: {
     refobject: string;
     refarray: string;
 };
+export declare const JSONFORMATS: {
+    email: string;
+    json: string;
+};

@@ -57,6 +57,9 @@ export class ModelManager {
         }
     }
 
+    public addValidateRule(classOfInstance: any, rule: any, ruleParams?: any) {
+    }
+
     public addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any) {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);

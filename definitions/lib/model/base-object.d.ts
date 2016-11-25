@@ -28,6 +28,7 @@ export declare class Instance implements ObservableObject {
     private _isIdle();
     private _emitPropChanged();
     private _emitValidateProperty();
+    getSchema(propName?: string): any;
     private _createProperties();
     modelErrors(propName: string): {
         message: string;

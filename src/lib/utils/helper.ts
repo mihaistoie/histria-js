@@ -67,9 +67,16 @@ var
                 return _copyObject(null, src, true);
         } else
             return src;
+    },
+    _format = function (...args: any[]): string {
+        return args[0].replace(/{(\d+)}/g, function (match, num) {
+            num = parseInt(num, 10);
+            return args[num + 1];
+        });
     };
 
 
 export var merge = _merge;
 export var clone = _clone;
 export var destroy = _destroyObjects;
+export var format = _format;

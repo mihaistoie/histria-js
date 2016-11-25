@@ -1,6 +1,6 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
-	Error, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 
@@ -52,7 +52,7 @@ export class UserState extends InstanceState {
 }
 
 export class UserErrors extends InstanceErrors {
-	public get $(): Error {
+	public get $(): ErrorState {
 		return this._messages.$;
 	}
 	public get age(): Error {

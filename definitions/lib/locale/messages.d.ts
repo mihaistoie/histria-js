@@ -1,6 +1,1 @@
-export declare var messages: {
-    numbers: {
-        isNan: string;
-        notANumber: string;
-    };
-};
+export declare function messages(lang?: string): any;

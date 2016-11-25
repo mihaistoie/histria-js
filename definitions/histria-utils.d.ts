@@ -5,13 +5,13 @@ declare module 'histria-utils' {
     export { ModelManager } from 'histria-utils/lib/model/model-manager';
     export { Transaction } from 'histria-utils/lib/factory/transaction';
     export { propChanged, init, title, loadRules } from 'histria-utils/lib/model/rules';
-    export { Error } from 'histria-utils/lib/model/error';
+    export { ErrorState } from 'histria-utils/lib/model/error';
     export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
 }
 
 declare module 'histria-utils/lib/model/base-object' {
-    import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity } from 'histria-utils/lib/model/instance';
+    import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer } from 'histria-utils/lib/model/interfaces';
     export class InstanceState {
         protected _states: any;
         constructor(parent: ObservableObject, schema: any);
@@ -24,6 +24,7 @@ declare module 'histria-utils/lib/model/base-object' {
     }
     export class Instance implements ObservableObject {
         protected _status: ObjectStatus;
+        protected _transaction: any;
         protected _parent: ObservableObject;
         protected _parentArray: ObservableArray;
         protected _children: any;
@@ -34,6 +35,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _errors: InstanceErrors;
         protected _propertyName: string;
         protected _getEventInfo(): EventInfo;
+        readonly context: UserContext;
         getPath(propName?: string): string;
         getRoot(): ObservableObject;
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -48,7 +50,7 @@ declare module 'histria-utils/lib/model/base-object' {
         }[];
         modelState(propName: string): any;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
-        constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
+        constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
             isCreate: boolean;
             isRestore: boolean;
         });
@@ -73,11 +75,14 @@ declare module 'histria-utils/lib/model/model-manager' {
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
-    export class Transaction {
-        constructor();
+    import { UserContext, TransactionContainer } from 'histria-utils/lib/model/interfaces';
+    export class Transaction implements TransactionContainer {
+        constructor(ctx?: UserContext);
+        readonly context: UserContext;
         create<T>(classOfInstance: any): T;
         restore<T>(classOfInstance: any, data: any): T;
         load<T>(classOfInstance: any, data: any): T;
+        destroy(): void;
     }
 }
 
@@ -89,16 +94,18 @@ declare module 'histria-utils/lib/model/rules' {
 }
 
 declare module 'histria-utils/lib/model/error' {
-    import { ObservableObject } from 'histria-utils/lib/model/instance';
-    export class Error {
+    import { ObservableObject } from 'histria-utils/lib/model/interfaces';
+    export class ErrorState {
         constructor(parent: ObservableObject, propertyName: string);
         error: string;
+        hasErrors(): boolean;
+        addException(e: Error): void;
         destroy(): void;
     }
 }
 
 declare module 'histria-utils/lib/model/state' {
-    import { ObservableObject } from 'histria-utils/lib/model/instance';
+    import { ObservableObject } from 'histria-utils/lib/model/interfaces';
     export class State {
         protected _parent: ObservableObject;
         protected _propertyName: string;
@@ -112,12 +119,23 @@ declare module 'histria-utils/lib/model/state' {
         isReadOnly: boolean;
     }
     export class StringState extends State {
+        protected init(): void;
+        maxLength: number;
+        minLength: number;
     }
-    export class NumberState extends State {
+    export class NumberBaseState extends State {
+        protected init(): void;
+        exclusiveMaximum: boolean;
+        exclusiveMinimum: boolean;
+        minimum: number;
+        maximum: number;
+    }
+    export class NumberState extends NumberBaseState {
         protected init(): void;
         decimals: number;
     }
-    export class IntegerState extends State {
+    export class IntegerState extends NumberBaseState {
+        protected init(): void;
     }
     export class DateState extends State {
     }
@@ -154,7 +172,7 @@ declare module 'histria-utils/lib/model/number' {
     }
 }
 
-declare module 'histria-utils/lib/model/instance' {
+declare module 'histria-utils/lib/model/interfaces' {
     export enum ObjectStatus {
         idle = 0,
         restoring = 1,
@@ -170,6 +188,15 @@ declare module 'histria-utils/lib/model/instance' {
         pop(): void;
         isTriggeredBy(peopertyName: string, target: any): boolean;
     }
+    export interface UserContext {
+        lang: string;
+        country: string;
+        locale: any;
+        formatNumber(value: number, decimals: number): string;
+    }
+    export interface TransactionContainer {
+        context: UserContext;
+    }
     export interface ObservableObject {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
@@ -180,6 +207,7 @@ declare module 'histria-utils/lib/model/instance' {
         }[];
         getPath(propName?: string): string;
         getRoot(): ObservableObject;
+        context: UserContext;
     }
     export interface ObservableArray {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

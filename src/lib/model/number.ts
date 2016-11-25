@@ -20,9 +20,9 @@ export class BaseNumberValue {
         let that = this;
         value = value || 0;
         if (typeof value !== 'number')
-            throw new ApplicationError(messages.numbers.notANumber);
+            throw new ApplicationError(messages(that._parent.context.lang).numbers.notANumber);
         if (isNaN(value))
-            throw new ApplicationError(messages.numbers.isNan);
+            throw new ApplicationError(messages(that._parent.context.lang).numbers.isNan);
         return parseFloat(value.toFixed(that._internalDecimals()));
     }
     protected init() {

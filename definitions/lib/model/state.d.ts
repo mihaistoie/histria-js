@@ -1,4 +1,4 @@
-import { ObservableObject } from './instance';
+import { ObservableObject } from './interfaces';
 export declare class State {
     protected _parent: ObservableObject;
     protected _propertyName: string;
@@ -12,12 +12,23 @@ export declare class State {
     isReadOnly: boolean;
 }
 export declare class StringState extends State {
+    protected init(): void;
+    maxLength: number;
+    minLength: number;
 }
-export declare class NumberState extends State {
+export declare class NumberBaseState extends State {
+    protected init(): void;
+    exclusiveMaximum: boolean;
+    exclusiveMinimum: boolean;
+    minimum: number;
+    maximum: number;
+}
+export declare class NumberState extends NumberBaseState {
     protected init(): void;
     decimals: number;
 }
-export declare class IntegerState extends State {
+export declare class IntegerState extends NumberBaseState {
+    protected init(): void;
 }
 export declare class DateState extends State {
 }

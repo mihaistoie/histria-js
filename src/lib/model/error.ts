@@ -1,5 +1,5 @@
-import { ObservableObject, MessageServerity } from './instance';
-export class Error {
+import { ObservableObject, MessageServerity } from './interfaces';
+export class ErrorState {
     private _errorModel: { message: string, severity: MessageServerity }[];
     private _parent: ObservableObject;
     private _propertyName: string;
@@ -49,6 +49,9 @@ export class Error {
     }
     public hasErrors(): boolean {
         return this._hasMessages(MessageServerity.error);
+    }
+    public addException(e : Error): void {
+        this.error = e.message; 
     }
 
     public destroy() {

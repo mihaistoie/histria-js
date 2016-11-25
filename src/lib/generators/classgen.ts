@@ -15,7 +15,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
     pathToLib = pathToLib || 'histria--utils'
     code.push('import {');
     code.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
-    code.push(_tab(1) + 'Error, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+    code.push(_tab(1) + 'ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
     code.push(_tab(1) + 'IntegerValue, NumberValue');
     code.push('} from \'' + pathToLib + '\';');
     code.push('');
@@ -84,7 +84,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
 
     code.push('');
     code.push(util.format('export class %sErrors extends %sErrors {', className, baseClass));
-    code.push(_tab(1) + util.format('public get %s(): Error {', '$'));
+    code.push(_tab(1) + util.format('public get %s(): ErrorState {', '$'));
     code.push(_tab(2) + util.format('return this._messages.%s;', '$'));
     code.push(_tab(1) + '}');
 

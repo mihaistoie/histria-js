@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity } from './instance';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer } from './interfaces';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
@@ -6,7 +6,7 @@ import { JSONTYPES } from '../schema/schema-consts';
 import { RULE_TRIGGERS } from '../consts/consts';
 
 import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
-import { Error } from './error';
+import { ErrorState } from './error';
 import { IntegerValue, NumberValue } from './number';
 import * as helper from '../utils/helper';
 import * as util from 'util';
@@ -115,9 +115,9 @@ export class InstanceErrors {
 		that._messages = {};
 		that._schema = schema;
 		that._parent = parent;
-		that._messages.$ = new Error(that._parent, '$');
+		that._messages.$ = new ErrorState(that._parent, '$');
 		schema && schema.properties && Object.keys(schema.properties).forEach(propName => {
-			that._messages[propName] = new Error(that._parent, propName);
+			that._messages[propName] = new ErrorState(that._parent, propName);
 		});
 
 	}
@@ -136,8 +136,6 @@ export class Instance implements ObservableObject {
 	//used only in root
 	protected _status: ObjectStatus;
 	protected _transaction: any;
-
-
 	//when set _parent reset _rootCache
 	protected _parent: ObservableObject;
 	protected _parentArray: ObservableArray;
@@ -149,6 +147,7 @@ export class Instance implements ObservableObject {
 	protected _states: InstanceState;
 	protected _errors: InstanceErrors;
 	protected _propertyName: string;
+	private _context: UserContext;
 	protected _getEventInfo(): EventInfo {
 		let that = this;
 		let root = <Instance>that.getRoot();
@@ -158,6 +157,10 @@ export class Instance implements ObservableObject {
 			return that._eventInfo;
 		} else
 			return root._getEventInfo();
+	}
+
+	public get context(): UserContext {
+		return this._context;
 	}
 
 	public getPath(propName?: string): string {
@@ -197,11 +200,18 @@ export class Instance implements ObservableObject {
 	protected createErrors() { }
 	protected createStates() { }
 
-	private _canExecutePropChangeRule() {
+	private _canExecutePropChangeRules() {
 		let that = this;
 		let root = <Instance>that.getRoot();
 		return root._status === ObjectStatus.idle;
 	}
+
+	private _canExecuteValidateRules() {
+		let that = this;
+		let root = <Instance>that.getRoot();
+		return root._status === ObjectStatus.idle;
+	}
+
 
 	private _createProperties() {
 		let that = this;
@@ -261,24 +271,38 @@ export class Instance implements ObservableObject {
 				if (isSet) {
 					if (schemaUtils.isArray(propSchema))
 						throw new ApplicationError(util.format('Can\'t set "%s", because is an array.', propName));
-					that._children[propName] = value;
+					try {
+						// clear errors for propName
+						that._errors[propName].error = '';
+						that._children[propName] = value;
+						if (that._canExecuteValidateRules()) {
+						}
+					} catch (ex) {
+						that._errors[propName].addException(ex);
+					}
 				}
 			} else {
 				if (isSet) {
 					// set
 					if (that._model[propName] !== value) {
 						that._model[propName] = value;
-						// clear errors for propName
-						that._errors[propName].error = '';
-						// execute rules 
-						if (that._canExecutePropChangeRule()) {
-							let rules = mm.rulesForPropChange(that.constructor, propName);
-							if (rules.length) {
-								for (let i = 0, len = rules.length; i < len; i++) {
-									let rule = rules[i];
-									await rule(that, eventInfo);
+						try {
+							// clear errors for propName
+							that._errors[propName].error = '';
+							// execute rules 
+							if (that._canExecuteValidateRules()) {
+							}
+							if (that._canExecutePropChangeRules()) {
+								let rules = mm.rulesForPropChange(that.constructor, propName);
+								if (rules.length) {
+									for (let i = 0, len = rules.length; i < len; i++) {
+										let rule = rules[i];
+										await rule(that, eventInfo);
+									}
 								}
 							}
+						} catch (ex) {
+							that._errors[propName].addException(ex);
 						}
 					}
 				}
@@ -290,8 +314,9 @@ export class Instance implements ObservableObject {
 		return isComplex ? that._children[propName] : that._model[propName];
 
 	}
-	constructor(transaction: any, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isCreate: boolean, isRestore: boolean }) {
+	constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isCreate: boolean, isRestore: boolean }) {
 		let that = this;
+		that._context = transaction.context;
 		that._status = ObjectStatus.idle;
 		that._propertyName = propertyName;
 		that.init();
@@ -322,6 +347,7 @@ export class Instance implements ObservableObject {
 			that._errors = null;
 
 		}
+		that._context = null;
 		that._parent = null;
 		that._parentArray = null;
 		that._propertyName = null;
@@ -333,6 +359,6 @@ export class Instance implements ObservableObject {
 	public get $errors(): InstanceErrors {
 		return <InstanceErrors>this._errors;
 	}
-	
+
 }
 

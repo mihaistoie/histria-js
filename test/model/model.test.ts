@@ -83,6 +83,18 @@ async function testSales(): Promise<void> {
     await so.netAmount.decimals(1);
     na = await so.netAmount.value();
     assert.equal(na, 172.7, 'NetAmount after set Vat');
+
+    
+    assert.equal(so.$errors.netAmount.error, '', 'No error');
+    so.$states.netAmount.maximum = 1000;
+    await so.netAmount.value(2000);
+    //so.$errors.netAmount.error === 'Net Amount (excluding VAT)' cannot exceed 1000.0
+    assert.notEqual(so.$errors.netAmount.error, '', 'Has error ');
+    
+
+    await so.netAmount.value(920);
+    assert.equal(so.$errors.netAmount.error, '', 'No error');
+
 }
 
 

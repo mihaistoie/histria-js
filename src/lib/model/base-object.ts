@@ -97,6 +97,11 @@ export class Instance implements ObservableObject {
 	private _emitValidateProperty(): boolean {
 		return this._isIdle();
 	}
+	public getSchema(propName?: string): any {
+		let that = this;
+		if (!propName || propName === '$') return that._schema;
+		return that._schema.properties[propName];
+	}
 
 
 	private _createProperties() {

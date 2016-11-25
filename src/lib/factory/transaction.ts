@@ -1,6 +1,8 @@
 import * as util from 'util';
 import * as uuid from 'node-uuid';
 import { ModelManager, propagationRules } from '../model/model-manager';
+import { validateAfterPropChanged } from '../model/validation';
+
 import { TranContext } from './user-context';
 import { UserContext, TransactionContainer, EventType, EventInfo } from '../model/interfaces';
 
@@ -14,6 +16,7 @@ export class Transaction implements TransactionContainer {
         that._ctx = ctx || new TranContext();
         that._subscribers = new Map();
         that.subscribe(EventType.propChanged, propagationRules);
+        that.subscribe(EventType.propValidate, validateAfterPropChanged);
     }
 
     public get context(): UserContext {

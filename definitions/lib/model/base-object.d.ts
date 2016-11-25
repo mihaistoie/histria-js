@@ -3,7 +3,7 @@ import { InstanceErrors } from './instance-errors';
 import { InstanceState } from './instance-state';
 export declare class Instance implements ObservableObject {
     protected _status: ObjectStatus;
-    protected _transaction: any;
+    protected _transaction: TransactionContainer;
     protected _parent: ObservableObject;
     protected _parentArray: ObservableArray;
     protected _children: any;
@@ -25,8 +25,9 @@ export declare class Instance implements ObservableObject {
     protected _setModel(value: any): void;
     protected createErrors(): void;
     protected createStates(): void;
-    private _canExecutePropChangeRules();
-    private _canExecuteValidateRules();
+    private _isIdle();
+    private _emitPropChanged();
+    private _emitValidateProperty();
     private _createProperties();
     modelErrors(propName: string): {
         message: string;

@@ -1,20 +1,41 @@
 import * as util from 'util';
 import * as uuid from 'node-uuid';
-import { ModelManager } from '../model/model-manager';
+import { ModelManager, propagationRules } from '../model/model-manager';
 import { TranContext } from './user-context';
-import { UserContext, TransactionContainer } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo } from '../model/interfaces';
 
 export class Transaction implements TransactionContainer {
     private _id: any;
+    private _subscribers: Map<EventType, any[]>;
     private _ctx: UserContext;
     constructor(ctx?: UserContext) {
         let that = this;
         that._id = uuid.v1();
         that._ctx = ctx || new TranContext();
+        that._subscribers = new Map();
+        that.subscribe(EventType.propChanged, propagationRules);
     }
 
     public get context(): UserContext {
         return this._ctx;
+    }
+    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args) {
+        let that = this;
+        let list = that._subscribers.get(eventType);
+        if (list) {
+            for (let i = 0, len = list.length; i < len; i++) {
+                await list[i](eventInfo, classOfInstance, instance, args)
+            }
+        }
+    }
+    public subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>) {
+        let that = this;
+        let list = that._subscribers.get(eventType);
+        if (!list) {
+            list = [];
+            that._subscribers.set(eventType, list);
+        }
+        list.push(handler);
     }
 
     public create<T>(classOfInstance: any): T {
@@ -35,7 +56,9 @@ export class Transaction implements TransactionContainer {
     }
     public destroy() {
         let that = this;
+        that._subscribers = null;
         that._ctx = null;
     }
 
 }
+

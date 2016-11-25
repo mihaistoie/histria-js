@@ -3,6 +3,11 @@ export declare enum ObjectStatus {
     restoring = 1,
     loading = 2,
 }
+export declare enum EventType {
+    propChanged = 0,
+    propValidate = 1,
+    init = 2,
+}
 export declare enum MessageServerity {
     error = 0,
     warning = 1,
@@ -11,6 +16,7 @@ export declare enum MessageServerity {
 export interface EventInfo {
     push(info: any): void;
     pop(): void;
+    destroy(): void;
     isTriggeredBy(peopertyName: string, target: any): boolean;
 }
 export interface UserContext {
@@ -21,6 +27,7 @@ export interface UserContext {
 }
 export interface TransactionContainer {
     context: UserContext;
+    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
 }
 export interface ObservableObject {
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

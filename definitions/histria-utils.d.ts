@@ -18,7 +18,7 @@ declare module 'histria-utils/lib/model/base-object' {
     import { InstanceState } from 'histria-utils/lib/model/instance-state';
     export class Instance implements ObservableObject {
         protected _status: ObjectStatus;
-        protected _transaction: any;
+        protected _transaction: TransactionContainer;
         protected _parent: ObservableObject;
         protected _parentArray: ObservableArray;
         protected _children: any;
@@ -73,6 +73,7 @@ declare module 'histria-utils/lib/model/instance-state' {
 }
 
 declare module 'histria-utils/lib/model/model-manager' {
+    import { EventType, EventInfo } from 'histria-utils/lib/model/interfaces';
     export class ModelManager {
         constructor();
         createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {
@@ -82,15 +83,18 @@ declare module 'histria-utils/lib/model/model-manager' {
         registerClass(constructor: any, nameSpace: string): void;
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
         setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
-        addRule(classOfInstance: any, ruleType: string, rule: any, ruleParams?: any): void;
+        addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
     }
+    export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
-    import { UserContext, TransactionContainer } from 'histria-utils/lib/model/interfaces';
+    import { UserContext, TransactionContainer, EventType, EventInfo } from 'histria-utils/lib/model/interfaces';
     export class Transaction implements TransactionContainer {
         constructor(ctx?: UserContext);
         readonly context: UserContext;
+        emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
+        subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, ...args) => Promise<void>): void;
         create<T>(classOfInstance: any): T;
         restore<T>(classOfInstance: any, data: any): T;
         load<T>(classOfInstance: any, data: any): T;
@@ -190,6 +194,11 @@ declare module 'histria-utils/lib/model/interfaces' {
         restoring = 1,
         loading = 2,
     }
+    export enum EventType {
+        propChanged = 0,
+        propValidate = 1,
+        init = 2,
+    }
     export enum MessageServerity {
         error = 0,
         warning = 1,
@@ -198,6 +207,7 @@ declare module 'histria-utils/lib/model/interfaces' {
     export interface EventInfo {
         push(info: any): void;
         pop(): void;
+        destroy(): void;
         isTriggeredBy(peopertyName: string, target: any): boolean;
     }
     export interface UserContext {
@@ -208,6 +218,7 @@ declare module 'histria-utils/lib/model/interfaces' {
     }
     export interface TransactionContainer {
         context: UserContext;
+        emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
     }
     export interface ObservableObject {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

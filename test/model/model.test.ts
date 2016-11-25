@@ -15,7 +15,6 @@ async function testUser(): Promise<void> {
 
     let fullName = await user.fullName();
     assert.equal(fullName, 'John', 'Rules call ');
-
     await user.age.value(10.25);
     let age = await user.age.value();
     assert.equal(age, 10, 'Age set/get');
@@ -33,9 +32,11 @@ async function testUser(): Promise<void> {
     assert.equal(user.$states.fullName.isReadOnly, true, 'Init state (fullName.isReadOnly) from schema');
     assert.equal(user.$states.fullName.isHidden, false, 'Init state (fullName.isHidden) from schema');
 
+
 }
 
 async function testSales(): Promise<void> {
+    
     let transaction = new Transaction();
     let so = transaction.create<SalesOrder>(SalesOrder);
 

@@ -1,5 +1,5 @@
 import * as util from 'util';
-import { RULE_TRIGGERS } from '../consts/consts';
+import { EventType, EventInfo } from './interfaces';
 
 function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
     let res = [];
@@ -17,7 +17,7 @@ export class ModelManager {
         }
         return ModelManager.singleton;
     }
-    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {isCreate: boolean, isRestore: boolean}): T {
+    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: { isCreate: boolean, isRestore: boolean }): T {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value, options);
@@ -57,7 +57,7 @@ export class ModelManager {
         }
     }
 
-    public addRule(classOfInstance: any, ruleType: string, rule: any, ruleParams?: any) {
+    public addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any) {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return;
@@ -68,15 +68,27 @@ export class ModelManager {
             that._mapRules.set(rule, ri);
         }
 
-        if (ruleType === RULE_TRIGGERS.PROP_CHANGED) {
+        if (ruleType === EventType.propChanged) {
             ruleParams && ruleParams.forEach(propName => {
                 ci.propChangeRules[propName] = ci.propChangeRules[propName] || [];
                 ci.propChangeRules[propName].push(ri);
             });
-        } else if (ruleType === RULE_TRIGGERS.INIT) {
+        } else if (ruleType === EventType.init) {
             ci.initRules.push(ri);
         }
 
+    }
+}
+
+export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+    let mm = new ModelManager();
+    let propName = args[0];
+    let rules = mm.rulesForPropChange(classOfInstance, propName);
+    if (rules.length) {
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule(instance, eventInfo);
+        }
     }
 }
 

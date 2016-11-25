@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as promises from '../utils/promises';
 import { ModelManager } from './model-manager';
-import { RULE_TRIGGERS } from '../consts/consts';
+import { EventType } from './interfaces';
 
 
 //Title decorator
@@ -20,7 +20,7 @@ export function title(targetClass: any, title: string, description?: string) {
 export function propChanged(targetClass: any, ...properties: string[]) {
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = new ModelManager();
-        mm.addRule(targetClass, RULE_TRIGGERS.PROP_CHANGED, target[propertyKey], properties);
+        mm.addRule(targetClass, EventType.propChanged, target[propertyKey], properties);
     }
 }
 
@@ -29,7 +29,7 @@ export function init(targetClass: any) {
     let mm = new ModelManager();
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = new ModelManager();
-        mm.addRule(targetClass, RULE_TRIGGERS.INIT, target[propertyKey]);
+        mm.addRule(targetClass, EventType.init, target[propertyKey]);
     }
 }
 

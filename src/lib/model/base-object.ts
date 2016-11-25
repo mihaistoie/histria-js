@@ -1,49 +1,17 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer } from './interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';
-import { RULE_TRIGGERS } from '../consts/consts';
 
 import { IntegerValue, NumberValue } from './number';
 import { InstanceErrors } from './instance-errors'
 import { InstanceState } from './instance-state'
+import { EventInfoStack } from './event-stack'
 
 import * as helper from '../utils/helper';
 import * as util from 'util';
 
-class InstanceEventInfo implements EventInfo {
-	private _stack: any[];
-	constructor() {
-		let that = this;
-		that._stack = [];
-	}
-
-	public push(info: any): void {
-		let that = this;
-		that._stack.push(info);
-	}
-	public pop(): void {
-		let that = this;
-		that._stack.pop();
-	}
-	public isTriggeredBy(propertyName: string, target: any): boolean {
-		let that = this;
-		let path = target.getPath();
-		let fp = path ? path + '.' + propertyName : propertyName;
-		for (let i = 0, len = that._stack.length; i < len; i++) {
-			let info = that._stack[i];
-			if (info && info.eventType === RULE_TRIGGERS.PROP_CHANGED) {
-				if (fp === info.path) return true;
-			}
-		}
-		return false;
-	}
-	public destroy() {
-		let that = this;
-		that._stack = null;
-	}
-}
 
 
 
@@ -51,14 +19,14 @@ class InstanceEventInfo implements EventInfo {
 export class Instance implements ObservableObject {
 	//used only in root
 	protected _status: ObjectStatus;
-	protected _transaction: any;
+	protected _transaction: TransactionContainer;
 	//when set _parent reset _rootCache
 	protected _parent: ObservableObject;
 	protected _parentArray: ObservableArray;
 	protected _children: any;
 	protected _schema: any;
 	protected _rootCache: ObservableObject;
-	private _eventInfo: InstanceEventInfo;
+	private _eventInfo: EventInfo;
 	protected _model: any;
 	protected _states: InstanceState;
 	protected _errors: InstanceErrors;
@@ -69,7 +37,7 @@ export class Instance implements ObservableObject {
 		let root = <Instance>that.getRoot();
 		if (root === this) {
 			if (!that._eventInfo)
-				that._eventInfo = new InstanceEventInfo();
+				that._eventInfo = new EventInfoStack();
 			return that._eventInfo;
 		} else
 			return root._getEventInfo();
@@ -116,16 +84,18 @@ export class Instance implements ObservableObject {
 	protected createErrors() { }
 	protected createStates() { }
 
-	private _canExecutePropChangeRules() {
+	private _isIdle(): boolean {
 		let that = this;
 		let root = <Instance>that.getRoot();
 		return root._status === ObjectStatus.idle;
 	}
 
-	private _canExecuteValidateRules() {
-		let that = this;
-		let root = <Instance>that.getRoot();
-		return root._status === ObjectStatus.idle;
+	private _emitPropChanged(): boolean {
+		return this._isIdle();
+	}
+
+	private _emitValidateProperty(): boolean {
+		return this._isIdle();
 	}
 
 
@@ -176,7 +146,7 @@ export class Instance implements ObservableObject {
 		let isSet = (value !== undefined), isComplex = false, propPath;
 		let eventInfo = that._getEventInfo();
 		if (isSet)
-			eventInfo.push({ path: that.getPath(propName), eventType: RULE_TRIGGERS.PROP_CHANGED });
+			eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
 		try {
 			let propSchema = that._schema.properties[propName];
 			let mm = new ModelManager();
@@ -189,10 +159,10 @@ export class Instance implements ObservableObject {
 						throw new ApplicationError(util.format('Can\'t set "%s", because is an array.', propName));
 					try {
 						// clear errors for propName
+						// I don't now what to do 
 						that._errors[propName].error = '';
 						that._children[propName] = value;
-						if (that._canExecuteValidateRules()) {
-						}
+
 					} catch (ex) {
 						that._errors[propName].addException(ex);
 					}
@@ -201,22 +171,17 @@ export class Instance implements ObservableObject {
 				if (isSet) {
 					// set
 					if (that._model[propName] !== value) {
+						let oldValue = that._model[propName];
 						that._model[propName] = value;
 						try {
 							// clear errors for propName
 							that._errors[propName].error = '';
-							// execute rules 
-							if (that._canExecuteValidateRules()) {
-							}
-							if (that._canExecutePropChangeRules()) {
-								let rules = mm.rulesForPropChange(that.constructor, propName);
-								if (rules.length) {
-									for (let i = 0, len = rules.length; i < len; i++) {
-										let rule = rules[i];
-										await rule(that, eventInfo);
-									}
-								}
-							}
+							// Validate rules 
+							if (that._emitValidateProperty())
+								await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, that._model[propName]);
+							// Proppagation rules
+							if (that._emitPropChanged())
+								await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, that._model[propName], oldValue);
 						} catch (ex) {
 							that._errors[propName].addException(ex);
 						}
@@ -235,6 +200,7 @@ export class Instance implements ObservableObject {
 		that._context = transaction.context;
 		that._status = ObjectStatus.idle;
 		that._propertyName = propertyName;
+		that._transaction = transaction;
 		that.init();
 		that._setModel(value);
 	}

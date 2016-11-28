@@ -3,42 +3,9 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { User } from './user';
 import { SalesOrder } from './salesorder';
-import * as urules from './rules/user-rules';
 import * as sorules from './rules/salesorder-rules';
 
-async function testUser(): Promise<void> {
-    let transaction = new Transaction();
-    let user = await transaction.create<User>(User);
-    await user.firstName('John');                   // user.firstName = 'John';
-
-    let fullName = await user.fullName();
-    assert.equal(fullName, 'John', 'Rules call ');
-    await user.age.value(10.25);
-    let age = await user.age.value();
-    assert.equal(age, 10, 'Age set/get');
-
-    await user.lastName('Doe');                     // user.lastName = 'Doe';
-    let fn = await user.firstName();                // fn = user.firstName;
-    let ln = await user.lastName();                 // ln = user.lastName;
-    fullName = await user.fullName();               // fullName = user.fullName;
-
-    assert.equal(fn, 'John', 'First Name set/get');
-    assert.equal(ln, 'Doe', 'Last Name set/get');
-    assert.equal(fullName, 'John DOE', 'Rules call');
-
-    assert.equal(user.$states.firstName.isMandatory, true, 'Init state (firstName.isMandatory) from schema');
-    assert.equal(user.$states.fullName.isReadOnly, true, 'Init state (fullName.isReadOnly) from schema');
-    assert.equal(user.$states.fullName.isHidden, false, 'Init state (fullName.isHidden) from schema');
-
-    user = await transaction.load<User>(User, { firstName: 'Albert', lastName: 'Camus' });
-    fullName = await user.fullName();
-    assert.equal(fullName, 'Albert CAMUS', 'Init rule called');
-
-
-
-}
 
 async function testSales(): Promise<void> {
 
@@ -103,23 +70,14 @@ async function testSales(): Promise<void> {
 }
 
 
-describe('Base Model Test', () => {
+describe('Sales Orders Test', () => {
     before(function (done) {
-        assert.equal(urules.test, 1, 'Rules Loaded');
         assert.equal(sorules.test, 1, 'Rules Loaded');
         loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
-    });
-    it('User test', function (done) {
-        testUser().then(function () {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        })
-
     });
     it('Sales Order test', function (done) {
         testSales().then(function () {

@@ -6,7 +6,7 @@ declare module 'histria-utils' {
     export { InstanceState } from 'histria-utils/lib/model/instance-state';
     export { ModelManager } from 'histria-utils/lib/model/model-manager';
     export { Transaction } from 'histria-utils/lib/factory/transaction';
-    export { propChanged, init, title, loadRules } from 'histria-utils/lib/model/rules';
+    export { propChanged, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
     export { ErrorState } from 'histria-utils/lib/model/error-state';
     export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
@@ -48,6 +48,9 @@ declare module 'histria-utils/lib/model/base-object' {
         modelState(propName: string): any;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
         afterCreated(): Promise<void>;
+        validate(options?: {
+            full: boolean;
+        }): Promise<void>;
         constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
             isRestore: boolean;
         });
@@ -84,13 +87,17 @@ declare module 'histria-utils/lib/model/model-manager' {
         }): T;
         registerClass(constructor: any, nameSpace: string): void;
         rulesForInit(classOfInstance: any): any[];
+        rulesObjValidate(classOfInstance: any): any[];
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
+        rulesForPropValidate(classOfInstance: any, propertyName: string): any[];
         setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
         addValidateRule(classOfInstance: any, rule: any, ruleParams?: any): void;
         addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
     }
     export function initRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
     export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
+    export function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
+    export function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
@@ -204,6 +211,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         propChanged = 0,
         propValidate = 1,
         init = 2,
+        objValidate = 3,
     }
     export enum MessageServerity {
         error = 0,

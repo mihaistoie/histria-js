@@ -37,6 +37,9 @@ export declare class Instance implements ObservableObject {
     modelState(propName: string): any;
     getOrSetProperty(propName: string, value?: any): Promise<any>;
     afterCreated(): Promise<void>;
+    validate(options?: {
+        full: boolean;
+    }): Promise<void>;
     constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
         isRestore: boolean;
     });

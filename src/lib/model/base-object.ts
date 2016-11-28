@@ -218,6 +218,21 @@ export class Instance implements ObservableObject {
 		}
 	}
 
+	public async validate(options?: { full: boolean }) {
+		let that = this;
+		let eventInfo = that._getEventInfo();
+		if (that.status === ObjectStatus.idle) {
+			if (options && options.full) {
+				//TODO validate all properties
+			}
+			try {
+				await that._transaction.emitInstanceEvent(EventType.objValidate, eventInfo, that.constructor, that);
+			} catch (ex) {
+				that._errors['$'].addException(ex);
+			}
+		}
+	}
+
 
 	constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isRestore: boolean }) {
 		let that = this;

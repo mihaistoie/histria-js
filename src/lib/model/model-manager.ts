@@ -17,7 +17,7 @@ export class ModelManager {
         }
         return ModelManager.singleton;
     }
-    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {isRestore: boolean }): T {
+    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: { isRestore: boolean }): T {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value, options);
@@ -32,11 +32,13 @@ export class ModelManager {
             factory: constructor,
             nameSpace: nameSpace,
             propChangeRules: {},
+            propValidateRules: {},
+            objValidateRules: [],
             initRules: [],
         };
         that._mapByClass.set(constructor, ci);
     }
-    
+
     public rulesForInit(classOfInstance: any): any[] {
         let that = this;
         let res = [];
@@ -44,6 +46,16 @@ export class ModelManager {
         if (!ci) return res;
         if (ci.initRules) {
             return _activeRules(ci.initRules);
+        }
+        return res;
+    }
+    public rulesObjValidate(classOfInstance: any): any[] {
+        let that = this;
+        let res = [];
+        let ci = that._mapByClass.get(classOfInstance);
+        if (!ci) return res;
+        if (ci.objValidateRules) {
+            return _activeRules(ci.objValidateRules);
         }
         return res;
     }
@@ -57,6 +69,17 @@ export class ModelManager {
         }
         return res;
     }
+    public rulesForPropValidate(classOfInstance: any, propertyName: string): any[] {
+        let that = this;
+        let res = [];
+        let ci = that._mapByClass.get(classOfInstance);
+        if (!ci) return res;
+        if (ci.propValidateRules[propertyName]) {
+            return _activeRules(ci.propValidateRules[propertyName]);
+        }
+        return res;
+    }
+
     public setTitle(classOfInstance: any, method: any, title: string, description?: string) {
         let that = this;
         that._mapRules = that._mapRules || new Map();
@@ -68,7 +91,12 @@ export class ModelManager {
     }
 
     public addValidateRule(classOfInstance: any, rule: any, ruleParams?: any) {
+        if (ruleParams && ruleParams.length)
+            this.addRule(classOfInstance, EventType.propValidate, rule, ruleParams)
+        else
+            this.addRule(classOfInstance, EventType.objValidate, rule)
     }
+
 
     public addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any) {
         let that = this;
@@ -88,8 +116,14 @@ export class ModelManager {
             });
         } else if (ruleType === EventType.init) {
             ci.initRules.push(ri);
+        } else if (ruleType === EventType.propValidate) {
+            ruleParams && ruleParams.forEach(propName => {
+                ci.propValidateRules[propName] = ci.propValidateRules[propName] || [];
+                ci.propValidateRules[propName].push(ri);
+            });
+        } else if (ruleType === EventType.objValidate) {
+            ci.objValidateRules.push(ri);
         }
-
     }
 }
 
@@ -118,4 +152,34 @@ export async function propagationRules(eventInfo: EventInfo, classOfInstance: an
         }
     }
 }
+
+
+export async function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+    let mm = new ModelManager();
+    let propName = args[0];
+    let rules = mm.rulesForPropValidate(classOfInstance, propName);
+    if (rules.length) {
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule(instance, eventInfo);
+        }
+    }
+}
+
+
+
+export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+    let mm = new ModelManager();
+    let rules = mm.rulesObjValidate(classOfInstance);
+    if (rules && rules.length) {
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule(instance, eventInfo);
+        }
+    }
+}
+
+
+
+
 

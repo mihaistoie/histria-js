@@ -51,8 +51,8 @@ export class ErrorState {
     public hasErrors(): boolean {
         return this._hasMessages(MessageServerity.error);
     }
-    public addException(e : Error): void {
-        this.error = e.message; 
+    public addException(e: Error): void {
+        this.error = e.message;
     }
 
     public destroy() {

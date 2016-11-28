@@ -1,5 +1,5 @@
 import { User } from '../user';
-import { propChanged, init, title } from '../../../src/index';
+import { propChanged, init, title, validate } from '../../../src/index';
 
 
 export class UserRules {
@@ -18,6 +18,21 @@ export class UserRules {
         if (!user.isNew) {
             await UserRules.updateFullName(user, eventInfo);
         }
+    }
+
+    @validate(User)
+    static async check(user: User, eventInfo: any): Promise<void> {
+        let fn = await user.firstName();
+        let ln = await user.lastName();
+        if (fn === ln) {
+            throw new Error('FirstName === LastName')
+        }
+    }
+    @validate(User, 'lastName')
+    static async checkLastName(user: User, eventInfo: any): Promise<void> {
+        let ln = await user.lastName();
+        if (ln && ln.charAt(0) === '$')
+            user.$errors.lastName.error = 'Last Name starts with $.';
     }
 }
 

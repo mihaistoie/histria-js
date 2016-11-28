@@ -7,6 +7,7 @@ export declare enum EventType {
     propChanged = 0,
     propValidate = 1,
     init = 2,
+    objValidate = 3,
 }
 export declare enum MessageServerity {
     error = 0,

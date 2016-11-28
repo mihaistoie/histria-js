@@ -1,6 +1,6 @@
 import * as util from 'util';
 import * as uuid from 'node-uuid';
-import { ModelManager, propagationRules, initRules } from '../model/model-manager';
+import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules } from '../model/model-manager';
 import { validateAfterPropChanged } from '../model/validation';
 
 import { TranContext } from './user-context';
@@ -17,6 +17,8 @@ export class Transaction implements TransactionContainer {
         that._subscribers = new Map();
         that.subscribe(EventType.propChanged, propagationRules);
         that.subscribe(EventType.propValidate, validateAfterPropChanged);
+        that.subscribe(EventType.propValidate, propValidateRules);
+        that.subscribe(EventType.objValidate, objValidateRules);
         that.subscribe(EventType.init, initRules);
     }
 

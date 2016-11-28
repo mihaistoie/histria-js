@@ -14,6 +14,7 @@ exports.propChanged = rules_1.propChanged;
 exports.init = rules_1.init;
 exports.title = rules_1.title;
 exports.loadRules = rules_1.loadRules;
+exports.validate = rules_1.validate;
 var error_state_1 = require('./lib/model/error-state');
 exports.ErrorState = error_state_1.ErrorState;
 var state_1 = require('./lib/model/state');

@@ -28,7 +28,6 @@ export function propChanged(targetClass: any, ...properties: string[]) {
 export function validate(targetClass: any, ...properties: string[]) {
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = new ModelManager();
-        properties = properties || [];
         mm.addValidateRule(targetClass, target[propertyKey], properties);
     }
 }

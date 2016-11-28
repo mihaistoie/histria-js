@@ -30,6 +30,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _propertyName: string;
         protected _getEventInfo(): EventInfo;
         readonly context: UserContext;
+        readonly isNew: boolean;
         getPath(propName?: string): string;
         getRoot(): ObservableObject;
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -38,6 +39,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _setModel(value: any): void;
         protected createErrors(): void;
         protected createStates(): void;
+        status: ObjectStatus;
         getSchema(propName?: string): any;
         modelErrors(propName: string): {
             message: string;
@@ -45,8 +47,8 @@ declare module 'histria-utils/lib/model/base-object' {
         }[];
         modelState(propName: string): any;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
+        afterCreated(): Promise<void>;
         constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
-            isCreate: boolean;
             isRestore: boolean;
         });
         destroy(): void;
@@ -78,15 +80,16 @@ declare module 'histria-utils/lib/model/model-manager' {
     export class ModelManager {
         constructor();
         createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {
-            isCreate: boolean;
             isRestore: boolean;
         }): T;
         registerClass(constructor: any, nameSpace: string): void;
+        rulesForInit(classOfInstance: any): any[];
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
         setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
         addValidateRule(classOfInstance: any, rule: any, ruleParams?: any): void;
         addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
     }
+    export function initRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
     export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
 }
 
@@ -195,7 +198,7 @@ declare module 'histria-utils/lib/model/interfaces' {
     export enum ObjectStatus {
         idle = 0,
         restoring = 1,
-        loading = 2,
+        creating = 2,
     }
     export enum EventType {
         propChanged = 0,

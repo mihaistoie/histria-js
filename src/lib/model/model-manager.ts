@@ -17,7 +17,7 @@ export class ModelManager {
         }
         return ModelManager.singleton;
     }
-    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: { isCreate: boolean, isRestore: boolean }): T {
+    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {isRestore: boolean }): T {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value, options);
@@ -33,9 +33,19 @@ export class ModelManager {
             nameSpace: nameSpace,
             propChangeRules: {},
             initRules: [],
-
         };
         that._mapByClass.set(constructor, ci);
+    }
+    
+    public rulesForInit(classOfInstance: any): any[] {
+        let that = this;
+        let res = [];
+        let ci = that._mapByClass.get(classOfInstance);
+        if (!ci) return res;
+        if (ci.initRules) {
+            return _activeRules(ci.initRules);
+        }
+        return res;
     }
     public rulesForPropChange(classOfInstance: any, propertyName: string): any[] {
         let that = this;
@@ -82,6 +92,20 @@ export class ModelManager {
 
     }
 }
+
+
+
+export async function initRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+    let mm = new ModelManager();
+    let rules = mm.rulesForInit(classOfInstance);
+    if (rules.length) {
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule(instance, eventInfo);
+        }
+    }
+}
+
 
 export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
     let mm = new ModelManager();

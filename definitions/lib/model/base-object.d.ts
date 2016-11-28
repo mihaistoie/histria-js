@@ -10,6 +10,7 @@ export declare class Instance implements ObservableObject {
     protected _schema: any;
     protected _rootCache: ObservableObject;
     private _eventInfo;
+    private _afterCreateCalled;
     protected _model: any;
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
@@ -17,6 +18,7 @@ export declare class Instance implements ObservableObject {
     private _context;
     protected _getEventInfo(): EventInfo;
     readonly context: UserContext;
+    readonly isNew: boolean;
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -25,9 +27,7 @@ export declare class Instance implements ObservableObject {
     protected _setModel(value: any): void;
     protected createErrors(): void;
     protected createStates(): void;
-    private _isIdle();
-    private _emitPropChanged();
-    private _emitValidateProperty();
+    status: ObjectStatus;
     getSchema(propName?: string): any;
     private _createProperties();
     modelErrors(propName: string): {
@@ -36,8 +36,8 @@ export declare class Instance implements ObservableObject {
     }[];
     modelState(propName: string): any;
     getOrSetProperty(propName: string, value?: any): Promise<any>;
+    afterCreated(): Promise<void>;
     constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
-        isCreate: boolean;
         isRestore: boolean;
     });
     destroy(): void;

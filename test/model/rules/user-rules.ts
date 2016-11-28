@@ -4,7 +4,6 @@ import { propChanged, init, title } from '../../../src/index';
 
 export class UserRules {
     @propChanged(User, 'firstName', 'lastName')
-    @init(User)
     @title(User, 'Calculate:  FullName = FirstName + LastName')
     static async updateFullName(user: User, eventInfo: any): Promise<void> {
         let fn = await user.firstName();
@@ -13,6 +12,12 @@ export class UserRules {
         if (fn) fullName.push(fn);
         if (ln) fullName.push(ln.toUpperCase());
         await user.fullName(fullName.join(' '));
+    }
+    @init(User)
+    static async init(user: User, eventInfo: any): Promise<void> {
+        if (!user.isNew) {
+            await UserRules.updateFullName(user, eventInfo);
+        }
     }
 }
 

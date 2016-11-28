@@ -27,6 +27,7 @@ export class Instance implements ObservableObject {
 	protected _schema: any;
 	protected _rootCache: ObservableObject;
 	private _eventInfo: EventInfo;
+	private _afterCreateCalled: boolean;
 	protected _model: any;
 	protected _states: InstanceState;
 	protected _errors: InstanceErrors;
@@ -45,6 +46,10 @@ export class Instance implements ObservableObject {
 
 	public get context(): UserContext {
 		return this._context;
+	}
+
+	public get isNew(): boolean {
+		return this._model.isNew === true;
 	}
 
 	public getPath(propName?: string): string {
@@ -84,19 +89,18 @@ export class Instance implements ObservableObject {
 	protected createErrors() { }
 	protected createStates() { }
 
-	private _isIdle(): boolean {
+	public get status(): ObjectStatus {
 		let that = this;
 		let root = <Instance>that.getRoot();
-		return root._status === ObjectStatus.idle;
+		return root._status;
+	}
+	public set status(value: ObjectStatus) {
+		let that = this;
+		let root = <Instance>that.getRoot();
+		root._status = value;
 	}
 
-	private _emitPropChanged(): boolean {
-		return this._isIdle();
-	}
 
-	private _emitValidateProperty(): boolean {
-		return this._isIdle();
-	}
 	public getSchema(propName?: string): any {
 		let that = this;
 		if (!propName || propName === '$') return that._schema;
@@ -182,10 +186,10 @@ export class Instance implements ObservableObject {
 							// clear errors for propName
 							that._errors[propName].error = '';
 							// Validate rules 
-							if (that._emitValidateProperty())
+							if (that.status === ObjectStatus.idle)
 								await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, that._model[propName]);
 							// Proppagation rules
-							if (that._emitPropChanged())
+							if (that.status === ObjectStatus.idle)
 								await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, that._model[propName], oldValue);
 						} catch (ex) {
 							that._errors[propName].addException(ex);
@@ -198,12 +202,29 @@ export class Instance implements ObservableObject {
 				eventInfo.pop()
 		}
 		return isComplex ? that._children[propName] : that._model[propName];
-
 	}
-	constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isCreate: boolean, isRestore: boolean }) {
+
+	public async afterCreated() {
+		let that = this;
+		if (that._afterCreateCalled) return;
+		that._afterCreateCalled = true;
+		let eventInfo = that._getEventInfo();
+		try {
+			if (that.status === ObjectStatus.creating) {
+				await that._transaction.emitInstanceEvent(EventType.init, eventInfo, that.constructor, that);
+			}
+		} finally {
+			that.status = ObjectStatus.idle;
+		}
+	}
+
+
+	constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isRestore: boolean }) {
 		let that = this;
 		that._context = transaction.context;
-		that._status = ObjectStatus.idle;
+		that._parent = parent;
+		that._parentArray = parentArray;
+		that.status = options.isRestore ? ObjectStatus.restoring : ObjectStatus.creating;
 		that._propertyName = propertyName;
 		that._transaction = transaction;
 		that.init();

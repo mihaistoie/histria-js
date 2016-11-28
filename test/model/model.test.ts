@@ -32,11 +32,16 @@ async function testUser(): Promise<void> {
     assert.equal(user.$states.fullName.isReadOnly, true, 'Init state (fullName.isReadOnly) from schema');
     assert.equal(user.$states.fullName.isHidden, false, 'Init state (fullName.isHidden) from schema');
 
+    user = await transaction.load<User>(User, { firstName: 'Albert', lastName: 'Camus' });
+    fullName = await user.fullName();
+    assert.equal(fullName, 'Albert CAMUS', 'Init rule called');
+
+
 
 }
 
 async function testSales(): Promise<void> {
-    
+
     let transaction = new Transaction();
     let so = await transaction.create<SalesOrder>(SalesOrder);
 
@@ -62,7 +67,7 @@ async function testSales(): Promise<void> {
     vat = await so.vat.value();
     ga = await so.grossAmount.value();
 
-    
+
 
     assert.equal(na, 276.61, 'NetAmount after set Vat');
     assert.equal(vat, 53.39, 'Vat after set Vat');
@@ -84,13 +89,13 @@ async function testSales(): Promise<void> {
     na = await so.netAmount.value();
     assert.equal(na, 172.7, 'NetAmount after set Vat');
 
-    
+
     assert.equal(so.$errors.netAmount.error, '', 'No error');
     so.$states.netAmount.maximum = 1000;
     await so.netAmount.value(2000);
     //so.$errors.netAmount.error === 'Net Amount (excluding VAT)' cannot exceed 1000.0
     assert.notEqual(so.$errors.netAmount.error, '', 'Has error ');
-    
+
 
     await so.netAmount.value(920);
     assert.equal(so.$errors.netAmount.error, '', 'No error');

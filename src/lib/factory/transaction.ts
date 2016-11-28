@@ -1,6 +1,6 @@
 import * as util from 'util';
 import * as uuid from 'node-uuid';
-import { ModelManager, propagationRules } from '../model/model-manager';
+import { ModelManager, propagationRules, initRules } from '../model/model-manager';
 import { validateAfterPropChanged } from '../model/validation';
 
 import { TranContext } from './user-context';
@@ -17,6 +17,7 @@ export class Transaction implements TransactionContainer {
         that._subscribers = new Map();
         that.subscribe(EventType.propChanged, propagationRules);
         that.subscribe(EventType.propValidate, validateAfterPropChanged);
+        that.subscribe(EventType.init, initRules);
     }
 
     public get context(): UserContext {
@@ -43,18 +44,21 @@ export class Transaction implements TransactionContainer {
 
     public async create<T>(classOfInstance: any): Promise<T> {
         let mm = new ModelManager();
-        let instance = mm.createInstance<T>(classOfInstance, this, {}, { isCreate: true, isRestore: true });
+        let instance: any = mm.createInstance<T>(classOfInstance, this, { $isNew: true }, { isRestore: true });
+        await instance.afterCreated();
         return instance;
     }
     public async restore<T>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
-        let instance = mm.createInstance<T>(classOfInstance, this, data, { isCreate: true, isRestore: true });
-
+        data = data || {};
+        let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: true });
+        await instance.afterCreated();
         return instance;
     }
     public async load<T>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
-        let instance = mm.createInstance<T>(classOfInstance, this, data, { isCreate: false, isRestore: false });
+        let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: false });
+        await instance.afterCreated();
         return instance;
     }
     public destroy() {

@@ -9,8 +9,15 @@ function _tab(ident: number) {
     return res.join('');
 }
 
-export function generate(code: string[], schema: any, className: string, baseClass: string, pathToLib?: string) {
+export function generate(codeByClass: any, schema: any, baseClass: string, pathToLib?: string) {
+    let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
     schema.nameSpace = schema.nameSpace || className;
+    let code = [];
+    let cc = {}
+    codeByClass[schema.name.toLowerCase()] = {
+        code: code,
+        depends: []
+    }
 
     pathToLib = pathToLib || 'histria--utils'
     code.push('import {');
@@ -118,7 +125,7 @@ export function generate(code: string[], schema: any, className: string, baseCla
     code.push(_tab(2) + 'let that = this;');
     code.push(_tab(2) + util.format('that._errors = new %sErrors(that, that._schema);', className, ));
     code.push(_tab(1) + '}');
-    
+
 
     Object.keys(schema.properties || {}).forEach(propName => {
         let propSchema = schema.properties[propName];

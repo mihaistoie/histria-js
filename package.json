@@ -8,7 +8,7 @@
     "@types/assert": "latest",
     "@types/mocha": "latest",
     "@types/node": "latest",
-    "@types/node-uuid": "latest",
+    "@types/uuid": "latest",
     "ts-node": "latest",
     "del": "latest",
     "dts-bundle": "latest",
@@ -22,7 +22,7 @@
     "typescript": "2.x.x"
   },
   "dependencies": {
-    "node-uuid": "latest"
+    "uuid": "latest"
   },
   "typescript": {
     "definition": "definitions/histria-utils.d.ts"

@@ -1,5 +1,5 @@
 import * as util from 'util';
-import * as uuid from 'node-uuid';
+import * as uuid from 'uuid';
 import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules } from '../model/model-manager';
 import { validateAfterPropChanged } from '../model/validation';
 

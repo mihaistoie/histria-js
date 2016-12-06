@@ -9,6 +9,7 @@ import * as gen from '../../src/lib/generators/classgen';
 describe('Generators', () => {
     it('Merge', function () {
         let schema: any = {
+            name: 'user',
             "type": "object",
             "nameSpace": "users",
             "properties": {
@@ -41,10 +42,11 @@ describe('Generators', () => {
         };
 
 
-        let code = [];
-        gen.generate(code, schema, 'User', 'Instance', '../../../src/index');
-        fs.writeFileSync(path.join(__dirname, 'model', 'user.ts'), code.join('\n'))
+        let code: any = {};
+        gen.generate(code, schema, 'Instance', '../../../src/index');
+        fs.writeFileSync(path.join(__dirname, 'model', 'user.ts'), code.user.code.join('\n'))
         schema = {
+            name: 'salesOrder',
             "type": "object",
             "nameSpace": "salesorder",
             "properties": {
@@ -80,9 +82,10 @@ describe('Generators', () => {
         };
 
 
-        code = [];
-        gen.generate(code, schema, 'SalesOrder', 'Instance', '../../../src/index');
-        fs.writeFileSync(path.join(__dirname, 'model', 'salesorder.ts'), code.join('\n'))
+        code = {};
+        gen.generate(code, schema, 'Instance', '../../../src/index');
+        
+        fs.writeFileSync(path.join(__dirname, 'model', 'salesorder.ts'), code.salesorder.code.join('\n'))
 
     });
 

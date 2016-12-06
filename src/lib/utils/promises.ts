@@ -24,9 +24,39 @@ function readdirPromise(folder: string): Promise<string[]> {
     });
 }
 
+function readFilePromise(fileName: string): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+        nfs.readFile(fileName, function (err, data) {
+            if (err)
+                return reject(err);
+            else
+                return resolve(data);
+        });
+
+    });
+}
+
+
+function writeFilePromise(fileName: string, data: any): Promise<void> {
+    return new Promise<Buffer>((resolve, reject) => {
+        nfs.writeFile(fileName, data, function (err) {
+            if (err)
+                return reject(err);
+            else
+                return resolve();
+        });
+
+    });
+}
+
+
+
+
 
 export var fs = {
     lstat: lstatPromise,
-    readdir: readdirPromise
+    readdir: readdirPromise,
+    readFile: readFilePromise,
+    writeFile: writeFilePromise
 }
 

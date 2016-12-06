@@ -30,3 +30,5 @@ exports.RefObjectState = state_1.RefObjectState;
 var number_1 = require('./lib/model/number');
 exports.IntegerValue = number_1.IntegerValue;
 exports.NumberValue = number_1.NumberValue;
+var promises_1 = require('./lib/utils/promises');
+exports.fs = promises_1.fs;

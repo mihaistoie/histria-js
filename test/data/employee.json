@@ -29,8 +29,7 @@
             "title": "Department",
             "refEntity": "department.json",
             "multiplicity": "one"
-            //"departmentCode": "code", 
-            //"key": "code",
+           
         }
     },
     "definitions": {

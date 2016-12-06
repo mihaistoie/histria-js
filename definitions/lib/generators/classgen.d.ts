@@ -1,1 +1,1 @@
-export declare function generate(code: string[], schema: any, className: string, baseClass: string, pathToLib?: string): void;
+export declare function generate(codeByClass: any, schema: any, baseClass: string, pathToLib?: string): void;

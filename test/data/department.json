@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "nameSpace": "employee",
+    "name": "department",
+    "properties": {
+        "code": {
+            "type": "string",
+            "title": "Code"
+        },
+        "title": {
+            "type": "string",
+            "title": "Title"
+        }
+    }
+}

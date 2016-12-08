@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { ObservableObject } from './interfaces';
 export declare class ErrorState {
     private _errorModel;

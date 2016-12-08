@@ -38,12 +38,12 @@ function readFilePromise(fileName: string): Promise<Buffer> {
 
 
 function writeFilePromise(fileName: string, data: any): Promise<void> {
-    return new Promise<Buffer>((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
         nfs.writeFile(fileName, data, function (err) {
             if (err)
                 return reject(err);
             else
-                return resolve();
+                return resolve(data);
         });
 
     });

@@ -51,17 +51,14 @@ export interface ObservableObject {
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
     context: UserContext;
+    destroy();
 }
 
 export interface ObservableArray {
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     getPath(item?: ObservableObject): string;
-    getRoot(): ObservableObject
+    getRoot(): ObservableObject;
+    destroy();
 }
 
-
-export interface ObservableArray {
-    parent: ObservableObject;
-    propertyName: string;
-}

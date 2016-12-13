@@ -35,6 +35,7 @@ declare module 'histria-utils/lib/model/base-object' {
         readonly context: UserContext;
         readonly isNew: boolean;
         getPath(propName?: string): string;
+        readonly propertyName: string;
         getRoot(): ObservableObject;
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -258,16 +259,14 @@ declare module 'histria-utils/lib/model/interfaces' {
         getPath(propName?: string): string;
         getRoot(): ObservableObject;
         context: UserContext;
+        destroy(): any;
     }
     export interface ObservableArray {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
         getPath(item?: ObservableObject): string;
         getRoot(): ObservableObject;
-    }
-    export interface ObservableArray {
-        parent: ObservableObject;
-        propertyName: string;
+        destroy(): any;
     }
 }
 

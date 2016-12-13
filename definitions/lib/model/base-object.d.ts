@@ -20,6 +20,7 @@ export declare class Instance implements ObservableObject {
     readonly context: UserContext;
     readonly isNew: boolean;
     getPath(propName?: string): string;
+    readonly propertyName: string;
     getRoot(): ObservableObject;
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

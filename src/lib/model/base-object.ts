@@ -58,10 +58,14 @@ export class Instance implements ObservableObject {
 		return propName ? (root ? (root + '.' + propName) : propName) : root;
 	}
 
+	public get propertyName(): string {
+		return this._propertyName;
+	}
+
 	public getRoot(): ObservableObject {
 		let that = this;
 		if (!that._rootCache)
-			that._rootCache = that._parent ? that._parent.getRoot() : that;
+			that._rootCache = that._parentArray ? that._parentArray.getRoot() : (that._parent ? that._parent.getRoot() : that);
 		return that._rootCache;
 	}
 

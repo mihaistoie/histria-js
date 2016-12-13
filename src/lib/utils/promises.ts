@@ -49,14 +49,11 @@ function writeFilePromise(fileName: string, data: any): Promise<void> {
     });
 }
 
-
-
-
-
 export var fs = {
     lstat: lstatPromise,
     readdir: readdirPromise,
     readFile: readFilePromise,
     writeFile: writeFilePromise
 }
+
 

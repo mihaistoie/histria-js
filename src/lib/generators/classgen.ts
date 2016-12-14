@@ -37,6 +37,7 @@ export function generate(codeByClass: any, schema: any, baseClass: string, pathT
         let propSchema = schema.properties[propName];
         if (schemaUtils.isHidden(propSchema)) return;
         let stype = schemaUtils.typeOfProperty(propSchema);
+        if (stype == JSONTYPES.array || stype == JSONTYPES.object) return;
         if (propSchema.enum) {
             code.push(_tab(1) + util.format('public get %s(): EnumState {', propName));
             code.push(_tab(2) + util.format('return this._states.%s;', propName));
@@ -63,30 +64,38 @@ export function generate(codeByClass: any, schema: any, baseClass: string, pathT
                     code.push(_tab(2) + util.format('return this._states.%s;', propName));
                     code.push(_tab(1) + '}');
                     break;
-                case JSONTYPES.array:
-                    break;
-                case JSONTYPES.object:
-                    break;
-                case JSONTYPES.refobject:
-                    code.push(_tab(1) + util.format('public get %s(): RefObjectState {', propName));
-                    code.push(_tab(2) + util.format('return this._states.%s;', propName));
-                    code.push(_tab(1) + '}');
-                    break;
-                case JSONTYPES.refarray:
-                    code.push(_tab(1) + util.format('public get %s(): RefArrayState {', propName));
+                case JSONTYPES.string:
+                    code.push(_tab(1) + util.format('public get %s(): StringState {', propName));
                     code.push(_tab(2) + util.format('return this._states.%s;', propName));
                     code.push(_tab(1) + '}');
                     break;
                 default:
-                    code.push(_tab(1) + util.format('public get %s(): StringState {', propName));
-                    code.push(_tab(2) + util.format('return this._states.%s;', propName));
-                    code.push(_tab(1) + '}');
                     break;
 
             }
         }
 
     });
+    Object.keys(schema.relations || {}).forEach(propName => {
+        /*               
+                 case JSONTYPES.array:
+                            break;
+                        case JSONTYPES.object:
+                            break;
+                        case JSONTYPES.refobject:
+                            code.push(_tab(1) + util.format('public get %s(): RefObjectState {', propName));
+                            code.push(_tab(2) + util.format('return this._states.%s;', propName));
+                            code.push(_tab(1) + '}');
+                            break;
+                        case JSONTYPES.refarray:
+                            code.push(_tab(1) + util.format('public get %s(): RefArrayState {', propName));
+                            code.push(_tab(2) + util.format('return this._states.%s;', propName));
+                            code.push(_tab(1) + '}');
+                            break;
+*/
+
+    });
+
     code.push('}');
 
     code.push('');
@@ -98,7 +107,9 @@ export function generate(codeByClass: any, schema: any, baseClass: string, pathT
     Object.keys(schema.properties || {}).forEach(propName => {
         let propSchema = schema.properties[propName];
         if (schemaUtils.isHidden(propSchema)) return;
-        code.push(_tab(1) + util.format('public get %s(): Error {', propName));
+        let stype = schemaUtils.typeOfProperty(propSchema);
+        if (stype == JSONTYPES.array || stype == JSONTYPES.object) return;
+        code.push(_tab(1) + util.format('public get %s(): ErrorState {', propName));
         code.push(_tab(2) + util.format('return this._messages.%s;', propName));
         code.push(_tab(1) + '}');
     });
@@ -131,6 +142,7 @@ export function generate(codeByClass: any, schema: any, baseClass: string, pathT
         let propSchema = schema.properties[propName];
         if (schemaUtils.isHidden(propSchema)) return;
         let stype = schemaUtils.typeOfProperty(propSchema);
+        if (stype == JSONTYPES.array || stype == JSONTYPES.object) return;
         switch (stype) {
             case JSONTYPES.string:
                 code.push(_tab(1) + util.format('public %s(value?: string): Promise<string> {', propName));

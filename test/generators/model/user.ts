@@ -56,16 +56,16 @@ export class UserErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
-	public get age(): Error {
+	public get age(): ErrorState {
 		return this._messages.age;
 	}
-	public get firstName(): Error {
+	public get firstName(): ErrorState {
 		return this._messages.firstName;
 	}
-	public get lastName(): Error {
+	public get lastName(): ErrorState {
 		return this._messages.lastName;
 	}
-	public get fullName(): Error {
+	public get fullName(): ErrorState {
 		return this._messages.fullName;
 	}
 }

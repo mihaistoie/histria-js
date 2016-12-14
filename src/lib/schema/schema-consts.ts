@@ -6,9 +6,7 @@ export const JSONTYPES =  {
     array: 'array',
     // extended
     date: 'date',
-    datetime: 'date-time',
-    refobject: 'reference/object',
-    refarray: 'reference/array'
+    datetime: 'date-time'
 }
 
 export const JSONFORMATS =  {

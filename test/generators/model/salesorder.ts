@@ -59,16 +59,16 @@ export class SalesOrderErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
-	public get ruleCount(): Error {
+	public get ruleCount(): ErrorState {
 		return this._messages.ruleCount;
 	}
-	public get netAmount(): Error {
+	public get netAmount(): ErrorState {
 		return this._messages.netAmount;
 	}
-	public get vat(): Error {
+	public get vat(): ErrorState {
 		return this._messages.vat;
 	}
-	public get grossAmount(): Error {
+	public get grossAmount(): ErrorState {
 		return this._messages.grossAmount;
 	}
 }

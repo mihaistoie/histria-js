@@ -112,14 +112,6 @@ export function typeOfProperty(propSchema: { type?: string, format?: string, ref
                 return JSONTYPES.datetime;
         }
     }
-    if (isComplex(propSchema) && propSchema.reference) {
-        if (isArray(propSchema))
-            return JSONTYPES.refarray;
-        else
-            return JSONTYPES.refobject;
-
-
-    }
     return ps;
 }
 
@@ -130,14 +122,6 @@ export function isHidden(propSchema: any): boolean {
 
 export function isComplex(schema: any) {
     return (schema.type === JSONTYPES.array || schema.type === JSONTYPES.object);
-}
-
-export function isArray(schema: any) {
-    return (schema.type === JSONTYPES.array);
-}
-
-export function isComposition(schema: any) {
-    return isComplex(schema) && !schema.reference;
 }
 
 export function expandSchema(schema: any, model: any) {

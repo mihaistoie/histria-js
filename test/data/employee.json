@@ -30,7 +30,8 @@
             "type": "association",
             "model": "department.json",
             "multiplicity": "one",
-            "foreingkey": ["departmentCode"]
+            "localFields": ["departmentCode"],  
+            "foreignFields": ["code"]
         }
     },
     "definitions": {
@@ -59,5 +60,6 @@
                 }
             }
         }
+       
     }
 }

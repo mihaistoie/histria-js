@@ -5,6 +5,4 @@ export declare function typeOfProperty(propSchema: {
 }): string;
 export declare function isHidden(propSchema: any): boolean;
 export declare function isComplex(schema: any): boolean;
-export declare function isArray(schema: any): boolean;
-export declare function isComposition(schema: any): boolean;
 export declare function expandSchema(schema: any, model: any): void;

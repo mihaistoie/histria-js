@@ -6,6 +6,7 @@ import {
 
 const
 	SALESORDER_SCHEMA = {
+		"name": "salesOrder",
 		"type": "object",
 		"nameSpace": "salesorder",
 		"properties": {

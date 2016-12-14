@@ -156,48 +156,38 @@ export class Instance implements ObservableObject {
 
 	public async getOrSetProperty(propName: string, value?: any): Promise<any> {
 		let that = this;
-		let isSet = (value !== undefined), isComplex = false, propPath;
+		let isSet = (value !== undefined), propPath;
 		let eventInfo = that._getEventInfo();
 		if (isSet)
 			eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
 		try {
+			let rel = that._schema.relations ? that._schema.relations[propName] : null;
+			if (rel) {
+				//TODO traiter relations
+				return null;
+				//return that._children[propName]
+			}
+
 			let propSchema = that._schema.properties[propName];
 			let mm = new ModelManager();
 			if (!propSchema)
 				throw new ApplicationError(util.format('Property not found: "%s".', propName));
-			if (schemaUtils.isComplex(propSchema)) {
-				isComplex = true;
-				if (isSet) {
-					if (schemaUtils.isArray(propSchema))
-						throw new ApplicationError(util.format('Can\'t set "%s", because is an array.', propName));
+			if (isSet) {
+				// set
+				if (that._model[propName] !== value) {
+					let oldValue = that._model[propName];
+					that._model[propName] = value;
 					try {
 						// clear errors for propName
-						// I don't now what to do 
 						that._errors[propName].error = '';
-						that._children[propName] = value;
-
+						// Validate rules 
+						if (that.status === ObjectStatus.idle)
+							await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, that._model[propName]);
+						// Proppagation rules
+						if (that.status === ObjectStatus.idle)
+							await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, that._model[propName], oldValue);
 					} catch (ex) {
 						that._errors[propName].addException(ex);
-					}
-				}
-			} else {
-				if (isSet) {
-					// set
-					if (that._model[propName] !== value) {
-						let oldValue = that._model[propName];
-						that._model[propName] = value;
-						try {
-							// clear errors for propName
-							that._errors[propName].error = '';
-							// Validate rules 
-							if (that.status === ObjectStatus.idle)
-								await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, that._model[propName]);
-							// Proppagation rules
-							if (that.status === ObjectStatus.idle)
-								await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, that._model[propName], oldValue);
-						} catch (ex) {
-							that._errors[propName].addException(ex);
-						}
 					}
 				}
 			}
@@ -205,7 +195,7 @@ export class Instance implements ObservableObject {
 			if (isSet)
 				eventInfo.pop()
 		}
-		return isComplex ? that._children[propName] : that._model[propName];
+		return that._model[propName];
 	}
 
 	public async afterCreated() {

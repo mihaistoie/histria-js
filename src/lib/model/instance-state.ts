@@ -33,6 +33,15 @@ export class InstanceState {
                     case JSONTYPES.datetime:
                         that._states[propName] = new DateTimeState(that._parent, propName);
                         break;
+                    default:
+                        that._states[propName] = new StringState(that._parent, propName);
+                        break;
+                }
+            }
+
+        });
+        schema && schema.relations && Object.keys(schema.relations).forEach(propName => {
+/*
                     case JSONTYPES.array:
                         break;
                     case JSONTYPES.object:
@@ -43,12 +52,7 @@ export class InstanceState {
                     case JSONTYPES.refarray:
                         that._states[propName] = new RefArrayState(that._parent, propName);
                         break;
-                    default:
-                        that._states[propName] = new StringState(that._parent, propName);
-                        break;
-                }
-            }
-
+ */           
         });
 
     }

@@ -2,6 +2,7 @@
     "type": "object",
     "nameSpace": "employee",
     "name": "department",
+    "primaryKey": ["code"],
     "properties": {
         "code": {
             "type": "string",

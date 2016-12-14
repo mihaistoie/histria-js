@@ -1,9 +1,14 @@
 
 import * as util from 'util';
+import * as fs from 'fs';
+import * as path from 'path';
+
 
 
 import { JSONTYPES } from './schema-consts';
-import { merge } from '../utils/helper'
+import { merge, clone } from '../utils/helper'
+import * as promises from '../utils/promises'
+
 import { ApplicationError } from '../utils/errors'
 
 
@@ -38,13 +43,15 @@ function _load$ref(reference: string, model: any, definitions: any): any {
         if (!ref)
             throw new ApplicationError(util.format('Schema not found "%s". ($ref : "%s")', schemaId, reference));
         if (defName)
-            def = ref.definitions;
+            def = model[schemaId].definitions;
+        else
+            ref = clone(model[schemaId]);
     }
 
     if (defName && (!def || !def[defName]))
         throw new ApplicationError(util.format('Definition not found "%s". ($ref : "%s")', defName, reference));
     if (defName)
-        ref = def[defName];
+        ref =  clone(def[defName]);
     return ref;
 }
 
@@ -128,3 +135,41 @@ export function expandSchema(schema: any, model: any) {
     _expand$Ref(schema, [], model, schema.definitions);
 }
 
+async function loadJsonFromFile(jsonFile: string): Promise<any> {
+    let data = await promises.fs.readFile(jsonFile);
+    return JSON.parse(data.toString());
+}
+
+export async function loadModel(pathToModel: string, model: any): Promise<void> {
+    let files = await promises.fs.readdir(pathToModel);
+    let stats: fs.Stats[];
+    let folders = [];
+    stats = await Promise.all(files.map((fileName) => {
+        let fn = path.join(pathToModel, fileName);
+        return promises.fs.lstat(fn);
+    }));
+    let jsonFiles = [];
+    stats.forEach((stat, index) => {
+        let fn = path.join(pathToModel, files[index]);
+        if (stat.isDirectory()) return;
+        if (path.extname(fn) === '.json') {
+            jsonFiles.push(fn);
+        }
+    });
+    let modelByJsonFile = {};
+    let schemas =  await Promise.all(jsonFiles.map((fileName) => {
+        return loadJsonFromFile(fileName);
+    }));
+
+    jsonFiles.forEach((fileName, index)=>{
+        let p = path.parse(fileName);
+        let schema = schemas[index];
+        schema.name = schema.name || p.name; 
+        modelByJsonFile[p.name + '.' + p.ext] = schema;
+    });
+    schemas.forEach((schema) => {
+        _expand$Ref(schema, [], modelByJsonFile, schema.definitions);
+        model[schema.name] = schema;
+    });
+
+}

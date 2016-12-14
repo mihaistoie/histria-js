@@ -4,89 +4,35 @@ import * as path from 'path';
 import * as assert from 'assert';
 import * as mochaUtils from 'mocha';
 import * as gen from '../../src/lib/generators/classgen';
+import * as schemaUtils from '../../src/lib/schema/schema-utils';
 
+
+async function userAndSalesorder() {
+    let pathToModel = path.join(__dirname, 'model', 'schemas');
+    let model: any = {};
+    await schemaUtils.loadModel(pathToModel, model);
+
+    let code: any = {};
+    gen.generate(code, model, 'Instance', '../../../src/index');
+    Object.keys(code).forEach(name => {
+        fs.writeFileSync(path.join(__dirname, 'model', name + '.ts'), code[name].code.join('\n'))
+    });
+
+}
 
 describe('Generators', () => {
-    it('Merge', function () {
-        let schema: any = {
-            name: 'user',
-            "type": "object",
-            "nameSpace": "users",
-            "properties": {
-                "age": {
-                    "title": "Age",
-                    "type": "integer"
-                },
-                "firstName": {
-                    "title": "First Name",
-                    "type": "string"
-                },
-                "lastName": {
-                    "title": "Last Name",
-                    "type": "string"
-                },
-                "fullName": {
-                    "title": "Full Name",
-                    "type": "string"
-                }
 
-            },
-            "states": {
-                "firstName": {
-                    "isMandatory": true
-                },
-                "fullName": {
-                    "isReadOnly": true
-                }
-            }
-        };
+    it('Merge', function (done) {
+        userAndSalesorder().then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
 
-
-        let code: any = {};
-        gen.generate(code, schema, 'Instance', '../../../src/index');
-        fs.writeFileSync(path.join(__dirname, 'model', 'user.ts'), code.user.code.join('\n'))
-        schema = {
-            name: 'salesOrder',
-            "type": "object",
-            "nameSpace": "salesorder",
-            "properties": {
-                "ruleCount": {
-                    "title": "Rule call count",
-                    "type": "integer"
-                },
-                "netAmount": {
-                    "title": "Net Amount (excluding VAT)",
-                    "type": "number"
-                },
-                "vat": {
-                    "title": "VAT",
-                    "type": "number"
-                },
-                "grossAmount": {
-                    "title": "Gross Amount (including VAT)",
-                    "type": "number"
-                }
-            },
-            states: {
-                "netAmount": {
-                    "decimals": 2
-                },
-                "vat": {
-                    "decimals": 2
-                },
-                "grossAmount": {
-                    "decimals": 2
-                }
-
-            }
-        };
-
-
-        code = {};
-        gen.generate(code, schema, 'Instance', '../../../src/index');
-        
-        fs.writeFileSync(path.join(__dirname, 'model', 'salesorder.ts'), code.salesorder.code.join('\n'))
 
     });
 
 });
+
+
+

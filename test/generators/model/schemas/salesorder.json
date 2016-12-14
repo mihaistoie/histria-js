@@ -1,0 +1,34 @@
+{
+    "name": "salesOrder",
+    "type": "object",
+    "nameSpace": "salesorder",
+    "properties": {
+        "ruleCount": {
+            "title": "Rule call count",
+            "type": "integer"
+        },
+        "netAmount": {
+            "title": "Net Amount (excluding VAT)",
+            "type": "number"
+        },
+        "vat": {
+            "title": "VAT",
+            "type": "number"
+        },
+        "grossAmount": {
+            "title": "Gross Amount (including VAT)",
+            "type": "number"
+        }
+    },
+    "states": {
+        "netAmount": {
+            "decimals": 2
+        },
+        "vat": {
+            "decimals": 2
+        },
+        "grossAmount": {
+            "decimals": 2
+        }
+    }
+}

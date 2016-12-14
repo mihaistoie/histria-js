@@ -11,7 +11,6 @@ import * as gen from '../../src/lib/generators/classgen';
 async function multiFileTest() {
     let data = await hu.fs.readFile(path.join(__dirname, '..', 'data', 'employee.json'));
     let employee = JSON.parse(data.toString());
-    console.log(employee);
 
 }
 

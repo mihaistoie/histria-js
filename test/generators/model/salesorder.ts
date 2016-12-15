@@ -25,6 +25,10 @@ const
 				"grossAmount": {
 						"title": "Gross Amount (including VAT)",
 						"type": "number"
+				},
+				"id": {
+						"type": "integer",
+						"generated": true
 				}
 		},
 		"states": {
@@ -53,6 +57,9 @@ export class SalesOrderState extends InstanceState {
 	public get grossAmount(): NumberState {
 		return this._states.grossAmount;
 	}
+	public get id(): IntegerState {
+		return this._states.id;
+	}
 }
 
 export class SalesOrderErrors extends InstanceErrors {
@@ -70,6 +77,9 @@ export class SalesOrderErrors extends InstanceErrors {
 	}
 	public get grossAmount(): ErrorState {
 		return this._messages.grossAmount;
+	}
+	public get id(): ErrorState {
+		return this._messages.id;
 	}
 }
 
@@ -98,6 +108,9 @@ export class SalesOrder extends Instance {
 	}
 	public get grossAmount(): NumberValue {
 		return this._children.grossAmount;
+	}
+	public get id(): IntegerValue {
+		return this._children.id;
 	}
 	public get $states(): SalesOrderState {
 		return <SalesOrderState>this._states;

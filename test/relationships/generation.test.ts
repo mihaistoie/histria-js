@@ -6,20 +6,19 @@ import * as mochaUtils from 'mocha';
 import { classGenerator } from '../../src/index';
 
 
-async function userAndSalesorder() {
+async function generateModel() {
     let pathToModel = path.join(__dirname, 'model', 'schemas');
     await classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../src/index');
 }
 
-describe('Generators', () => {
+describe('Generate Model', () => {
     it('Generate class code', function (done) {
-        userAndSalesorder().then(() => {
+        generateModel().then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
     });
 });
-
 
 

@@ -51,7 +51,7 @@ function _load$ref(reference: string, model: any, definitions: any): any {
     if (defName && (!def || !def[defName]))
         throw new ApplicationError(util.format('Definition not found "%s". ($ref : "%s")', defName, reference));
     if (defName)
-        ref =  clone(def[defName]);
+        ref = clone(def[defName]);
     return ref;
 }
 
@@ -123,8 +123,13 @@ export function typeOfProperty(propSchema: { type?: string, format?: string, ref
 }
 
 export function isHidden(propSchema: any): boolean {
-    return false;
+    return propSchema.isHidden === true;
 }
+
+export function isReadOnly(propSchema: any): boolean {
+    return propSchema.generated === true;
+}
+
 
 
 export function isComplex(schema: any) {
@@ -139,6 +144,12 @@ async function loadJsonFromFile(jsonFile: string): Promise<any> {
     let data = await promises.fs.readFile(jsonFile);
     return JSON.parse(data.toString());
 }
+
+function _checkModel(schema, model) {
+    schema.properties = schema.properties || {};
+    schema.properties.id = { type: 'integer', generated: true };
+}
+
 
 export async function loadModel(pathToModel: string, model: any): Promise<void> {
     let files = await promises.fs.readdir(pathToModel);
@@ -157,19 +168,22 @@ export async function loadModel(pathToModel: string, model: any): Promise<void> 
         }
     });
     let modelByJsonFile = {};
-    let schemas =  await Promise.all(jsonFiles.map((fileName) => {
+    let schemas = await Promise.all(jsonFiles.map((fileName) => {
         return loadJsonFromFile(fileName);
     }));
 
-    jsonFiles.forEach((fileName, index)=>{
+    jsonFiles.forEach((fileName, index) => {
         let p = path.parse(fileName);
         let schema = schemas[index];
-        schema.name = schema.name || p.name; 
+        schema.name = schema.name || p.name;
         modelByJsonFile[p.name + '.' + p.ext] = schema;
     });
     schemas.forEach((schema) => {
         _expand$Ref(schema, [], modelByJsonFile, schema.definitions);
         model[schema.name] = schema;
+    });
+    schemas.forEach(schema => {
+        _checkModel(schema, model);
     });
 
 }

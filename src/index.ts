@@ -8,4 +8,6 @@ export { ErrorState } from './lib/model/error-state';
 export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from './lib/model/state';
 export { IntegerValue, NumberValue } from './lib/model/number';
 export { fs } from './lib/utils/promises';
+export { classGenerator } from './lib/generators/classgen';
+
 

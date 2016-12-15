@@ -25,6 +25,10 @@ const
 				"fullName": {
 						"title": "Full Name",
 						"type": "string"
+				},
+				"id": {
+						"type": "integer",
+						"generated": true
 				}
 		},
 		"states": {
@@ -50,6 +54,9 @@ export class UserState extends InstanceState {
 	public get fullName(): StringState {
 		return this._states.fullName;
 	}
+	public get id(): IntegerState {
+		return this._states.id;
+	}
 }
 
 export class UserErrors extends InstanceErrors {
@@ -67,6 +74,9 @@ export class UserErrors extends InstanceErrors {
 	}
 	public get fullName(): ErrorState {
 		return this._messages.fullName;
+	}
+	public get id(): ErrorState {
+		return this._messages.id;
 	}
 }
 
@@ -95,6 +105,9 @@ export class User extends Instance {
 	}
 	public fullName(value?: string): Promise<string> {
 		return this.getOrSetProperty('fullName', value);
+	}
+	public get id(): IntegerValue {
+		return this._children.id;
 	}
 	public get $states(): UserState {
 		return <UserState>this._states;

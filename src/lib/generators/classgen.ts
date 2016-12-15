@@ -1,4 +1,8 @@
 import * as util from 'util';
+import * as path from 'path';
+
+
+import * as promises from '../utils/promises';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES } from '../schema/schema-consts';
 
@@ -8,8 +12,15 @@ function _tab(ident: number) {
         res.push('\t');
     return res.join('');
 }
+async function saveCode(codeByClass: any, dstFolder: string) {
+    let writers = Object.keys(codeByClass).map(name => {
+        return promises.fs.writeFile(path.join(dstFolder, name + '.ts'), codeByClass[name].code.join('\n'));
+    });
+    await Promise.all(writers);
+}
 
-export function generate(codeByClass: any, model: any, baseClass: string, pathToLib?: string) {
+function _generate(codeByClass: any, model: any, pathToLib?: string) {
+    let baseClass = 'Instance'
     Object.keys(model).forEach((name) => {
         let schema = model[name];
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
@@ -28,8 +39,6 @@ export function generate(codeByClass: any, model: any, baseClass: string, pathTo
         code.push(_tab(1) + 'IntegerValue, NumberValue');
         code.push('} from \'' + pathToLib + '\';');
         code.push('');
-
-
 
         code.push('const');
         code.push(_tab(1) + util.format('%s_SCHEMA = %s;', className.toUpperCase(), JSON.stringify(schema, null, _tab(2))));
@@ -143,8 +152,10 @@ export function generate(codeByClass: any, model: any, baseClass: string, pathTo
             let stype = schemaUtils.typeOfProperty(propSchema);
             switch (stype) {
                 case JSONTYPES.string:
-                    code.push(_tab(1) + util.format('public %s(value?: string): Promise<string> {', propName));
-                    code.push(_tab(2) + util.format('return this.getOrSetProperty(\'%s\', value);', propName));
+                    let value1 = schemaUtils.isReadOnly(propSchema) ? '' : 'value?: string'
+                    let value2 = schemaUtils.isReadOnly(propSchema) ? '' : ', value';
+                    code.push(_tab(1) + util.format('public %s(%s): Promise<string> {', propName, value1));
+                    code.push(_tab(2) + util.format('return this.getOrSetProperty(\'%s\'%s);', propName, value2));
                     code.push(_tab(1) + '}');
                     break;
                 case JSONTYPES.integer:
@@ -173,6 +184,13 @@ export function generate(codeByClass: any, model: any, baseClass: string, pathTo
 
     });
 
-
 }
 
+
+export async function classGenerator(srcFolder: string, dstFolder: string, pathToLib?: string) {
+    let model = {};
+    await schemaUtils.loadModel(srcFolder, model);
+    let codeByClass = {};
+    _generate(codeByClass, model, pathToLib);
+    await saveCode(codeByClass, dstFolder);
+}

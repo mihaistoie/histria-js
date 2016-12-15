@@ -172,6 +172,7 @@ export class Instance implements ObservableObject {
 			let mm = new ModelManager();
 			if (!propSchema)
 				throw new ApplicationError(util.format('Property not found: "%s".', propName));
+			if (isSet) isSet = !schemaUtils.isReadOnly(propSchema);
 			if (isSet) {
 				// set
 				if (that._model[propName] !== value) {

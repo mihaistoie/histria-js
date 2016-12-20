@@ -152,49 +152,65 @@ export class Instance implements ObservableObject {
 		}
 		return ss;
 	}
+	public model(propName?: string): any {
+		let that = this;
+		return propName ? that._model[propName] : that._model;
+	}
+
+	private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
+		// check can modify ?
+	}
+	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd): Promise<void> {
+		let that = this;
+		let eventInfo = that._getEventInfo();
+		eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
+		try {
+			try {
+				// clear errors for propName
+				that._errors[propName].error = '';
+				await that.beforePropertyChanged(propName, oldValue, newValue);
+				//change property
+				hnd();
+				// Validate rules 
+				if (that.status === ObjectStatus.idle)
+					await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, newValue);
+				// Propagation rules
+				if (that.status === ObjectStatus.idle)
+					await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, newValue, oldValue);
+			} catch (ex) {
+				that._errors[propName].addException(ex);
+			}
+		} finally {
+			eventInfo.pop()
+		}
+
+	}
 
 
 	public async getOrSetProperty(propName: string, value?: any): Promise<any> {
 		let that = this;
 		let isSet = (value !== undefined), propPath;
-		let eventInfo = that._getEventInfo();
-		if (isSet)
-			eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
-		try {
-			let rel = that._schema.relations ? that._schema.relations[propName] : null;
-			if (rel) {
-				//TODO traiter relations
-				return null;
-				//return that._children[propName]
-			}
 
-			let propSchema = that._schema.properties[propName];
-			let mm = new ModelManager();
-			if (!propSchema)
-				throw new ApplicationError(util.format('Property not found: "%s".', propName));
-			if (isSet) isSet = !schemaUtils.isReadOnly(propSchema);
-			if (isSet) {
-				// set
-				if (that._model[propName] !== value) {
-					let oldValue = that._model[propName];
+		let rel = that._schema.relations ? that._schema.relations[propName] : null;
+		if (rel) {
+			//TODO traiter relations
+			return null;
+			//return that._children[propName]
+		}
+
+		let propSchema = that._schema.properties[propName];
+		let mm = new ModelManager();
+		if (!propSchema)
+			throw new ApplicationError(util.format('Property not found: "%s".', propName));
+		if (isSet) isSet = !schemaUtils.isReadOnly(propSchema);
+		if (isSet) {
+			// set
+			if (that._model[propName] !== value) {
+				let oldValue = that._model[propName];
+				await that.changeProperty(propName, oldValue, value, function () {
 					that._model[propName] = value;
-					try {
-						// clear errors for propName
-						that._errors[propName].error = '';
-						// Validate rules 
-						if (that.status === ObjectStatus.idle)
-							await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, that._model[propName]);
-						// Proppagation rules
-						if (that.status === ObjectStatus.idle)
-							await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, that._model[propName], oldValue);
-					} catch (ex) {
-						that._errors[propName].addException(ex);
-					}
-				}
+				});
 			}
-		} finally {
-			if (isSet)
-				eventInfo.pop()
 		}
 		return that._model[propName];
 	}

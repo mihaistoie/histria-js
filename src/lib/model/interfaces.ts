@@ -39,13 +39,15 @@ export interface UserContext {
 
 export interface TransactionContainer {
     context: UserContext
-    emitInstanceEvent(eventType: EventType, eventInfo:EventInfo, classOfInstance: any, instance: any, ...args);
+    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args);
 }
 
 
 export interface ObservableObject {
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
+    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>
+    model(propName?: string): any;
     modelState(propName: string): any;
     modelErrors(propName: string): { message: string, severity: MessageServerity }[];
     getPath(propName?: string): string;

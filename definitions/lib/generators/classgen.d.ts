@@ -1,1 +1,1 @@
-export declare function generate(codeByClass: any, model: any, baseClass: string, pathToLib?: string): void;
+export declare function classGenerator(srcFolder: string, dstFolder: string, pathToLib?: string): Promise<void>;

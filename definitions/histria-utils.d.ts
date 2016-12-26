@@ -13,6 +13,7 @@ declare module 'histria-utils' {
     export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
     export { fs } from 'histria-utils/lib/utils/promises';
+    export { classGenerator } from 'histria-utils/lib/generators/classgen';
 }
 
 declare module 'histria-utils/lib/model/base-object' {
@@ -50,6 +51,7 @@ declare module 'histria-utils/lib/model/base-object' {
             severity: MessageServerity;
         }[];
         modelState(propName: string): any;
+        changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
         afterCreated(): Promise<void>;
         validate(options?: {
@@ -215,6 +217,10 @@ declare module 'histria-utils/lib/utils/promises' {
     };
 }
 
+declare module 'histria-utils/lib/generators/classgen' {
+    export function classGenerator(srcFolder: string, dstFolder: string, pathToLib?: string): Promise<void>;
+}
+
 declare module 'histria-utils/lib/model/interfaces' {
     export enum ObjectStatus {
         idle = 0,
@@ -251,6 +257,7 @@ declare module 'histria-utils/lib/model/interfaces' {
     export interface ObservableObject {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
+        changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
         modelState(propName: string): any;
         modelErrors(propName: string): {
             message: string;

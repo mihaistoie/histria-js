@@ -6,8 +6,11 @@ class BaseHasOne<T> {
     protected _propertyName: any;
 
     protected _parent: ObservableObject;
+
+
     private async _lazyLoad(): Promise<void> {
         let that = this;
+        //Todo load from db        
         that._value = null;
 
     }
@@ -38,6 +41,7 @@ class BaseHasOne<T> {
     }
     public async setValue(value: T): Promise<void> {
         let that = this;
+        value = value || null;
         let oldValue = that.getValue();
         if (that._value === value) return;
         if (that._value) {

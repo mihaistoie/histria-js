@@ -6,42 +6,42 @@ import {
 
 const
 	SALESORDER_SCHEMA = {
-		"name": "salesOrder",
-		"type": "object",
-		"nameSpace": "salesorder",
-		"properties": {
-				"ruleCount": {
-						"title": "Rule call count",
-						"type": "integer"
-				},
-				"netAmount": {
-						"title": "Net Amount (excluding VAT)",
-						"type": "number"
-				},
-				"vat": {
-						"title": "VAT",
-						"type": "number"
-				},
-				"grossAmount": {
-						"title": "Gross Amount (including VAT)",
-						"type": "number"
-				},
-				"id": {
-						"type": "integer",
-						"generated": true
-				}
+	"name": "salesOrder",
+	"type": "object",
+	"nameSpace": "salesorder",
+	"properties": {
+		"ruleCount": {
+			"title": "Rule call count",
+			"type": "integer"
 		},
-		"states": {
-				"netAmount": {
-						"decimals": 2
-				},
-				"vat": {
-						"decimals": 2
-				},
-				"grossAmount": {
-						"decimals": 2
-				}
+		"netAmount": {
+			"title": "Net Amount (excluding VAT)",
+			"type": "number"
+		},
+		"vat": {
+			"title": "VAT",
+			"type": "number"
+		},
+		"grossAmount": {
+			"title": "Gross Amount (including VAT)",
+			"type": "number"
+		},
+		"id": {
+			"type": "integer",
+			"generated": true
 		}
+	},
+	"states": {
+		"netAmount": {
+			"decimals": 2
+		},
+		"vat": {
+			"decimals": 2
+		},
+		"grossAmount": {
+			"decimals": 2
+		}
+	}
 };
 
 export class SalesOrderState extends InstanceState {

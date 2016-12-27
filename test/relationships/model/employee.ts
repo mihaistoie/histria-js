@@ -10,55 +10,55 @@ const
 		"nameSpace": "employee",
 		"name": "employee",
 		"properties": {
-				"firstName": {
-						"title": "FirstName",
-						"type": "string"
-				},
-				"lastName": {
-						"title": "LastName",
-						"type": "string"
-				},
-				"salary": {
-						"title": "Salary",
-						"type": "number"
-				},
-				"departmentCode": {
-						"title": "Department Code",
-						"type": "string"
-				},
-				"id": {
-						"type": "integer",
-						"generated": true
-				}
+			"firstName": {
+				"title": "FirstName",
+				"type": "string"
+			},
+			"lastName": {
+				"title": "LastName",
+				"type": "string"
+			},
+			"salary": {
+				"title": "Salary",
+				"type": "number"
+			},
+			"departmentCode": {
+				"title": "Department Code",
+				"type": "string"
+			},
+			"id": {
+				"type": "integer",
+				"generated": true
+			}
 		},
 		"relations": {
-				"department": {
-						"title": "Department",
-						"type": "association",
-						"model": "department",
-						"multiplicity": "one",
-						"localFields": [
-								"departmentCode"
-						],
-						"foreignFields": [
-								"code"
-						]
-				},
-				"address": {
-						"title": "Department",
-						"type": "composition",
-						"model": "employeAddress",
-						"multiplicity": "one",
-						"localFields": [
-								"id"
-						],
-						"foreignFields": [
-								"addressId"
-						],
-						"invName": "employee"
-				}
+			"department": {
+				"title": "Department",
+				"type": "association",
+				"model": "department",
+				"multiplicity": "one",
+				"localFields": [
+					"departmentCode"
+				],
+				"foreignFields": [
+					"code"
+				]
+			},
+			"address": {
+				"title": "Department",
+				"type": "composition",
+				"model": "employeAddress",
+				"multiplicity": "one",
+				"localFields": [
+					"id"
+				],
+				"foreignFields": [
+					"addressId"
+				],
+				"invName": "employee"
+			}
 		}
-};
+	};
 
 export class EmployeeState extends InstanceState {
 	public get firstName(): StringState {

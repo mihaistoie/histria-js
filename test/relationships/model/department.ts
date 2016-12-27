@@ -6,26 +6,26 @@ import {
 
 const
 	DEPARTMENT_SCHEMA = {
-		"type": "object",
-		"nameSpace": "employee",
-		"name": "department",
-		"primaryKey": [
-				"code"
-		],
-		"properties": {
-				"code": {
-						"type": "string",
-						"title": "Code"
-				},
-				"title": {
-						"type": "string",
-						"title": "Title"
-				},
-				"id": {
-						"type": "integer",
-						"generated": true
-				}
+	"type": "object",
+	"nameSpace": "employee",
+	"name": "department",
+	"primaryKey": [
+		"code"
+	],
+	"properties": {
+		"code": {
+			"type": "string",
+			"title": "Code"
+		},
+		"title": {
+			"type": "string",
+			"title": "Title"
+		},
+		"id": {
+			"type": "integer",
+			"generated": true
 		}
+	}
 };
 
 export class DepartmentState extends InstanceState {

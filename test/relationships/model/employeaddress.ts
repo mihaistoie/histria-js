@@ -6,35 +6,35 @@ import {
 
 const
 	EMPLOYEADDRESS_SCHEMA = {
-		"type": "object",
-		"name": "employeAddress",
-		"properties": {
-				"street": {
-						"title": "Street",
-						"type": "string"
-				},
-				"city": {
-						"title": "City",
-						"type": "string"
-				},
-				"province": {
-						"title": "Province",
-						"type": "string"
-				},
-				"postalCode": {
-						"title": "Postal Code",
-						"type": "string"
-				},
-				"country": {
-						"title": "Country",
-						"type": "string"
-				},
-				"id": {
-						"type": "integer",
-						"generated": true
-				}
+	"type": "object",
+	"name": "employeAddress",
+	"properties": {
+		"street": {
+			"title": "Street",
+			"type": "string"
 		},
-		"nameSpace": "EmployeAddress"
+		"city": {
+			"title": "City",
+			"type": "string"
+		},
+		"province": {
+			"title": "Province",
+			"type": "string"
+		},
+		"postalCode": {
+			"title": "Postal Code",
+			"type": "string"
+		},
+		"country": {
+			"title": "Country",
+			"type": "string"
+		},
+		"id": {
+			"type": "integer",
+			"generated": true
+		}
+	},
+	"nameSpace": "EmployeAddress"
 };
 
 export class EmployeAddressState extends InstanceState {

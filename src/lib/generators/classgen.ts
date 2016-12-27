@@ -26,22 +26,19 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
         let code = [];
+        let imports = [];
         let cc = {}
-        codeByClass[schema.name.toLowerCase()] = {
-            code: code,
-            depends: []
-        }
-
+        
         pathToLib = pathToLib || 'histria--utils'
-        code.push('import {');
-        code.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
-        code.push(_tab(1) + 'ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
-        code.push(_tab(1) + 'IntegerValue, NumberValue');
-        code.push('} from \'' + pathToLib + '\';');
-        code.push('');
+        imports.push('import {');
+        imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
+        imports.push(_tab(1) + 'ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+        imports.push(_tab(1) + 'IntegerValue, NumberValue');
+        imports.push('} from \'' + pathToLib + '\';');
+        imports.push('');
 
         code.push('const');
-        code.push(_tab(1) + util.format('%s_SCHEMA = %s;', className.toUpperCase(), JSON.stringify(schema, null, _tab(2))));
+        code.push(_tab(1) + util.format('%s_SCHEMA = %s;', className.toUpperCase(), JSON.stringify(schema, null, _tab(1))));
         code.push('');
         code.push(util.format('export class %sState extends %sState {', className, baseClass));
         Object.keys(schema.properties || {}).forEach(propName => {
@@ -181,7 +178,11 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         code.push('}');
 
         code.push(util.format('new ModelManager().registerClass(%s, %s_SCHEMA.nameSpace);', className, className.toUpperCase()));
-
+        code = imports.concat(code); 
+        codeByClass[schema.name.toLowerCase()] = {
+            code: code,
+            depends: []
+        }
     });
 
 }

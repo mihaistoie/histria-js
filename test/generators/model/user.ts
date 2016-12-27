@@ -6,39 +6,39 @@ import {
 
 const
 	USER_SCHEMA = {
-		"name": "user",
-		"type": "object",
-		"nameSpace": "users",
-		"properties": {
-				"age": {
-						"title": "Age",
-						"type": "integer"
-				},
-				"firstName": {
-						"title": "First Name",
-						"type": "string"
-				},
-				"lastName": {
-						"title": "Last Name",
-						"type": "string"
-				},
-				"fullName": {
-						"title": "Full Name",
-						"type": "string"
-				},
-				"id": {
-						"type": "integer",
-						"generated": true
-				}
+	"name": "user",
+	"type": "object",
+	"nameSpace": "users",
+	"properties": {
+		"age": {
+			"title": "Age",
+			"type": "integer"
 		},
-		"states": {
-				"firstName": {
-						"isMandatory": true
-				},
-				"fullName": {
-						"isReadOnly": true
-				}
+		"firstName": {
+			"title": "First Name",
+			"type": "string"
+		},
+		"lastName": {
+			"title": "Last Name",
+			"type": "string"
+		},
+		"fullName": {
+			"title": "Full Name",
+			"type": "string"
+		},
+		"id": {
+			"type": "integer",
+			"generated": true
 		}
+	},
+	"states": {
+		"firstName": {
+			"isMandatory": true
+		},
+		"fullName": {
+			"isReadOnly": true
+		}
+	}
 };
 
 export class UserState extends InstanceState {

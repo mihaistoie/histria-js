@@ -5,7 +5,7 @@ import * as path from 'path';
 
 
 
-import { JSONTYPES } from './schema-consts';
+import { JSONTYPES, JSONRELATIONS } from './schema-consts';
 import { merge, clone } from '../utils/helper'
 import * as promises from '../utils/promises'
 
@@ -15,6 +15,50 @@ import { ApplicationError } from '../utils/errors'
 const
     DEFINITION_STRING = '#/definitions/',
     DEFINITION_STRING_LEN = DEFINITION_STRING.length;
+
+
+export function typeOfProperty(propSchema: { type?: string, format?: string, reference?: string }): string {
+    let ps = propSchema.type || JSONTYPES.string;
+    if (!JSONTYPES[ps])
+        throw new ApplicationError(util.format('Unsupported schema type : "%s"', propSchema.type));
+    if (propSchema.format) {
+        if (ps === 'string') {
+            if (propSchema.format === JSONTYPES.date)
+                return JSONTYPES.date;
+            else if (propSchema.format === JSONTYPES.datetime)
+                return JSONTYPES.datetime;
+        }
+    }
+    return ps;
+}
+
+export function isHidden(propSchema: any): boolean {
+    return propSchema.isHidden === true;
+}
+
+export function isReadOnly(propSchema: any): boolean {
+    return (propSchema.generated === true || propSchema.isReadOnly === true);
+}
+
+
+export function isComplex(schema: any) {
+    return (schema.type === JSONTYPES.array || schema.type === JSONTYPES.object);
+}
+
+export function expandSchema(schema: any, model: any) {
+    _expand$Ref(schema, [], model, schema.definitions);
+}
+
+
+function idDefinition(): any {
+    return { type: JSONTYPES.integer, generated: true };
+}
+
+function refIdDefinition(): any {
+    return { type: JSONTYPES.integer, isReadOnly: true };
+}
+
+
 
 //reference :
 // schema_name"
@@ -107,38 +151,6 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
 }
 
 
-export function typeOfProperty(propSchema: { type?: string, format?: string, reference?: string }): string {
-    let ps = propSchema.type || JSONTYPES.string;
-    if (!JSONTYPES[ps])
-        throw new ApplicationError(util.format('Unsupported schema type : "%s"', propSchema.type));
-    if (propSchema.format) {
-        if (ps === 'string') {
-            if (propSchema.format === JSONTYPES.date)
-                return JSONTYPES.date;
-            else if (propSchema.format === JSONTYPES.datetime)
-                return JSONTYPES.datetime;
-        }
-    }
-    return ps;
-}
-
-export function isHidden(propSchema: any): boolean {
-    return propSchema.isHidden === true;
-}
-
-export function isReadOnly(propSchema: any): boolean {
-    return propSchema.generated === true;
-}
-
-
-
-export function isComplex(schema: any) {
-    return (schema.type === JSONTYPES.array || schema.type === JSONTYPES.object);
-}
-
-export function expandSchema(schema: any, model: any) {
-    _expand$Ref(schema, [], model, schema.definitions);
-}
 
 async function loadJsonFromFile(jsonFile: string): Promise<any> {
     let data = await promises.fs.readFile(jsonFile);
@@ -147,7 +159,68 @@ async function loadJsonFromFile(jsonFile: string): Promise<any> {
 
 function _checkModel(schema, model) {
     schema.properties = schema.properties || {};
-    schema.properties.id = { type: 'integer', generated: true };
+    schema.properties.id = idDefinition();
+}
+
+
+function _checkRelations(schema, model) {
+    schema.relations && schema.relations.forEach(relName => {
+        let rel = schema.relations[relName];
+        rel.type = rel.type || JSONRELATIONS.association;
+        rel.title = rel.title || relName;
+        rel.multiplicity = rel.multiplicity || 'one';
+        if (!rel.model || !model[rel.model])
+            throw util.format('Invalid relation "%s.%s", invalid remote entity(model).', schema.name, relName);
+        let refModel = model[rel.model];
+        if (rel.type !== JSONRELATIONS.association) {
+            if (!rel.invRel)
+                throw util.format('Invalid relation "%s.%s", inverse relation (invRel) is empty.', schema.name, relName);
+        }
+        //           if (!refModel.relations || !refModel.relations[invRel]) 
+        //        throw util.format('Invalid relation %s.%s, inverse relation (invRel) is empty.', schema.name, relName);
+        //    let invRel = 
+
+
+
+        if (!rel.localFields) {
+            if (rel.multiplicity === 'one') {
+                if (rel.type ===  JSONRELATIONS.association) {
+                    rel.localFields = [refModel.name + 'Id'];
+                    if (!rel.foreignFields)
+                        rel.foreignFields = ['id']
+                }
+
+            } else { //rel.multiplicity === 'many'
+                rel.localFields = ['id'];
+            }
+        }
+
+        if (!rel.foreignFields) {
+            if (rel.multiplicity === 'one') {
+
+            } else { //rel.multiplicity === 'many'
+                rel.localFields = ['id'];
+            }
+        }
+        if (rel.foreignFields.length !== rel.localFields.length)
+            throw util.format('Invalid relation "%s.%s", #foreignFields != #localFields.', schema.name, relName);
+        // check fields
+        rel.localFields.forEach((lf, index) => {
+            let rf = rel.foreignFields[index];
+            let crf = lf === 'id', clf = rf === 'id';
+            if (crf && !refModel.properties[rf]) {
+                refModel.properties[rf] = refIdDefinition();
+            } else if (clf && !schema.properties[lf]) {
+                schema.properties[lf] = refIdDefinition();
+            }
+            if (schema.properties[lf]) 
+                throw util.format('Invalid relation "%s.%s", "%s.%s" - field not found.', schema.name, relName, schema.name, lf);
+            if (refModel.properties[rf]) 
+                throw util.format('Invalid relation "%s.%s", "%s.%s" - field not found.', schema.name, relName, refModel.name, rf);
+            if (refModel.properties[rf].type !== schema.properties[lf]) 
+                throw util.format('Invalid relation "%s.%s", typeof %s != typeof %s.', schema.name, relName);
+        });
+    });
 }
 
 
@@ -184,6 +257,9 @@ export async function loadModel(pathToModel: string, model: any): Promise<void> 
     });
     schemas.forEach(schema => {
         _checkModel(schema, model);
+    });
+    schemas.forEach(schema => {
+        _checkRelations(schema, model);
     });
 
 }

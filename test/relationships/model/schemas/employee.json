@@ -48,3 +48,39 @@
         }
     }
 }
+
+{   
+    "type": "object",
+    "name": "employee",    
+    "properties": { },    
+    "relations": {
+        "department": {
+            "title": "Department",
+            "type": "association",
+            "model": "department",
+            "multiplicity": "one",
+            "localFields": ["departmentCode"],
+            "foreignFields": ["code"]
+        }
+    }
+}
+
+{   
+    "type": "object",
+    "name": "employee",    
+    "properties": { },    
+    "relations": {
+        "department": {
+            "title": "Department",
+            "type": "association",
+            "model": "department",
+            "multiplicity": "one",
+            "localFields": [
+                "departmentCode"
+            ],
+            "foreignFields": [
+                "code"
+            ]
+        }
+    }
+}

@@ -9,10 +9,18 @@ export const JSONTYPES =  {
     datetime: 'date-time'
 }
 
+export const JSONRELATIONS =  {
+    association: 'association',
+    composition: 'composition',
+    aggregation: 'aggregation'
+}
+
+
 export const JSONFORMATS =  {
     email: 'email',
     json: 'json'
 }
+
 
 
 

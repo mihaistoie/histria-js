@@ -23,9 +23,8 @@
     "relations": {
         "department": {
             "title": "Department",
-            "type": "association",
+            "type": "hasOne",
             "model": "department",
-            "multiplicity": "one",
             "localFields": [
                 "departmentCode"
             ],
@@ -34,53 +33,11 @@
             ]
         },
         "address": {
-            "title": "Department",
-            "type": "composition",
-            "model": "employeAddress",
-            "multiplicity": "one",
-            "localFields": [
-                "id"
-            ],
-            "foreignFields": [
-                "addressId"
-            ],
-            "invName": "employee"
-        }
-    }
-}
-
-{   
-    "type": "object",
-    "name": "employee",    
-    "properties": { },    
-    "relations": {
-        "department": {
-            "title": "Department",
-            "type": "association",
-            "model": "department",
-            "multiplicity": "one",
-            "localFields": ["departmentCode"],
-            "foreignFields": ["code"]
-        }
-    }
-}
-
-{   
-    "type": "object",
-    "name": "employee",    
-    "properties": { },    
-    "relations": {
-        "department": {
-            "title": "Department",
-            "type": "association",
-            "model": "department",
-            "multiplicity": "one",
-            "localFields": [
-                "departmentCode"
-            ],
-            "foreignFields": [
-                "code"
-            ]
+            "title": "Address",
+            "type": "hasOne",
+            "model": "employeeAddress",
+            "aggregationKind": "composite",
+            "invRel": "employee"
         }
     }
 }

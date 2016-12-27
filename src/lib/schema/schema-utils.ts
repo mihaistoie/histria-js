@@ -5,7 +5,7 @@ import * as path from 'path';
 
 
 
-import { JSONTYPES, JSONRELATIONS } from './schema-consts';
+import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from './schema-consts';
 import { merge, clone } from '../utils/helper'
 import * as promises from '../utils/promises'
 
@@ -154,7 +154,15 @@ function _expand$Ref(item: any, callStack: string[], model: any, definitions: an
 
 async function loadJsonFromFile(jsonFile: string): Promise<any> {
     let data = await promises.fs.readFile(jsonFile);
-    return JSON.parse(data.toString());
+    let parsedJson = null;
+    try {
+        parsedJson = JSON.parse(data.toString());
+    } catch (ex) {
+        console.log(jsonFile);
+        throw ex;
+
+    }
+    return parsedJson;
 }
 
 function _checkModel(schema, model) {
@@ -164,44 +172,67 @@ function _checkModel(schema, model) {
 
 
 function _checkRelations(schema, model) {
-    schema.relations && schema.relations.forEach(relName => {
+    schema.relations && Object.keys(schema.relations).forEach(relName => {
         let rel = schema.relations[relName];
-        rel.type = rel.type || JSONRELATIONS.association;
+        if (!rel.type)
+            throw util.format('Invalid relation "%s.%s", type is missing.', schema.name, relName);
         rel.title = rel.title || relName;
-        rel.multiplicity = rel.multiplicity || 'one';
+        if (rel.type === RELATION_TYPE.belongsTo) {
+            rel.aggregationKind = rel.aggregationKind || AGGREGATION_KIND.composite;
+            if (rel.aggregationKind === AGGREGATION_KIND.none) {
+                throw util.format('Invalid relation "%s.%s", aggregationKind must be composite or shared.', schema.name, relName);
+            }
+        } else {
+            rel.aggregationKind = rel.aggregationKind || AGGREGATION_KIND.none;
+        }
+
         if (!rel.model || !model[rel.model])
             throw util.format('Invalid relation "%s.%s", invalid remote entity(model).', schema.name, relName);
         let refModel = model[rel.model];
-        if (rel.type !== JSONRELATIONS.association) {
-            if (!rel.invRel)
-                throw util.format('Invalid relation "%s.%s", inverse relation (invRel) is empty.', schema.name, relName);
+        let refRel = null;
+        if (rel.invRel) {
+            refModel.relations = refModel.relations || {};
+            refRel = refModel.relations[rel.invRel];
         }
-        //           if (!refModel.relations || !refModel.relations[invRel]) 
-        //        throw util.format('Invalid relation %s.%s, inverse relation (invRel) is empty.', schema.name, relName);
-        //    let invRel = 
-
-
-
-        if (!rel.localFields) {
-            if (rel.multiplicity === 'one') {
-                if (rel.type ===  JSONRELATIONS.association) {
-                    rel.localFields = [refModel.name + 'Id'];
-                    if (!rel.foreignFields)
-                        rel.foreignFields = ['id']
+        if (!refRel && rel.aggregationKind !== AGGREGATION_KIND.none) {
+            throw util.format('Invalid relation "%s.%s", invRel for aggregations and compositions is required.', schema.name, relName);
+        }
+        if (refRel) {
+            if (refRel.type === RELATION_TYPE.belongsTo) {
+                refRel.aggregationKind = refRel.aggregationKind || AGGREGATION_KIND.composite;
+                if (rel.aggregationKind === AGGREGATION_KIND.none) {
+                    throw util.format('Invalid relation "%s.%s", aggregationKind must be composite or shared.', schema.name, relName);
                 }
-
-            } else { //rel.multiplicity === 'many'
-                rel.localFields = ['id'];
+            } else
+                refRel.aggregationKind = refRel.aggregationKind || AGGREGATION_KIND.none;
+            
+             if (refRel.aggregationKind !== rel.aggregationKind) {
+                throw util.format('Invalid type  %s.%s.aggregationKind !== %s.%s.aggregationKind.', schema.name, relName, refModel.name, rel.invRel);
+            }
+            if (refRel.type === rel.type) {
+                throw util.format('Invalid type  %s.%s.type === %s.%s.type.', schema.name, relName, refModel.name, rel.invRel);
             }
         }
 
-        if (!rel.foreignFields) {
-            if (rel.multiplicity === 'one') {
-
-            } else { //rel.multiplicity === 'many'
+        if (!rel.localFields || !rel.foreignFields) {
+            if (rel.type === RELATION_TYPE.hasOne) {
+                if (rel.aggregationKind === AGGREGATION_KIND.none) {
+                    rel.localFields = [relName + 'Id'];
+                    rel.foreignFields = ['id'];
+                } else {
+                    //ref rel is belongsTo
+                    rel.localFields = ['id'];
+                    rel.foreignFields = [rel.invRel + 'Id'];
+                }
+            } else if (rel.type === RELATION_TYPE.belongsTo) {
+                rel.localFields = [relName + 'Id'];
+                rel.foreignFields = ['id'];
+            } else if (rel.type === RELATION_TYPE.hasMany) {
                 rel.localFields = ['id'];
+                rel.foreignFields = [rel.invRel + 'Id'];
             }
         }
+
         if (rel.foreignFields.length !== rel.localFields.length)
             throw util.format('Invalid relation "%s.%s", #foreignFields != #localFields.', schema.name, relName);
         // check fields
@@ -213,11 +244,12 @@ function _checkRelations(schema, model) {
             } else if (clf && !schema.properties[lf]) {
                 schema.properties[lf] = refIdDefinition();
             }
-            if (schema.properties[lf]) 
+            if (!schema.properties[lf])
                 throw util.format('Invalid relation "%s.%s", "%s.%s" - field not found.', schema.name, relName, schema.name, lf);
-            if (refModel.properties[rf]) 
+
+            if (!refModel.properties[rf])
                 throw util.format('Invalid relation "%s.%s", "%s.%s" - field not found.', schema.name, relName, refModel.name, rf);
-            if (refModel.properties[rf].type !== schema.properties[lf]) 
+            if (refModel.properties[rf].type !== schema.properties[lf].type)
                 throw util.format('Invalid relation "%s.%s", typeof %s != typeof %s.', schema.name, relName);
         });
     });

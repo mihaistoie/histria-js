@@ -1,6 +1,6 @@
 {
     "type": "object",
-    "name": "employeAddress",
+    "name": "employeeAddress",
     "properties": {
         "street": {
             "title": "Street",
@@ -21,6 +21,15 @@
         "country": {
             "title": "Country",
             "type": "string"
+        }
+    },
+    "relations": {
+        "employee": {
+            "title": "Address",
+            "type": "belongsTo",
+            "model": "employee",
+            "aggregationKind": "composite",
+            "invRel": "address"
         }
     }
 }

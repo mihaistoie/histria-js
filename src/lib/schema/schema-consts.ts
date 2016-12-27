@@ -9,10 +9,16 @@ export const JSONTYPES =  {
     datetime: 'date-time'
 }
 
-export const JSONRELATIONS =  {
-    association: 'association',
-    composition: 'composition',
-    aggregation: 'aggregation'
+export const RELATION_TYPE =  {
+    hasOne: 'hasOne',
+    hasMany: 'hasMany',
+    belongsTo: 'belongsTo'
+}
+
+export const AGGREGATION_KIND =  {
+    none: 'none',
+    shared: 'shared',
+    composite: 'composite'
 }
 
 

@@ -6,59 +6,59 @@ import {
 
 const
 	EMPLOYEE_SCHEMA = {
-		"type": "object",
-		"nameSpace": "employee",
-		"name": "employee",
-		"properties": {
-			"firstName": {
-				"title": "FirstName",
-				"type": "string"
-			},
-			"lastName": {
-				"title": "LastName",
-				"type": "string"
-			},
-			"salary": {
-				"title": "Salary",
-				"type": "number"
-			},
-			"departmentCode": {
-				"title": "Department Code",
-				"type": "string"
-			},
-			"id": {
-				"type": "integer",
-				"generated": true
-			}
+	"type": "object",
+	"nameSpace": "employee",
+	"name": "employee",
+	"properties": {
+		"firstName": {
+			"title": "FirstName",
+			"type": "string"
 		},
-		"relations": {
-			"department": {
-				"title": "Department",
-				"type": "association",
-				"model": "department",
-				"multiplicity": "one",
-				"localFields": [
-					"departmentCode"
-				],
-				"foreignFields": [
-					"code"
-				]
-			},
-			"address": {
-				"title": "Department",
-				"type": "composition",
-				"model": "employeAddress",
-				"multiplicity": "one",
-				"localFields": [
-					"id"
-				],
-				"foreignFields": [
-					"addressId"
-				],
-				"invName": "employee"
-			}
+		"lastName": {
+			"title": "LastName",
+			"type": "string"
+		},
+		"salary": {
+			"title": "Salary",
+			"type": "number"
+		},
+		"departmentCode": {
+			"title": "Department Code",
+			"type": "string"
+		},
+		"id": {
+			"type": "integer",
+			"generated": true
 		}
-	};
+	},
+	"relations": {
+		"department": {
+			"title": "Department",
+			"type": "hasOne",
+			"model": "department",
+			"localFields": [
+				"departmentCode"
+			],
+			"foreignFields": [
+				"code"
+			],
+			"aggregationKind": "none"
+		},
+		"address": {
+			"title": "Address",
+			"type": "hasOne",
+			"model": "employeeAddress",
+			"aggregationKind": "composite",
+			"invRel": "employee",
+			"localFields": [
+				"id"
+			],
+			"foreignFields": [
+				"employeeId"
+			]
+		}
+	}
+};
 
 export class EmployeeState extends InstanceState {
 	public get firstName(): StringState {

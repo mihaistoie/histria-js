@@ -36,6 +36,7 @@ export declare class Instance implements ObservableObject {
         severity: MessageServerity;
     }[];
     modelState(propName: string): any;
+    model(propName?: string): any;
     private beforePropertyChanged(propName, oldValue, newValue);
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
     getOrSetProperty(propName: string, value?: any): Promise<any>;

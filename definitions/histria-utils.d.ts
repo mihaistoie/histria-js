@@ -51,6 +51,7 @@ declare module 'histria-utils/lib/model/base-object' {
             severity: MessageServerity;
         }[];
         modelState(propName: string): any;
+        model(propName?: string): any;
         changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
         afterCreated(): Promise<void>;
@@ -258,6 +259,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
         changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
+        model(propName?: string): any;
         modelState(propName: string): any;
         modelErrors(propName: string): {
             message: string;

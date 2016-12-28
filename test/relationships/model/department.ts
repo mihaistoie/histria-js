@@ -4,56 +4,6 @@ import {
 	IntegerValue, NumberValue
 } from '../../../src/index';
 
-const
-	DEPARTMENT_SCHEMA = {
-	"type": "object",
-	"nameSpace": "employee",
-	"name": "department",
-	"primaryKey": [
-		"code"
-	],
-	"properties": {
-		"code": {
-			"type": "string",
-			"title": "Code"
-		},
-		"title": {
-			"type": "string",
-			"title": "Title"
-		},
-		"id": {
-			"type": "integer",
-			"generated": true
-		}
-	}
-};
-
-export class DepartmentState extends InstanceState {
-	public get code(): StringState {
-		return this._states.code;
-	}
-	public get title(): StringState {
-		return this._states.title;
-	}
-	public get id(): IntegerState {
-		return this._states.id;
-	}
-}
-
-export class DepartmentErrors extends InstanceErrors {
-	public get $(): ErrorState {
-		return this._messages.$;
-	}
-	public get code(): ErrorState {
-		return this._messages.code;
-	}
-	public get title(): ErrorState {
-		return this._messages.title;
-	}
-	public get id(): ErrorState {
-		return this._messages.id;
-	}
-}
 
 export class Department extends Instance {
 	protected init() {
@@ -85,4 +35,54 @@ export class Department extends Instance {
 		return <DepartmentErrors>this._errors;
 	}
 }
+
+export class DepartmentErrors extends InstanceErrors {
+	public get $(): ErrorState {
+		return this._messages.$;
+	}
+	public get code(): ErrorState {
+		return this._messages.code;
+	}
+	public get title(): ErrorState {
+		return this._messages.title;
+	}
+	public get id(): ErrorState {
+		return this._messages.id;
+	}
+}
+
+export class DepartmentState extends InstanceState {
+	public get code(): StringState {
+		return this._states.code;
+	}
+	public get title(): StringState {
+		return this._states.title;
+	}
+	public get id(): IntegerState {
+		return this._states.id;
+	}
+}
+const
+	DEPARTMENT_SCHEMA = {
+		"type": "object",
+		"nameSpace": "employee",
+		"name": "department",
+		"primaryKey": [
+			"code"
+		],
+		"properties": {
+			"code": {
+				"type": "string",
+				"title": "Code"
+			},
+			"title": {
+				"type": "string",
+				"title": "Title"
+			},
+			"id": {
+				"type": "integer",
+				"generated": true
+			}
+		}
+	};
 new ModelManager().registerClass(Department, DEPARTMENT_SCHEMA.nameSpace);

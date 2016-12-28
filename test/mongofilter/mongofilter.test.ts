@@ -9,7 +9,6 @@ describe('Mongo filter', () => {
         {
             name: 'craig',
             age: 90001,
-            //tags: ['coder', 'programmer', 'traveler', 'photographer'],
             address: {
                 city: 'Minneapolis',
                 state: 'MN',
@@ -36,7 +35,6 @@ describe('Mongo filter', () => {
         {
             name: 'tim',
             age: 90001,
-            //tags: ['traveler', 'photographer'],
             address: {
                 city: 'St. Paul',
                 state: 'MN',
@@ -65,7 +63,7 @@ describe('Mongo filter', () => {
             }, topic);
         }, Error);
     });
-    it("has mongoFiltered through photography in brazil count of 1", function () {
+    it("Photography in brazil count of 1", function () {
         var res = mongoFilter({
             hobbies: {
                 name: 'photography',
@@ -76,7 +74,7 @@ describe('Mongo filter', () => {
         }, topic);
         assert.equal(res.length, 1);
     });
-    it("has mongoFiltered through photography in brazil, haiti, and costa rica count of 1", function () {
+    it("Photography in brazil, haiti, and costa rica count of 1", function () {
         var res = mongoFilter({
             hobbies: {
                 name: 'photography',
@@ -88,7 +86,7 @@ describe('Mongo filter', () => {
         assert.equal(res.length, 1);
         assert.equal(res[0], topic[0]);
     });
-    it("has a mongoFiltered hobbies of photography, cooking, or biking count of 2", function () {
+    it("hobbies of photography, cooking, or biking count of 2", function () {
         var res = mongoFilter({
             hobbies: {
                 name: {
@@ -98,7 +96,7 @@ describe('Mongo filter', () => {
         }, topic);
         assert.equal(res.length, 2);
     });
-    it("has mongoFiltered to complex count of 2", function () {
+    it("Complex filter count of 2", function () {
         var res = mongoFilter({
             hobbies: {
                 name: 'photography',
@@ -116,7 +114,7 @@ describe('Mongo filter', () => {
 
         assert.equal(res.length, 2);
     });
-    it("has mongoFiltered to complex count of 0", function () {
+    it("Complex filter  count of 0", function () {
         var res = mongoFilter({
             hobbies: {
                 name: 'photos',
@@ -127,13 +125,13 @@ describe('Mongo filter', () => {
         }, topic);
         assert.equal(res.length, 0);
     });
-    it("has mongoFiltered subobject hobbies count of 3", function () {
+    it("Filter subobject hobbies count of 3", function () {
         var res = mongoFilter({
             "hobbies.name": "photography"
         }, topic);
         assert.equal(res.length, 2);
     });
-    it('has mongoFiltered dot-notation hobbies of photography, cooking, and biking count of 3', function () {
+    it('Filter dot-notation hobbies of photography, cooking, and biking count of 3', function () {
         var res = mongoFilter({
             "hobbies.name": {
                 $in: ['photography', 'cooking', 'biking']
@@ -141,7 +139,7 @@ describe('Mongo filter', () => {
         }, topic);
         assert.equal(res.length, 2);
     });
-    it("has mongoFiltered to complex dot-search count of 2", function () {
+    it("Filter to complex dot-search count of 2", function () {
         var res = mongoFilter({
             "hobbies.name": "photography",
             "hobbies.places": {

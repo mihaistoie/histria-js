@@ -9,3 +9,4 @@ export { State, StringState, IntegerState, EnumState, NumberState, DateState, Da
 export { IntegerValue, NumberValue } from './lib/model/number';
 export { fs } from './lib/utils/promises';
 export { classGenerator } from './lib/generators/classgen';
+export { mongoFilter } from './lib/db/mongo-filter';

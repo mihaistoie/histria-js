@@ -34,3 +34,5 @@ var promises_1 = require("./lib/utils/promises");
 exports.fs = promises_1.fs;
 var classgen_1 = require("./lib/generators/classgen");
 exports.classGenerator = classgen_1.classGenerator;
+var mongo_filter_1 = require("./lib/db/mongo-filter");
+exports.mongoFilter = mongo_filter_1.mongoFilter;

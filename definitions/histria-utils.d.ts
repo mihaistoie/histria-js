@@ -14,6 +14,7 @@ declare module 'histria-utils' {
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
     export { fs } from 'histria-utils/lib/utils/promises';
     export { classGenerator } from 'histria-utils/lib/generators/classgen';
+    export { mongoFilter } from 'histria-utils/lib/db/mongo-filter';
 }
 
 declare module 'histria-utils/lib/model/base-object' {
@@ -220,6 +221,10 @@ declare module 'histria-utils/lib/utils/promises' {
 
 declare module 'histria-utils/lib/generators/classgen' {
     export function classGenerator(srcFolder: string, dstFolder: string, pathToLib?: string): Promise<void>;
+}
+
+declare module 'histria-utils/lib/db/mongo-filter' {
+    export function mongoFilter(query: any, array: any[], getter?: any): any[];
 }
 
 declare module 'histria-utils/lib/model/interfaces' {

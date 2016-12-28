@@ -3,101 +3,9 @@ import {
 	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
+import { Department } from './department';
+import { EmployeeAddress } from './employeeaddress';
 
-const
-	EMPLOYEE_SCHEMA = {
-	"type": "object",
-	"nameSpace": "employee",
-	"name": "employee",
-	"properties": {
-		"firstName": {
-			"title": "FirstName",
-			"type": "string"
-		},
-		"lastName": {
-			"title": "LastName",
-			"type": "string"
-		},
-		"salary": {
-			"title": "Salary",
-			"type": "number"
-		},
-		"departmentCode": {
-			"title": "Department Code",
-			"type": "string"
-		},
-		"id": {
-			"type": "integer",
-			"generated": true
-		}
-	},
-	"relations": {
-		"department": {
-			"title": "Department",
-			"type": "hasOne",
-			"model": "department",
-			"localFields": [
-				"departmentCode"
-			],
-			"foreignFields": [
-				"code"
-			],
-			"aggregationKind": "none"
-		},
-		"address": {
-			"title": "Address",
-			"type": "hasOne",
-			"model": "employeeAddress",
-			"aggregationKind": "composite",
-			"invRel": "employee",
-			"localFields": [
-				"id"
-			],
-			"foreignFields": [
-				"employeeId"
-			]
-		}
-	}
-};
-
-export class EmployeeState extends InstanceState {
-	public get firstName(): StringState {
-		return this._states.firstName;
-	}
-	public get lastName(): StringState {
-		return this._states.lastName;
-	}
-	public get salary(): NumberState {
-		return this._states.salary;
-	}
-	public get departmentCode(): StringState {
-		return this._states.departmentCode;
-	}
-	public get id(): IntegerState {
-		return this._states.id;
-	}
-}
-
-export class EmployeeErrors extends InstanceErrors {
-	public get $(): ErrorState {
-		return this._messages.$;
-	}
-	public get firstName(): ErrorState {
-		return this._messages.firstName;
-	}
-	public get lastName(): ErrorState {
-		return this._messages.lastName;
-	}
-	public get salary(): ErrorState {
-		return this._messages.salary;
-	}
-	public get departmentCode(): ErrorState {
-		return this._messages.departmentCode;
-	}
-	public get id(): ErrorState {
-		return this._messages.id;
-	}
-}
 
 export class Employee extends Instance {
 	protected init() {
@@ -128,6 +36,12 @@ export class Employee extends Instance {
 	public get id(): IntegerValue {
 		return this._children.id;
 	}
+	public department(value?: Department): Promise<Department> {
+		return this._children.department.value(value);
+	}
+	public address(value?: EmployeeAddress): Promise<EmployeeAddress> {
+		return this._children.address.value(value);
+	}
 	public get $states(): EmployeeState {
 		return <EmployeeState>this._states;
 	}
@@ -135,4 +49,98 @@ export class Employee extends Instance {
 		return <EmployeeErrors>this._errors;
 	}
 }
+
+export class EmployeeErrors extends InstanceErrors {
+	public get $(): ErrorState {
+		return this._messages.$;
+	}
+	public get firstName(): ErrorState {
+		return this._messages.firstName;
+	}
+	public get lastName(): ErrorState {
+		return this._messages.lastName;
+	}
+	public get salary(): ErrorState {
+		return this._messages.salary;
+	}
+	public get departmentCode(): ErrorState {
+		return this._messages.departmentCode;
+	}
+	public get id(): ErrorState {
+		return this._messages.id;
+	}
+}
+
+export class EmployeeState extends InstanceState {
+	public get firstName(): StringState {
+		return this._states.firstName;
+	}
+	public get lastName(): StringState {
+		return this._states.lastName;
+	}
+	public get salary(): NumberState {
+		return this._states.salary;
+	}
+	public get departmentCode(): StringState {
+		return this._states.departmentCode;
+	}
+	public get id(): IntegerState {
+		return this._states.id;
+	}
+}
+const
+	EMPLOYEE_SCHEMA = {
+		"type": "object",
+		"nameSpace": "employee",
+		"name": "employee",
+		"properties": {
+			"firstName": {
+				"title": "FirstName",
+				"type": "string"
+			},
+			"lastName": {
+				"title": "LastName",
+				"type": "string"
+			},
+			"salary": {
+				"title": "Salary",
+				"type": "number"
+			},
+			"departmentCode": {
+				"title": "Department Code",
+				"type": "string"
+			},
+			"id": {
+				"type": "integer",
+				"generated": true
+			}
+		},
+		"relations": {
+			"department": {
+				"title": "Department",
+				"type": "hasOne",
+				"model": "department",
+				"localFields": [
+					"departmentCode"
+				],
+				"foreignFields": [
+					"code"
+				],
+				"aggregationKind": "none"
+			},
+			"address": {
+				"title": "Address",
+				"type": "hasOne",
+				"model": "employeeAddress",
+				"aggregationKind": "composite",
+				"invRel": "employee",
+				"localFields": [
+					"id"
+				],
+				"foreignFields": [
+					"employeeId"
+				]
+			}
+		}
+	};
 new ModelManager().registerClass(Employee, EMPLOYEE_SCHEMA.nameSpace);

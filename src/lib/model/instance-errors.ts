@@ -16,6 +16,9 @@ export class InstanceErrors {
         schema && schema.properties && Object.keys(schema.properties).forEach(propName => {
             that._messages[propName] = new ErrorState(that._parent, propName);
         });
+        schema && schema.relations && Object.keys(schema.relations).forEach(relName => {
+            that._messages[relName] = new ErrorState(that._parent, relName);
+        });
 
     }
     public destroy() {

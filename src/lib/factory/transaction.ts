@@ -29,8 +29,8 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let list = that._subscribers.get(eventType);
         if (list) {
-            for (let i = 0, len = list.length; i < len; i++) {
-                await list[i](eventInfo, classOfInstance, instance, args)
+            for (let item of list) {
+                await item(eventInfo, classOfInstance, instance, args)
             }
         }
     }

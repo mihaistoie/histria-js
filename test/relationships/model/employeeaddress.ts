@@ -77,6 +77,9 @@ export class EmployeeAddressErrors extends InstanceErrors {
 	public get employeeId(): ErrorState {
 		return this._messages.employeeId;
 	}
+	public get employee(): ErrorState {
+		return this._messages.employee;
+	}
 }
 
 export class EmployeeAddressState extends InstanceState {

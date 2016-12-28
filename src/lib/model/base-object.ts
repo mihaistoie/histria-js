@@ -1,8 +1,9 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { HasOneRef } from './ref-object';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
-import { JSONTYPES } from '../schema/schema-consts';
+import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from '../schema/schema-consts';
 
 import { IntegerValue, NumberValue } from './number';
 import { InstanceErrors } from './instance-errors'
@@ -124,6 +125,38 @@ export class Instance implements ObservableObject {
 				case JSONTYPES.number:
 					that._children[propName] = new NumberValue(that, propName);
 					break;
+			}
+		});
+		that._schema && that._schema.relations && Object.keys(that._schema.relations).forEach(relName => {
+			let relation = that._schema.relations[relName];
+			switch (relation.type) {
+				case RELATION_TYPE.hasOne : 
+					if (relation.aggregationKind === AGGREGATION_KIND.none) {
+						//reference
+						that._children[relName] = new HasOneRef(that, relName, relation);
+					} else if (relation.aggregationKind === AGGREGATION_KIND.shared) {
+						//aggregation
+					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
+						//composition
+					}
+					break;
+				case RELATION_TYPE.belongsTo : 
+					if (relation.aggregationKind === AGGREGATION_KIND.shared) {
+						//aggregation
+					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
+						//composition
+					}				
+					break;
+				case RELATION_TYPE.hasMany : 
+					if (relation.aggregationKind === AGGREGATION_KIND.none) {
+						//reference
+					} else if (relation.aggregationKind === AGGREGATION_KIND.shared) {
+						//aggregation
+					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
+						//composition
+					}
+					break
+
 			}
 		});
 	}

@@ -174,6 +174,12 @@ function _genClassErrors(schema: any, className: string, baseClass: string, code
         code.push(_tab(2) + util.format('return this._messages.%s;', propName));
         code.push(_tab(1) + '}');
     });
+    schema.relations && Object.keys(schema.relations).forEach(relName => {
+        let relation = schema.relations[relName];
+        code.push(_tab(1) + util.format('public get %s(): ErrorState {', relName));
+        code.push(_tab(2) + util.format('return this._messages.%s;', relName));
+        code.push(_tab(1) + '}');
+    });
 
     code.push('}');
 }

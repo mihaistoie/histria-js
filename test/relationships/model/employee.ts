@@ -69,6 +69,12 @@ export class EmployeeErrors extends InstanceErrors {
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
+	public get department(): ErrorState {
+		return this._messages.department;
+	}
+	public get address(): ErrorState {
+		return this._messages.address;
+	}
 }
 
 export class EmployeeState extends InstanceState {

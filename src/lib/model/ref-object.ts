@@ -67,7 +67,7 @@ export class BaseHasOne<T extends ObservableObject> {
             if (that._value)
                 pmodel[field] = nmodel[ff]
             else
-                delete pmodel[ff];
+                delete pmodel[field];
         });
     }
 

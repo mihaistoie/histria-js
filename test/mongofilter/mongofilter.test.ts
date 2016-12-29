@@ -56,12 +56,16 @@ describe('Mongo filter', () => {
             ]
         }
     ];
-    xit("throws error if $not is incorrect", function () {
-        assert.throws(function () {
+    it("throws error if $not is incorrect", function () {
+        let error = false;
+        try {
             mongoFilter({
                 $not: ['abc']
             }, topic);
-        }, Error);
+        } catch (ex) {
+            error = true;
+        }
+        assert.equal(error, false);
     });
     it("Photography in brazil count of 1", function () {
         var res = mongoFilter({

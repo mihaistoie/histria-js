@@ -204,12 +204,12 @@ export class Instance implements ObservableObject {
 				await that.beforePropertyChanged(propName, oldValue, newValue);
 				//change property
 				hnd();
-				// Validate rules 
-				if (that.status === ObjectStatus.idle)
+				if (that.status === ObjectStatus.idle)  {
+					// Validation rules
 					await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, newValue);
-				// Propagation rules
-				if (that.status === ObjectStatus.idle)
+					// Propagation rules
 					await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, newValue, oldValue);
+				}
 			} catch (ex) {
 				that._errors[propName].addException(ex);
 			}

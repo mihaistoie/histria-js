@@ -1,5 +1,6 @@
 import * as util from 'util';
-import { EventType, EventInfo } from './interfaces';
+
+import { EventType, EventInfo, ObservableObject } from './interfaces';
 
 function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
     let res = [];
@@ -17,7 +18,7 @@ export class ModelManager {
         }
         return ModelManager.singleton;
     }
-    public createInstance<T>(classOfInstance: any, transaction: any, value: any, options: { isRestore: boolean }): T {
+    public createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: { isRestore: boolean }): T {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value, options);

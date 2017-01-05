@@ -156,17 +156,6 @@ describe('Mongo filter', () => {
         }, topic);
         assert.equal(res.length, 2);
     });
-    it("has mongoFiltered with selector function count of 2", function () {
-        var res = mongoFilter({
-            "name": "photography",
-            "places": {
-                $in: ['costa rica']
-            }
-        }, topic, function (item) {
-            return item.hobbies;
-        });
-        assert.equal(res.length, 2);
-    });
 
     describe("nesting", function () {
         it("$eq for nested object", function () {

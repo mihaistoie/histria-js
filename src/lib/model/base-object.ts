@@ -12,7 +12,7 @@ import { EventInfoStack } from './event-stack'
 
 import * as helper from '../utils/helper';
 import * as util from 'util';
-
+import * as uuid from 'uuid';
 
 
 
@@ -47,6 +47,10 @@ export class Instance implements ObservableObject {
 
 	public get context(): UserContext {
 		return this._context;
+	}
+
+	public get uuid(): string {
+		return this._model.$uuid;
 	}
 
 	public get isNew(): boolean {
@@ -130,7 +134,7 @@ export class Instance implements ObservableObject {
 		that._schema && that._schema.relations && Object.keys(that._schema.relations).forEach(relName => {
 			let relation = that._schema.relations[relName];
 			switch (relation.type) {
-				case RELATION_TYPE.hasOne : 
+				case RELATION_TYPE.hasOne:
 					if (relation.aggregationKind === AGGREGATION_KIND.none) {
 						//reference
 						that._children[relName] = new HasOneRef(that, relName, relation);
@@ -140,14 +144,14 @@ export class Instance implements ObservableObject {
 						//composition
 					}
 					break;
-				case RELATION_TYPE.belongsTo : 
+				case RELATION_TYPE.belongsTo:
 					if (relation.aggregationKind === AGGREGATION_KIND.shared) {
 						//aggregation
 					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
 						//composition
-					}				
+					}
 					break;
-				case RELATION_TYPE.hasMany : 
+				case RELATION_TYPE.hasMany:
 					if (relation.aggregationKind === AGGREGATION_KIND.none) {
 						//reference
 					} else if (relation.aggregationKind === AGGREGATION_KIND.shared) {
@@ -204,7 +208,7 @@ export class Instance implements ObservableObject {
 				await that.beforePropertyChanged(propName, oldValue, newValue);
 				//change property
 				hnd();
-				if (that.status === ObjectStatus.idle)  {
+				if (that.status === ObjectStatus.idle) {
 					// Validation rules
 					await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, newValue);
 					// Propagation rules
@@ -287,6 +291,8 @@ export class Instance implements ObservableObject {
 		that._propertyName = propertyName;
 		that._transaction = transaction;
 		that.init();
+		//check uid 
+		checkuuid(value);
 		that._setModel(value);
 	}
 
@@ -329,3 +335,13 @@ export class Instance implements ObservableObject {
 
 }
 
+function checkuuid(value: any) {
+	//check uuid 
+	if (value && !value.$uuid) {
+		if (value.$isNew || !value.id) {
+			value.$uuid = uuid.v1();
+			value.id = value.$uuid;
+		} else
+			value.$uuid = value.id + ' ';
+	}
+}

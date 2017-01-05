@@ -4,11 +4,12 @@ import { ModelManager, propagationRules, initRules, propValidateRules, objValida
 import { validateAfterPropChanged } from '../model/validation';
 
 import { TranContext } from './user-context';
-import { UserContext, TransactionContainer, EventType, EventInfo } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from '../model/interfaces';
 
 export class Transaction implements TransactionContainer {
     private _id: any;
     private _subscribers: Map<EventType, any[]>;
+    private _instances: Map<any, Map<string, ObservableObject>>;
     private _ctx: UserContext;
     constructor(ctx?: UserContext) {
         let that = this;
@@ -44,20 +45,22 @@ export class Transaction implements TransactionContainer {
         list.push(handler);
     }
 
-    public async create<T>(classOfInstance: any): Promise<T> {
+    public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
+        let that = this;
         let mm = new ModelManager();
         let instance: any = mm.createInstance<T>(classOfInstance, this, { $isNew: true }, { isRestore: true });
+        that._addInstance(instance, classOfInstance);
         await instance.afterCreated();
         return instance;
     }
-    public async restore<T>(classOfInstance: any, data: any): Promise<T> {
+    public async restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         data = data || {};
         let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: true });
         await instance.afterCreated();
         return instance;
     }
-    public async load<T>(classOfInstance: any, data: any): Promise<T> {
+    public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: false });
         await instance.afterCreated();
@@ -68,6 +71,38 @@ export class Transaction implements TransactionContainer {
         that._subscribers = null;
         that._ctx = null;
     }
+    private _addInstance(instance: ObservableObject, classOfInstance: any) {
+        let that = this;
+        that._instances = that._instances || new Map<any, Map<string, ObservableObject>>();
+        let instances = that._instances.get(classOfInstance);
+        if (!instances) {
+            instances = new Map<string, ObservableObject>();
+            that._instances.set(classOfInstance, instances);
+        }
+        instances.set(instance.uuid, instance);
+    }
+    public findOne<T extends ObservableObject>(filter: any, classOfInstance): T {
+        let that = this;
+        let res = that._findOne<T>(filter, classOfInstance);
+        if (res) return res;
+        //use persistence
+        return null;
+    }
+    private _findById<T extends ObservableObject>(id: string, classOfInstance: any): T {
+        let that = this;
+        if (!that._instances) return null;
+        let instances = that._instances.get(classOfInstance);
+        if (!instances) return null;
+        let res: any = instances.get(id + '');
+        return res;
+    }
+    private _findOne<T extends ObservableObject>(filter: any, classOfInstance: any): T {
+        let that = this;
+        if (filter.id && typeof filter.id !== 'object') {
+            return that._findById<T>(filter.id, classOfInstance);    
+        }
+    }
+
 
 }
 

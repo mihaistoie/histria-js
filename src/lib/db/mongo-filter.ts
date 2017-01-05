@@ -1,11 +1,6 @@
 
-export function mongoFilter(query: any, array: any[], getter?: any) {
-    if (_isFunction(array)) {
-        getter = array;
-        array = void 0;
-    }
-    let validator = _createRootValidator(query, getter);
-
+export function mongoFilter(query: any, array: any[]) {
+    let validator = _parse(query);
     function filter(b) {
         return _validate(validator, b);
     }
@@ -253,16 +248,4 @@ function _parse(query: any) {
     return validators.length === 1 ? validators[0] : _createValidator(validators, OPERATORS.$and);
 }
 
-function _createRootValidator(query, getter) {
-    let validator = _parse(query);
-    if (getter) {
-        validator = {
-            a: validator,
-            v: function (a, b) {
-                return _validate(a, getter(b));
-            }
-        };
-    }
-    return validator;
-}
 

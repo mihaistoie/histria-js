@@ -54,6 +54,7 @@ export interface ObservableObject {
     getRoot(): ObservableObject;
     context: UserContext;
     destroy();
+    readonly uuid: string;
 }
 
 export interface ObservableArray {

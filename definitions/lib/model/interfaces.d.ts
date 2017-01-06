@@ -44,6 +44,7 @@ export interface ObservableObject {
     getRoot(): ObservableObject;
     context: UserContext;
     destroy(): any;
+    readonly uuid: string;
 }
 export interface ObservableArray {
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

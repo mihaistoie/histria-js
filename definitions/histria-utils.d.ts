@@ -35,6 +35,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _propertyName: string;
         protected _getEventInfo(): EventInfo;
         readonly context: UserContext;
+        readonly uuid: string;
         readonly isNew: boolean;
         getPath(propName?: string): string;
         readonly propertyName: string;
@@ -87,10 +88,10 @@ declare module 'histria-utils/lib/model/instance-state' {
 }
 
 declare module 'histria-utils/lib/model/model-manager' {
-    import { EventType, EventInfo } from 'histria-utils/lib/model/interfaces';
+    import { EventType, EventInfo, ObservableObject } from 'histria-utils/lib/model/interfaces';
     export class ModelManager {
         constructor();
-        createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {
+        createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: {
             isRestore: boolean;
         }): T;
         registerClass(constructor: any, nameSpace: string): void;
@@ -109,16 +110,17 @@ declare module 'histria-utils/lib/model/model-manager' {
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
-    import { UserContext, TransactionContainer, EventType, EventInfo } from 'histria-utils/lib/model/interfaces';
+    import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from 'histria-utils/lib/model/interfaces';
     export class Transaction implements TransactionContainer {
         constructor(ctx?: UserContext);
         readonly context: UserContext;
         emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
         subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
-        create<T>(classOfInstance: any): Promise<T>;
-        restore<T>(classOfInstance: any, data: any): Promise<T>;
-        load<T>(classOfInstance: any, data: any): Promise<T>;
+        create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
+        restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
+        load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
         destroy(): void;
+        findOne<T extends ObservableObject>(filter: any, classOfInstance: any): T;
     }
 }
 
@@ -224,7 +226,15 @@ declare module 'histria-utils/lib/generators/classgen' {
 }
 
 declare module 'histria-utils/lib/db/mongo-filter' {
-    export function mongoFilter(query: any, array: any[], getter?: any): any[];
+    export function findInArray(query: any, array: any[], options?: {
+        findFirst?: boolean;
+        transform?: (item: any) => any;
+    }): any;
+    export function findInMap(query: any, map: Map<any, any>, options?: {
+        findFirst?: boolean;
+        transform?: (item: any) => any;
+    }): any;
+    export function mongoFilter(query: any, array: any[]): any;
 }
 
 declare module 'histria-utils/lib/model/interfaces' {
@@ -274,6 +284,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         getRoot(): ObservableObject;
         context: UserContext;
         destroy(): any;
+        readonly uuid: string;
     }
     export interface ObservableArray {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

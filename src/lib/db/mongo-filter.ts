@@ -1,16 +1,50 @@
 
-export function mongoFilter(query: any, array: any[]) {
-    let validator = _parse(query);
-    function filter(b) {
-        return _validate(validator, b);
-    }
 
-    if (array) {
-        return array.filter(filter);
+export function findInArray(query: any, array: any[], options?: { findFirst?: boolean, transform?: (item: any) => any }) {
+    let validator = _parse(query);
+    let findFirst = options && options.findFirst;
+    let transform = options && options.transform ? options.transform : _transform;
+    if (findFirst) {
+        if (array) {
+            for (let item of array) {
+                if (_validate(validator, transform(item)))
+                    return item;
+
+            }
+        }
+        return null;
+
+    } else {
+        if (array) {
+            let _filter = (item) => { return _validate(validator, transform(item)); };
+            return array.filter(_filter);
+        }
+        return [];
     }
-    return [];
 }
 
+export function findInMap(query: any, map: Map<any, any>, options?: { findFirst?: boolean, transform?: (item: any) => any }) {
+    let validator = _parse(query);
+    let findFirst = options && options.findFirst;
+    let transform = options && options.transform ? options.transform : _transform;
+    let res = [];
+    if (map) {
+        for (let mItem of map) {
+            let item = mItem[1];
+            if (_validate(validator, transform(item))) {
+                if (findFirst)
+                    return item;
+                else
+                    res.push(item);
+            }
+        }
+    }
+    return findFirst ? null : res;;
+
+}
+export function mongoFilter(query: any, array: any[]) {
+    return findInArray(query, array);
+}
 
 function or(predicate: (a: any, b: any) => boolean): (a: any, b: any) => boolean {
     return function (a, b): boolean {
@@ -248,4 +282,6 @@ function _parse(query: any) {
     return validators.length === 1 ? validators[0] : _createValidator(validators, OPERATORS.$and);
 }
 
+
+function _transform(value: any) { return value; }
 

@@ -1,5 +1,5 @@
 import { ObservableObject } from './interfaces';
-export declare class BaseHasOne<T> {
+export declare class BaseHasOne<T extends ObservableObject> {
     protected _value: T;
     protected _relation: any;
     protected _propertyName: any;
@@ -12,6 +12,6 @@ export declare class BaseHasOne<T> {
     private _lazyLoad();
     private _updateParentRefs();
 }
-export declare class HasOneRef<T> extends BaseHasOne<T> {
+export declare class HasOneRef<T extends ObservableObject> extends BaseHasOne<T> {
     constructor(parent: any, propertyName: string, relation: any);
 }

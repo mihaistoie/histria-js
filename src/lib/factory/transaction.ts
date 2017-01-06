@@ -2,6 +2,7 @@ import * as util from 'util';
 import * as uuid from 'uuid';
 import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules } from '../model/model-manager';
 import { validateAfterPropChanged } from '../model/validation';
+import { findInMap } from '../db/mongo-filter';
 
 import { TranContext } from './user-context';
 import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from '../model/interfaces';
@@ -85,24 +86,30 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let res = that._findOne<T>(filter, classOfInstance);
         if (res) return res;
-        //use persistence
+        //TODO use persistence
         return null;
+    }
+    private _getInstances(classOfInstance: any): Map<string, ObservableObject> {
+        let that = this;
+        if (!that._instances) return null;
+        return that._instances.get(classOfInstance);
+
     }
     private _findById<T extends ObservableObject>(id: string, classOfInstance: any): T {
         let that = this;
-        if (!that._instances) return null;
-        let instances = that._instances.get(classOfInstance);
-        if (!instances) return null;
-        let res: any = instances.get(id + '');
-        return res;
-    }
-    private _findOne<T extends ObservableObject>(filter: any, classOfInstance: any): T {
-        let that = this;
-        if (filter.id && typeof filter.id !== 'object') {
-            return that._findById<T>(filter.id, classOfInstance);    
-        }
+        let instances = that._getInstances(classOfInstance);
+        return instances ? <any>instances.get(id + '') : null;
     }
 
+    private _findOne<T extends ObservableObject>(query: any, classOfInstance: any): T {
+        let that = this;
+        if (query.id && typeof query.id !== 'object')
+            return that._findById<T>(query.id, classOfInstance);
+        if (!that._instances) return null;
+        let instances = that._getInstances(classOfInstance);
+        if (!instances) return null;
+        return findInMap(query, instances, { findFirst: true, transform: (item) => { return item.model();} })
+    }
 
 }
 

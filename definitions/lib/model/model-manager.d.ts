@@ -1,10 +1,10 @@
-import { EventType, EventInfo } from './interfaces';
+import { EventType, EventInfo, ObservableObject } from './interfaces';
 export declare class ModelManager {
     private _mapByClass;
     private _mapRules;
     private static singleton;
     constructor();
-    createInstance<T>(classOfInstance: any, transaction: any, value: any, options: {
+    createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: {
         isRestore: boolean;
     }): T;
     registerClass(constructor: any, nameSpace: string): void;

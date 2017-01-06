@@ -5,22 +5,19 @@ import {
 } from '../../../src/index';
 
 
-export class Department extends Instance {
+export class Customer extends Instance {
 	protected init() {
 		super.init();
 		let that = this;
-		that._schema = DEPARTMENT_SCHEMA;
+		that._schema = CUSTOMER_SCHEMA;
 	}
 	protected createStates() {
 		let that = this;
-		that._states = new DepartmentState(that, that._schema);
+		that._states = new CustomerState(that, that._schema);
 	}
 	protected createErrors() {
 		let that = this;
-		that._errors = new DepartmentErrors(that, that._schema);
-	}
-	public code(value?: string): Promise<string> {
-		return this.getOrSetProperty('code', value);
+		that._errors = new CustomerErrors(that, that._schema);
 	}
 	public title(value?: string): Promise<string> {
 		return this.getOrSetProperty('title', value);
@@ -28,20 +25,17 @@ export class Department extends Instance {
 	public get id(): IntegerValue {
 		return this._children.id;
 	}
-	public get $states(): DepartmentState {
-		return <DepartmentState>this._states;
+	public get $states(): CustomerState {
+		return <CustomerState>this._states;
 	}
-	public get $errors(): DepartmentErrors {
-		return <DepartmentErrors>this._errors;
+	public get $errors(): CustomerErrors {
+		return <CustomerErrors>this._errors;
 	}
 }
 
-export class DepartmentErrors extends InstanceErrors {
+export class CustomerErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
-	}
-	public get code(): ErrorState {
-		return this._messages.code;
 	}
 	public get title(): ErrorState {
 		return this._messages.title;
@@ -51,10 +45,7 @@ export class DepartmentErrors extends InstanceErrors {
 	}
 }
 
-export class DepartmentState extends InstanceState {
-	public get code(): StringState {
-		return this._states.code;
-	}
+export class CustomerState extends InstanceState {
 	public get title(): StringState {
 		return this._states.title;
 	}
@@ -63,21 +54,14 @@ export class DepartmentState extends InstanceState {
 	}
 }
 const
-	DEPARTMENT_SCHEMA = {
+	CUSTOMER_SCHEMA = {
 		"type": "object",
-		"nameSpace": "employee",
-		"name": "department",
-		"primaryKey": [
-			"code"
-		],
+		"nameSpace": "order",
+		"name": "customer",
 		"properties": {
-			"code": {
-				"type": "string",
-				"title": "Code"
-			},
 			"title": {
-				"type": "string",
-				"title": "Title"
+				"title": "title",
+				"type": "string"
 			},
 			"id": {
 				"type": "integer",
@@ -85,4 +69,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Department, DEPARTMENT_SCHEMA.name, DEPARTMENT_SCHEMA.nameSpace);
+new ModelManager().registerClass(Customer, CUSTOMER_SCHEMA.name, CUSTOMER_SCHEMA.nameSpace);

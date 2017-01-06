@@ -10,6 +10,7 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 
 export class ModelManager {
     private _mapByClass: Map<any, any>;
+    private _classes: Map<string, any>;
     private _mapRules: Map<any, any>;
     private static singleton: ModelManager;
     constructor() {
@@ -23,9 +24,21 @@ export class ModelManager {
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value, options);
     }
-    public registerClass(constructor: any, nameSpace: string) {
+    public classByName(className: string): any {
         let that = this;
-        that._mapByClass = that._mapByClass || new Map();
+        if (that._classes)
+            return that._classes.get(className);
+        return null;
+
+    }
+    public registerClass(constructor: any, className: string, nameSpace: string) {
+        let that = this;
+        that._mapByClass = that._mapByClass || new Map<any, any>();
+        that._classes = that._classes || new Map<string, any>();
+        let classConstructor = that._classes.get(className);
+        if (!classConstructor)
+            that._classes.set(className, constructor);
+
         let ci = that._mapByClass.get(constructor);
         if (ci) return;
         ci = {

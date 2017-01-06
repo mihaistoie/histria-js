@@ -156,4 +156,4 @@ const
 		},
 		"nameSpace": "EmployeeAddress"
 	};
-new ModelManager().registerClass(EmployeeAddress, EMPLOYEEADDRESS_SCHEMA.nameSpace);
+new ModelManager().registerClass(EmployeeAddress, EMPLOYEEADDRESS_SCHEMA.name, EMPLOYEEADDRESS_SCHEMA.nameSpace);

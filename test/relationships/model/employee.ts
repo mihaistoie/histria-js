@@ -149,4 +149,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Employee, EMPLOYEE_SCHEMA.nameSpace);
+new ModelManager().registerClass(Employee, EMPLOYEE_SCHEMA.name, EMPLOYEE_SCHEMA.nameSpace);

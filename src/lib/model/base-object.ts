@@ -48,6 +48,9 @@ export class Instance implements ObservableObject {
 	public get context(): UserContext {
 		return this._context;
 	}
+	public get transaction(): TransactionContainer {
+		return this._transaction;
+	}
 
 	public get uuid(): string {
 		return this._model.$uuid;

@@ -28,6 +28,7 @@ export interface UserContext {
 }
 export interface TransactionContainer {
     context: UserContext;
+    findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
 }
 export interface ObservableObject {
@@ -42,8 +43,9 @@ export interface ObservableObject {
     }[];
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
-    context: UserContext;
     destroy(): any;
+    readonly context: UserContext;
+    readonly transaction: TransactionContainer;
     readonly uuid: string;
 }
 export interface ObservableArray {

@@ -35,6 +35,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _propertyName: string;
         protected _getEventInfo(): EventInfo;
         readonly context: UserContext;
+        readonly transaction: TransactionContainer;
         readonly uuid: string;
         readonly isNew: boolean;
         getPath(propName?: string): string;
@@ -94,7 +95,8 @@ declare module 'histria-utils/lib/model/model-manager' {
         createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: {
             isRestore: boolean;
         }): T;
-        registerClass(constructor: any, nameSpace: string): void;
+        classByName(className: string): any;
+        registerClass(constructor: any, className: string, nameSpace: string): void;
         rulesForInit(classOfInstance: any): any[];
         rulesObjValidate(classOfInstance: any): any[];
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
@@ -268,6 +270,7 @@ declare module 'histria-utils/lib/model/interfaces' {
     }
     export interface TransactionContainer {
         context: UserContext;
+        findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
         emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
     }
     export interface ObservableObject {
@@ -282,8 +285,9 @@ declare module 'histria-utils/lib/model/interfaces' {
         }[];
         getPath(propName?: string): string;
         getRoot(): ObservableObject;
-        context: UserContext;
         destroy(): any;
+        readonly context: UserContext;
+        readonly transaction: TransactionContainer;
         readonly uuid: string;
     }
     export interface ObservableArray {

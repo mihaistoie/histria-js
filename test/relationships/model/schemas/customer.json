@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "nameSpace": "order",
+    "name": "customer",
+    "properties": {
+        "title": {
+            "title": "title",
+            "type": "string"
+        }
+    }
+}

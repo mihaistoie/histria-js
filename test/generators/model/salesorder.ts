@@ -119,4 +119,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(SalesOrder, SALESORDER_SCHEMA.nameSpace);
+new ModelManager().registerClass(SalesOrder, SALESORDER_SCHEMA.name, SALESORDER_SCHEMA.nameSpace);

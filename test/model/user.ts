@@ -4,71 +4,6 @@ import {
 	IntegerValue, NumberValue
 } from '../../src/index';
 
-const
-	USER_SCHEMA = {
-		"name": "user",
-		"type": "object",
-		"nameSpace": "users",
-		"properties": {
-			"age": {
-				"title": "Age",
-				"type": "integer"
-			},
-			"firstName": {
-				"title": "First Name",
-				"type": "string"
-			},
-			"lastName": {
-				"title": "Last Name",
-				"type": "string"
-			},
-			"fullName": {
-				"title": "Full Name",
-				"type": "string"
-			}
-		},
-		"states": {
-			"firstName": {
-				"isMandatory": true
-			},
-			"fullName": {
-				"isReadOnly": true
-			}
-		}
-	};
-
-export class UserState extends InstanceState {
-	public get age(): IntegerState {
-		return this._states.age;
-	}
-	public get firstName(): StringState {
-		return this._states.firstName;
-	}
-	public get lastName(): StringState {
-		return this._states.lastName;
-	}
-	public get fullName(): StringState {
-		return this._states.fullName;
-	}
-}
-
-export class UserErrors extends InstanceErrors {
-	public get $(): ErrorState {
-		return this._messages.$;
-	}
-	public get age(): Error {
-		return this._messages.age;
-	}
-	public get firstName(): ErrorState {
-		return this._messages.firstName;
-	}
-	public get lastName(): ErrorState {
-		return this._messages.lastName;
-	}
-	public get fullName(): ErrorState {
-		return this._messages.fullName;
-	}
-}
 
 export class User extends Instance {
 	protected init() {
@@ -96,6 +31,9 @@ export class User extends Instance {
 	public fullName(value?: string): Promise<string> {
 		return this.getOrSetProperty('fullName', value);
 	}
+	public get id(): IntegerValue {
+		return this._children.id;
+	}
 	public get $states(): UserState {
 		return <UserState>this._states;
 	}
@@ -103,4 +41,79 @@ export class User extends Instance {
 		return <UserErrors>this._errors;
 	}
 }
-new ModelManager().registerClass(User, USER_SCHEMA.nameSpace);
+
+export class UserErrors extends InstanceErrors {
+	public get $(): ErrorState {
+		return this._messages.$;
+	}
+	public get age(): ErrorState {
+		return this._messages.age;
+	}
+	public get firstName(): ErrorState {
+		return this._messages.firstName;
+	}
+	public get lastName(): ErrorState {
+		return this._messages.lastName;
+	}
+	public get fullName(): ErrorState {
+		return this._messages.fullName;
+	}
+	public get id(): ErrorState {
+		return this._messages.id;
+	}
+}
+
+export class UserState extends InstanceState {
+	public get age(): IntegerState {
+		return this._states.age;
+	}
+	public get firstName(): StringState {
+		return this._states.firstName;
+	}
+	public get lastName(): StringState {
+		return this._states.lastName;
+	}
+	public get fullName(): StringState {
+		return this._states.fullName;
+	}
+	public get id(): IntegerState {
+		return this._states.id;
+	}
+}
+const
+	USER_SCHEMA = {
+		"name": "user",
+		"type": "object",
+		"nameSpace": "users",
+		"properties": {
+			"age": {
+				"title": "Age",
+				"type": "integer"
+			},
+			"firstName": {
+				"title": "First Name",
+				"type": "string"
+			},
+			"lastName": {
+				"title": "Last Name",
+				"type": "string"
+			},
+			"fullName": {
+				"title": "Full Name",
+				"type": "string"
+			},
+			"id": {
+				"type": "integer",
+				"generated": true
+			}
+		},
+		"states": {
+			"firstName": {
+				"isMandatory": true
+			},
+			"fullName": {
+				"isReadOnly": true
+			}
+		}
+	};
+new ModelManager().registerClass(User, USER_SCHEMA.name, USER_SCHEMA.nameSpace);

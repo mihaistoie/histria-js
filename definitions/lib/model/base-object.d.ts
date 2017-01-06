@@ -18,6 +18,7 @@ export declare class Instance implements ObservableObject {
     private _context;
     protected _getEventInfo(): EventInfo;
     readonly context: UserContext;
+    readonly transaction: TransactionContainer;
     readonly uuid: string;
     readonly isNew: boolean;
     getPath(propName?: string): string;

@@ -81,8 +81,9 @@ export class Transaction implements TransactionContainer {
             that._instances.set(classOfInstance, instances);
         }
         instances.set(instance.uuid, instance);
+       
     }
-    public findOne<T extends ObservableObject>(filter: any, classOfInstance): T {
+    public findOne<T extends ObservableObject>(filter: any, classOfInstance: any): T {
         let that = this;
         let res = that._findOne<T>(filter, classOfInstance);
         if (res) return res;
@@ -105,7 +106,6 @@ export class Transaction implements TransactionContainer {
         let that = this;
         if (query.id && typeof query.id !== 'object')
             return that._findById<T>(query.id, classOfInstance);
-        if (!that._instances) return null;
         let instances = that._getInstances(classOfInstance);
         if (!instances) return null;
         return findInMap(query, instances, { findFirst: true, transform: (item) => { return item.model();} })

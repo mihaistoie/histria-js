@@ -4,14 +4,18 @@ export declare class BaseHasOne<T extends ObservableObject> {
     protected _relation: any;
     protected _propertyName: any;
     protected _parent: ObservableObject;
+    protected _refClass: any;
     constructor(parent: any, propertyName: string, relation: any);
     value(value?: T): Promise<T>;
     destroy(): void;
     private _getValue();
     private _setValue(value);
-    private _lazyLoad();
+    protected _recyleRefInstance(value: any): Promise<void>;
+    protected _lazyLoad(): Promise<void>;
     private _updateParentRefs();
 }
 export declare class HasOneRef<T extends ObservableObject> extends BaseHasOne<T> {
     constructor(parent: any, propertyName: string, relation: any);
+    protected _lazyLoad(): Promise<void>;
+    protected _recyleRefInstance(value: any): Promise<void>;
 }

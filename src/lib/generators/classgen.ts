@@ -135,7 +135,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 
         _genSchema(schema, className, code)
 
-        code.push(util.format('new ModelManager().registerClass(%s, %s_SCHEMA.nameSpace);', className, className.toUpperCase()));
+        code.push(util.format('new ModelManager().registerClass(%s, %s_SCHEMA.name, %s_SCHEMA.nameSpace);', className, className.toUpperCase(), className.toUpperCase()));
 
 
 

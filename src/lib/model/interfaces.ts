@@ -39,6 +39,7 @@ export interface UserContext {
 
 export interface TransactionContainer {
     context: UserContext
+    findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args);
 }
 
@@ -52,8 +53,9 @@ export interface ObservableObject {
     modelErrors(propName: string): { message: string, severity: MessageServerity }[];
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
-    context: UserContext;
     destroy();
+    readonly context: UserContext;
+    readonly transaction: TransactionContainer; 
     readonly uuid: string;
 }
 

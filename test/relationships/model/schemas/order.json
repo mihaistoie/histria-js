@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "nameSpace": "order",
+    "name": "order",
+    "properties": {
+        "customerStatus": {
+            "type": "string"
+        }
+    },
+    "relations": {
+        "customer": {
+            "type": "hasOne",
+            "model": "customer"
+        }
+    }
+}

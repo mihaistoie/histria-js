@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "name": "engine",
+    "properties": {},
+    "relations": {
+        "car": {
+            "type": "belongsTo",
+            "model": "car",
+            "aggregationKind": "composite",
+            "invRel": "engine"
+        }
+    }
+}

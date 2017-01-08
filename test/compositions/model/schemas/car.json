@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "name": "car",
+    "properties": {},
+    "relations": {
+        "engine": {
+            "type": "hasOne",
+            "model": "engine",
+            "aggregationKind": "composite",
+            "invRel": "car"
+        }
+    }
+}

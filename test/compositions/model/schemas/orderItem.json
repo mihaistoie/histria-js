@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "name": "orderItem",
+    "properties": {},
+    "relations": {
+        "order": {
+            "type": "belongsTo",
+            "model": "order",
+            "aggregationKind": "composite",
+            "invRel": "items"
+        }
+    }
+}

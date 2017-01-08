@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "name": "order",
+    "properties": {},
+    "relations": {
+        "items": {
+            "type": "hasMany",
+            "model": "orderItem",
+            "aggregationKind": "composite",
+            "invRel": "order"
+        }
+    }
+}

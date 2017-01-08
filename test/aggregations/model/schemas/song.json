@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "name": "song",
+    "properties": {},
+    "relations": {
+        "cd": {
+            "type": "belongsTo",
+            "model": "cd",
+            "aggregationKind": "shared",
+            "invRel": "songs"
+        }
+    }
+}

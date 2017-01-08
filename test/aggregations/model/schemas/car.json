@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "name": "car",
+    "properties": {},
+    "relations": {
+        "drivenBy": {
+            "type": "hasOne",
+            "model": "driver",
+            "aggregationKind": "shared",
+            "invRel": "drives"
+        }
+    }
+}

@@ -3,55 +3,58 @@ import {
 	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
-import { Song } from './song';
+import { Driver } from './driver';
 
 
-export class Cd extends Instance {
+export class Car extends Instance {
 	protected init() {
 		super.init();
 		let that = this;
-		that._schema = CD_SCHEMA;
+		that._schema = CAR_SCHEMA;
 	}
 	protected createStates() {
 		let that = this;
-		that._states = new CdState(that, that._schema);
+		that._states = new CarState(that, that._schema);
 	}
 	protected createErrors() {
 		let that = this;
-		that._errors = new CdErrors(that, that._schema);
+		that._errors = new CarErrors(that, that._schema);
 	}
 	public get id(): IntegerValue {
 		return this._children.id;
 	}
-	public get $states(): CdState {
-		return <CdState>this._states;
+	public drivenBy(value?: Driver): Promise<Driver> {
+		return this._children.drivenBy.value(value);
 	}
-	public get $errors(): CdErrors {
-		return <CdErrors>this._errors;
+	public get $states(): CarState {
+		return <CarState>this._states;
+	}
+	public get $errors(): CarErrors {
+		return <CarErrors>this._errors;
 	}
 }
 
-export class CdErrors extends InstanceErrors {
+export class CarErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
-	public get songs(): ErrorState {
-		return this._messages.songs;
+	public get drivenBy(): ErrorState {
+		return this._messages.drivenBy;
 	}
 }
 
-export class CdState extends InstanceState {
+export class CarState extends InstanceState {
 	public get id(): IntegerState {
 		return this._states.id;
 	}
 }
 const
-	CD_SCHEMA = {
+	CAR_SCHEMA = {
 		"type": "object",
-		"name": "cd",
+		"name": "car",
 		"properties": {
 			"id": {
 				"type": "integer",
@@ -59,20 +62,20 @@ const
 			}
 		},
 		"relations": {
-			"songs": {
-				"type": "hasMany",
-				"model": "song",
+			"drivenBy": {
+				"type": "hasOne",
+				"model": "driver",
 				"aggregationKind": "shared",
-				"invRel": "cd",
-				"title": "songs",
+				"invRel": "drives",
+				"title": "drivenBy",
 				"localFields": [
 					"id"
 				],
 				"foreignFields": [
-					"cdId"
+					"drivesId"
 				]
 			}
 		},
-		"nameSpace": "Cd"
+		"nameSpace": "Car"
 	};
-new ModelManager().registerClass(Cd, CD_SCHEMA.name, CD_SCHEMA.nameSpace);
+new ModelManager().registerClass(Car, CAR_SCHEMA.name, CAR_SCHEMA.nameSpace);

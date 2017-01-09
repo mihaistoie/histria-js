@@ -1,5 +1,5 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { HasOneRef } from './ref-object';
+import { HasOneRef, HasOneComposition, HasOneAggregation } from './roleHasOne';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
@@ -34,6 +34,51 @@ export class Instance implements ObservableObject {
 	protected _errors: InstanceErrors;
 	protected _propertyName: string;
 	private _context: UserContext;
+
+	//used for relations = called by belongsTo
+	protected async removeChild(relationName: string, child: ObservableArray): Promise<void> {
+
+		let that = this;
+		let rel = that._schema.relation[relationName];
+		let localRole = that._children[relationName];
+		if (rel && localRole) {
+			if (rel.type === RELATION_TYPE.hasOne)
+				await localRole.value(null)
+			else if (rel.type === RELATION_TYPE.hasMany)
+				await localRole.remove(child)
+		}
+	}
+	//used for relations = called by belongsTo
+	protected async addChild(relationName: string, child: ObservableArray): Promise<void> {
+		let that = this;
+		let rel = that._schema.relation[relationName];
+		let localRole = that._children[relationName];
+		if (rel && localRole) {
+			if (rel.type === RELATION_TYPE.hasOne)
+				await localRole.value(child)
+			else if (rel.type === RELATION_TYPE.hasMany)
+				await localRole.add(child)
+		}
+	}
+	//used for relations = called by belongsTo / HasOne
+	protected async changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void> {
+		let that = this;
+		that._parent = newParent;
+		if (notify && propName) {
+			await that.changeProperty(propName, that._parent, newParent, function () {
+				that._parent = newParent;
+			});
+		} else {
+			that._parent = newParent;
+		}
+		let relation = propName && that._schema.relations ? that._schema.relations[propName] : null;
+		if (relation) {
+			// update model
+		}
+
+	}
+
+
 	protected _getEventInfo(): EventInfo {
 		let that = this;
 		let root = <Instance>that.getRoot();
@@ -50,6 +95,9 @@ export class Instance implements ObservableObject {
 	}
 	public get transaction(): TransactionContainer {
 		return this._transaction;
+	}
+	public get parent(): ObservableObject {
+		return this._parent;
 	}
 
 	public get uuid(): string {

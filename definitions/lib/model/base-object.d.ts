@@ -16,9 +16,12 @@ export declare class Instance implements ObservableObject {
     protected _errors: InstanceErrors;
     protected _propertyName: string;
     private _context;
+    protected removeChild(relationName: string, child: ObservableArray): Promise<void>;
+    protected addChild(relationName: string, child: ObservableArray): Promise<void>;
     protected _getEventInfo(): EventInfo;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;
+    readonly parent: ObservableObject;
     readonly uuid: string;
     readonly isNew: boolean;
     getPath(propName?: string): string;

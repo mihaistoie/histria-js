@@ -50,6 +50,20 @@ export function expandSchema(schema: any, model: any) {
 }
 
 
+export function updateRoleRefs(role: any, localModel: any, foreignModel: any) {
+    if (role.localFields && role.localFields.length)
+        role.localFields.forEach((field, index) => {
+            let ff = role.foreignFields[index];
+            if (foreignModel)
+                localModel[field] = foreignModel[ff]
+            else
+                delete localModel[field];
+        });
+}
+
+
+
+
 function idDefinition(): any {
     return { type: JSONTYPES.integer, generated: true };
 }
@@ -194,8 +208,11 @@ function _checkRelations(schema, model) {
             refModel.relations = refModel.relations || {};
             refRel = refModel.relations[rel.invRel];
         }
-        if (!refRel && rel.aggregationKind !== AGGREGATION_KIND.none) {
-            throw util.format('Invalid relation "%s.%s", invRel for aggregations and compositions is required.', schema.name, relName);
+        let isCompositionParent = (rel.aggregationKind === AGGREGATION_KIND.composite) && (rel.type !== RELATION_TYPE.belongsTo);
+
+        if (!refRel && (rel.aggregationKind !== AGGREGATION_KIND.none)) {
+            if (!isCompositionParent)
+                throw util.format('Invalid relation "%s.%s", invRel for aggregations and compositions is required.', schema.name, relName);
         }
         if (refRel) {
             if (refRel.type === RELATION_TYPE.belongsTo) {
@@ -205,8 +222,8 @@ function _checkRelations(schema, model) {
                 }
             } else
                 refRel.aggregationKind = refRel.aggregationKind || AGGREGATION_KIND.none;
-            
-             if (refRel.aggregationKind !== rel.aggregationKind) {
+
+            if (refRel.aggregationKind !== rel.aggregationKind) {
                 throw util.format('Invalid type  %s.%s.aggregationKind !== %s.%s.aggregationKind.', schema.name, relName, refModel.name, rel.invRel);
             }
             if (refRel.type === rel.type) {

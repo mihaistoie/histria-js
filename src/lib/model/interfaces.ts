@@ -54,6 +54,7 @@ export interface ObservableObject {
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
     destroy();
+    readonly parent: ObservableObject;
     readonly context: UserContext;
     readonly transaction: TransactionContainer; 
     readonly uuid: string;

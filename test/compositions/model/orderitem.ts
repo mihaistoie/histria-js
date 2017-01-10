@@ -26,8 +26,8 @@ export class OrderItem extends Instance {
 	public get orderId(): IntegerValue {
 		return this._children.orderId;
 	}
-	public order(): Promise<Order> {
-		return this._children.order.value();
+	public order(value?: Order): Promise<Order> {
+		return this._children.order.value(value);
 	}
 	public get $states(): OrderItemState {
 		return <OrderItemState>this._states;

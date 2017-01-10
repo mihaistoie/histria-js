@@ -26,8 +26,8 @@ export class Driver extends Instance {
 	public get drivesId(): IntegerValue {
 		return this._children.drivesId;
 	}
-	public drives(): Promise<Car> {
-		return this._children.drives.value();
+	public drives(value?: Car): Promise<Car> {
+		return this._children.drives.value(value);
 	}
 	public get $states(): DriverState {
 		return <DriverState>this._states;

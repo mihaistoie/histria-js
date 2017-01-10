@@ -26,8 +26,8 @@ export class Song extends Instance {
 	public get cdId(): IntegerValue {
 		return this._children.cdId;
 	}
-	public cd(): Promise<Cd> {
-		return this._children.cd.value();
+	public cd(value?: Cd): Promise<Cd> {
+		return this._children.cd.value(value);
 	}
 	public get $states(): SongState {
 		return <SongState>this._states;

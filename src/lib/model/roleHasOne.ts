@@ -1,9 +1,10 @@
 import { ObservableObject } from './interfaces';
 import { Role } from './role';
 import { updateRoleRefs } from '../schema/schema-utils';
+import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 
 
-export class BaseHasOne<T extends ObservableObject> extends Role<T> {
+export class HasOne<T extends ObservableObject> extends Role<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation)
@@ -21,33 +22,7 @@ export class BaseHasOne<T extends ObservableObject> extends Role<T> {
     }
 
     protected async _lazyLoad(): Promise<void> {
-        let that = this;
-        let lmodel = that._parent.model();
-        let query: any = {}, valueIsNull = false;
-        that._relation.foreignFields.forEach((field, index) => {
-            let ff = that._relation.localFields[index];
-            let value = lmodel[ff];
-            if (value === null || value === '' || value === undefined)
-                valueIsNull = true;
-            else
-                query[field] = value;
-        });
-        if (valueIsNull)
-            that._value = null;
-        else
-            that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
-        that._afterSetValue();
-    }
-
-
-    protected async _notifyInvRel(value: ObservableObject, oldValue: ObservableObject): Promise<void> {
-    }
-
-    protected async _recyleRefInstance(value: any): Promise<void> {
-    }
-
-    protected _afterSetValue() {
-
+        return Promise.resolve();
     }
 
     private _updateParentRefs() {
@@ -65,11 +40,28 @@ export class BaseHasOne<T extends ObservableObject> extends Role<T> {
 
 }
 
-export class HasOneRef<T extends ObservableObject> extends BaseHasOne<T> {
+export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
     }
-    
+    protected async _lazyLoad(): Promise<void> {
+        let that = this;
+        let lmodel = that._parent.model();
+        let query: any = {}, valueIsNull = false;
+        that._relation.foreignFields.forEach((field, index) => {
+            let ff = that._relation.localFields[index];
+            let value = lmodel[ff];
+            if (value === null || value === '' || value === undefined)
+                valueIsNull = true;
+            else
+                query[field] = value;
+        });
+        if (valueIsNull)
+            that._value = null;
+        else
+            that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
+    }
+
     protected async _setValue(value: T): Promise<T> {
         let that = this;
         value = value || null;
@@ -78,31 +70,89 @@ export class HasOneRef<T extends ObservableObject> extends BaseHasOne<T> {
             return that._value;
         await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
             that._value = value;
-            let lmidel = that._parent.model();
+            let lmodel = that._parent.model();
             let fmodel = that._value ? that._value.model() : null;
-            updateRoleRefs(that._relation, lmidel, fmodel);
+            updateRoleRefs(that._relation, lmodel, fmodel, false);
         });
-        that._notifyInvRel(that._value, oldValue)
-        if (oldValue)
-            await that._recyleRefInstance(oldValue);
         return that._value;
     }
-    
+
 }
 
-export class HasOneComposition<T extends ObservableObject> extends BaseHasOne<T> {
-    constructor(parent: ObservableObject, propertyName: string, relation: any) {
-        super(parent, propertyName, relation);
-    }
-    protected _afterSetValue() {
-        // after 
+export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
+    protected async _setValue(value: T): Promise<T> {
         let that = this;
-        if (that._value)
-            that._value.changeParent(that._parent, false);
+        value = value || null;
+        let oldValue: any = await that._getValue();
+        if (that._value === value)
+            return that._value;
+        let newValue: any = value;
+        await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
+            that._value = value;
+            if (that._relation.invRel) {
+                let fmodel = that._parent.model(), lmodel;
+                if (oldValue) {
+                    lmodel = oldValue.model();
+                    updateRoleRefs(that._relation, lmodel, null, true);
+                }
+                if (that._value) {
+                    lmodel = that._value.model();
+                    updateRoleRefs(that._relation, lmodel, fmodel, true);
+                }
+            }
+        });
+        await that._afterSetValue(newValue, oldValue);
+        return that._value;
+    }
+
+    protected async _lazyLoad(): Promise<void> {
+        let that = this;
+        let lmodel = that._parent.model();
+        let query: any = {}, valueIsNull = false;
+        that._relation.localFields.forEach((field, index) => {
+            let ff = that._relation.foreignFields[index];
+            let value = lmodel[field];
+            if (value === null || value === '' || value === undefined)
+                valueIsNull = true;
+            else
+                query[ff] = value;
+        });
+        if (valueIsNull)
+            that._value = null;
+        else {
+            that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
+            if (that._value)
+                await that._updateParent(that._value)
+        }
+    }
+
+    protected _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+        return Promise.resolve();
+    }
+    protected _updateParent(newValue: any): Promise<void> {
+        return Promise.resolve();
+    }
+
+}
+
+export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
+    protected async _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+        let that = this;
+        if (newValue) {
+            await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, true)
+        }
+        if (oldValue)
+            await oldValue.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true)
+    }
+    protected async _updateParent(newValue: any): Promise<void> {
+        let that = this;
+        if (newValue) 
+            await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false)
     }
 }
 
-export class HasOneAggregation<T extends ObservableObject> extends BaseHasOne<T> {
+
+export class HasOneAggregation<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
     }

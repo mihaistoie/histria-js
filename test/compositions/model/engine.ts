@@ -26,8 +26,8 @@ export class Engine extends Instance {
 	public get carId(): IntegerValue {
 		return this._children.carId;
 	}
-	public car(): Promise<Car> {
-		return this._children.car.value();
+	public car(value?: Car): Promise<Car> {
+		return this._children.car.value(value);
 	}
 	public get $states(): EngineState {
 		return <EngineState>this._states;

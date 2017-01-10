@@ -1,5 +1,6 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { HasOneRef, HasOneComposition, HasOneAggregation } from './roleHasOne';
+import { CompositionBelongsTo, AggregationBelongsTo } from './roleBelongsTo';
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
@@ -39,7 +40,7 @@ export class Instance implements ObservableObject {
 	protected async removeChild(relationName: string, child: ObservableArray): Promise<void> {
 
 		let that = this;
-		let rel = that._schema.relation[relationName];
+		let rel = that._schema.relations[relationName];
 		let localRole = that._children[relationName];
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
@@ -51,7 +52,7 @@ export class Instance implements ObservableObject {
 	//used for relations = called by belongsTo
 	protected async addChild(relationName: string, child: ObservableArray): Promise<void> {
 		let that = this;
-		let rel = that._schema.relation[relationName];
+		let rel = that._schema.relations[relationName];
 		let localRole = that._children[relationName];
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
@@ -60,10 +61,14 @@ export class Instance implements ObservableObject {
 				await localRole.add(child)
 		}
 	}
-	//used for relations = called by belongsTo / HasOne
+	//used for relations = called by belongsTo / HasOneComposition
 	protected async changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void> {
 		let that = this;
+		if (that._parent === newParent)
+			return;
 		that._parent = newParent;
+		that._rootCache = null;
+
 		if (notify && propName) {
 			await that.changeProperty(propName, that._parent, newParent, function () {
 				that._parent = newParent;
@@ -71,13 +76,7 @@ export class Instance implements ObservableObject {
 		} else {
 			that._parent = newParent;
 		}
-		let relation = propName && that._schema.relations ? that._schema.relations[propName] : null;
-		if (relation) {
-			// update model
-		}
-
 	}
-
 
 	protected _getEventInfo(): EventInfo {
 		let that = this;
@@ -191,15 +190,19 @@ export class Instance implements ObservableObject {
 						that._children[relName] = new HasOneRef(that, relName, relation);
 					} else if (relation.aggregationKind === AGGREGATION_KIND.shared) {
 						//aggregation
+						that._children[relName] = new HasOneAggregation(that, relName, relation);
 					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
 						//composition
+						that._children[relName] = new HasOneComposition(that, relName, relation);
 					}
 					break;
 				case RELATION_TYPE.belongsTo:
 					if (relation.aggregationKind === AGGREGATION_KIND.shared) {
 						//aggregation
+						that._children[relName] = new AggregationBelongsTo(that, relName, relation);
 					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
 						//composition
+						that._children[relName] = new CompositionBelongsTo(that, relName, relation);
 					}
 					break;
 				case RELATION_TYPE.hasMany:
@@ -336,7 +339,7 @@ export class Instance implements ObservableObject {
 	constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isRestore: boolean }) {
 		let that = this;
 		that._context = transaction.context;
-		that._parent = parent;
+		that._parent = parent ? parent : undefined;
 		that._parentArray = parentArray;
 		that.status = options.isRestore ? ObjectStatus.restoring : ObjectStatus.creating;
 		that._propertyName = propertyName;

@@ -96,8 +96,8 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
                     code.push(_tab(1) + '}');
                     break;
                 case RELATION_TYPE.belongsTo:
-                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relName, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.value();', relName));
+                    code.push(_tab(1) + util.format('public %s(value?: %s): Promise<%s> {', relName, refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.value(value);', relName));
                     code.push(_tab(1) + '}');
                     break;
                 case RELATION_TYPE.hasMany:

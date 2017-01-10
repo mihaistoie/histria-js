@@ -1,24 +1,28 @@
 import { ObservableObject } from './interfaces';
 import { Role } from './role';
-export declare class BaseHasOne<T extends ObservableObject> extends Role<T> {
+export declare class HasOne<T extends ObservableObject> extends Role<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     destroy(): void;
-    value(value?: T): Promise<T>;
-    private _getValue();
-    private _setValue(value);
+    protected _getValue(): Promise<T>;
     protected _lazyLoad(): Promise<void>;
-    protected _notifyInvRel(value: ObservableObject, oldValue: ObservableObject): Promise<void>;
-    protected _recyleRefInstance(value: any): Promise<void>;
-    protected _afterSetValue(): void;
     private _updateParentRefs();
 }
-export declare class HasOneRef<T extends ObservableObject> extends BaseHasOne<T> {
+export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
+    protected _lazyLoad(): Promise<void>;
+    protected _setValue(value: T): Promise<T>;
 }
-export declare class HasOneComposition<T extends ObservableObject> extends BaseHasOne<T> {
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
+export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
+    protected _setValue(value: T): Promise<T>;
+    protected _lazyLoad(): Promise<void>;
+    protected _afterSetValue(newValue: any, oldValue: any): Promise<void>;
+    protected _updateParent(newValue: any): Promise<void>;
 }
-export declare class HasOneAggregation<T extends ObservableObject> extends BaseHasOne<T> {
+export declare class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
+    protected _afterSetValue(newValue: any, oldValue: any): Promise<void>;
+    protected _updateParent(newValue: any): Promise<void>;
+}
+export declare class HasOneAggregation<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
 }

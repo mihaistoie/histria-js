@@ -50,15 +50,27 @@ export function expandSchema(schema: any, model: any) {
 }
 
 
-export function updateRoleRefs(role: any, localModel: any, foreignModel: any) {
-    if (role.localFields && role.localFields.length)
-        role.localFields.forEach((field, index) => {
-            let ff = role.foreignFields[index];
-            if (foreignModel)
-                localModel[field] = foreignModel[ff]
-            else
-                delete localModel[field];
-        });
+export function updateRoleRefs(role: any, localModel: any, foreignModel: any, useInv: boolean) {
+    if (!localModel) return;
+    if (useInv) {
+        if (role.foreignFields && role.foreignFields.length)
+            role.foreignFields.forEach((field, index) => {
+                let ff = role.localFields[index];
+                if (foreignModel)
+                    localModel[field] = foreignModel[ff]
+                else
+                    delete localModel[field];
+            });
+    } else {
+        if (role.localFields && role.localFields.length)
+            role.localFields.forEach((field, index) => {
+                let ff = role.foreignFields[index];
+                if (foreignModel)
+                    localModel[field] = foreignModel[ff]
+                else
+                    delete localModel[field];
+            });
+    }
 }
 
 
@@ -238,15 +250,19 @@ function _checkRelations(schema, model) {
                     rel.foreignFields = ['id'];
                 } else {
                     //ref rel is belongsTo
-                    rel.localFields = ['id'];
-                    rel.foreignFields = [rel.invRel + 'Id'];
+                    if (refRel) {
+                        rel.localFields = ['id'];
+                        rel.foreignFields = [rel.invRel + 'Id'];
+                    }
                 }
             } else if (rel.type === RELATION_TYPE.belongsTo) {
                 rel.localFields = [relName + 'Id'];
                 rel.foreignFields = ['id'];
             } else if (rel.type === RELATION_TYPE.hasMany) {
-                rel.localFields = ['id'];
-                rel.foreignFields = [rel.invRel + 'Id'];
+                if (refRel) {
+                    rel.localFields = ['id'];
+                    rel.foreignFields = [rel.invRel + 'Id'];
+                }
             }
         }
 
@@ -269,6 +285,7 @@ function _checkRelations(schema, model) {
             if (refModel.properties[rf].type !== schema.properties[lf].type)
                 throw util.format('Invalid relation "%s.%s", typeof %s != typeof %s.', schema.name, relName);
         });
+
     });
 }
 

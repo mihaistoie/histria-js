@@ -18,6 +18,7 @@ export declare class Instance implements ObservableObject {
     private _context;
     protected removeChild(relationName: string, child: ObservableArray): Promise<void>;
     protected addChild(relationName: string, child: ObservableArray): Promise<void>;
+    protected changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
     protected _getEventInfo(): EventInfo;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;

@@ -41,8 +41,8 @@ export class EmployeeAddress extends Instance {
 	public get employeeId(): IntegerValue {
 		return this._children.employeeId;
 	}
-	public employee(): Promise<Employee> {
-		return this._children.employee.value();
+	public employee(value?: Employee): Promise<Employee> {
+		return this._children.employee.value(value);
 	}
 	public get $states(): EmployeeAddressState {
 		return <EmployeeAddressState>this._states;

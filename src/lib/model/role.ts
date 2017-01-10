@@ -23,7 +23,8 @@ export class Role<T extends ObservableObject> {
             return that._setValue(value);
     }
     protected async _getValue(): Promise<T> {
-        return Promise.resolve(null);
+        let that = this;
+        return Promise.resolve(that._value);
     }
     protected async _setValue(value: T): Promise<T> {
         return Promise.resolve(null);

@@ -56,14 +56,18 @@ export class Transaction implements TransactionContainer {
     }
     public async restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
+        let that = this;
         data = data || {};
         let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: true });
+        that._addInstance(instance, classOfInstance);
         await instance.afterCreated();
         return instance;
     }
     public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
+        let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: false });
+        that._addInstance(instance, classOfInstance);
         await instance.afterCreated();
         return instance;
     }

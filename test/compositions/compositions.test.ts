@@ -11,13 +11,15 @@ async function testCreate(): Promise<void> {
     let transaction = new Transaction();
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
+    
     await car.engine(engine);
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
     assert.equal(await engine.carId.value(), car.uuid, 'Owner of engine is car');
+    
     await engine.car(null);
-    assert.equal(await engine.carId.value(), undefined, 'Owner of engine null');
-    assert.equal(await engine.car(), null, 'Owner of engine null');
+    assert.equal(await engine.carId.value(), undefined, '(1) Owner of engine null');
+    assert.equal(await engine.car(), null, '(2) Owner of engine null');
 
     await engine.car(car);
     parent = await engine.car();

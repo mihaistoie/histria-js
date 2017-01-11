@@ -118,14 +118,14 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
             that._value = null;
         else {
             that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
-            await that._updateInvSide(that._value);
+            await that._updateInvSideAfterLazyLoading(that._value);
         }
     }
 
     protected _afterSetValue(newValue: any, oldValue: any): Promise<void> {
         return Promise.resolve();
     }
-    protected _updateInvSide(newValue: any): Promise<void> {
+    protected _updateInvSideAfterLazyLoading(newValue: any): Promise<void> {
         return Promise.resolve();
     }
 
@@ -139,7 +139,7 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         if (oldValue)
             await oldValue.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true)
     }
-    protected async _updateInvSide(newValue: any): Promise<void> {
+    protected async _updateInvSideAfterLazyLoading(newValue: any): Promise<void> {
         let that = this;
         if (newValue) {
             await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
@@ -158,19 +158,27 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
         return super._setValue(value);
     }
     
-    protected async _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+    protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;
         that._value = newValue;
         if (oldValue) {
-            let r = that.invRole(oldValue);
-            if (r) r.internalSetValue(null);
+            let r = oldValue.getRoleByName(that._relation.invRel, );
+            if (r) await r.internalSetValueAndNotify(null, oldValue);
         }
         if (newValue) {
-            let r = that.invRole(newValue);
-            if (r) r.internalSetValue(that._parent);
+            let r = newValue.getRoleByName(that._relation.invRel);
+            if (r) await r.internalSetValueAndNotify(that._parent, oldValue);
         }
     }
-    protected async _updateInvSide(newValue: any): Promise<void> {
+    protected async _updateInvSideAfterLazyLoading(newValue: any): Promise<void> {
+        //after lazy loading
+        let that = this;
+        if (newValue) {
+            //roleInv is AggregationBelongsTo
+            let roleInv = newValue.getRoleByName(that._relation.invRel);
+            if (roleInv) roleInv.internalSetValue(that._parent);
+
+        }
         
     }
 }

@@ -18,12 +18,6 @@ export class Role<T extends ObservableObject> {
     public internalSetValue(value: T) {
          this._value = value;
     }
-    public invRole(instance: any): any {
-        let that = this;
-        if (instance && that._relation && that._relation.invRel) {
-            return  instance._children[that._relation.invRel];
-        }
-    }
 
     public async value(value?: T): Promise<T> {
         let that = this;

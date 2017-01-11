@@ -25,6 +25,6 @@ export declare class HasOneComposition<T extends ObservableObject> extends HasOn
 export declare class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _setValue(value: T): Promise<T>;
-    protected _afterSetValue(newValue: any, oldValue: any): Promise<void>;
+    protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSide(newValue: any): Promise<void>;
 }

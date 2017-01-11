@@ -36,29 +36,30 @@ export class Instance implements ObservableObject {
 	protected _propertyName: string;
 	private _context: UserContext;
 
-	//used for relations = called by belongsTo
-	protected async removeChild(relationName: string, child: ObservableArray): Promise<void> {
+	public getRoleByName(roleName: string) {
+		return this._children[roleName];
+	}
 
+	public async rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void> {
 		let that = this;
-		let rel = that._schema.relations[relationName];
-		let localRole = that._children[relationName];
+		let rel = that._schema.relations[roleName];
+		let localRole = that.getRoleByName(roleName);
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
 				await localRole.value(null)
 			else if (rel.type === RELATION_TYPE.hasMany)
-				await localRole.remove(child)
+				await localRole.remove(instance)
 		}
 	}
-	//used for relations = called by belongsTo
-	protected async addChild(relationName: string, child: ObservableArray): Promise<void> {
+	public async addObjectToRole(roleName: string, instance: ObservableObject): Promise<void> {
 		let that = this;
-		let rel = that._schema.relations[relationName];
-		let localRole = that._children[relationName];
+		let rel = that._schema.relations[roleName];
+		let localRole = that.getRoleByName(roleName);
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
-				await localRole.value(child)
+				await localRole.value(instance)
 			else if (rel.type === RELATION_TYPE.hasMany)
-				await localRole.add(child)
+				await localRole.add(instance)
 		}
 	}
 	//used for relations = called by CompositionBelongsTo / HasOneComposition
@@ -68,7 +69,6 @@ export class Instance implements ObservableObject {
 			return;
 		that._parent = newParent;
 		that._rootCache = null;
-
 		if (notify && propName) {
 			await that.changeProperty(propName, that._parent, newParent, function () {
 				that._parent = newParent;
@@ -77,6 +77,7 @@ export class Instance implements ObservableObject {
 			that._parent = newParent;
 		}
 	}
+
 
 	protected _getEventInfo(): EventInfo {
 		let that = this;
@@ -251,6 +252,7 @@ export class Instance implements ObservableObject {
 	private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
 		// check can modify ?
 	}
+
 	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd): Promise<void> {
 		let that = this;
 		let eventInfo = that._getEventInfo();

@@ -44,6 +44,9 @@ export interface ObservableObject {
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
     destroy(): any;
+    getRoleByName(roleName: string): any;
+    addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
+    rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     readonly parent: ObservableObject;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;

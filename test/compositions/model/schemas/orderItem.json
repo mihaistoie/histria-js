@@ -1,6 +1,7 @@
 {
     "type": "object",
     "name": "orderItem",
+    "nameSpace": "compositions",
     "properties": {},
     "relations": {
         "order": {

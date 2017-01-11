@@ -13,7 +13,7 @@ export class Role<T extends ObservableObject> {
         that._propertyName = propertyName;
         that._relation = relation;
         that._parent = parent;
-        that._refClass = new ModelManager().classByName(that._relation.model);
+        that._refClass = new ModelManager().classByName(that._relation.model,that._relation.nameSpace);
     }
     public async value(value?: T): Promise<T> {
         let that = this;

@@ -1,6 +1,6 @@
 {
     "type": "object",
-    "nameSpace": "employee",
+    "nameSpace": "references",
     "name": "employee",
     "properties": {
         "firstName": {

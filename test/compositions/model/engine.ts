@@ -64,6 +64,7 @@ const
 	ENGINE_SCHEMA = {
 		"type": "object",
 		"name": "engine",
+		"nameSpace": "compositions",
 		"properties": {
 			"id": {
 				"type": "integer",
@@ -80,6 +81,7 @@ const
 				"model": "car",
 				"aggregationKind": "composite",
 				"invRel": "engine",
+				"nameSpace": "compositions",
 				"title": "car",
 				"localFields": [
 					"carId"
@@ -88,7 +90,6 @@ const
 					"id"
 				]
 			}
-		},
-		"nameSpace": "Engine"
+		}
 	};
 new ModelManager().registerClass(Engine, ENGINE_SCHEMA.name, ENGINE_SCHEMA.nameSpace);

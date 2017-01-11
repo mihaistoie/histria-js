@@ -52,6 +52,7 @@ const
 	ORDER_SCHEMA = {
 		"type": "object",
 		"name": "order",
+		"nameSpace": "compositions",
 		"properties": {
 			"id": {
 				"type": "integer",
@@ -64,6 +65,7 @@ const
 				"model": "orderItem",
 				"aggregationKind": "composite",
 				"invRel": "order",
+				"nameSpace": "compositions",
 				"title": "items",
 				"localFields": [
 					"id"
@@ -72,7 +74,6 @@ const
 					"orderId"
 				]
 			}
-		},
-		"nameSpace": "Order"
+		}
 	};
 new ModelManager().registerClass(Order, ORDER_SCHEMA.name, ORDER_SCHEMA.nameSpace);

@@ -24,10 +24,10 @@ export class ModelManager {
         let ci = that._mapByClass.get(classOfInstance);
         return new ci.factory(transaction, null, null, '', value, options);
     }
-    public classByName(className: string): any {
+    public classByName(className: string, namespace: string): any {
         let that = this;
         if (that._classes)
-            return that._classes.get(className);
+            return that._classes.get(namespace + '.' + className);
         return null;
 
     }
@@ -35,9 +35,9 @@ export class ModelManager {
         let that = this;
         that._mapByClass = that._mapByClass || new Map<any, any>();
         that._classes = that._classes || new Map<string, any>();
-        let classConstructor = that._classes.get(className);
+        let classConstructor = that._classes.get(nameSpace + '.' + className);
         if (!classConstructor)
-            that._classes.set(className, constructor);
+            that._classes.set(nameSpace + '.' + className, constructor);
 
         let ci = that._mapByClass.get(constructor);
         if (ci) return;

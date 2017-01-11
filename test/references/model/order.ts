@@ -72,7 +72,7 @@ export class OrderState extends InstanceState {
 const
 	ORDER_SCHEMA = {
 		"type": "object",
-		"nameSpace": "order",
+		"nameSpace": "references",
 		"name": "order",
 		"properties": {
 			"customerStatus": {
@@ -91,6 +91,7 @@ const
 			"customer": {
 				"type": "hasOne",
 				"model": "customer",
+				"nameSpace": "references",
 				"title": "customer",
 				"aggregationKind": "none",
 				"localFields": [

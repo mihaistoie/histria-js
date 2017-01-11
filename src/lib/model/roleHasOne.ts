@@ -146,8 +146,9 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     }
     protected async _updateParent(newValue: any): Promise<void> {
         let that = this;
-        if (newValue) 
-            await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false)
+        if (newValue)  {
+            await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
+        }
     }
 }
 

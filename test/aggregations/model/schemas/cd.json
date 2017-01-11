@@ -1,6 +1,7 @@
 {
     "type": "object",
     "name": "cd",
+    "nameSpace": "aggregations",
     "properties": {},
     "relations": {
         "songs": {

@@ -8,7 +8,7 @@ export declare class ModelManager {
     createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: {
         isRestore: boolean;
     }): T;
-    classByName(className: string): any;
+    classByName(className: string, namespace: string): any;
     registerClass(constructor: any, className: string, nameSpace: string): void;
     rulesForInit(classOfInstance: any): any[];
     rulesObjValidate(classOfInstance: any): any[];

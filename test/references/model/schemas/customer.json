@@ -1,6 +1,6 @@
 {
     "type": "object",
-    "nameSpace": "order",
+    "nameSpace": "references",
     "name": "customer",
     "properties": {
         "title": {

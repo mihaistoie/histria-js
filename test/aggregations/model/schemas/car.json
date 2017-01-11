@@ -1,6 +1,7 @@
 {
     "type": "object",
     "name": "car",
+    "nameSpace": "aggregations",
     "properties": {},
     "relations": {
         "drivenBy": {

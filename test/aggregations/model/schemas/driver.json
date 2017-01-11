@@ -2,6 +2,7 @@
     "type": "object",
     "name": "driver",
     "properties": {},
+    "nameSpace": "aggregations",
     "relations": {
         "drives": {
             "type": "belongsTo",

@@ -65,7 +65,7 @@ export class DepartmentState extends InstanceState {
 const
 	DEPARTMENT_SCHEMA = {
 		"type": "object",
-		"nameSpace": "employee",
+		"nameSpace": "references",
 		"name": "department",
 		"primaryKey": [
 			"code"

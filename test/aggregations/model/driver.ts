@@ -74,12 +74,14 @@ const
 				"isReadOnly": true
 			}
 		},
+		"nameSpace": "aggregations",
 		"relations": {
 			"drives": {
 				"type": "belongsTo",
 				"model": "car",
 				"aggregationKind": "shared",
 				"invRel": "drivenBy",
+				"nameSpace": "aggregations",
 				"title": "drives",
 				"localFields": [
 					"drivesId"
@@ -88,7 +90,6 @@ const
 					"id"
 				]
 			}
-		},
-		"nameSpace": "Driver"
+		}
 	};
 new ModelManager().registerClass(Driver, DRIVER_SCHEMA.name, DRIVER_SCHEMA.nameSpace);

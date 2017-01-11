@@ -1,7 +1,7 @@
 {
     "name": "user",
     "type": "object",
-    "nameSpace": "users",
+    "nameSpace": "model",
     "properties": {
         "age": {
             "title": "Age",

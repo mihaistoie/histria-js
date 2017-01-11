@@ -1,6 +1,7 @@
 {
     "type": "object",
     "name": "car",
+    "nameSpace": "compositions",
     "properties": {},
     "relations": {
         "engine": {

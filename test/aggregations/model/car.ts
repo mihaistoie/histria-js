@@ -55,6 +55,7 @@ const
 	CAR_SCHEMA = {
 		"type": "object",
 		"name": "car",
+		"nameSpace": "aggregations",
 		"properties": {
 			"id": {
 				"type": "integer",
@@ -67,6 +68,7 @@ const
 				"model": "driver",
 				"aggregationKind": "shared",
 				"invRel": "drives",
+				"nameSpace": "aggregations",
 				"title": "drivenBy",
 				"localFields": [
 					"id"
@@ -75,7 +77,6 @@ const
 					"drivesId"
 				]
 			}
-		},
-		"nameSpace": "Car"
+		}
 	};
 new ModelManager().registerClass(Car, CAR_SCHEMA.name, CAR_SCHEMA.nameSpace);

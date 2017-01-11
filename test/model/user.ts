@@ -84,7 +84,7 @@ const
 	USER_SCHEMA = {
 		"name": "user",
 		"type": "object",
-		"nameSpace": "users",
+		"nameSpace": "model",
 		"properties": {
 			"age": {
 				"title": "Age",

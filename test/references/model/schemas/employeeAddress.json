@@ -1,6 +1,7 @@
 {
     "type": "object",
     "name": "employeeAddress",
+    "nameSpace": "references",
     "properties": {
         "street": {
             "title": "Street",

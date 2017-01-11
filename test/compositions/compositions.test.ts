@@ -47,13 +47,17 @@ async function testLoad(): Promise<void> {
     let transaction = new Transaction();
     let car1 = await transaction.create<Car>(Car);
     let engine1 = await transaction.load<Engine>(Engine, { carId: car1.uuid });
-    assert.equal(await car1.engine(), engine1, 'Owner of engine is car 1');
-    assert.equal(await engine1.car(), car1, 'Owner of engine is car 1');
+    assert.equal(await car1.engine(), engine1, '(1) Owner of engine is car 1');
+    assert.equal(await engine1.car(), car1, '(2) Owner of engine is car 1');
 
     let car2 = await transaction.create<Car>(Car);
     let engine2 = await transaction.load<Engine>(Engine, { carId: car2.uuid });
-    assert.equal(await engine2.car(), car2, 'Owner of engine is car 2');
-    assert.equal(await car2.engine(), engine2, 'Owner of engine is car 2');
+    assert.equal(await engine2.car(), car2, '(1) Owner of engine 2  is car 2');
+    assert.equal(await car2.engine(), engine2, '(2) Owner of engine 2 is car 2');
+    
+
+    //let car3 = await transaction.load<Car>(Car, { engine: { id: 10} });
+    //assert.notEqual(await car3.engine(), null, '');
 
 }
 

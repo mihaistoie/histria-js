@@ -97,7 +97,7 @@ export class EmployeeState extends InstanceState {
 const
 	EMPLOYEE_SCHEMA = {
 		"type": "object",
-		"nameSpace": "employee",
+		"nameSpace": "references",
 		"name": "employee",
 		"properties": {
 			"firstName": {
@@ -132,6 +132,7 @@ const
 				"foreignFields": [
 					"code"
 				],
+				"nameSpace": "references",
 				"aggregationKind": "none"
 			},
 			"address": {
@@ -140,6 +141,7 @@ const
 				"model": "employeeAddress",
 				"aggregationKind": "composite",
 				"invRel": "employee",
+				"nameSpace": "references",
 				"localFields": [
 					"id"
 				],

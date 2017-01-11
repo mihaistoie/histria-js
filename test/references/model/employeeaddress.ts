@@ -109,6 +109,7 @@ const
 	EMPLOYEEADDRESS_SCHEMA = {
 		"type": "object",
 		"name": "employeeAddress",
+		"nameSpace": "references",
 		"properties": {
 			"street": {
 				"title": "Street",
@@ -146,6 +147,7 @@ const
 				"model": "employee",
 				"aggregationKind": "composite",
 				"invRel": "address",
+				"nameSpace": "references",
 				"localFields": [
 					"employeeId"
 				],
@@ -153,7 +155,6 @@ const
 					"id"
 				]
 			}
-		},
-		"nameSpace": "EmployeeAddress"
+		}
 	};
 new ModelManager().registerClass(EmployeeAddress, EMPLOYEEADDRESS_SCHEMA.name, EMPLOYEEADDRESS_SCHEMA.nameSpace);

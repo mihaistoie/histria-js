@@ -56,7 +56,7 @@ export class CustomerState extends InstanceState {
 const
 	CUSTOMER_SCHEMA = {
 		"type": "object",
-		"nameSpace": "order",
+		"nameSpace": "references",
 		"name": "customer",
 		"properties": {
 			"title": {

@@ -84,7 +84,7 @@ const
 	SALESORDER_SCHEMA = {
 		"name": "salesOrder",
 		"type": "object",
-		"nameSpace": "salesorder",
+		"nameSpace": "model",
 		"properties": {
 			"ruleCount": {
 				"title": "Rule call count",

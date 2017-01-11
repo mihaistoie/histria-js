@@ -52,6 +52,7 @@ const
 	CD_SCHEMA = {
 		"type": "object",
 		"name": "cd",
+		"nameSpace": "aggregations",
 		"properties": {
 			"id": {
 				"type": "integer",
@@ -64,6 +65,7 @@ const
 				"model": "song",
 				"aggregationKind": "shared",
 				"invRel": "cd",
+				"nameSpace": "aggregations",
 				"title": "songs",
 				"localFields": [
 					"id"
@@ -72,7 +74,6 @@ const
 					"cdId"
 				]
 			}
-		},
-		"nameSpace": "Cd"
+		}
 	};
 new ModelManager().registerClass(Cd, CD_SCHEMA.name, CD_SCHEMA.nameSpace);

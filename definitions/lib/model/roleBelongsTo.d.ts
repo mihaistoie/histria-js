@@ -8,6 +8,8 @@ export declare class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
 }
 export declare class AggregationBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {
     protected _getValue(): Promise<T>;
+    internalSetValue(value: any): void;
+    internalSetValueAndNotify(newValue: any, oldValue: any): Promise<void>;
     protected _setValue(value: T): Promise<T>;
 }
 export declare class CompositionBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {

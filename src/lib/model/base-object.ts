@@ -1,10 +1,12 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { HasOneRef, HasOneComposition, HasOneAggregation } from './roleHasOne';
 import { CompositionBelongsTo, AggregationBelongsTo } from './roleBelongsTo';
+import { HasManyComposition } from './base-array';
+
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
 import * as schemaUtils from '../schema/schema-utils';
-import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from '../schema/schema-consts';
+import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 
 import { IntegerValue, NumberValue } from './number';
 import { InstanceErrors } from './instance-errors'
@@ -36,29 +38,30 @@ export class Instance implements ObservableObject {
 	protected _propertyName: string;
 	private _context: UserContext;
 
-	//used for relations = called by belongsTo
-	protected async removeChild(relationName: string, child: ObservableArray): Promise<void> {
+	public getRoleByName(roleName: string) {
+		return this._children[roleName];
+	}
 
+	public async rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void> {
 		let that = this;
-		let rel = that._schema.relations[relationName];
-		let localRole = that._children[relationName];
+		let rel = that._schema.relations[roleName];
+		let localRole = that.getRoleByName(roleName);
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
 				await localRole.value(null)
 			else if (rel.type === RELATION_TYPE.hasMany)
-				await localRole.remove(child)
+				await localRole.remove(instance)
 		}
 	}
-	//used for relations = called by belongsTo
-	protected async addChild(relationName: string, child: ObservableArray): Promise<void> {
+	public async addObjectToRole(roleName: string, instance: ObservableObject): Promise<void> {
 		let that = this;
-		let rel = that._schema.relations[relationName];
-		let localRole = that._children[relationName];
+		let rel = that._schema.relations[roleName];
+		let localRole = that.getRoleByName(roleName);
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
-				await localRole.value(child)
+				await localRole.value(instance)
 			else if (rel.type === RELATION_TYPE.hasMany)
-				await localRole.add(child)
+				await localRole.add(instance)
 		}
 	}
 	//used for relations = called by CompositionBelongsTo / HasOneComposition
@@ -66,9 +69,20 @@ export class Instance implements ObservableObject {
 		let that = this;
 		if (that._parent === newParent)
 			return;
+
+		if (propName !== DEFAULT_PARENT_NAME) {
+			//TODO
+			let oldModel = that._parent ? that._parent.model() : null;
+			if (oldModel) {
+				let propValue = oldModel[propName];
+				if (propValue) {
+
+				}
+
+			}
+		}
 		that._parent = newParent;
 		that._rootCache = null;
-
 		if (notify && propName) {
 			await that.changeProperty(propName, that._parent, newParent, function () {
 				that._parent = newParent;
@@ -77,6 +91,7 @@ export class Instance implements ObservableObject {
 			that._parent = newParent;
 		}
 	}
+
 
 	protected _getEventInfo(): EventInfo {
 		let that = this;
@@ -212,6 +227,7 @@ export class Instance implements ObservableObject {
 						//aggregation
 					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
 						//composition
+						that._children[relName] = new HasManyComposition(that, relName, relation, that._model[relName]);
 					}
 					break
 
@@ -251,6 +267,7 @@ export class Instance implements ObservableObject {
 	private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
 		// check can modify ?
 	}
+
 	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd): Promise<void> {
 		let that = this;
 		let eventInfo = that._getEventInfo();

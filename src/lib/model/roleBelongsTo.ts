@@ -53,35 +53,32 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
     public internalSetValue(value: any) {
         let that = this;
         that._value = value;
-        updateRoleRefs(that._relation, that._parent.model(), value ? value.model() : null, false);
+    }
+    public async internalSetValueAndNotify(newValue: any, oldValue: any): Promise<void> {
+        let that = this;
+        await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
+            that.internalSetValue(newValue);
+            updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
+        });
     }
     protected async _setValue(value: T): Promise<T> {
         let that = this;
-        let oldValue: any = that._value;
-        let newValue: any = value;
+        let oldValue = that._value;
+        let newValue = value;
         if (oldValue === newValue)
             return oldValue;
+        let notified = false;
         if (oldValue) {
-            let refRole = that.invRole(oldValue);
-            if (refRole) {
-                if (refRole.value)
-                    await refRole.value(null); //HasOne
-                else
-                    await refRole.value(that._parent); //HasMany
-            }
+            notified = true;
+            await oldValue.rmvObjectFromRole(that._relation.invRel, that._parent);
         }
         if (newValue) {
-            let refRole = that.invRole(newValue);
-            if (refRole) {
-                if (refRole.value)
-                    await refRole.value(that._parent); //HasOne
-                else
-                    await refRole.add(that._parent); //HasMany
-            }
+            notified = true;
+            await newValue.addObjectToRole(that._relation.invRel, that._parent);
         }
-        await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
-            that.internalSetValue(value);
-        });
+        if (!notified) {
+            await that.internalSetValueAndNotify(newValue, oldValue);
+        }
         return that._value;
     }
 
@@ -95,9 +92,6 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
             res = await that._lazyLoad() || null;
             let p: any = that._parent;
             await p.changeParent(res, that._propertyName, false);
-            let refRole = that.invRole(res);
-            if (refRole)
-                refRole.internalSetValue(that._parent);
         }
         return res;
     }
@@ -105,19 +99,19 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
     }
     protected async _setValue(value: T): Promise<T> {
         let that = this;
-        let oldParent: any = await that._getValue();
-        let newParent: any = value;
+        let oldParent = await that._getValue();
+        let newParent = value;
         if (oldParent === newParent)
             return oldParent;
         let changeParentCalled = false;
         if (that._relation.invRel) {
-            if (oldParent && oldParent.removeChild) {
+            if (oldParent) {
                 changeParentCalled = true;
-                await oldParent.removeChild(that._relation.invRel, that._parent);
+                await oldParent.rmvObjectFromRole(that._relation.invRel, that._parent);
             }
-            if (newParent && newParent.addChild) {
+            if (newParent) {
                 changeParentCalled = true;
-                await newParent.addChild(that._relation.invRel, that._parent);
+                await newParent.addObjectToRole(that._relation.invRel, that._parent);
             }
         }
         if (!changeParentCalled) {

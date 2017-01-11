@@ -33,8 +33,9 @@ declare module 'histria-utils/lib/model/base-object' {
         protected _states: InstanceState;
         protected _errors: InstanceErrors;
         protected _propertyName: string;
-        protected removeChild(relationName: string, child: ObservableArray): Promise<void>;
-        protected addChild(relationName: string, child: ObservableArray): Promise<void>;
+        getRoleByName(roleName: string): any;
+        rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
+        addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
         protected changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
         protected _getEventInfo(): EventInfo;
         readonly context: UserContext;
@@ -290,6 +291,9 @@ declare module 'histria-utils/lib/model/interfaces' {
         getPath(propName?: string): string;
         getRoot(): ObservableObject;
         destroy(): any;
+        getRoleByName(roleName: string): any;
+        addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
+        rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
         readonly parent: ObservableObject;
         readonly context: UserContext;
         readonly transaction: TransactionContainer;

@@ -61,7 +61,7 @@ export class Instance implements ObservableObject {
 				await localRole.add(child)
 		}
 	}
-	//used for relations = called by belongsTo / HasOneComposition
+	//used for relations = called by CompositionBelongsTo / HasOneComposition
 	protected async changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void> {
 		let that = this;
 		if (that._parent === newParent)

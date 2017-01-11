@@ -18,6 +18,7 @@ export class HasOne<T extends ObservableObject> extends Role<T> {
     }
 
     protected async _lazyLoad(): Promise<void> {
+        this._value = null;
         return Promise.resolve();
     }
 
@@ -55,7 +56,7 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         if (valueIsNull)
             that._value = null;
         else
-            that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
+            that._value = await that._parent.transaction.findOne<T>(query, that._refClass) || null;
     }
 
     protected async _setValue(value: T): Promise<T> {
@@ -117,7 +118,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
             that._value = null;
         else {
             that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
-            await that._updateInvSide(that._value)
+            await that._updateInvSide(that._value);
         }
     }
 
@@ -133,9 +134,8 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     protected async _afterSetValue(newValue: any, oldValue: any): Promise<void> {
         let that = this;
-        if (newValue) {
+        if (newValue) 
             await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, true)
-        }
         if (oldValue)
             await oldValue.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true)
     }
@@ -143,17 +143,34 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         let that = this;
         if (newValue) {
             await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
+            
         }
     }
 }
 
 
-export class HasOneAggregation<T extends ObservableObject> extends HasOne<T> {
+export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
     }
+    protected async _setValue(value: T): Promise<T> {
+        let that = this;
+        return super._setValue(value);
+    }
+    
     protected async _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+        let that = this;
+        that._value = newValue;
+        if (oldValue) {
+            let r = that.invRole(oldValue);
+            if (r) r.internalSetValue(null);
+        }
+        if (newValue) {
+            let r = that.invRole(newValue);
+            if (r) r.internalSetValue(that._parent);
+        }
     }
     protected async _updateInvSide(newValue: any): Promise<void> {
+        
     }
 }

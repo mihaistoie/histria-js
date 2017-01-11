@@ -52,6 +52,7 @@ export function expandSchema(schema: any, model: any) {
 
 export function updateRoleRefs(role: any, localModel: any, foreignModel: any, useInv: boolean) {
     if (!localModel) return;
+    if (!role) return;
     if (useInv) {
         if (role.foreignFields && role.foreignFields.length)
             role.foreignFields.forEach((field, index) => {

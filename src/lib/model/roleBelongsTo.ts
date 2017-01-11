@@ -56,25 +56,10 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         let newValue: any = value;
         if (oldValue === newValue)
             return oldValue;
-        let changeParentCalled = false;
-        if (that._relation.invRel) {
-            if (oldValue && oldValue.removeChild) {
-                changeParentCalled = true;
-                await oldValue.removeChild(that._relation.invRel, that._parent);
-            }
-            if (newValue && newValue.addChild) {
-                changeParentCalled = true;
-                await newValue.addChild(that._relation.invRel, that._parent);
-            }
-        }
-        if (!changeParentCalled) {
-            let p: any = that._parent;
-            updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
-            await p.changeParent(newValue, that._propertyName, true);
-        }
-        let res: any = that._parent.parent;
-        return res;
-    }    
+
+        that._value = newValue;
+        return that._value;
+    }
 
 }
 
@@ -87,10 +72,15 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
             let p: any = that._parent;
             await p.changeParent(res, that._propertyName, false);
             let refRole = that.invRole(res);
-            if (refRole) 
+            if (refRole)
                 refRole.internalSetValue(that._parent);
         }
         return res;
+    }
+    public internalSetValue(value: any) {
+        if (value) {
+
+        }
     }
     protected async _setValue(value: T): Promise<T> {
         let that = this;

@@ -50,14 +50,38 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         }
         return res;
     }
+    public internalSetValue(value: any) {
+        let that = this;
+        that._value = value;
+        updateRoleRefs(that._relation, that._parent.model(), value ? value.model() : null, false);
+    }
     protected async _setValue(value: T): Promise<T> {
         let that = this;
         let oldValue: any = that._value;
         let newValue: any = value;
         if (oldValue === newValue)
             return oldValue;
-
-        that._value = newValue;
+        if (oldValue) {
+            let refRole = that.invRole(oldValue);
+            if (refRole) {
+                if (refRole.value)
+                    await refRole.value(null); //HasOne
+                else
+                    await refRole.value(that._parent); //HasMany
+            }
+        }
+        if (newValue) {
+            let refRole = that.invRole(newValue);
+            if (refRole) {
+                if (refRole.value)
+                    await refRole.value(that._parent); //HasOne
+                else
+                    await refRole.add(that._parent); //HasMany
+            }
+        }
+        await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
+            that.internalSetValue(value);
+        });
         return that._value;
     }
 
@@ -78,9 +102,6 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
         return res;
     }
     public internalSetValue(value: any) {
-        if (value) {
-
-        }
     }
     protected async _setValue(value: T): Promise<T> {
         let that = this;

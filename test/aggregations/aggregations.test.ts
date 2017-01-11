@@ -44,6 +44,22 @@ async function testCreate(): Promise<void> {
 }
 
 
+async function testLoad(): Promise<void> {
+    let transaction = new Transaction();
+    let car1 = await transaction.create<Car>(Car);
+    let driver1 = await transaction.load<Driver>(Driver, { drivesId: car1.uuid });
+   
+    assert.equal(await car1.drivenBy(), driver1, '(1) Driver 1 drivers car 1 ');
+    assert.equal(await driver1.drives(), car1, '(1) Driver 1 drivers car 1 ');
+
+    let car2 = await transaction.create<Car>(Car);
+    let driver2 = await transaction.load<Driver>(Driver, { drivesId: car2.uuid });
+    assert.equal(await driver2.drives(), car2, '(1) Driver 2 drivers car 2 ');
+    assert.equal(await car2.drivenBy(), driver2, '(1) Driver 2 drivers car 2 ');
+
+}
+
+
 describe('Relation One to One, Aggregation', () => {
     before(function (done) {
         //assert.equal(test, 1);
@@ -56,6 +72,15 @@ describe('Relation One to One, Aggregation', () => {
     });
     it('One to one aggregation - create', function (done) {
         testCreate().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+
+
+    });
+    it('One to one composition - load', function (done) {
+        testLoad().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

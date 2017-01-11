@@ -15,6 +15,16 @@ export class Role<T extends ObservableObject> {
         that._parent = parent;
         that._refClass = new ModelManager().classByName(that._relation.model,that._relation.nameSpace);
     }
+    public internalSetValue(value: T) {
+         this._value = value;
+    }
+    public invRole(instance: any): any {
+        let that = this;
+        if (instance && that._relation && that._relation.invRel) {
+            return  instance._children[that._relation.invRel];
+        }
+    }
+
     public async value(value?: T): Promise<T> {
         let that = this;
         if (value === undefined)
@@ -35,5 +45,6 @@ export class Role<T extends ObservableObject> {
         that._relation = null;
         that._parent = null;
         that._refClass = null;
+        that._value = null;
     }
 }

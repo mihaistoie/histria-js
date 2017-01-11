@@ -9,10 +9,6 @@ export class HasOne<T extends ObservableObject> extends Role<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation)
     }
-    public destroy() {
-        this._value = null;
-        super.destroy();
-    }
     protected async _getValue(): Promise<T> {
         let that = this;
         if (that._value !== undefined)
@@ -121,15 +117,14 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
             that._value = null;
         else {
             that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
-            if (that._value)
-                await that._updateParent(that._value)
+            await that._updateInvSide(that._value)
         }
     }
 
     protected _afterSetValue(newValue: any, oldValue: any): Promise<void> {
         return Promise.resolve();
     }
-    protected _updateParent(newValue: any): Promise<void> {
+    protected _updateInvSide(newValue: any): Promise<void> {
         return Promise.resolve();
     }
 
@@ -144,9 +139,9 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         if (oldValue)
             await oldValue.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true)
     }
-    protected async _updateParent(newValue: any): Promise<void> {
+    protected async _updateInvSide(newValue: any): Promise<void> {
         let that = this;
-        if (newValue)  {
+        if (newValue) {
             await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
         }
     }
@@ -156,5 +151,9 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
 export class HasOneAggregation<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
+    }
+    protected async _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+    }
+    protected async _updateInvSide(newValue: any): Promise<void> {
     }
 }

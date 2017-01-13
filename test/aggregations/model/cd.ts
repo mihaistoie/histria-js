@@ -1,5 +1,6 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
+	HasManyComposition,
 	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
@@ -22,6 +23,9 @@ export class Cd extends Instance {
 	}
 	public get id(): IntegerValue {
 		return this._children.id;
+	}
+	get songs(): HasManyAggregation<Song> {
+		return this._children.songs;
 	}
 	public get $states(): CdState {
 		return <CdState>this._states;

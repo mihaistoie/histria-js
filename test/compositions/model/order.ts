@@ -1,5 +1,6 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
+	HasManyComposition,
 	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
@@ -22,6 +23,9 @@ export class Order extends Instance {
 	}
 	public get id(): IntegerValue {
 		return this._children.id;
+	}
+	get items(): HasManyComposition<OrderItem> {
+		return this._children.items;
 	}
 	public get $states(): OrderState {
 		return <OrderState>this._states;

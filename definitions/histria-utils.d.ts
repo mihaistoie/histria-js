@@ -8,6 +8,7 @@ declare module 'histria-utils' {
     export { InstanceState } from 'histria-utils/lib/model/instance-state';
     export { ModelManager } from 'histria-utils/lib/model/model-manager';
     export { Transaction } from 'histria-utils/lib/factory/transaction';
+    export { HasManyComposition } from 'histria-utils/lib/model/roleHasMany';
     export { propChanged, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
     export { ErrorState } from 'histria-utils/lib/model/error-state';
     export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
@@ -129,6 +130,21 @@ declare module 'histria-utils/lib/factory/transaction' {
         destroy(): void;
         find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
         findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
+    }
+}
+
+declare module 'histria-utils/lib/model/roleHasMany' {
+    import { ObservableObject } from 'histria-utils/lib/model/interfaces';
+    import { ObjectArray } from 'histria-utils/lib/model/base-array';
+    export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
+        protected _refClass: any;
+        constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
+        destroy(): void;
+        toArray(): Promise<T[]>;
+        remove(element: T | number): Promise<T>;
+        add(item: T, index?: number): Promise<T>;
+        indexOf(item: T): Promise<number>;
+        protected lazyLoad(): Promise<void>;
     }
 }
 
@@ -308,6 +324,29 @@ declare module 'histria-utils/lib/model/interfaces' {
         getPath(item?: ObservableObject): string;
         getRoot(): ObservableObject;
         destroy(): any;
+    }
+}
+
+declare module 'histria-utils/lib/model/base-array' {
+    import { ObservableObject, ObservableArray, EventInfo } from 'histria-utils/lib/model/interfaces';
+    export class ObjectArray<T extends ObservableObject> implements ObservableArray {
+        protected _parent: ObservableObject;
+        protected _items: T[];
+        protected _propertyName: string;
+        protected _model: any;
+        protected _relation: any;
+        protected _rootCache: ObservableObject;
+        protected _isNull: boolean;
+        protected _isUndefined: boolean;
+        constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
+        getRoot(): ObservableObject;
+        getPath(item?: ObservableObject): string;
+        propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
+        stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
+        destroy(): void;
+        protected destroyItems(): void;
+        protected setValue(value?: T[]): void;
+        protected lazyLoad(): Promise<void>;
     }
 }
 

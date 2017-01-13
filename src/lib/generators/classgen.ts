@@ -32,6 +32,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         pathToLib = pathToLib || 'histria--utils'
         imports.push('import {');
         imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
+        imports.push(_tab(1) + 'HasManyComposition,');
         imports.push(_tab(1) + 'ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
         imports.push(_tab(1) + 'IntegerValue, NumberValue');
         imports.push('} from \'' + pathToLib + '\';');
@@ -101,6 +102,10 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
                     code.push(_tab(1) + '}');
                     break;
                 case RELATION_TYPE.hasMany:
+                    let cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';
+                    code.push(_tab(1) + util.format('get %s(): %s<%s> {', relName, cn, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s;', relName));
+                    code.push(_tab(1) + '}');
                     break;
 
             }

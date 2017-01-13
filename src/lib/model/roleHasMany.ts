@@ -127,5 +127,4 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
 
     }
 
-
 }

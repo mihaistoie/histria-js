@@ -64,7 +64,7 @@ async function testLoad(): Promise<void> {
 
 }
 
-describe('Relation One to One, Composition', () => {
+describe('Relation One to Many, Composition', () => {
     before(function (done) {
         //assert.equal(test, 1);
         //loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
@@ -74,7 +74,7 @@ describe('Relation One to One, Composition', () => {
         //});
         done();
     });
-    it('One to one composition - create', function (done) {
+    it('One to Many composition - create', function (done) {
         testCreate().then(function () {
             done();
         }).catch(function (ex) {
@@ -83,7 +83,7 @@ describe('Relation One to One, Composition', () => {
 
 
     });
-    it('One to one composition - load', function (done) {
+    it('One to Many composition - load', function (done) {
         testLoad().then(function () {
             done();
         }).catch(function (ex) {
@@ -92,12 +92,12 @@ describe('Relation One to One, Composition', () => {
 
 
     });
-    it('One to one composition - rules', function (done) {
+    it('One to one Many - rules', function (done) {
         done();
 
     });
 
-    it('One to one composition - states errors', function (done) {
+    it('One to one Many - states errors', function (done) {
         done();
 
     });

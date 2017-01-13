@@ -3,7 +3,7 @@ import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServ
 
 export class ObjectArray<T extends ObservableObject> implements ObservableArray {
     protected _parent: ObservableObject;
-    protected _items: ObservableObject[];
+    protected _items: T[];
     protected _propertyName: string;
     protected _model: any;
     protected _relation: any;

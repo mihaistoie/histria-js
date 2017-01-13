@@ -33,6 +33,7 @@
   },
   "scripts": {
     "gen": "mocha -r ts-node/register test/**/*.gentest.ts",
-    "test": "mocha -r ts-node/register test/**/*.test.ts"
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "compositions": "mocha -r ts-node/register test/compositions/*.test.ts"
   }
 }

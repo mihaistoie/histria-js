@@ -26,7 +26,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         let that = this;
         await that.lazyLoad();
         let ii: number, item: T;
-        if (typeof item === 'number') {
+        if (typeof element === 'number') {
             ii = <number>element;
             if (ii >= 0 && ii < that._items.length) {
                 item = that._items[ii];
@@ -59,7 +59,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         let that = this;
         if (!item) return;
         await that.lazyLoad();
-        if (index === undefined || index < 0 && index >= that._items.length)
+        if (index === undefined || (index < 0 && index >= that._items.length))
             index = -1;
         if (!that._model) {
             that._model = [];
@@ -67,7 +67,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._parent.model()[that._propertyName] = that._model;
         }
         let imodel = item.model();
-        if (index < 0) {
+        if (index >= 0) {
             that._items.splice(index, 0, item);
             that._model.splice(index, 0, imodel);
         } else {
@@ -79,7 +79,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             let rmodel = that._parent.model();
             updateRoleRefs(that._relation, lmodel, rmodel, true);
             await item.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, true);
-        }        
+        }
         return item;
     }
     public async indexOf(item: T): Promise<number> {

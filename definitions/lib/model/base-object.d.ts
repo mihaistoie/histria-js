@@ -19,7 +19,7 @@ export declare class Instance implements ObservableObject {
     getRoleByName(roleName: string): any;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
-    protected changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
+    changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
     protected _getEventInfo(): EventInfo;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;

@@ -80,10 +80,10 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected async _setValue(value: T): Promise<T> {
         let that = this;
         value = value || null;
-        let oldValue: any = await that._getValue();
+        let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
-        let newValue: any = value;
+        let newValue = value;
         await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
             that._value = value;
             if (that._relation.invRel) {
@@ -122,28 +122,28 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         }
     }
 
-    protected _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+    protected _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         return Promise.resolve();
     }
-    protected _updateInvSideAfterLazyLoading(newValue: any): Promise<void> {
+    protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         return Promise.resolve();
     }
 
 }
 
 export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
-    protected async _afterSetValue(newValue: any, oldValue: any): Promise<void> {
+    protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;
-        if (newValue) 
+        if (newValue)
             await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, true)
         if (oldValue)
             await oldValue.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true)
     }
-    protected async _updateInvSideAfterLazyLoading(newValue: any): Promise<void> {
+    protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         let that = this;
         if (newValue) {
             await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
-            
+
         }
     }
 }
@@ -157,7 +157,7 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
         let that = this;
         return super._setValue(value);
     }
-    
+
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;
         that._value = newValue;
@@ -170,7 +170,7 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
             if (r) await r.internalSetValueAndNotify(that._parent, oldValue);
         }
     }
-    protected async _updateInvSideAfterLazyLoading(newValue: any): Promise<void> {
+    protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         //after lazy loading
         let that = this;
         if (newValue) {
@@ -179,6 +179,6 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
             if (roleInv) roleInv.internalSetValue(that._parent);
 
         }
-        
+
     }
 }

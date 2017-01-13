@@ -87,9 +87,16 @@ export class Transaction implements TransactionContainer {
         instances.set(instance.uuid, instance);
 
     }
-    public findOne<T extends ObservableObject>(filter: any, classOfInstance: any): T {
+    public async find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]> {
         let that = this;
-        let res = that._findOne<T>(filter, classOfInstance);
+        let res = that._find<T>(filter, classOfInstance);
+        if (res) return res;
+        //TODO use persistence
+        return [];
+    }
+    public async findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T> {
+        let that = this;
+        let res = await that._findOne<T>(filter, classOfInstance);
         if (res) return res;
         //TODO use persistence
         return null;
@@ -113,6 +120,13 @@ export class Transaction implements TransactionContainer {
         let instances = that._getInstances(classOfInstance);
         if (!instances) return null;
         return findInMap(query, instances, { findFirst: true, transform: (item) => { return item.model(); } });
+    }
+    
+    private async _find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]> {
+        let that = this;
+        let instances = that._getInstances(classOfInstance);
+        if (!instances) return [];
+        return findInMap(filter, instances, { findFirst: false, transform: (item) => { return item.model(); } });
     }
 
 }

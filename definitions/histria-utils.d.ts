@@ -36,7 +36,7 @@ declare module 'histria-utils/lib/model/base-object' {
         getRoleByName(roleName: string): any;
         rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
         addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
-        protected changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
+        changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
         protected _getEventInfo(): EventInfo;
         readonly context: UserContext;
         readonly transaction: TransactionContainer;
@@ -127,7 +127,8 @@ declare module 'histria-utils/lib/factory/transaction' {
         restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
         load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
         destroy(): void;
-        findOne<T extends ObservableObject>(filter: any, classOfInstance: any): T;
+        find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
+        findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
     }
 }
 
@@ -276,6 +277,7 @@ declare module 'histria-utils/lib/model/interfaces' {
     export interface TransactionContainer {
         context: UserContext;
         findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
+        find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
         emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
     }
     export interface ObservableObject {
@@ -294,6 +296,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         getRoleByName(roleName: string): any;
         addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
         rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
+        changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
         readonly parent: ObservableObject;
         readonly context: UserContext;
         readonly transaction: TransactionContainer;

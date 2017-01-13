@@ -1,7 +1,7 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { HasOneRef, HasOneComposition, HasOneAggregation } from './roleHasOne';
 import { CompositionBelongsTo, AggregationBelongsTo } from './roleBelongsTo';
-import { HasManyComposition } from './base-array';
+import { HasManyComposition } from './roleHasMany';
 
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
@@ -65,7 +65,7 @@ export class Instance implements ObservableObject {
 		}
 	}
 	//used for relations = called by CompositionBelongsTo / HasOneComposition
-	protected async changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void> {
+	public async changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void> {
 		let that = this;
 		if (that._parent === newParent)
 			return;

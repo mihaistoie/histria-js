@@ -29,6 +29,7 @@ export interface UserContext {
 export interface TransactionContainer {
     context: UserContext;
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
+    find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
 }
 export interface ObservableObject {
@@ -47,6 +48,7 @@ export interface ObservableObject {
     getRoleByName(roleName: string): any;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
+    changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
     readonly parent: ObservableObject;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;

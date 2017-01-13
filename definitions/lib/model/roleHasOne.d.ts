@@ -15,16 +15,16 @@ export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
 export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected _setValue(value: T): Promise<T>;
     protected _lazyLoad(): Promise<void>;
-    protected _afterSetValue(newValue: any, oldValue: any): Promise<void>;
-    protected _updateInvSideAfterLazyLoading(newValue: any): Promise<void>;
+    protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
+    protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }
 export declare class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
-    protected _afterSetValue(newValue: any, oldValue: any): Promise<void>;
-    protected _updateInvSideAfterLazyLoading(newValue: any): Promise<void>;
+    protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
+    protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }
 export declare class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _setValue(value: T): Promise<T>;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
-    protected _updateInvSideAfterLazyLoading(newValue: any): Promise<void>;
+    protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }

@@ -1,5 +1,4 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { ModelManager } from './model-manager';
 
 
 export class ObjectArray<T extends ObservableObject> implements ObservableArray {
@@ -9,8 +8,8 @@ export class ObjectArray<T extends ObservableObject> implements ObservableArray 
     protected _model: any;
     protected _relation: any;
     protected _rootCache: ObservableObject;
-    public isNull: boolean;
-    public isUndefined: boolean;
+    protected _isNull: boolean;
+    protected _isUndefined: boolean;
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
         let that = this;
         that._parent = parent;
@@ -58,8 +57,8 @@ export class ObjectArray<T extends ObservableObject> implements ObservableArray 
     protected setValue(value?: T[]) {
         let that = this;
         that.destroyItems();
-        that.isNull = value === null;
-        that.isUndefined = value === undefined;
+        that._isNull = value === null;
+        that._isUndefined = value === undefined;
         that._model = value;
     }
     protected async lazyLoad(): Promise<void> {
@@ -68,48 +67,3 @@ export class ObjectArray<T extends ObservableObject> implements ObservableArray 
 
 }
 
-export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
-    protected _refClass: any;
-    constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
-        super(parent, propertyName, relation, model);
-        let that = this;
-        that._refClass = new ModelManager().classByName(that._relation.model, that._relation.nameSpace);
-
-    }
-    public destroy() {
-        let that = this;
-        that._refClass = null;
-        super.destroy();
-    }
-
-    protected async lazyLoad(): Promise<void> {
-        let that = this;
-
-        if (!that._parent) return;
-        if (that.isUndefined) {
-            let lmodel = that._parent.model();
-            let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field, index) => {
-                let ff = that._relation.foreignFields[index];
-                let value = lmodel[field];
-                if (value === null || value === '' || value === undefined)
-                    valueIsNull = true;
-                else
-                    query[ff] = value;
-            });
-            if (valueIsNull) {
-                that._model = null;
-            } else {
-                //xxx 
-                //let items = await that._parent.transaction.findMany<T>(query, that._refClass);
-            }
-
-            that.isUndefined = false;
-            that.isNull = that._model === null;
-            lmodel[that._propertyName] = that._model;
-        }
-
-    }
-
-
-}

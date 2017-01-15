@@ -7,7 +7,7 @@ export declare const JSONTYPES: {
     date: string;
     datetime: string;
 };
-export declare const DEFAULT_PARENT_NAME: string;
+export declare const DEFAULT_PARENT_NAME = "owner";
 export declare const RELATION_TYPE: {
     hasOne: string;
     hasMany: string;

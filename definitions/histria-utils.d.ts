@@ -135,15 +135,15 @@ declare module 'histria-utils/lib/factory/transaction' {
 
 declare module 'histria-utils/lib/model/roleHasMany' {
     import { ObservableObject } from 'histria-utils/lib/model/interfaces';
-    import { ObjectArray } from 'histria-utils/lib/model/base-array';
+    import { ObjectArray, BaseObjectArray } from 'histria-utils/lib/model/base-array';
     export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
-        protected _refClass: any;
-        constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
-        destroy(): void;
-        toArray(): Promise<T[]>;
         remove(element: T | number): Promise<T>;
         add(item: T, index?: number): Promise<T>;
-        indexOf(item: T): Promise<number>;
+        protected lazyLoad(): Promise<void>;
+    }
+    export class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {
+        remove(element: T | number): Promise<T>;
+        add(item: T, index?: number): Promise<T>;
         protected lazyLoad(): Promise<void>;
     }
 }
@@ -334,13 +334,15 @@ declare module 'histria-utils/lib/model/base-array' {
         protected _items: T[];
         protected _propertyName: string;
         protected _relation: any;
+        protected _refClass: any;
         constructor(parent: ObservableObject, propertyName: string, relation: any);
         destroy(): void;
         protected lazyLoad(): Promise<void>;
+        toArray(): Promise<T[]>;
+        indexOf(item: T): Promise<number>;
     }
     export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> implements ObservableArray {
         protected _model: any;
-        protected _rootCache: ObservableObject;
         protected _isNull: boolean;
         protected _isUndefined: boolean;
         constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);

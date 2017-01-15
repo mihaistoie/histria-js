@@ -1,34 +1,46 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-
+import { ModelManager } from './model-manager';
 
 export class BaseObjectArray<T extends ObservableObject> {
     protected _parent: ObservableObject;
     protected _items: T[];
     protected _propertyName: string;
     protected _relation: any;
+    protected _refClass: any;
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         let that = this;
         that._parent = parent;
         that._propertyName = propertyName;
         that._relation = relation;
         that._items = [];
+        that._refClass = new ModelManager().classByName(that._relation.model, that._relation.nameSpace);
     }
-
     public destroy() {
         let that = this;
         that._items = null;
         that._relation = null;
         that._parent = null;
+        that._refClass = null;
     }
     protected async lazyLoad(): Promise<void> {
         return Promise.resolve();
     }
+    public async toArray(): Promise<T[]> {
+        let that = this;
+        await that.lazyLoad();
+        return that._items.slice();
+    }
+    public async indexOf(item: T): Promise<number> {
+        let that = this;
+        await that.lazyLoad();
+        return (that._items || []).indexOf(item);
+    }
+
 
 }
 
 export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> implements ObservableArray {
     protected _model: any;
-    protected _rootCache: ObservableObject;
     protected _isNull: boolean;
     protected _isUndefined: boolean;
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
@@ -38,13 +50,11 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
 
     }
     public getRoot(): ObservableObject {
-        let that = this;
-        if (!that._rootCache)
-            that._rootCache = that._parent ? that._parent.getRoot() : null;
-        return that._rootCache;
+        return this._parent.getRoot();
+
 
     }
-   public getPath(item?: ObservableObject): string {
+    public getPath(item?: ObservableObject): string {
         let that = this;
         return that._parent ? that._parent.getPath(that._propertyName) : that._propertyName;
     }
@@ -54,6 +64,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
     }
     public destroy() {
         let that = this;
+        that._model = null;
         that.destroyItems();
         super.destroy();
     }

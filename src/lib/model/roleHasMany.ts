@@ -130,14 +130,12 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         }
         if (!item) return null;
         that._items.splice(ii, 1);
-        /*
-        TODO
         if (item) {
             let lmodel = item.model();
             updateRoleRefs(that._relation, lmodel, null, true);
-            await item.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+            let r = item.getRoleByName(that._relation.invRel, );
+            if (r) await r.internalSetValueAndNotify(null, item);
         }
-        */
         return item;
     }
     public async add(item: T, index?: number): Promise<T> {
@@ -153,12 +151,13 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         else
             that._items.push(item);
         if (item) {
-            /* TODO
             let lmodel = item.model();
             let rmodel = that._parent.model();
+            let r = item.getRoleByName(that._relation.invRel);
+            if (r) await r.internalSetValueAndNotify(that._parent, item);
+            
             updateRoleRefs(that._relation, lmodel, rmodel, true);
             await item.changeParent(that._parent, that._relation.invRel, true);
-            */
         }
         return item;
     }
@@ -184,12 +183,22 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
                     for (let index = 0; index < items.length; index++) {
                         let item = items[index];
                         that._items[index] = item;
-                        /* to do
-                        await item.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
-                        */
+                        await that._updateInvSideAfterLazyLoading(item);
                     }
                 }
             }
+        }
+
+    }
+
+    protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
+        //after lazy loading
+        let that = this;
+        if (newValue) {
+            //roleInv is AggregationBelongsTo
+            let roleInv = newValue.getRoleByName(that._relation.invRel);
+            if (roleInv) roleInv.internalSetValue(that._parent);
+
         }
 
     }

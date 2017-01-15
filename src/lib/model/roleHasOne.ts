@@ -167,7 +167,7 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
         }
         if (newValue) {
             let r = newValue.getRoleByName(that._relation.invRel);
-            if (r) await r.internalSetValueAndNotify(that._parent, oldValue);
+            if (r) await r.internalSetValueAndNotify(that._parent, newValue);
         }
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {

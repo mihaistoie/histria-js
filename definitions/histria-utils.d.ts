@@ -145,6 +145,7 @@ declare module 'histria-utils/lib/model/roleHasMany' {
         remove(element: T | number): Promise<T>;
         add(item: T, index?: number): Promise<T>;
         protected lazyLoad(): Promise<void>;
+        protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
     }
 }
 

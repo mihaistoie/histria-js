@@ -1,6 +1,6 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
-	HasManyComposition,
+	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';

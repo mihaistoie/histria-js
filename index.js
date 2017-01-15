@@ -11,6 +11,7 @@ var transaction_1 = require("./lib/factory/transaction");
 exports.Transaction = transaction_1.Transaction;
 var roleHasMany_1 = require("./lib/model/roleHasMany");
 exports.HasManyComposition = roleHasMany_1.HasManyComposition;
+exports.HasManyAggregation = roleHasMany_1.HasManyAggregation;
 var rules_1 = require("./lib/model/rules");
 exports.propChanged = rules_1.propChanged;
 exports.init = rules_1.init;

@@ -1,7 +1,7 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { HasOneRef, HasOneComposition, HasOneAggregation } from './roleHasOne';
 import { CompositionBelongsTo, AggregationBelongsTo } from './roleBelongsTo';
-import { HasManyComposition } from './roleHasMany';
+import { HasManyComposition, HasManyAggregation } from './roleHasMany';
 
 import { ApplicationError } from '../utils/errors';
 import { ModelManager } from './model-manager';
@@ -225,6 +225,7 @@ export class Instance implements ObservableObject {
 						//reference
 					} else if (relation.aggregationKind === AGGREGATION_KIND.shared) {
 						//aggregation
+						that._children[relName] = new HasManyAggregation(that, relName, relation);
 					} else if (relation.aggregationKind === AGGREGATION_KIND.composite) {
 						//composition
 						that._children[relName] = new HasManyComposition(that, relName, relation, that._model[relName]);

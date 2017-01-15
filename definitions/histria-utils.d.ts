@@ -8,7 +8,7 @@ declare module 'histria-utils' {
     export { InstanceState } from 'histria-utils/lib/model/instance-state';
     export { ModelManager } from 'histria-utils/lib/model/model-manager';
     export { Transaction } from 'histria-utils/lib/factory/transaction';
-    export { HasManyComposition } from 'histria-utils/lib/model/roleHasMany';
+    export { HasManyComposition, HasManyAggregation } from 'histria-utils/lib/model/roleHasMany';
     export { propChanged, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
     export { ErrorState } from 'histria-utils/lib/model/error-state';
     export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';

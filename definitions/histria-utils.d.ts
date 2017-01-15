@@ -329,12 +329,17 @@ declare module 'histria-utils/lib/model/interfaces' {
 
 declare module 'histria-utils/lib/model/base-array' {
     import { ObservableObject, ObservableArray, EventInfo } from 'histria-utils/lib/model/interfaces';
-    export class ObjectArray<T extends ObservableObject> implements ObservableArray {
+    export class BaseObjectArray<T extends ObservableObject> {
         protected _parent: ObservableObject;
         protected _items: T[];
         protected _propertyName: string;
-        protected _model: any;
         protected _relation: any;
+        constructor(parent: ObservableObject, propertyName: string, relation: any);
+        destroy(): void;
+        protected lazyLoad(): Promise<void>;
+    }
+    export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> implements ObservableArray {
+        protected _model: any;
         protected _rootCache: ObservableObject;
         protected _isNull: boolean;
         protected _isUndefined: boolean;
@@ -346,7 +351,6 @@ declare module 'histria-utils/lib/model/base-array' {
         destroy(): void;
         protected destroyItems(): void;
         protected setValue(value?: T[]): void;
-        protected lazyLoad(): Promise<void>;
     }
 }
 

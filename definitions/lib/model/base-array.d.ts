@@ -1,10 +1,15 @@
 import { ObservableObject, ObservableArray, EventInfo } from './interfaces';
-export declare class ObjectArray<T extends ObservableObject> implements ObservableArray {
+export declare class BaseObjectArray<T extends ObservableObject> {
     protected _parent: ObservableObject;
     protected _items: T[];
     protected _propertyName: string;
-    protected _model: any;
     protected _relation: any;
+    constructor(parent: ObservableObject, propertyName: string, relation: any);
+    destroy(): void;
+    protected lazyLoad(): Promise<void>;
+}
+export declare class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> implements ObservableArray {
+    protected _model: any;
     protected _rootCache: ObservableObject;
     protected _isNull: boolean;
     protected _isUndefined: boolean;
@@ -16,5 +21,4 @@ export declare class ObjectArray<T extends ObservableObject> implements Observab
     destroy(): void;
     protected destroyItems(): void;
     protected setValue(value?: T[]): void;
-    protected lazyLoad(): Promise<void>;
 }

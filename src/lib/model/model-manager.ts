@@ -161,7 +161,9 @@ export async function propagationRules(eventInfo: EventInfo, classOfInstance: an
     let propName = args[0];
     let rules = mm.rulesForPropChange(classOfInstance, propName);
     if (rules.length) {
-        let rArgs = instances.concat(eventInfo);
+        let na = args.slice();
+        na[0] = eventInfo;
+        let rArgs = instances.concat(na);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
              await rule.apply(null, rArgs);

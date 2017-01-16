@@ -13,7 +13,6 @@ export class CarEngineRules {
     }
     @propChanged(Car, 'engine.name')
     static async afterEngineNameChanged(car: Car, engine: Engine, eventInfo: any): Promise<void> {
-        console.log("hi hi hi")
         let ce = await car.engine();
         if (ce !== ce)
             throw "Invalid rule propagation";

@@ -21,6 +21,9 @@ export class OrderItem extends Instance {
 		let that = this;
 		that._errors = new OrderItemErrors(that, that._schema);
 	}
+	public get amount(): NumberValue {
+		return this._children.amount;
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -42,6 +45,9 @@ export class OrderItemErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get amount(): ErrorState {
+		return this._messages.amount;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -54,6 +60,9 @@ export class OrderItemErrors extends InstanceErrors {
 }
 
 export class OrderItemState extends InstanceState {
+	public get amount(): NumberState {
+		return this._states.amount;
+	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -67,6 +76,10 @@ const
 		"name": "orderItem",
 		"nameSpace": "compositions",
 		"properties": {
+			"amount": {
+				"type": "number",
+				"default": 0
+			},
 			"id": {
 				"type": "integer",
 				"generated": true,

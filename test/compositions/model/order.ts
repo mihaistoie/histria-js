@@ -21,6 +21,9 @@ export class Order extends Instance {
 		let that = this;
 		that._errors = new OrderErrors(that, that._schema);
 	}
+	public get totalAmount(): NumberValue {
+		return this._children.totalAmount;
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -39,6 +42,9 @@ export class OrderErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get totalAmount(): ErrorState {
+		return this._messages.totalAmount;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -48,6 +54,9 @@ export class OrderErrors extends InstanceErrors {
 }
 
 export class OrderState extends InstanceState {
+	public get totalAmount(): NumberState {
+		return this._states.totalAmount;
+	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -58,6 +67,10 @@ const
 		"name": "order",
 		"nameSpace": "compositions",
 		"properties": {
+			"totalAmount": {
+				"type": "number",
+				"default": 0
+			},
 			"id": {
 				"type": "integer",
 				"generated": true,

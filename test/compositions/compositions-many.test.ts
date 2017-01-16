@@ -6,6 +6,7 @@ import { Transaction, loadRules } from '../../src/index';
 
 import { Order } from './model/order';
 import { OrderItem } from './model/orderItem';
+import { test as test1 } from './model/rules/order-rules';
 
 async function testCreate(): Promise<void> {
     let transaction = new Transaction();
@@ -39,7 +40,7 @@ async function testCreate(): Promise<void> {
     assert.equal(children.length, 1, '(4) Order has 1 items');
     assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid], '(5) Order has 1 items');
     assert.equal(await item2.order(), null, '(6) Parent is null');
-    
+
 
 }
 
@@ -52,19 +53,37 @@ async function testLoad(): Promise<void> {
     let item2 = await transaction.load<OrderItem>(OrderItem, { orderId: order.uuid });
     let children = await order.items.toArray();
     assert.equal(children.length, 2, '(1) Order has 2 items');
-    assert.deepEqual(children.map(ii => ii.uuid).sort(), [item1.uuid, item2.uuid].sort(), '(2) Order has 2 items'); 
+    assert.deepEqual(children.map(ii => ii.uuid).sort(), [item1.uuid, item2.uuid].sort(), '(2) Order has 2 items');
 
 }
 
+async function testRules(): Promise<void> {
+    let transaction = new Transaction();
+    let order = await transaction.create<Order>(Order);
+    let item1 = await transaction.create<OrderItem>(OrderItem);
+    let item2 = await transaction.create<OrderItem>(OrderItem);
+    await order.items.add(item1);
+    await order.items.add(item2);
+    
+    await item1.amount.value(10);
+    assert.equal(await order.totalAmount.value(), 10, 'Total amount  = 10');
+    await item2.amount.value(10);
+    assert.equal(await order.totalAmount.value(), 20, 'Total amount  = 20');
+    await item1.amount.value(5);
+    assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
+
+
+}
+
+
 describe('Relation One to Many, Composition', () => {
     before(function (done) {
-        //assert.equal(test, 1);
-        //loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-        //    done();
-        //}).catch((ex) => {
-        //    done(ex);
-        //});
-        done();
+        assert.equal(test1, 1);
+        loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
     });
     it('One to Many composition - create', function (done) {
         testCreate().then(function () {
@@ -85,7 +104,12 @@ describe('Relation One to Many, Composition', () => {
 
     });
     it('One to one Many - rules', function (done) {
-        done();
+        testRules().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+
 
     });
 

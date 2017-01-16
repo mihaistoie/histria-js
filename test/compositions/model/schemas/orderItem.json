@@ -2,7 +2,12 @@
     "type": "object",
     "name": "orderItem",
     "nameSpace": "compositions",
-    "properties": {},
+    "properties": {
+        "amount": {
+            "type": "number",
+            "default": 0
+        }
+    },
     "relations": {
         "order": {
             "type": "belongsTo",

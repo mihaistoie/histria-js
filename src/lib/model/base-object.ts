@@ -9,6 +9,8 @@ import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 
 import { IntegerValue, NumberValue } from './number';
+import { IdValue } from './id';
+
 import { InstanceErrors } from './instance-errors'
 import { InstanceState } from './instance-state'
 import { EventInfoStack } from './event-stack'
@@ -119,7 +121,7 @@ export class Instance implements ObservableObject {
 	}
 
 	public get isNew(): boolean {
-		return this._model.isNew === true;
+		return this._model.$isNew === true;
 	}
 
 	public getPath(propName?: string): string {
@@ -187,9 +189,15 @@ export class Instance implements ObservableObject {
 		that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
 			let cs = that._schema.properties[propName];
 			let propType = schemaUtils.typeOfProperty(cs);
+			if (that.isNew && cs.default !== undefined && that._model[propName] === undefined )  {
+				that._model[propName] = cs.default;
+			}
 			switch (propType) {
 				case JSONTYPES.integer:
 					that._children[propName] = new IntegerValue(that, propName);
+					break;
+				case JSONTYPES.id:
+					that._children[propName] = new IdValue(that, propName);
 					break;
 				case JSONTYPES.number:
 					that._children[propName] = new NumberValue(that, propName);

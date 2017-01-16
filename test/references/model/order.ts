@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Customer } from './customer';
@@ -24,11 +24,11 @@ export class Order extends Instance {
 	public customerStatus(value?: string): Promise<string> {
 		return this.getOrSetProperty('customerStatus', value);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
-	public get customerId(): IntegerValue {
-		return this._children.customerId;
+	public get customerId(): Promise<any> {
+		return this._children.customerId.value();
 	}
 	public customer(value?: Customer): Promise<Customer> {
 		return this._children.customer.value(value);
@@ -63,10 +63,10 @@ export class OrderState extends InstanceState {
 	public get customerStatus(): StringState {
 		return this._states.customerStatus;
 	}
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
-	public get customerId(): IntegerState {
+	public get customerId(): IdState {
 		return this._states.customerId;
 	}
 }
@@ -81,11 +81,13 @@ const
 			},
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			},
 			"customerId": {
 				"type": "integer",
-				"isReadOnly": true
+				"isReadOnly": true,
+				"format": "id"
 			}
 		},
 		"relations": {

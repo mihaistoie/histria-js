@@ -42,12 +42,12 @@ async function testRefById(): Promise<void> {
     let transaction = new Transaction();
     let cust = await transaction.create<Customer>(Customer);
     let order = await transaction.load<Order>(Order, { customerId: cust.uuid });
-    let customerId = await order.customerId.value();
-    let id = await cust.id.value();
+    let customerId = await order.customerId;
+    let id = await cust.id;
     let cust2 = await order.customer();
     assert.equal(cust, cust2, 'test loading');
     await order.customer(null);
-    customerId = await order.customerId.value();
+    customerId = await order.customerId;
     assert.equal(customerId, undefined, 'customerId is undefined');
 }
 

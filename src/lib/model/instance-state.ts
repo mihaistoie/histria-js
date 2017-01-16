@@ -1,4 +1,4 @@
-import { EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
+import { EnumState, IdState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
 import { ObservableObject } from './interfaces';
 import { JSONTYPES } from '../schema/schema-consts';
 import * as schemaUtils from '../schema/schema-utils';
@@ -23,6 +23,9 @@ export class InstanceState {
                 switch (propType) {
                     case JSONTYPES.integer:
                         that._states[propName] = new IntegerState(that._parent, propName);
+                        break;
+                    case JSONTYPES.id:
+                        that._states[propName] = new IdState(that._parent, propName);
                         break;
                     case JSONTYPES.number:
                         that._states[propName] = new NumberState(that._parent, propName);

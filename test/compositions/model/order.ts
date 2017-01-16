@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { OrderItem } from './orderitem';
@@ -21,8 +21,8 @@ export class Order extends Instance {
 		let that = this;
 		that._errors = new OrderErrors(that, that._schema);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
 	get items(): HasManyComposition<OrderItem> {
 		return this._children.items;
@@ -48,7 +48,7 @@ export class OrderErrors extends InstanceErrors {
 }
 
 export class OrderState extends InstanceState {
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
 }
@@ -60,7 +60,8 @@ const
 		"properties": {
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			}
 		},
 		"relations": {

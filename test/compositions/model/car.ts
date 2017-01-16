@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Engine } from './engine';
@@ -21,8 +21,11 @@ export class Car extends Instance {
 		let that = this;
 		that._errors = new CarErrors(that, that._schema);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get engineChangedHits(): IntegerValue {
+		return this._children.engineChangedHits;
+	}
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
 	public engine(value?: Engine): Promise<Engine> {
 		return this._children.engine.value(value);
@@ -39,6 +42,9 @@ export class CarErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get engineChangedHits(): ErrorState {
+		return this._messages.engineChangedHits;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -48,7 +54,10 @@ export class CarErrors extends InstanceErrors {
 }
 
 export class CarState extends InstanceState {
-	public get id(): IntegerState {
+	public get engineChangedHits(): IntegerState {
+		return this._states.engineChangedHits;
+	}
+	public get id(): IdState {
 		return this._states.id;
 	}
 }
@@ -58,9 +67,14 @@ const
 		"name": "car",
 		"nameSpace": "compositions",
 		"properties": {
+			"engineChangedHits": {
+				"type": "integer",
+				"default": 0
+			},
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			}
 		},
 		"relations": {

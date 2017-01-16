@@ -23,6 +23,7 @@ exports.ErrorState = error_state_1.ErrorState;
 var state_1 = require("./lib/model/state");
 exports.State = state_1.State;
 exports.StringState = state_1.StringState;
+exports.IdState = state_1.IdState;
 exports.IntegerState = state_1.IntegerState;
 exports.EnumState = state_1.EnumState;
 exports.NumberState = state_1.NumberState;

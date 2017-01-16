@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Car } from './car';
@@ -21,11 +21,11 @@ export class Engine extends Instance {
 		let that = this;
 		that._errors = new EngineErrors(that, that._schema);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
-	public get carId(): IntegerValue {
-		return this._children.carId;
+	public get carId(): Promise<any> {
+		return this._children.carId.value();
 	}
 	public car(value?: Car): Promise<Car> {
 		return this._children.car.value(value);
@@ -54,10 +54,10 @@ export class EngineErrors extends InstanceErrors {
 }
 
 export class EngineState extends InstanceState {
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
-	public get carId(): IntegerState {
+	public get carId(): IdState {
 		return this._states.carId;
 	}
 }
@@ -69,11 +69,13 @@ const
 		"properties": {
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			},
 			"carId": {
 				"type": "integer",
-				"isReadOnly": true
+				"isReadOnly": true,
+				"format": "id"
 			}
 		},
 		"relations": {

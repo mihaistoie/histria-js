@@ -39,7 +39,7 @@ export class BaseNumberValue {
         let that = this;
         if (value !== undefined) {
             value = that._round(value);
-        }
+        } 
         return that._parent.getOrSetProperty(that._propertyName, value);
     }
     public async decimals(value: number): Promise<number> {

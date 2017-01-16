@@ -33,7 +33,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         imports.push('import {');
         imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
         imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation,');
-        imports.push(_tab(1) + 'ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+        imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
         imports.push(_tab(1) + 'IntegerValue, NumberValue');
         imports.push('} from \'' + pathToLib + '\';');
 
@@ -73,6 +73,11 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
                     let value2 = schemaUtils.isReadOnly(propSchema) ? '' : ', value';
                     code.push(_tab(1) + util.format('public %s(%s): Promise<string> {', propName, value1));
                     code.push(_tab(2) + util.format('return this.getOrSetProperty(\'%s\'%s);', propName, value2));
+                    code.push(_tab(1) + '}');
+                    break;
+                case JSONTYPES.id:
+                    code.push(_tab(1) + util.format('public get %s(): Promise<any> {', propName));
+                    code.push(_tab(2) + util.format('return this._children.%s.value();', propName));
                     code.push(_tab(1) + '}');
                     break;
                 case JSONTYPES.integer:
@@ -204,6 +209,11 @@ function _genClassState(schema: any, className: string, baseClass: string, code:
             switch (stype) {
                 case JSONTYPES.integer:
                     code.push(_tab(1) + util.format('public get %s(): IntegerState {', propName));
+                    code.push(_tab(2) + util.format('return this._states.%s;', propName));
+                    code.push(_tab(1) + '}');
+                    break;
+                case JSONTYPES.id:
+                    code.push(_tab(1) + util.format('public get %s(): IdState {', propName));
                     code.push(_tab(2) + util.format('return this._states.%s;', propName));
                     code.push(_tab(1) + '}');
                     break;

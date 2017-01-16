@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../src/index';
 
@@ -32,8 +32,8 @@ export class SalesOrder extends Instance {
 	public get grossAmount(): NumberValue {
 		return this._children.grossAmount;
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
 	public get $states(): SalesOrderState {
 		return <SalesOrderState>this._states;
@@ -77,7 +77,7 @@ export class SalesOrderState extends InstanceState {
 	public get grossAmount(): NumberState {
 		return this._states.grossAmount;
 	}
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
 }
@@ -105,7 +105,8 @@ const
 			},
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			}
 		},
 		"states": {

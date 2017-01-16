@@ -2,7 +2,12 @@
     "type": "object",
     "name": "car",
     "nameSpace": "compositions",
-    "properties": {},
+    "properties": {
+        "engineChangedHits": {
+            "type": "integer",
+            "default": 0
+        }
+    },
     "relations": {
         "engine": {
             "type": "hasOne",

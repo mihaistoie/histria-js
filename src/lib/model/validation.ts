@@ -110,6 +110,9 @@ function _validateString(value: string, schema: any, propTitle: string, ctx: Use
 function validateProp(value: any, propName, propSchema: any, ctx: UserContext, error: ErrorState, state: State) {
     let propType = schemaUtils.typeOfProperty(propSchema);
     switch (propType) {
+        case JSONTYPES.id:
+            //todo
+            break;
         case JSONTYPES.integer:
             _validateInteger(value, propSchema.title || propName, ctx, error, <IntegerState>state);
             break;

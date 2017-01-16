@@ -68,6 +68,10 @@ export class State {
 
 }
 
+export class IdState extends State {
+
+}
+
 export class StringState extends State {
     protected init() {
         super.init();

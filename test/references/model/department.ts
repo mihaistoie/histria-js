@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 
@@ -26,8 +26,8 @@ export class Department extends Instance {
 	public title(value?: string): Promise<string> {
 		return this.getOrSetProperty('title', value);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
 	public get $states(): DepartmentState {
 		return <DepartmentState>this._states;
@@ -59,7 +59,7 @@ export class DepartmentState extends InstanceState {
 	public get title(): StringState {
 		return this._states.title;
 	}
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
 }
@@ -82,7 +82,8 @@ const
 			},
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			}
 		}
 	};

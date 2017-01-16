@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Employee } from './employee';
@@ -36,11 +36,11 @@ export class EmployeeAddress extends Instance {
 	public country(value?: string): Promise<string> {
 		return this.getOrSetProperty('country', value);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
-	public get employeeId(): IntegerValue {
-		return this._children.employeeId;
+	public get employeeId(): Promise<any> {
+		return this._children.employeeId.value();
 	}
 	public employee(value?: Employee): Promise<Employee> {
 		return this._children.employee.value(value);
@@ -99,10 +99,10 @@ export class EmployeeAddressState extends InstanceState {
 	public get country(): StringState {
 		return this._states.country;
 	}
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
-	public get employeeId(): IntegerState {
+	public get employeeId(): IdState {
 		return this._states.employeeId;
 	}
 }
@@ -134,11 +134,13 @@ const
 			},
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			},
 			"employeeId": {
 				"type": "integer",
-				"isReadOnly": true
+				"isReadOnly": true,
+				"format": "id"
 			}
 		},
 		"relations": {

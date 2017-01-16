@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Order } from './order';
@@ -21,11 +21,11 @@ export class OrderItem extends Instance {
 		let that = this;
 		that._errors = new OrderItemErrors(that, that._schema);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
-	public get orderId(): IntegerValue {
-		return this._children.orderId;
+	public get orderId(): Promise<any> {
+		return this._children.orderId.value();
 	}
 	public order(value?: Order): Promise<Order> {
 		return this._children.order.value(value);
@@ -54,10 +54,10 @@ export class OrderItemErrors extends InstanceErrors {
 }
 
 export class OrderItemState extends InstanceState {
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
-	public get orderId(): IntegerState {
+	public get orderId(): IdState {
 		return this._states.orderId;
 	}
 }
@@ -69,11 +69,13 @@ const
 		"properties": {
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			},
 			"orderId": {
 				"type": "integer",
-				"isReadOnly": true
+				"isReadOnly": true,
+				"format": "id"
 			}
 		},
 		"relations": {

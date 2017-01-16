@@ -6,7 +6,8 @@ export const JSONTYPES = {
     array: 'array',
     // extended
     date: 'date',
-    datetime: 'date-time'
+    datetime: 'date-time',
+    id: 'id'
 }
 
 export const DEFAULT_PARENT_NAME = 'owner';

@@ -6,6 +6,7 @@ import { Transaction, loadRules } from '../../src/index';
 
 import { Car } from './model/car';
 import { Engine } from './model/engine';
+import { test as test1 } from './model/rules/car-rules';
 
 async function testCreate(): Promise<void> {
     let transaction = new Transaction();
@@ -15,19 +16,19 @@ async function testCreate(): Promise<void> {
     await car.engine(engine);
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
-    assert.equal(await engine.carId.value(), car.uuid, 'Owner of engine is car');
+    assert.equal(await engine.carId, car.uuid, 'Owner of engine is car');
     
     await engine.car(null);
-    assert.equal(await engine.carId.value(), undefined, '(1) Owner of engine null');
+    assert.equal(await engine.carId, undefined, '(1) Owner of engine null');
     assert.equal(await engine.car(), null, '(2) Owner of engine null');
 
     await engine.car(car);
     parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car 2 ');
-    assert.equal(await engine.carId.value(), car.uuid, 'Owner of engine is car 2 ');
+    assert.equal(await engine.carId, car.uuid, 'Owner of engine is car 2 ');
 
     await car.engine(null);
-    assert.equal(await engine.carId.value(), undefined, 'Owner of engine null 2 ');
+    assert.equal(await engine.carId, undefined, 'Owner of engine null 2 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 2');
 
     let car2 = await transaction.create<Car>(Car);
@@ -38,7 +39,7 @@ async function testCreate(): Promise<void> {
 
     let engine2 = await transaction.create<Engine>(Engine);
     await car2.engine(engine2);
-    assert.equal(await engine.carId.value(), undefined, 'Owner of engine null 3 ');
+    assert.equal(await engine.carId, undefined, 'Owner of engine null 3 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
 
@@ -63,15 +64,29 @@ async function testLoad(): Promise<void> {
 
 }
 
+
+async function testRules(): Promise<void> {
+    let transaction = new Transaction();
+    let car = await transaction.create<Car>(Car);
+    let engine = await transaction.create<Engine>(Engine);
+    await car.engine(engine);
+    assert.equal(await car.engineChangedHits.value(), 1, 'Rule called one time');
+    await car.engine(engine);
+    assert.equal(await car.engineChangedHits.value(), 1, 'Rule called one time');
+    await car.engine(null);
+    assert.equal(await car.engineChangedHits.value(), 2, 'Rule called 2 times');
+
+}
+
+
 describe('Relation One to One, Composition', () => {
     before(function (done) {
-        //assert.equal(test, 1);
-        //loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-        //    done();
-        //}).catch((ex) => {
-        //    done(ex);
-        //});
-        done();
+        assert.equal(test1, 1);
+        loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
     });
     it('One to one composition - create', function (done) {
         testCreate().then(function () {
@@ -92,7 +107,11 @@ describe('Relation One to One, Composition', () => {
 
     });
     it('One to one composition - rules', function (done) {
-        done();
+        testRules().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
 
     });
 

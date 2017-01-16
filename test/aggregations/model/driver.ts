@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Car } from './car';
@@ -21,11 +21,11 @@ export class Driver extends Instance {
 		let that = this;
 		that._errors = new DriverErrors(that, that._schema);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
-	public get drivesId(): IntegerValue {
-		return this._children.drivesId;
+	public get drivesId(): Promise<any> {
+		return this._children.drivesId.value();
 	}
 	public drives(value?: Car): Promise<Car> {
 		return this._children.drives.value(value);
@@ -54,10 +54,10 @@ export class DriverErrors extends InstanceErrors {
 }
 
 export class DriverState extends InstanceState {
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
-	public get drivesId(): IntegerState {
+	public get drivesId(): IdState {
 		return this._states.drivesId;
 	}
 }
@@ -68,11 +68,13 @@ const
 		"properties": {
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			},
 			"drivesId": {
 				"type": "integer",
-				"isReadOnly": true
+				"isReadOnly": true,
+				"format": "id"
 			}
 		},
 		"nameSpace": "aggregations",

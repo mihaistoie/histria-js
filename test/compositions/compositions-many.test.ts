@@ -15,7 +15,7 @@ async function testCreate(): Promise<void> {
     await order.items.add(item1);
     let parent = await item1.order();
     assert.equal(order, parent, '(1) Owner of orderItem1 is order');
-    assert.equal(await item1.orderId.value(), order.uuid, '(2) Owner of orderItem1 is order');
+    assert.equal(await item1.orderId, order.uuid, '(2) Owner of orderItem1 is order');
     let children = await order.items.toArray();
     assert.deepEqual(children.map(ii => { return ii.uuid }), [item1.uuid], '(3) Owner of orderItem1 is order');
 

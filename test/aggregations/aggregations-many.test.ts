@@ -13,7 +13,7 @@ async function testCreate(): Promise<void> {
     await cd.songs.add(song1);
     let cd1 = await song1.cd();
     assert.equal(cd, cd1, '(1) song1 on cd');
-    assert.equal(await song1.cdId.value(), cd.uuid, '(2) song1 on cd');
+    assert.equal(await song1.cdId, cd.uuid, '(2) song1 on cd');
     let children = await cd.songs.toArray();
     assert.deepEqual(children.map(ii => { return ii.uuid }), [song1.uuid], '(3) song1 on cd');
 

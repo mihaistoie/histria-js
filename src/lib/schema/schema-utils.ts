@@ -22,11 +22,17 @@ export function typeOfProperty(propSchema: { type?: string, format?: string, ref
     if (!JSONTYPES[ps])
         throw new ApplicationError(util.format('Unsupported schema type : "%s"', propSchema.type));
     if (propSchema.format) {
-        if (ps === 'string') {
+        if (ps === JSONTYPES.string) {
             if (propSchema.format === JSONTYPES.date)
                 return JSONTYPES.date;
             else if (propSchema.format === JSONTYPES.datetime)
                 return JSONTYPES.datetime;
+            else if (propSchema.format === JSONTYPES.id)
+                return JSONTYPES.id;
+        } else if (ps === JSONTYPES.integer) {
+            if (propSchema.format === JSONTYPES.id) 
+                return JSONTYPES.id;
+
         }
     }
     return ps;
@@ -78,11 +84,11 @@ export function updateRoleRefs(role: any, localModel: any, foreignModel: any, us
 
 
 function idDefinition(): any {
-    return { type: JSONTYPES.integer, generated: true };
+    return { type: JSONTYPES.integer, generated: true, format: JSONTYPES.id };
 }
 
 function refIdDefinition(): any {
-    return { type: JSONTYPES.integer, isReadOnly: true };
+    return { type: JSONTYPES.integer, isReadOnly: true, format: JSONTYPES.id };
 }
 
 

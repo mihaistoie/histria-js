@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Cd } from './cd';
@@ -21,11 +21,11 @@ export class Song extends Instance {
 		let that = this;
 		that._errors = new SongErrors(that, that._schema);
 	}
-	public get id(): IntegerValue {
-		return this._children.id;
+	public get id(): Promise<any> {
+		return this._children.id.value();
 	}
-	public get cdId(): IntegerValue {
-		return this._children.cdId;
+	public get cdId(): Promise<any> {
+		return this._children.cdId.value();
 	}
 	public cd(value?: Cd): Promise<Cd> {
 		return this._children.cd.value(value);
@@ -54,10 +54,10 @@ export class SongErrors extends InstanceErrors {
 }
 
 export class SongState extends InstanceState {
-	public get id(): IntegerState {
+	public get id(): IdState {
 		return this._states.id;
 	}
-	public get cdId(): IntegerState {
+	public get cdId(): IdState {
 		return this._states.cdId;
 	}
 }
@@ -69,11 +69,13 @@ const
 		"properties": {
 			"id": {
 				"type": "integer",
-				"generated": true
+				"generated": true,
+				"format": "id"
 			},
 			"cdId": {
 				"type": "integer",
-				"isReadOnly": true
+				"isReadOnly": true,
+				"format": "id"
 			}
 		},
 		"relations": {

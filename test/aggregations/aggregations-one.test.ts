@@ -15,18 +15,18 @@ async function testCreate(): Promise<void> {
     assert.equal(dd, driver, '(1) Driver drives the car');
     let parent = await driver.drives();
     assert.equal(car, parent, 'Driver drives the car');
-    assert.equal(await driver.drivesId.value(), car.uuid, '(2) Driver drives the car');
+    assert.equal(await driver.drivesId, car.uuid, '(2) Driver drives the car');
     await driver.drives(null);
-    assert.equal(await driver.drivesId.value(), undefined, '(1) Driver hasn\'t a car.');
+    assert.equal(await driver.drivesId, undefined, '(1) Driver hasn\'t a car.');
     assert.equal(await driver.drives(), null, '(2) Driver hasn\'t a car.');
 
     await driver.drives(car);
     parent = await driver.drives();
     assert.equal(car, parent, 'Driver drives the car 1');
-    assert.equal(await driver.drivesId.value(), car.uuid, 'Driver drives car.uuid ');
+    assert.equal(await driver.drivesId, car.uuid, 'Driver drives car.uuid ');
 
     await car.drivenBy(null);
-    assert.equal(await driver.drivesId.value(), undefined, '(1) Driver hasn\'t a car 2 ');
+    assert.equal(await driver.drivesId, undefined, '(1) Driver hasn\'t a car 2 ');
     assert.equal(await driver.drives(), null, '(2) Driver hasn\'t a car 2');
 
     let car2 = await transaction.create<Car>(Car);
@@ -37,7 +37,7 @@ async function testCreate(): Promise<void> {
 
     let driver2 = await transaction.create<Driver>(Driver);
     await car2.drivenBy(driver2);
-    assert.equal(await driver.drivesId.value(), undefined, 'Driver hasn\'t a car 3 ');
+    assert.equal(await driver.drivesId, undefined, 'Driver hasn\'t a car 3 ');
     assert.equal(await driver.drives(), null, 'Driver hasn\'t a car 3');
     assert.equal(await car2.drivenBy(), driver2, 'Car2 is driven by driver2');
 

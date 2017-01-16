@@ -11,7 +11,7 @@ declare module 'histria-utils' {
     export { HasManyComposition, HasManyAggregation } from 'histria-utils/lib/model/roleHasMany';
     export { propChanged, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
     export { ErrorState } from 'histria-utils/lib/model/error-state';
-    export { State, StringState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
+    export { State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
     export { fs } from 'histria-utils/lib/utils/promises';
     export { classGenerator } from 'histria-utils/lib/generators/classgen';
@@ -181,6 +181,8 @@ declare module 'histria-utils/lib/model/state' {
         isHidden: boolean;
         isMandatory: boolean;
         isReadOnly: boolean;
+    }
+    export class IdState extends State {
     }
     export class StringState extends State {
         protected init(): void;

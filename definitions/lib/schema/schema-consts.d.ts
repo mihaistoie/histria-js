@@ -6,6 +6,7 @@ export declare const JSONTYPES: {
     array: string;
     date: string;
     datetime: string;
+    id: string;
 };
 export declare const DEFAULT_PARENT_NAME = "owner";
 export declare const RELATION_TYPE: {

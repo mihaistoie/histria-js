@@ -11,7 +11,10 @@ export enum EventType {
     propChanged = 0,
     propValidate = 1,
     init = 2,
-    objValidate = 3
+    objValidate = 3,
+    addItem = 4,
+    removeItem = 5,
+    setItems = 6
 }
 
 

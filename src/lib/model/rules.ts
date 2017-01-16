@@ -24,6 +24,31 @@ export function propChanged(targetClass: any, ...properties: string[]) {
     }
 }
 
+
+//decorators for composition list
+export function addItem(targetClass: any, propertyName: string) {
+    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = new ModelManager();
+        mm.addRule(targetClass, EventType.addItem, target[propertyKey], [propertyName]);
+    }
+}
+
+export function rmvItem(targetClass: any, propertyName: string) {
+    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = new ModelManager();
+        mm.addRule(targetClass, EventType.removeItem, target[propertyKey], [propertyName]);
+    }
+}
+
+export function setItems(targetClass: any, propertyName: string) {
+    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = new ModelManager();
+        mm.addRule(targetClass, EventType.setItems, target[propertyKey], [propertyName]);
+    }
+}
+
+
+
 //decorator for validate
 export function validate(targetClass: any, ...properties: string[]) {
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {

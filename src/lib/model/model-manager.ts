@@ -46,6 +46,9 @@ export class ModelManager {
             factory: constructor,
             nameSpace: nameSpace,
             propChangeRules: {},
+            addItemRules: {},
+            setItemsRules: {},
+            rmvItemRules: {},
             propValidateRules: {},
             objValidateRules: [],
             initRules: [],
@@ -94,6 +97,39 @@ export class ModelManager {
         return res;
     }
 
+    public rulesForAddItem(classOfInstance: any, propertyName: string): any[] {
+        let that = this;
+        let res = [];
+        let ci = that._mapByClass.get(classOfInstance);
+        if (!ci) return res;
+        if (ci.addItemRules[propertyName]) {
+            return _activeRules(ci.addItemRules[propertyName]);
+        }
+        return res;
+    }
+
+    public rulesForRmvItem(classOfInstance: any, propertyName: string): any[] {
+        let that = this;
+        let res = [];
+        let ci = that._mapByClass.get(classOfInstance);
+        if (!ci) return res;
+        if (ci.rmvItemRules[propertyName]) {
+            return _activeRules(ci.rmvItemRules[propertyName]);
+        }
+        return res;
+    }
+    public rulesForSetItems(classOfInstance: any, propertyName: string): any[] {
+        let that = this;
+        let res = [];
+        let ci = that._mapByClass.get(classOfInstance);
+        if (!ci) return res;
+        if (ci.setItemsRules[propertyName]) {
+            return _activeRules(ci.setItemsRules[propertyName]);
+        }
+        return res;
+    }
+
+
     public setTitle(classOfInstance: any, method: any, title: string, description?: string) {
         let that = this;
         that._mapRules = that._mapRules || new Map();
@@ -137,6 +173,18 @@ export class ModelManager {
             });
         } else if (ruleType === EventType.objValidate) {
             ci.objValidateRules.push(ri);
+        } else if (ruleType === EventType.addItem) {
+            let propName = ruleParams[0];
+            ci.addItemRules[propName] = ci.addItemRules[propName] || [];
+            ci.addItemRules[propName].push(ri);
+        } else if (ruleType === EventType.removeItem) {
+            let propName = ruleParams[0];
+            ci.rmvItemRules[propName] = ci.rmvItemRules[propName] || [];
+            ci.rmvItemRules[propName].push(ri);
+        } else if (ruleType === EventType.setItems) {
+            let propName = ruleParams[0];
+            ci.setItemsRules[propName] = ci.setItemsRules[propName] || [];
+            ci.setItemsRules[propName].push(ri);
         }
     }
 }
@@ -150,7 +198,7 @@ export async function initRules(eventInfo: EventInfo, classOfInstance: any, inst
         let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-             await rule.apply(null, rArgs);
+            await rule.apply(null, rArgs);
         }
     }
 }
@@ -166,7 +214,7 @@ export async function propagationRules(eventInfo: EventInfo, classOfInstance: an
         let rArgs = instances.concat(na);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-             await rule.apply(null, rArgs);
+            await rule.apply(null, rArgs);
         }
     }
 }
@@ -183,7 +231,7 @@ export async function propValidateRules(eventInfo: EventInfo, classOfInstance: a
             await rule.apply(null, rArgs);
         }
     }
-    
+
 }
 
 
@@ -191,12 +239,59 @@ export async function propValidateRules(eventInfo: EventInfo, classOfInstance: a
 export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
     let mm = new ModelManager();
     let rules = mm.rulesObjValidate(classOfInstance);
-    
+
     if (rules && rules.length) {
         let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-             await rule.apply(null, rArgs);
+            await rule.apply(null, rArgs);
+        }
+    }
+}
+
+
+export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    let mm = new ModelManager();
+    let propName = args[0];
+    let rules = mm.rulesForAddItem(classOfInstance, propName);
+    if (rules.length) {
+        let na = args.slice();
+        na[0] = eventInfo;
+        let rArgs = instances.concat(na);
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule.apply(null, rArgs);
+        }
+    }
+}
+
+export async function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    let mm = new ModelManager();
+    let propName = args[0];
+    let rules = mm.rulesForRmvItem(classOfInstance, propName);
+    if (rules.length) {
+        let na = args.slice();
+        na[0] = eventInfo;
+        let rArgs = instances.concat(na);
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule.apply(null, rArgs);
+        }
+    }
+}
+
+
+export async function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    let mm = new ModelManager();
+    let propName = args[0];
+    let rules = mm.rulesForSetItems(classOfInstance, propName);
+    if (rules.length) {
+        let na = args.slice();
+        na[0] = eventInfo;
+        let rArgs = instances.concat(na);
+        for (let i = 0, len = rules.length; i < len; i++) {
+            let rule = rules[i];
+            await rule.apply(null, rArgs);
         }
     }
 }

@@ -9,7 +9,7 @@ declare module 'histria-utils' {
     export { ModelManager } from 'histria-utils/lib/model/model-manager';
     export { Transaction } from 'histria-utils/lib/factory/transaction';
     export { HasManyComposition, HasManyAggregation } from 'histria-utils/lib/model/roleHasMany';
-    export { propChanged, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
+    export { propChanged, addItem, rmvItem, setItems, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
     export { ErrorState } from 'histria-utils/lib/model/error-state';
     export { State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
@@ -107,6 +107,9 @@ declare module 'histria-utils/lib/model/model-manager' {
         rulesObjValidate(classOfInstance: any): any[];
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
         rulesForPropValidate(classOfInstance: any, propertyName: string): any[];
+        rulesForAddItem(classOfInstance: any, propertyName: string): any[];
+        rulesForRmvItem(classOfInstance: any, propertyName: string): any[];
+        rulesForSetItems(classOfInstance: any, propertyName: string): any[];
         setTitle(classOfInstance: any, method: any, title: string, description?: string): void;
         addValidateRule(classOfInstance: any, rule: any, ruleParams?: any): void;
         addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
@@ -115,6 +118,9 @@ declare module 'histria-utils/lib/model/model-manager' {
     export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
     export function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
     export function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+    export function addItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+    export function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+    export function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
@@ -152,6 +158,9 @@ declare module 'histria-utils/lib/model/roleHasMany' {
 declare module 'histria-utils/lib/model/rules' {
     export function title(targetClass: any, title: string, description?: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function propChanged(targetClass: any, ...properties: string[]): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    export function addItem(targetClass: any, propertyName: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    export function rmvItem(targetClass: any, propertyName: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    export function setItems(targetClass: any, propertyName: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function validate(targetClass: any, ...properties: string[]): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function init(targetClass: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
     export function loadRules(folder: string): Promise<void>;
@@ -275,6 +284,9 @@ declare module 'histria-utils/lib/model/interfaces' {
         propValidate = 1,
         init = 2,
         objValidate = 3,
+        addItem = 4,
+        removeItem = 5,
+        setItems = 6,
     }
     export enum MessageServerity {
         error = 0,

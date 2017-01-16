@@ -71,8 +71,6 @@ async function testRules(): Promise<void> {
     assert.equal(await order.totalAmount.value(), 20, 'Total amount  = 20');
     await item1.amount.value(5);
     assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
-
-
 }
 
 

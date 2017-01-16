@@ -24,6 +24,9 @@ export class Car extends Instance {
 	public get engineChangedHits(): IntegerValue {
 		return this._children.engineChangedHits;
 	}
+	public engineName(value?: string): Promise<string> {
+		return this.getOrSetProperty('engineName', value);
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -45,6 +48,9 @@ export class CarErrors extends InstanceErrors {
 	public get engineChangedHits(): ErrorState {
 		return this._messages.engineChangedHits;
 	}
+	public get engineName(): ErrorState {
+		return this._messages.engineName;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -56,6 +62,9 @@ export class CarErrors extends InstanceErrors {
 export class CarState extends InstanceState {
 	public get engineChangedHits(): IntegerState {
 		return this._states.engineChangedHits;
+	}
+	public get engineName(): StringState {
+		return this._states.engineName;
 	}
 	public get id(): IdState {
 		return this._states.id;
@@ -70,6 +79,9 @@ const
 			"engineChangedHits": {
 				"type": "integer",
 				"default": 0
+			},
+			"engineName": {
+				"type": "string"
 			},
 			"id": {
 				"type": "integer",

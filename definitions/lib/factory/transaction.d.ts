@@ -6,7 +6,7 @@ export declare class Transaction implements TransactionContainer {
     private _ctx;
     constructor(ctx?: UserContext);
     readonly context: UserContext;
-    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
+    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
     restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;

@@ -18,7 +18,7 @@ export declare class ModelManager {
     addValidateRule(classOfInstance: any, rule: any, ruleParams?: any): void;
     addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
 }
-export declare function initRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
-export declare function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
-export declare function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
-export declare function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
+export declare function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;

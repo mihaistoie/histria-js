@@ -82,6 +82,10 @@ async function testRules(): Promise<void> {
     await engine.car(car);
     assert.equal(await car.engineChangedHits.value(), 3, '(1) Rule called 3 times');
     assert.equal(await engine.carChangedHits.value(), 3, '(2) Rule called 3 times');
+
+    await engine.car(car);
+    await engine.name('v8');
+    assert.equal(await car.engineName(), 'v8', 'Rule propagation');
     
 
 }
@@ -110,9 +114,7 @@ describe('Relation One to One, Composition', () => {
             done();
         }).catch(function (ex) {
             done(ex);
-        })
-
-
+        });
     });
     it('One to one composition - rules', function (done) {
         testRules().then(function () {

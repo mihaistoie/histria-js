@@ -27,12 +27,26 @@ export class Transaction implements TransactionContainer {
     public get context(): UserContext {
         return this._ctx;
     }
-    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args) {
+
+    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args) {
         let that = this;
+        let ci = instance;
+        args = args || [];
+        let nIstances = [ci];
+        let pi = eventType ===  EventType.propChanged && args && args.length ? 0 : -1;
         let list = that._subscribers.get(eventType);
         if (list) {
-            for (let item of list) {
-                await item(eventInfo, classOfInstance, instance, args)
+            while (ci) {
+                for (let item of list)
+                    await item(eventInfo, ci.constructor, nIstances, args)
+                if (eventType !==  EventType.propChanged)
+                    break;
+                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                //TODO code review
+                args[pi] = ci.propertyName + '.' + args[pi];
+                ci = ci.parent;
+                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                nIstances.unshift(ci)
             }
         }
     }
@@ -121,7 +135,7 @@ export class Transaction implements TransactionContainer {
         if (!instances) return null;
         return findInMap(query, instances, { findFirst: true, transform: (item) => { return item.model(); } });
     }
-    
+
     private async _find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]> {
         let that = this;
         let instances = that._getInstances(classOfInstance);

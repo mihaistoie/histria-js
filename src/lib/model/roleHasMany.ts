@@ -33,7 +33,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (item) {
             let lmodel = item.model();
             updateRoleRefs(that._relation, lmodel, null, true);
-            await item.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+            await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         }
         that._isNull = (that._model === null);
         return item;
@@ -63,7 +63,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             let lmodel = item.model();
             let rmodel = that._parent.model();
             updateRoleRefs(that._relation, lmodel, rmodel, true);
-            await item.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+            await item.changeParent(that._parent, that._propertyName,  that._relation.invRel || DEFAULT_PARENT_NAME, true);
         }
         return item;
     }
@@ -94,7 +94,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                         let model = item.model();
                         that._model[index] = model;
                         that._items[index] = item;
-                        await item.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
+                        await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, false);
                     }
                 } else
                     that._model = null;
@@ -157,7 +157,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             if (r) await r.internalSetValueAndNotify(that._parent, item);
             
             updateRoleRefs(that._relation, lmodel, rmodel, true);
-            await item.changeParent(that._parent, that._relation.invRel, true);
+            await item.changeParent(that._parent, that._propertyName, that._relation.invRel, true);
         }
         return item;
     }

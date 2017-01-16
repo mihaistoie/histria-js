@@ -37,7 +37,7 @@ declare module 'histria-utils/lib/model/base-object' {
         getRoleByName(roleName: string): any;
         rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
         addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
-        changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
+        changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
         protected _getEventInfo(): EventInfo;
         readonly context: UserContext;
         readonly transaction: TransactionContainer;
@@ -111,10 +111,10 @@ declare module 'histria-utils/lib/model/model-manager' {
         addValidateRule(classOfInstance: any, rule: any, ruleParams?: any): void;
         addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
     }
-    export function initRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
-    export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
-    export function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
-    export function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]): Promise<void>;
+    export function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+    export function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+    export function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+    export function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 }
 
 declare module 'histria-utils/lib/factory/transaction' {
@@ -122,7 +122,7 @@ declare module 'histria-utils/lib/factory/transaction' {
     export class Transaction implements TransactionContainer {
         constructor(ctx?: UserContext);
         readonly context: UserContext;
-        emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): Promise<void>;
+        emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
         subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
         create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
         restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
@@ -297,7 +297,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         context: UserContext;
         findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
         find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
-        emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, classOfInstance: any, instance: any, ...args: any[]): any;
+        emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): any;
     }
     export interface ObservableObject {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -315,8 +315,9 @@ declare module 'histria-utils/lib/model/interfaces' {
         getRoleByName(roleName: string): any;
         addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
         rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
-        changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void>;
+        changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
         readonly parent: ObservableObject;
+        readonly propertyName: string;
         readonly context: UserContext;
         readonly transaction: TransactionContainer;
         readonly uuid: string;

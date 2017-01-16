@@ -143,52 +143,58 @@ export class ModelManager {
 
 
 
-export async function initRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+export async function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
     let mm = new ModelManager();
     let rules = mm.rulesForInit(classOfInstance);
     if (rules.length) {
+        let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-            await rule(instance, eventInfo);
+             await rule.apply(null, rArgs);
         }
     }
 }
 
 
-export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
     let mm = new ModelManager();
     let propName = args[0];
     let rules = mm.rulesForPropChange(classOfInstance, propName);
     if (rules.length) {
+        let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-            await rule(instance, eventInfo);
+             await rule.apply(null, rArgs);
         }
     }
 }
 
 
-export async function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+export async function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
     let mm = new ModelManager();
     let propName = args[0];
     let rules = mm.rulesForPropValidate(classOfInstance, propName);
     if (rules.length) {
+        let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-            await rule(instance, eventInfo);
+            await rule.apply(null, rArgs);
         }
     }
+    
 }
 
 
 
-export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
     let mm = new ModelManager();
     let rules = mm.rulesObjValidate(classOfInstance);
+    
     if (rules && rules.length) {
+        let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-            await rule(instance, eventInfo);
+             await rule.apply(null, rArgs);
         }
     }
 }

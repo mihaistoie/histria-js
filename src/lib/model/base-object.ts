@@ -67,26 +67,15 @@ export class Instance implements ObservableObject {
 		}
 	}
 	//used for relations = called by CompositionBelongsTo / HasOneComposition
-	public async changeParent(newParent: ObservableObject, propName: string, notify: boolean): Promise<void> {
+	public async changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>  {
 		let that = this;
 		if (that._parent === newParent)
 			return;
-
-		if (propName !== DEFAULT_PARENT_NAME) {
-			//TODO
-			let oldModel = that._parent ? that._parent.model() : null;
-			if (oldModel) {
-				let propValue = oldModel[propName];
-				if (propValue) {
-
-				}
-
-			}
-		}
 		that._parent = newParent;
+		that._propertyName = that._parent ? foreignPropName: '';
 		that._rootCache = null;
-		if (notify && propName) {
-			await that.changeProperty(propName, that._parent, newParent, function () {
+		if (notify && localPropName) {
+			await that.changeProperty(localPropName, that._parent, newParent, function () {
 				that._parent = newParent;
 			});
 		} else {
@@ -115,7 +104,6 @@ export class Instance implements ObservableObject {
 	public get parent(): ObservableObject {
 		return this._parent;
 	}
-
 	public get uuid(): string {
 		return this._model.$uuid;
 	}
@@ -290,9 +278,9 @@ export class Instance implements ObservableObject {
 				hnd();
 				if (that.status === ObjectStatus.idle) {
 					// Validation rules
-					await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that.constructor, that, propName, newValue);
+					await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that, propName, newValue);
 					// Propagation rules
-					await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that.constructor, that, propName, newValue, oldValue);
+					await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that, propName, newValue, oldValue);
 				}
 			} catch (ex) {
 				that._errors[propName].addException(ex);
@@ -339,7 +327,7 @@ export class Instance implements ObservableObject {
 		let eventInfo = that._getEventInfo();
 		try {
 			if (that.status === ObjectStatus.creating) {
-				await that._transaction.emitInstanceEvent(EventType.init, eventInfo, that.constructor, that);
+				await that._transaction.emitInstanceEvent(EventType.init, eventInfo, that);
 			}
 		} finally {
 			that.status = ObjectStatus.idle;
@@ -354,7 +342,7 @@ export class Instance implements ObservableObject {
 				//TODO validate all properties
 			}
 			try {
-				await that._transaction.emitInstanceEvent(EventType.objValidate, eventInfo, that.constructor, that);
+				await that._transaction.emitInstanceEvent(EventType.objValidate, eventInfo, that);
 			} catch (ex) {
 				that._errors['$'].addException(ex);
 			}

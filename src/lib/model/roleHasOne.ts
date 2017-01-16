@@ -135,14 +135,14 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;
         if (newValue)
-            await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, true)
+            await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true)
         if (oldValue)
-            await oldValue.changeParent(null, that._relation.invRel || DEFAULT_PARENT_NAME, true)
+            await oldValue.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true)
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         let that = this;
         if (newValue) {
-            await newValue.changeParent(that._parent, that._relation.invRel || DEFAULT_PARENT_NAME, false);
+            await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, false);
 
         }
     }

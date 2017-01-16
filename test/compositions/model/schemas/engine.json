@@ -6,6 +6,9 @@
         "carChangedHits": {
             "type": "integer",
             "default": 0
+        },
+        "name": {
+            "type": "string"
         }
     },
     "relations": {

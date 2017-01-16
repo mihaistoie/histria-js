@@ -125,8 +125,9 @@ function validateProp(value: any, propName, propSchema: any, ctx: UserContext, e
     }
 }
 
-export async function validateAfterPropChanged(eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) {
+export async function validateAfterPropChanged(eventInfo: EventInfo, classOfInstance: any, instances: any, args?: any[]) {
     let propName = args[0];
+    let instance = instances[0];
     let propSchema = instance.getSchema(propName);
     if (!propSchema) return;
     validateProp(args[1], propName, propSchema, <UserContext>instance.context, <ErrorState>instance.$errors[propName], <State>instance.$states[propName])

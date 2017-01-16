@@ -6,7 +6,11 @@
         "engineChangedHits": {
             "type": "integer",
             "default": 0
+        },
+        "engineName": {
+            "type": "string"
         }
+        
     },
     "relations": {
         "engine": {

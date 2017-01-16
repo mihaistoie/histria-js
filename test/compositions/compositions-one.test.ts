@@ -6,7 +6,7 @@ import { Transaction, loadRules } from '../../src/index';
 
 import { Car } from './model/car';
 import { Engine } from './model/engine';
-import { test as test1 } from './model/rules/car-rules';
+import { test as test1 } from './model/rules/car-engine-rules';
 
 async function testCreate(): Promise<void> {
     let transaction = new Transaction();
@@ -70,11 +70,19 @@ async function testRules(): Promise<void> {
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
     await car.engine(engine);
-    assert.equal(await car.engineChangedHits.value(), 1, 'Rule called one time');
+    assert.equal(await car.engineChangedHits.value(), 1, '(1) Rule called one time');
+    assert.equal(await engine.carChangedHits.value(), 1, '(2) Rule called one time');
     await car.engine(engine);
-    assert.equal(await car.engineChangedHits.value(), 1, 'Rule called one time');
+    assert.equal(await car.engineChangedHits.value(), 1, '(1) Rule called one time');
+    assert.equal(await engine.carChangedHits.value(), 1, '(2) Rule called one time');
     await car.engine(null);
-    assert.equal(await car.engineChangedHits.value(), 2, 'Rule called 2 times');
+    assert.equal(await car.engineChangedHits.value(), 2, '(1) Rule called 2 times');
+    assert.equal(await engine.carChangedHits.value(), 2, '(2) Rule called 2 times');
+
+    await engine.car(car);
+    assert.equal(await car.engineChangedHits.value(), 3, '(1) Rule called 3 times');
+    assert.equal(await engine.carChangedHits.value(), 3, '(2) Rule called 3 times');
+    
 
 }
 

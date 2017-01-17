@@ -73,8 +73,10 @@ async function testRules(): Promise<void> {
     assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
     await order.items.remove(item2);
     assert.equal(await order.totalAmount.value(), 5, 'Total amount  = 5');
-    //await item1.order(null);
-    //assert.equal(await order.totalAmount.value(), 0, 'Total amount  = 0');
+    await item1.order(null);
+    assert.equal(await order.totalAmount.value(), 0, 'Total amount  = 0');
+    await order.items.set([item1, item2]);
+    assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
 
 
 }

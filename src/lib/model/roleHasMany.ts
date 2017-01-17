@@ -4,7 +4,25 @@ import { updateRoleRefs } from '../schema/schema-utils';
 import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
+    private async _afterRemoveItem(item: T, notifyRemove: boolean): Promise<void> {
+        let that = this;
+        let lmodel = item.model();
+        updateRoleRefs(that._relation, lmodel, null, true);
+        await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+        if (notifyRemove)
+            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
 
+    }
+    private async _afterAddItem(item: T, notifyAdd: boolean): Promise<void> {
+        let that = this;
+        let lmodel = item.model();
+        let rmodel = that._parent.model();
+        updateRoleRefs(that._relation, lmodel, rmodel, true);
+        await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+        if (notifyAdd)
+            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
+
+    }
     public async remove(element: T | number): Promise<T> {
         let that = this;
         await that.lazyLoad();
@@ -30,12 +48,8 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._model = null;
             that._parent.model()[that._propertyName] = that._model;
         }
-        if (item) {
-            let lmodel = item.model();
-            updateRoleRefs(that._relation, lmodel, null, true);
-            await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
-            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
-        }
+        if (item)
+            await that._afterRemoveItem(item, true);
         that._isNull = (that._model === null);
         return item;
     }
@@ -60,14 +74,33 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._items.push(item);
             that._model.push(that._model);
         }
-        if (item) {
-            let lmodel = item.model();
-            let rmodel = that._parent.model();
-            updateRoleRefs(that._relation, lmodel, rmodel, true);
-            await item.changeParent(that._parent, that._propertyName,  that._relation.invRel || DEFAULT_PARENT_NAME, true);
-            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-        }
+        if (item)
+            that._afterAddItem(item, true);
+
         return item;
+    }
+    public async set(items: T[]): Promise<void> {
+        let that = this;
+        await that.lazyLoad();
+        for (let item of that._items) {
+            await that._afterRemoveItem(item, false);
+        }
+        that._items = [];
+        if (items && items.length) {
+            that._model = [];
+            for (let item of items) {
+                let imodel = item.model();
+                that._model.push(imodel);
+                that._items.push(item);
+                await that._afterAddItem(item, false);
+            }
+
+        } else {
+            that._model = null
+        }
+        that._isNull = (that._model === null);
+        that._parent.model()[that._propertyName] = that._model;
+        await that._parent.notifyOperation(that._propertyName, EventType.setItems, null);
     }
 
     protected async lazyLoad(): Promise<void> {

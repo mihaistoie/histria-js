@@ -1,8 +1,11 @@
 import { ObservableObject } from './interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
 export declare class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
+    private _afterRemoveItem(item, notifyRemove);
+    private _afterAddItem(item, notifyAdd);
     remove(element: T | number): Promise<T>;
     add(item: T, index?: number): Promise<T>;
+    set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
 }
 export declare class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {

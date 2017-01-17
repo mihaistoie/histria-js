@@ -146,6 +146,7 @@ declare module 'histria-utils/lib/model/roleHasMany' {
     export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
         remove(element: T | number): Promise<T>;
         add(item: T, index?: number): Promise<T>;
+        set(items: T[]): Promise<void>;
         protected lazyLoad(): Promise<void>;
     }
     export class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {

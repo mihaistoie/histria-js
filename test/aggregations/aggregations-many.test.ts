@@ -4,6 +4,7 @@ import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
 import { Cd } from './model/cd';
 import { Song } from './model/song';
+import { test as test1 } from './model/rules/cd-rules';
 
 async function testCreate(): Promise<void> {
     let transaction = new Transaction();
@@ -53,16 +54,24 @@ async function testLoad(): Promise<void> {
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [song1.uuid, song2.uuid].sort(), '(2) Cd has 2 songs');
 }
 
+async function testRules(): Promise<void> {
+    let transaction = new Transaction();
+    let cd = await transaction.create<Cd>(Cd);
+    let song1 = await transaction.create<Song>(Song);
+    let song2 = await transaction.create<Song>(Song);
+}
+
+
 
 describe('Relation One to many, Aggregation', () => {
     before(function (done) {
-        //assert.equal(test, 1);
-        //loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-        //    done();
-        //}).catch((ex) => {
-        //    done(ex);
-        //});
-        done();
+        assert.equal(test1, 1);
+        loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
+       
     });
     it('One to many aggregation - create', function (done) {
         testCreate().then(function () {
@@ -80,6 +89,20 @@ describe('Relation One to many, Aggregation', () => {
             done(ex);
         })
 
+
+    });
+    it('One to many aggregation - rules', function (done) {
+        testRules().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+
+
+    });
+
+    it('One to one Many aggregation- states errors', function (done) {
+        done();
 
     });
 

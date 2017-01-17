@@ -109,7 +109,7 @@ describe('Relation One to many, Composition', () => {
 
 
     });
-    it('One to many - rules', function (done) {
+    it('One to many composition - rules', function (done) {
         testRules().then(function () {
             done();
         }).catch(function (ex) {
@@ -119,7 +119,7 @@ describe('Relation One to many, Composition', () => {
 
     });
 
-    it('One to one Many - states errors', function (done) {
+    it('One to one Many composition- states errors', function (done) {
         done();
 
     });

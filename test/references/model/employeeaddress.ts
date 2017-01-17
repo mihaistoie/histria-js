@@ -24,17 +24,47 @@ export class EmployeeAddress extends Instance {
 	public street(value?: string): Promise<string> {
 		return this.getOrSetProperty('street', value);
 	}
+	public getStreet(): string {
+		return this.getPropertyByName('street');
+	}
+	public setStreet(value: string): Promise<string> {
+		return this.setPropertyByName('street');
+	}
 	public city(value?: string): Promise<string> {
 		return this.getOrSetProperty('city', value);
+	}
+	public getCity(): string {
+		return this.getPropertyByName('city');
+	}
+	public setCity(value: string): Promise<string> {
+		return this.setPropertyByName('city');
 	}
 	public province(value?: string): Promise<string> {
 		return this.getOrSetProperty('province', value);
 	}
+	public getProvince(): string {
+		return this.getPropertyByName('province');
+	}
+	public setProvince(value: string): Promise<string> {
+		return this.setPropertyByName('province');
+	}
 	public postalCode(value?: string): Promise<string> {
 		return this.getOrSetProperty('postalCode', value);
 	}
+	public getPostalCode(): string {
+		return this.getPropertyByName('postalCode');
+	}
+	public setPostalCode(value: string): Promise<string> {
+		return this.setPropertyByName('postalCode');
+	}
 	public country(value?: string): Promise<string> {
 		return this.getOrSetProperty('country', value);
+	}
+	public getCountry(): string {
+		return this.getPropertyByName('country');
+	}
+	public setCountry(value: string): Promise<string> {
+		return this.setPropertyByName('country');
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

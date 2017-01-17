@@ -27,6 +27,12 @@ export class Engine extends Instance {
 	public name(value?: string): Promise<string> {
 		return this.getOrSetProperty('name', value);
 	}
+	public getName(): string {
+		return this.getPropertyByName('name');
+	}
+	public setName(value: string): Promise<string> {
+		return this.setPropertyByName('name');
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}

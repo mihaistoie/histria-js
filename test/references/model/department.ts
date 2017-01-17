@@ -23,8 +23,20 @@ export class Department extends Instance {
 	public code(value?: string): Promise<string> {
 		return this.getOrSetProperty('code', value);
 	}
+	public getCode(): string {
+		return this.getPropertyByName('code');
+	}
+	public setCode(value: string): Promise<string> {
+		return this.setPropertyByName('code');
+	}
 	public title(value?: string): Promise<string> {
 		return this.getOrSetProperty('title', value);
+	}
+	public getTitle(): string {
+		return this.getPropertyByName('title');
+	}
+	public setTitle(value: string): Promise<string> {
+		return this.setPropertyByName('title');
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

@@ -6,12 +6,7 @@ import * as promises from '../utils/promises';
 import * as schemaUtils from '../schema/schema-utils';
 import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from '../schema/schema-consts';
 
-function _tab(ident: number) {
-    let res = [];
-    for (var i = 0; i < ident; i++)
-        res.push('\t');
-    return res.join('');
-}
+
 async function saveCode(codeByClass: any, dstFolder: string) {
     let writers = Object.keys(codeByClass).map(name => {
         return promises.fs.writeFile(path.join(dstFolder, name + '.ts'), codeByClass[name].code.join('\n'));
@@ -67,13 +62,22 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
             let propSchema = schema.properties[propName];
             if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
             let stype = schemaUtils.typeOfProperty(propSchema);
+            let isReadOnly = schemaUtils.isReadOnly(propSchema);
             switch (stype) {
                 case JSONTYPES.string:
-                    let value1 = schemaUtils.isReadOnly(propSchema) ? '' : 'value?: string'
-                    let value2 = schemaUtils.isReadOnly(propSchema) ? '' : ', value';
+                    let value1 = isReadOnly ? '' : 'value?: string'
+                    let value2 = isReadOnly ? '' : ', value';
                     code.push(_tab(1) + util.format('public %s(%s): Promise<string> {', propName, value1));
                     code.push(_tab(2) + util.format('return this.getOrSetProperty(\'%s\'%s);', propName, value2));
                     code.push(_tab(1) + '}');
+                    code.push(_tab(1) + util.format('public get%s(): string {', _upperFirstLetter(propName)));
+                    code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propName));
+                    code.push(_tab(1) + '}');
+                    if (!isReadOnly) {
+                        code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propName)));
+                        code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\');', propName));
+                        code.push(_tab(1) + '}');
+                    }
                     break;
                 case JSONTYPES.id:
                     code.push(_tab(1) + util.format('public get %s(): Promise<any> {', propName));
@@ -253,4 +257,15 @@ export async function classGenerator(srcFolder: string, dstFolder: string, pathT
     let codeByClass = {};
     _generate(codeByClass, model, pathToLib);
     await saveCode(codeByClass, dstFolder);
+}
+
+
+function _tab(ident: number) {
+    let res = [];
+    for (var i = 0; i < ident; i++)
+        res.push('\t');
+    return res.join('');
+}
+function _upperFirstLetter(value: string): string {
+    return value.substr(0, 1).toUpperCase() + value.substring(1);
 }

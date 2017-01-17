@@ -27,6 +27,12 @@ export class Car extends Instance {
 	public engineName(value?: string): Promise<string> {
 		return this.getOrSetProperty('engineName', value);
 	}
+	public getEngineName(): string {
+		return this.getPropertyByName('engineName');
+	}
+	public setEngineName(value: string): Promise<string> {
+		return this.setPropertyByName('engineName');
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}

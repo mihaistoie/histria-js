@@ -2,7 +2,11 @@
     "type": "object",
     "name": "car",
     "nameSpace": "aggregations",
-    "properties": {},
+    "properties": {
+        "driverName": {
+            "type": "string"
+        }
+    },
     "relations": {
         "drivenBy": {
             "type": "hasOne",

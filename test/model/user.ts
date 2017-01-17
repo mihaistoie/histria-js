@@ -26,11 +26,29 @@ export class User extends Instance {
 	public firstName(value?: string): Promise<string> {
 		return this.getOrSetProperty('firstName', value);
 	}
+	public getFirstName(): string {
+		return this.getPropertyByName('firstName');
+	}
+	public setFirstName(value: string): Promise<string> {
+		return this.setPropertyByName('firstName');
+	}
 	public lastName(value?: string): Promise<string> {
 		return this.getOrSetProperty('lastName', value);
 	}
+	public getLastName(): string {
+		return this.getPropertyByName('lastName');
+	}
+	public setLastName(value: string): Promise<string> {
+		return this.setPropertyByName('lastName');
+	}
 	public fullName(value?: string): Promise<string> {
 		return this.getOrSetProperty('fullName', value);
+	}
+	public getFullName(): string {
+		return this.getPropertyByName('fullName');
+	}
+	public setFullName(value: string): Promise<string> {
+		return this.setPropertyByName('fullName');
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

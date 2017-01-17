@@ -23,6 +23,12 @@ export class Customer extends Instance {
 	public title(value?: string): Promise<string> {
 		return this.getOrSetProperty('title', value);
 	}
+	public getTitle(): string {
+		return this.getPropertyByName('title');
+	}
+	public setTitle(value: string): Promise<string> {
+		return this.setPropertyByName('title');
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}

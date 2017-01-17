@@ -4,6 +4,7 @@ import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
 import { Car } from './model/car';
 import { Driver } from './model/driver';
+import { test as test1 } from './model/rules/car-driver-rules';
 
 async function testCreate(): Promise<void> {
     let transaction = new Transaction();
@@ -59,16 +60,40 @@ async function testLoad(): Promise<void> {
 
 }
 
+async function testRules(): Promise<void> {
+    let transaction = new Transaction();
+    let car = await transaction.create<Car>(Car);
+    let driver = await transaction.create<Driver>(Driver);
+    await driver.name('joe');
+    await car.drivenBy(driver);
+    assert.equal(await driver.carChangedHits.value(), 1, '(1) Rule called one time');
+    //assert.equal(car.getDriverName(), 'joe', '(2) Rule called one time');
+   
+   /*
+    await car.engine(null);
+    assert.equal(await car.engineChangedHits.value(), 2, '(1) Rule called 2 times');
+    assert.equal(await engine.carChangedHits.value(), 2, '(2) Rule called 2 times');
+
+    await engine.car(car);
+    assert.equal(await car.engineChangedHits.value(), 3, '(1) Rule called 3 times');
+    assert.equal(await engine.carChangedHits.value(), 3, '(2) Rule called 3 times');
+
+    await engine.car(car);
+    await engine.name('v8');
+    assert.equal(await car.engineName(), 'v8', 'Rule propagation');
+    */
+
+}
+
 
 describe('Relation One to One, Aggregation', () => {
     before(function (done) {
-        //assert.equal(test, 1);
-        //loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-        //    done();
-        //}).catch((ex) => {
-        //    done(ex);
-        //});
-        done();
+        assert.equal(test1, 1);
+        loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
     });
     it('One to one aggregation - create', function (done) {
         testCreate().then(function () {
@@ -86,6 +111,14 @@ describe('Relation One to One, Aggregation', () => {
             done(ex);
         })
 
+
+    });
+    it('One to one aggregation - rules', function (done) {
+        testRules().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
 
     });
 

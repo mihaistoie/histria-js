@@ -64,6 +64,8 @@ declare module 'histria-utils/lib/model/base-object' {
         notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
         changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
+        getPropertyByName(propName: string, value?: any): any;
+        setPropertyByName(propName: string, value?: any): Promise<any>;
         afterCreated(): Promise<void>;
         validate(options?: {
             full: boolean;

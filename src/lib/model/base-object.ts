@@ -325,6 +325,34 @@ export class Instance implements ObservableObject {
 		return that._model[propName];
 	}
 
+	public getPropertyByName(propName: string, value?: any): any {
+		let that = this;
+		let propSchema = that._schema.properties[propName];
+		let mm = new ModelManager();
+		if (!propSchema)
+			throw new ApplicationError(util.format('Property not found: "%s".', propName))
+		return that._model[propName];
+	}
+
+	public async setPropertyByName(propName: string, value?: any): Promise<any> {
+		let that = this;
+
+		let propSchema = that._schema.properties[propName];
+		let mm = new ModelManager();
+		if (!propSchema)
+			throw new ApplicationError(util.format('Property not found: "%s".', propName));
+		if (!schemaUtils.isReadOnly(propSchema)) {
+			// set
+			if (that._model[propName] !== value) {
+				let oldValue = that._model[propName];
+				await that.changeProperty(propName, oldValue, value, function () {
+					that._model[propName] = value;
+				});
+			}
+		}
+		return that._model[propName];
+	}
+
 	public async afterCreated() {
 		let that = this;
 		if (that._afterCreateCalled) return;

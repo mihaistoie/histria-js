@@ -1,7 +1,15 @@
 {
     "type": "object",
     "name": "driver",
-    "properties": {},
+    "properties": {
+        "carChangedHits": {
+            "type": "integer",
+            "default": 0
+        },
+        "name": {
+            "type": "string"
+        }
+    },
     "nameSpace": "aggregations",
     "relations": {
         "drives": {

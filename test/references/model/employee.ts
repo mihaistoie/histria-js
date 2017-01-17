@@ -25,14 +25,32 @@ export class Employee extends Instance {
 	public firstName(value?: string): Promise<string> {
 		return this.getOrSetProperty('firstName', value);
 	}
+	public getFirstName(): string {
+		return this.getPropertyByName('firstName');
+	}
+	public setFirstName(value: string): Promise<string> {
+		return this.setPropertyByName('firstName');
+	}
 	public lastName(value?: string): Promise<string> {
 		return this.getOrSetProperty('lastName', value);
+	}
+	public getLastName(): string {
+		return this.getPropertyByName('lastName');
+	}
+	public setLastName(value: string): Promise<string> {
+		return this.setPropertyByName('lastName');
 	}
 	public get salary(): NumberValue {
 		return this._children.salary;
 	}
 	public departmentCode(value?: string): Promise<string> {
 		return this.getOrSetProperty('departmentCode', value);
+	}
+	public getDepartmentCode(): string {
+		return this.getPropertyByName('departmentCode');
+	}
+	public setDepartmentCode(value: string): Promise<string> {
+		return this.setPropertyByName('departmentCode');
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

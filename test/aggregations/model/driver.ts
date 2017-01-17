@@ -21,6 +21,18 @@ export class Driver extends Instance {
 		let that = this;
 		that._errors = new DriverErrors(that, that._schema);
 	}
+	public get carChangedHits(): IntegerValue {
+		return this._children.carChangedHits;
+	}
+	public name(value?: string): Promise<string> {
+		return this.getOrSetProperty('name', value);
+	}
+	public getName(): string {
+		return this.getPropertyByName('name');
+	}
+	public setName(value: string): Promise<string> {
+		return this.setPropertyByName('name');
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -42,6 +54,12 @@ export class DriverErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get carChangedHits(): ErrorState {
+		return this._messages.carChangedHits;
+	}
+	public get name(): ErrorState {
+		return this._messages.name;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -54,6 +72,12 @@ export class DriverErrors extends InstanceErrors {
 }
 
 export class DriverState extends InstanceState {
+	public get carChangedHits(): IntegerState {
+		return this._states.carChangedHits;
+	}
+	public get name(): StringState {
+		return this._states.name;
+	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -66,6 +90,13 @@ const
 		"type": "object",
 		"name": "driver",
 		"properties": {
+			"carChangedHits": {
+				"type": "integer",
+				"default": 0
+			},
+			"name": {
+				"type": "string"
+			},
 			"id": {
 				"type": "integer",
 				"generated": true,

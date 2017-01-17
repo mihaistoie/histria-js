@@ -21,6 +21,15 @@ export class Car extends Instance {
 		let that = this;
 		that._errors = new CarErrors(that, that._schema);
 	}
+	public driverName(value?: string): Promise<string> {
+		return this.getOrSetProperty('driverName', value);
+	}
+	public getDriverName(): string {
+		return this.getPropertyByName('driverName');
+	}
+	public setDriverName(value: string): Promise<string> {
+		return this.setPropertyByName('driverName');
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -39,6 +48,9 @@ export class CarErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get driverName(): ErrorState {
+		return this._messages.driverName;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -48,6 +60,9 @@ export class CarErrors extends InstanceErrors {
 }
 
 export class CarState extends InstanceState {
+	public get driverName(): StringState {
+		return this._states.driverName;
+	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -58,6 +73,9 @@ const
 		"name": "car",
 		"nameSpace": "aggregations",
 		"properties": {
+			"driverName": {
+				"type": "string"
+			},
 			"id": {
 				"type": "integer",
 				"generated": true,

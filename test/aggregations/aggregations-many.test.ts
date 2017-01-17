@@ -54,7 +54,7 @@ async function testLoad(): Promise<void> {
 }
 
 
-describe('Relation One to One, Aggregation', () => {
+describe('Relation One to many, Aggregation', () => {
     before(function (done) {
         //assert.equal(test, 1);
         //loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
@@ -64,7 +64,7 @@ describe('Relation One to One, Aggregation', () => {
         //});
         done();
     });
-    it('One to one aggregation - create', function (done) {
+    it('One to many aggregation - create', function (done) {
         testCreate().then(function () {
             done();
         }).catch(function (ex) {
@@ -73,7 +73,7 @@ describe('Relation One to One, Aggregation', () => {
 
 
     });
-    it('One to one composition - load', function (done) {
+    it('One to many aggregation - load', function (done) {
         testLoad().then(function () {
             done();
         }).catch(function (ex) {

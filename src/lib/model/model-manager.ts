@@ -255,6 +255,7 @@ export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, i
     let propName = args[0];
     let rules = mm.rulesForAddItem(classOfInstance, propName);
     if (rules.length) {
+
         let na = args.slice();
         na[0] = eventInfo;
         let rArgs = instances.concat(na);

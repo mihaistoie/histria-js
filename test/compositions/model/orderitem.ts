@@ -99,6 +99,7 @@ const
 				"invRel": "items",
 				"nameSpace": "compositions",
 				"title": "order",
+				"invType": "hasMany",
 				"localFields": [
 					"orderId"
 				],

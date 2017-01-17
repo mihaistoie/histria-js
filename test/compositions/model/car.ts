@@ -97,6 +97,7 @@ const
 				"invRel": "car",
 				"nameSpace": "compositions",
 				"title": "engine",
+				"invType": "belongsTo",
 				"localFields": [
 					"id"
 				],

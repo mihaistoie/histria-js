@@ -144,6 +144,7 @@ const
 				"aggregationKind": "composite",
 				"invRel": "employee",
 				"nameSpace": "references",
+				"invType": "belongsTo",
 				"localFields": [
 					"id"
 				],

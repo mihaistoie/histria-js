@@ -111,6 +111,7 @@ const
 				"invRel": "engine",
 				"nameSpace": "compositions",
 				"title": "car",
+				"invType": "hasOne",
 				"localFields": [
 					"carId"
 				],

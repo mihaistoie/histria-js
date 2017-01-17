@@ -34,6 +34,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             let lmodel = item.model();
             updateRoleRefs(that._relation, lmodel, null, true);
             await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
         }
         that._isNull = (that._model === null);
         return item;
@@ -64,6 +65,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             let rmodel = that._parent.model();
             updateRoleRefs(that._relation, lmodel, rmodel, true);
             await item.changeParent(that._parent, that._propertyName,  that._relation.invRel || DEFAULT_PARENT_NAME, true);
+            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
         }
         return item;
     }
@@ -155,9 +157,6 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             let rmodel = that._parent.model();
             let r = item.getRoleByName(that._relation.invRel);
             if (r) await r.internalSetValueAndNotify(that._parent, item);
-            
-            updateRoleRefs(that._relation, lmodel, rmodel, true);
-            await item.changeParent(that._parent, that._propertyName, that._relation.invRel, true);
         }
         return item;
     }

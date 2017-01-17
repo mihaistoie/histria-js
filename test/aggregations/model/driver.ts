@@ -86,6 +86,7 @@ const
 				"invRel": "drivenBy",
 				"nameSpace": "aggregations",
 				"title": "drives",
+				"invType": "hasOne",
 				"localFields": [
 					"drivesId"
 				],

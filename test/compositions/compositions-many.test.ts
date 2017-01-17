@@ -64,17 +64,23 @@ async function testRules(): Promise<void> {
     let item2 = await transaction.create<OrderItem>(OrderItem);
     await order.items.add(item1);
     await order.items.add(item2);
-    
+
     await item1.amount.value(10);
     assert.equal(await order.totalAmount.value(), 10, 'Total amount  = 10');
     await item2.amount.value(10);
     assert.equal(await order.totalAmount.value(), 20, 'Total amount  = 20');
     await item1.amount.value(5);
     assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
+    await order.items.remove(item2);
+    assert.equal(await order.totalAmount.value(), 5, 'Total amount  = 5');
+    //await item1.order(null);
+    //assert.equal(await order.totalAmount.value(), 0, 'Total amount  = 0');
+
+
 }
 
 
-describe('Relation One to Many, Composition', () => {
+describe('Relation One to many, Composition', () => {
     before(function (done) {
         assert.equal(test1, 1);
         loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
@@ -83,7 +89,7 @@ describe('Relation One to Many, Composition', () => {
             done(ex);
         });
     });
-    it('One to Many composition - create', function (done) {
+    it('One to many composition - create', function (done) {
         testCreate().then(function () {
             done();
         }).catch(function (ex) {
@@ -92,7 +98,7 @@ describe('Relation One to Many, Composition', () => {
 
 
     });
-    it('One to Many composition - load', function (done) {
+    it('One to many composition - load', function (done) {
         testLoad().then(function () {
             done();
         }).catch(function (ex) {
@@ -101,7 +107,7 @@ describe('Relation One to Many, Composition', () => {
 
 
     });
-    it('One to one Many - rules', function (done) {
+    it('One to many - rules', function (done) {
         testRules().then(function () {
             done();
         }).catch(function (ex) {

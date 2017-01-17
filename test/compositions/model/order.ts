@@ -85,6 +85,7 @@ const
 				"invRel": "order",
 				"nameSpace": "compositions",
 				"title": "items",
+				"invType": "belongsTo",
 				"localFields": [
 					"id"
 				],

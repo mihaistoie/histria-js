@@ -249,6 +249,7 @@ function _checkRelations(schema, model) {
             if (refRel.type === rel.type) {
                 throw util.format('Invalid type  %s.%s.type === %s.%s.type.', schema.name, relName, refModel.name, rel.invRel);
             }
+            rel.invType = refRel.type; 
         }
 
         if (!rel.localFields || !rel.foreignFields) {

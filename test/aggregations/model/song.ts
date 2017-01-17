@@ -86,6 +86,7 @@ const
 				"invRel": "songs",
 				"nameSpace": "aggregations",
 				"title": "cd",
+				"invType": "hasMany",
 				"localFields": [
 					"cdId"
 				],

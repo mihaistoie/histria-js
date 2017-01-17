@@ -67,12 +67,12 @@ export class Instance implements ObservableObject {
 		}
 	}
 	//used for relations = called by CompositionBelongsTo / HasOneComposition
-	public async changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>  {
+	public async changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void> {
 		let that = this;
 		if (that._parent === newParent)
 			return;
 		that._parent = newParent;
-		that._propertyName = that._parent ? foreignPropName: '';
+		that._propertyName = that._parent ? foreignPropName : '';
 		that._rootCache = null;
 		if (notify && localPropName) {
 			await that.changeProperty(localPropName, that._parent, newParent, function () {
@@ -177,7 +177,7 @@ export class Instance implements ObservableObject {
 		that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
 			let cs = that._schema.properties[propName];
 			let propType = schemaUtils.typeOfProperty(cs);
-			if (that.isNew && cs.default !== undefined && that._model[propName] === undefined )  {
+			if (that.isNew && cs.default !== undefined && that._model[propName] === undefined) {
 				that._model[propName] = cs.default;
 			}
 			switch (propType) {
@@ -265,6 +265,18 @@ export class Instance implements ObservableObject {
 		// check can modify ?
 	}
 
+	public async notifyOperation(propName: string, op: EventType, param: any): Promise<void> {
+		let that = this;
+		let eventInfo = that._getEventInfo();
+		eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
+		try {
+			await that._transaction.emitInstanceEvent(op, eventInfo, that, propName, param);
+		} finally {
+			eventInfo.pop()
+		}
+
+	}
+
 	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd): Promise<void> {
 		let that = this;
 		let eventInfo = that._getEventInfo();
@@ -295,13 +307,6 @@ export class Instance implements ObservableObject {
 	public async getOrSetProperty(propName: string, value?: any): Promise<any> {
 		let that = this;
 		let isSet = (value !== undefined), propPath;
-
-		let rel = that._schema.relations ? that._schema.relations[propName] : null;
-		if (rel) {
-			//TODO traiter relations
-			return null;
-			//return that._children[propName]
-		}
 
 		let propSchema = that._schema.properties[propName];
 		let mm = new ModelManager();

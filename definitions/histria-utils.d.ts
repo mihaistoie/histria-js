@@ -19,7 +19,7 @@ declare module 'histria-utils' {
 }
 
 declare module 'histria-utils/lib/model/base-object' {
-    import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer } from 'histria-utils/lib/model/interfaces';
+    import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from 'histria-utils/lib/model/interfaces';
     import { InstanceErrors } from 'histria-utils/lib/model/instance-errors';
     import { InstanceState } from 'histria-utils/lib/model/instance-state';
     export class Instance implements ObservableObject {
@@ -61,6 +61,7 @@ declare module 'histria-utils/lib/model/base-object' {
         }[];
         modelState(propName: string): any;
         model(propName?: string): any;
+        notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
         changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
         getOrSetProperty(propName: string, value?: any): Promise<any>;
         afterCreated(): Promise<void>;
@@ -315,6 +316,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
         changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
+        notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
         model(propName?: string): any;
         modelState(propName: string): any;
         modelErrors(propName: string): {

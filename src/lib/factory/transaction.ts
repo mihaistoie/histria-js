@@ -1,6 +1,6 @@
 import * as util from 'util';
 import * as uuid from 'uuid';
-import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules } from '../model/model-manager';
+import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
 import { validateAfterPropChanged } from '../model/validation';
 import { findInMap } from '../db/mongo-filter';
 
@@ -18,6 +18,9 @@ export class Transaction implements TransactionContainer {
         that._ctx = ctx || new TranContext();
         that._subscribers = new Map();
         that.subscribe(EventType.propChanged, propagationRules);
+        that.subscribe(EventType.addItem, addItemRules);
+        that.subscribe(EventType.removeItem, rmvItemRules);
+        that.subscribe(EventType.setItems, setItemsRules);
         that.subscribe(EventType.propValidate, validateAfterPropChanged);
         that.subscribe(EventType.propValidate, propValidateRules);
         that.subscribe(EventType.objValidate, objValidateRules);
@@ -28,18 +31,20 @@ export class Transaction implements TransactionContainer {
         return this._ctx;
     }
 
-    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args) {
+    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
         let that = this;
         let ci = instance;
         args = args || [];
         let nIstances = [ci];
-        let pi = eventType ===  EventType.propChanged && args && args.length ? 0 : -1;
+        let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems].indexOf(eventType) >= 0;
+        let pi = propagate && args && args.length ? 0 : -1;
+        
         let list = that._subscribers.get(eventType);
         if (list) {
             while (ci) {
                 for (let item of list)
                     await item(eventInfo, ci.constructor, nIstances, args)
-                if (eventType !==  EventType.propChanged)
+                if (!propagate)
                     break;
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 //TODO code review

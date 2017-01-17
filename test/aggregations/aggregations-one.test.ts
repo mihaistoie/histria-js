@@ -79,7 +79,7 @@ describe('Relation One to One, Aggregation', () => {
 
 
     });
-    it('One to one composition - load', function (done) {
+    it('One to one aggregation - load', function (done) {
         testLoad().then(function () {
             done();
         }).catch(function (ex) {

@@ -151,6 +151,7 @@ const
 				"aggregationKind": "composite",
 				"invRel": "address",
 				"nameSpace": "references",
+				"invType": "hasOne",
 				"localFields": [
 					"employeeId"
 				],

@@ -72,6 +72,7 @@ const
 				"invRel": "cd",
 				"nameSpace": "aggregations",
 				"title": "songs",
+				"invType": "belongsTo",
 				"localFields": [
 					"id"
 				],

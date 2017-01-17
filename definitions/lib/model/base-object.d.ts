@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer } from './interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { InstanceErrors } from './instance-errors';
 import { InstanceState } from './instance-state';
 export declare class Instance implements ObservableObject {
@@ -45,6 +45,7 @@ export declare class Instance implements ObservableObject {
     modelState(propName: string): any;
     model(propName?: string): any;
     private beforePropertyChanged(propName, oldValue, newValue);
+    notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
     getOrSetProperty(propName: string, value?: any): Promise<any>;
     afterCreated(): Promise<void>;

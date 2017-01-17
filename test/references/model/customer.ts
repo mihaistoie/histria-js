@@ -27,7 +27,7 @@ export class Customer extends Instance {
 		return this.getPropertyByName('title');
 	}
 	public setTitle(value: string): Promise<string> {
-		return this.setPropertyByName('title');
+		return this.setPropertyByName('title', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

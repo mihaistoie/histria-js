@@ -31,7 +31,7 @@ export class Driver extends Instance {
 		return this.getPropertyByName('name');
 	}
 	public setName(value: string): Promise<string> {
-		return this.setPropertyByName('name');
+		return this.setPropertyByName('name', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

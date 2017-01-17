@@ -27,7 +27,7 @@ export class Department extends Instance {
 		return this.getPropertyByName('code');
 	}
 	public setCode(value: string): Promise<string> {
-		return this.setPropertyByName('code');
+		return this.setPropertyByName('code', value);
 	}
 	public title(value?: string): Promise<string> {
 		return this.getOrSetProperty('title', value);
@@ -36,7 +36,7 @@ export class Department extends Instance {
 		return this.getPropertyByName('title');
 	}
 	public setTitle(value: string): Promise<string> {
-		return this.setPropertyByName('title');
+		return this.setPropertyByName('title', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

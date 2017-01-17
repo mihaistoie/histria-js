@@ -28,7 +28,7 @@ export class EmployeeAddress extends Instance {
 		return this.getPropertyByName('street');
 	}
 	public setStreet(value: string): Promise<string> {
-		return this.setPropertyByName('street');
+		return this.setPropertyByName('street', value);
 	}
 	public city(value?: string): Promise<string> {
 		return this.getOrSetProperty('city', value);
@@ -37,7 +37,7 @@ export class EmployeeAddress extends Instance {
 		return this.getPropertyByName('city');
 	}
 	public setCity(value: string): Promise<string> {
-		return this.setPropertyByName('city');
+		return this.setPropertyByName('city', value);
 	}
 	public province(value?: string): Promise<string> {
 		return this.getOrSetProperty('province', value);
@@ -46,7 +46,7 @@ export class EmployeeAddress extends Instance {
 		return this.getPropertyByName('province');
 	}
 	public setProvince(value: string): Promise<string> {
-		return this.setPropertyByName('province');
+		return this.setPropertyByName('province', value);
 	}
 	public postalCode(value?: string): Promise<string> {
 		return this.getOrSetProperty('postalCode', value);
@@ -55,7 +55,7 @@ export class EmployeeAddress extends Instance {
 		return this.getPropertyByName('postalCode');
 	}
 	public setPostalCode(value: string): Promise<string> {
-		return this.setPropertyByName('postalCode');
+		return this.setPropertyByName('postalCode', value);
 	}
 	public country(value?: string): Promise<string> {
 		return this.getOrSetProperty('country', value);
@@ -64,7 +64,7 @@ export class EmployeeAddress extends Instance {
 		return this.getPropertyByName('country');
 	}
 	public setCountry(value: string): Promise<string> {
-		return this.setPropertyByName('country');
+		return this.setPropertyByName('country', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

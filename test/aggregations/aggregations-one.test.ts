@@ -66,8 +66,8 @@ async function testRules(): Promise<void> {
     let driver = await transaction.create<Driver>(Driver);
     await driver.name('joe');
     await car.drivenBy(driver);
-    assert.equal(await driver.carChangedHits.value(), 1, '(1) Rule called one time');
-    //assert.equal(car.getDriverName(), 'joe', '(2) Rule called one time');
+    assert.equal(driver.carChangedHits.getValue(), 1, '(1) Rule called one time');
+    assert.equal(car.getDriverName(), 'joe', '(2) Rule called one time');
    
    /*
     await car.engine(null);

@@ -28,7 +28,7 @@ export class Car extends Instance {
 		return this.getPropertyByName('driverName');
 	}
 	public setDriverName(value: string): Promise<string> {
-		return this.setPropertyByName('driverName');
+		return this.setPropertyByName('driverName', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

@@ -28,7 +28,7 @@ export class Order extends Instance {
 		return this.getPropertyByName('customerStatus');
 	}
 	public setCustomerStatus(value: string): Promise<string> {
-		return this.setPropertyByName('customerStatus');
+		return this.setPropertyByName('customerStatus', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

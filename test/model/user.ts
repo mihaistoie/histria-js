@@ -30,7 +30,7 @@ export class User extends Instance {
 		return this.getPropertyByName('firstName');
 	}
 	public setFirstName(value: string): Promise<string> {
-		return this.setPropertyByName('firstName');
+		return this.setPropertyByName('firstName', value);
 	}
 	public lastName(value?: string): Promise<string> {
 		return this.getOrSetProperty('lastName', value);
@@ -39,7 +39,7 @@ export class User extends Instance {
 		return this.getPropertyByName('lastName');
 	}
 	public setLastName(value: string): Promise<string> {
-		return this.setPropertyByName('lastName');
+		return this.setPropertyByName('lastName', value);
 	}
 	public fullName(value?: string): Promise<string> {
 		return this.getOrSetProperty('fullName', value);
@@ -48,7 +48,7 @@ export class User extends Instance {
 		return this.getPropertyByName('fullName');
 	}
 	public setFullName(value: string): Promise<string> {
-		return this.setPropertyByName('fullName');
+		return this.setPropertyByName('fullName', value);
 	}
 	public get id(): Promise<any> {
 		return this._children.id.value();

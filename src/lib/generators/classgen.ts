@@ -75,7 +75,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
                     code.push(_tab(1) + '}');
                     if (!isReadOnly) {
                         code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propName)));
-                        code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\');', propName));
+                        code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propName));
                         code.push(_tab(1) + '}');
                     }
                     break;

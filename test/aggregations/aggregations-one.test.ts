@@ -69,20 +69,14 @@ async function testRules(): Promise<void> {
     assert.equal(driver.carChangedHits.getValue(), 1, '(1) Rule called one time');
     assert.equal(car.getDriverName(), 'joe', '(2) Rule called one time');
    
-   /*
-    await car.engine(null);
-    assert.equal(await car.engineChangedHits.value(), 2, '(1) Rule called 2 times');
-    assert.equal(await engine.carChangedHits.value(), 2, '(2) Rule called 2 times');
-
-    await engine.car(car);
-    assert.equal(await car.engineChangedHits.value(), 3, '(1) Rule called 3 times');
-    assert.equal(await engine.carChangedHits.value(), 3, '(2) Rule called 3 times');
-
-    await engine.car(car);
-    await engine.name('v8');
-    assert.equal(await car.engineName(), 'v8', 'Rule propagation');
-    */
-
+    await car.drivenBy(null);
+    assert.equal(driver.carChangedHits.getValue(), 2, '(1) Rule called 2 times');
+    assert.equal(car.getDriverName(), '', '(2) Rule called 2 times');
+  
+    await driver.drives(car);
+    assert.equal(driver.carChangedHits.getValue(), 3, '(1) Rule called  3 times');
+    assert.equal(car.getDriverName(), 'joe', '(2) Rule called  3 times');
+  
 }
 
 

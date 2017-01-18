@@ -59,6 +59,10 @@ async function testRules(): Promise<void> {
     let cd = await transaction.create<Cd>(Cd);
     let song1 = await transaction.create<Song>(Song);
     let song2 = await transaction.create<Song>(Song);
+    await song1.cd(cd);
+    await cd.songs.add(song2);
+    //
+
 }
 
 

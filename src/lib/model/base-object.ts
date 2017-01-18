@@ -306,7 +306,7 @@ export class Instance implements ObservableObject {
 
 	public async getOrSetProperty(propName: string, value?: any): Promise<any> {
 		let that = this;
-		let isSet = (value !== undefined), propPath;
+		let isSet = (value !== undefined);
 
 		let propSchema = that._schema.properties[propName];
 		let mm = new ModelManager();

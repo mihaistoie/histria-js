@@ -241,6 +241,8 @@ declare module 'histria-utils/lib/model/number' {
         protected init(): void;
         destroy(): void;
         value(value?: number): Promise<number>;
+        getValue(): number;
+        setValue(value: number): Promise<number>;
         decimals(value: number): Promise<number>;
     }
     export class IntegerValue extends BaseNumberValue {

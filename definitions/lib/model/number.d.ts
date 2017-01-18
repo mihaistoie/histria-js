@@ -9,6 +9,8 @@ export declare class BaseNumberValue {
     protected init(): void;
     destroy(): void;
     value(value?: number): Promise<number>;
+    getValue(): number;
+    setValue(value: number): Promise<number>;
     decimals(value: number): Promise<number>;
 }
 export declare class IntegerValue extends BaseNumberValue {

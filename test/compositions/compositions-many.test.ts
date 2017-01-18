@@ -64,7 +64,6 @@ async function testRules(): Promise<void> {
     let item2 = await transaction.create<OrderItem>(OrderItem);
     await order.items.add(item1);
     await order.items.add(item2);
-
     await item1.amount.value(10);
     assert.equal(await order.totalAmount.value(), 10, 'Total amount  = 10');
     await item2.amount.value(10);

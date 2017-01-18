@@ -7,7 +7,9 @@ export class OrderRules {
     @propChanged(Order, 'items.amount')
     static async itemAmountChanged(order: Order, item: OrderItem, eventInfo: any, newValue: number, oldvalue: number): Promise<void> {
         let total = await order.totalAmount.value();
-        await order.totalAmount.value(total - oldvalue + newValue);
+        total = total - oldvalue + newValue;
+        await order.totalAmount.value(total);
+
     }
     @addItem(Order, 'items')
     static async afterAddItem(order: Order, eventInfo: any, item: OrderItem): Promise<void> {

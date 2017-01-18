@@ -75,7 +75,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._model.push(that._model);
         }
         if (item)
-            that._afterAddItem(item, true);
+            await that._afterAddItem(item, true);
 
         return item;
     }

@@ -10,15 +10,18 @@ export class CdRules {
     }
     @propChanged(Song, 'duration')
     static async afterDurationChanged(song: Song, eventInfo: any, oldValue: number, newValue: number): Promise<void> {
-       // await song.cdChangedHits.setValue(song.cdChangedHits.getValue() + 1);
+        let cd = await song.cd();
+        if (cd)
+            await cd.duration.setValue(cd.duration.getValue() - oldValue + newValue);
     }
 
     @addItem(Cd, 'songs')
     static async afterAddItem(cd: Cd, eventInfo: any, song: Song): Promise<void> {
-
+        await cd.duration.setValue(cd.duration.getValue() + song.duration.getValue());
     }
     @rmvItem(Cd, 'songs')
     static async afterRmvItem(cd: Cd, eventInfo: any, song: Song): Promise<void> {
+        await cd.duration.setValue(cd.duration.getValue() - song.duration.getValue());
     }
 }
 

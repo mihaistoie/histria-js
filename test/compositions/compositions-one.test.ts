@@ -13,33 +13,33 @@ async function testCreate(): Promise<void> {
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
     
-    await car.engine(engine);
+    await car.setEngine(engine);
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
-    assert.equal(await engine.carId, car.uuid, 'Owner of engine is car');
+    assert.equal(engine.carId, car.uuid, 'Owner of engine is car');
     
-    await engine.car(null);
-    assert.equal(await engine.carId, undefined, '(1) Owner of engine null');
+    await engine.setCar(null);
+    assert.equal(engine.carId, undefined, '(1) Owner of engine null');
     assert.equal(await engine.car(), null, '(2) Owner of engine null');
 
-    await engine.car(car);
+    await engine.setCar(car);
     parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car 2 ');
-    assert.equal(await engine.carId, car.uuid, 'Owner of engine is car 2 ');
+    assert.equal(engine.carId, car.uuid, 'Owner of engine is car 2 ');
 
-    await car.engine(null);
-    assert.equal(await engine.carId, undefined, 'Owner of engine null 2 ');
+    await car.setEngine(null);
+    assert.equal(engine.carId, undefined, 'Owner of engine null 2 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 2');
 
     let car2 = await transaction.create<Car>(Car);
-    await engine.car(car);
-    await engine.car(car2);
+    await engine.setCar(car);
+    await engine.setCar(car2);
     assert.equal(await car.engine(), null, 'Car1 hasn\'t engine');
     assert.equal(await car2.engine(), engine, 'Car2 has engine');
 
     let engine2 = await transaction.create<Engine>(Engine);
-    await car2.engine(engine2);
-    assert.equal(await engine.carId, undefined, 'Owner of engine null 3 ');
+    await car2.setEngine(engine2);
+    assert.equal(engine.carId, undefined, 'Owner of engine null 3 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
 
@@ -69,23 +69,23 @@ async function testRules(): Promise<void> {
     let transaction = new Transaction();
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
-    await car.engine(engine);
-    assert.equal(await car.engineChangedHits.value(), 1, '(1) Rule called one time');
-    assert.equal(await engine.carChangedHits.value(), 1, '(2) Rule called one time');
-    await car.engine(engine);
-    assert.equal(await car.engineChangedHits.value(), 1, '(1) Rule called one time');
-    assert.equal(await engine.carChangedHits.value(), 1, '(2) Rule called one time');
-    await car.engine(null);
-    assert.equal(await car.engineChangedHits.value(), 2, '(1) Rule called 2 times');
-    assert.equal(await engine.carChangedHits.value(), 2, '(2) Rule called 2 times');
+    await car.setEngine(engine);
+    assert.equal(car.engineChangedHits.value, 1, '(1) Rule called one time');
+    assert.equal(engine.carChangedHits.value, 1, '(2) Rule called one time');
+    await car.setEngine(engine);
+    assert.equal(car.engineChangedHits.value, 1, '(1) Rule called one time');
+    assert.equal(engine.carChangedHits.value, 1, '(2) Rule called one time');
+    await car.setEngine(null);
+    assert.equal(car.engineChangedHits.value, 2, '(1) Rule called 2 times');
+    assert.equal(engine.carChangedHits.value, 2, '(2) Rule called 2 times');
 
-    await engine.car(car);
-    assert.equal(await car.engineChangedHits.value(), 3, '(1) Rule called 3 times');
-    assert.equal(await engine.carChangedHits.value(), 3, '(2) Rule called 3 times');
+    await engine.setCar(car);
+    assert.equal(car.engineChangedHits.value, 3, '(1) Rule called 3 times');
+    assert.equal(engine.carChangedHits.value, 3, '(2) Rule called 3 times');
 
-    await engine.car(car);
-    await engine.name('v8');
-    assert.equal(await car.engineName(), 'v8', 'Rule propagation');
+    await engine.setCar(car);
+    await engine.setName('v8');
+    assert.equal(await car.engineName, 'v8', 'Rule propagation');
     
 
 }

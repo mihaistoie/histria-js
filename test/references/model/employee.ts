@@ -22,19 +22,13 @@ export class Employee extends Instance {
 		let that = this;
 		that._errors = new EmployeeErrors(that, that._schema);
 	}
-	public firstName(value?: string): Promise<string> {
-		return this.getOrSetProperty('firstName', value);
-	}
-	public getFirstName(): string {
+	public get firstName(): string {
 		return this.getPropertyByName('firstName');
 	}
 	public setFirstName(value: string): Promise<string> {
 		return this.setPropertyByName('firstName', value);
 	}
-	public lastName(value?: string): Promise<string> {
-		return this.getOrSetProperty('lastName', value);
-	}
-	public getLastName(): string {
+	public get lastName(): string {
 		return this.getPropertyByName('lastName');
 	}
 	public setLastName(value: string): Promise<string> {
@@ -43,23 +37,26 @@ export class Employee extends Instance {
 	public get salary(): NumberValue {
 		return this._children.salary;
 	}
-	public departmentCode(value?: string): Promise<string> {
-		return this.getOrSetProperty('departmentCode', value);
-	}
-	public getDepartmentCode(): string {
+	public get departmentCode(): string {
 		return this.getPropertyByName('departmentCode');
 	}
 	public setDepartmentCode(value: string): Promise<string> {
 		return this.setPropertyByName('departmentCode', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public department(value?: Department): Promise<Department> {
-		return this._children.department.value(value);
+	public department(): Promise<Department> {
+		return this._children.department.getValue();
 	}
-	public address(value?: EmployeeAddress): Promise<EmployeeAddress> {
-		return this._children.address.value(value);
+	public setDepartment(value: Department): Promise<Department> {
+		return this._children.department.setValue(value);
+	}
+	public address(): Promise<EmployeeAddress> {
+		return this._children.address.getValue();
+	}
+	public setAddress(value: EmployeeAddress): Promise<EmployeeAddress> {
+		return this._children.address.setValue(value);
 	}
 	public get $states(): EmployeeState {
 		return <EmployeeState>this._states;

@@ -9,18 +9,17 @@ import * as urules from './rules/user-rules';
 async function testUser(): Promise<void> {
     let transaction = new Transaction();
     let user = await transaction.create<User>(User);
-    await user.firstName('John');                   // user.firstName = 'John';
-
-    let fullName = await user.fullName();
+    await user.setFirstName('John');                   // user.firstName = 'John';
+    let fullName = user.fullName;
     assert.equal(fullName, 'John', 'Rules call ');
-    await user.age.value(10.25);
-    let age = await user.age.value();
+    await user.age.setValue(10.25);
+    let age = user.age.value;
     assert.equal(age, 10, 'Age set/get');
 
-    await user.lastName('Doe');                     // user.lastName = 'Doe';
-    let fn = await user.firstName();                // fn = user.firstName;
-    let ln = await user.lastName();                 // ln = user.lastName;
-    fullName = await user.fullName();               // fullName = user.fullName;
+    await user.setLastName('Doe');          // user.lastName = 'Doe';
+    let fn = user.firstName;                // fn = user.firstName;
+    let ln = user.lastName;                 // ln = user.lastName;
+    fullName = user.fullName;               // fullName = user.fullName;
 
     assert.equal(fn, 'John', 'First Name set/get');
     assert.equal(ln, 'Doe', 'Last Name set/get');
@@ -31,14 +30,14 @@ async function testUser(): Promise<void> {
     assert.equal(user.$states.fullName.isHidden, false, 'Init state (fullName.isHidden) from schema');
 
     user = await transaction.load<User>(User, { firstName: 'Albert', lastName: 'Camus' });
-    fullName = await user.fullName();
+    fullName = user.fullName;
     assert.equal(fullName, 'Albert CAMUS', 'Init rule called');
-    await user.lastName('$Money');
+    await user.setLastName('$Money');
     assert.equal(user.$errors.lastName.error, 'Last Name starts with $.', 'Has error ');
 
-    await user.lastName('Doe');
+    await user.setLastName('Doe');
     assert.equal('', '', 'Has error ');
-    await user.firstName('Doe');
+    await user.setFirstName('Doe');
     await user.validate();
     assert.equal(user.$errors.$.error, 'FirstName === LastName', 'Has error ');
 

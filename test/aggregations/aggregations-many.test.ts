@@ -14,17 +14,17 @@ async function testCreate(): Promise<void> {
     await cd.songs.add(song1);
     let cd1 = await song1.cd();
     assert.equal(cd, cd1, '(1) song1 on cd');
-    assert.equal(await song1.cdId, cd.uuid, '(2) song1 on cd');
+    assert.equal(song1.cdId, cd.uuid, '(2) song1 on cd');
     let children = await cd.songs.toArray();
     assert.deepEqual(children.map(ii => { return ii.uuid }), [song1.uuid], '(3) song1 on cd');
 
-    await song2.cd(cd);
+    await song2.setCd(cd);
     children = await cd.songs.toArray();
 
     assert.equal(children.length, 2, '(1) Cd has 2 songs');
     assert.deepEqual(children.map(ii => ii.uuid), [song1.uuid, song2.uuid], '(2) Cd has 2 songs');
 
-    await song1.cd(null);
+    await song1.setCd(null);
     children = await cd.songs.toArray();
     assert.deepEqual(children.map(ii => ii.uuid), [song2.uuid], '(1) Cd has a song');
 
@@ -61,23 +61,23 @@ async function testRules(): Promise<void> {
     let song2 = await transaction.create<Song>(Song);
     await song1.duration.setValue(10);
     await song2.duration.setValue(5);
-    await song1.cd(cd);
-    assert.equal(cd.duration.getValue(), 10, '(1) Duration is 10');
+    await song1.setCd(cd);
+    assert.equal(cd.duration.value, 10, '(1) Duration is 10');
     await cd.songs.add(song2);
-    assert.equal(cd.duration.getValue(), 15, '(1) Duration is 15');
+    assert.equal(cd.duration.value, 15, '(1) Duration is 15');
     await song2.duration.setValue(7);
-    assert.equal(cd.duration.getValue(), 17, '(1) Duration is 17');
+    assert.equal(cd.duration.value, 17, '(1) Duration is 17');
 
-    assert.equal(song1.cdChangedHits.getValue(), 1, '(1) Cd changed');
-    assert.equal(song2.cdChangedHits.getValue(), 1, '(2) Cd changed');
-    await song1.cd(null);
-    assert.equal(cd.duration.getValue(), 7, '(1) Duration is 7');
+    assert.equal(song1.cdChangedHits.value, 1, '(1) Cd changed');
+    assert.equal(song2.cdChangedHits.value, 1, '(2) Cd changed');
+    await song1.setCd(null);
+    assert.equal(cd.duration.value, 7, '(1) Duration is 7');
     await cd.songs.remove(song2);
-    assert.equal(cd.duration.getValue(), 0, '(1) Duration is 0');
+    assert.equal(cd.duration.value, 0, '(1) Duration is 0');
     let songs = await cd.songs.toArray();
     assert.equal(songs.length, 0, 'No songs on cd');
-    assert.equal(song1.cdChangedHits.getValue(), 2, '(1) Cd changed 2 times');
-    assert.equal(song2.cdChangedHits.getValue(), 2, '(2) Cd changed 2 times');
+    assert.equal(song1.cdChangedHits.value, 2, '(1) Cd changed 2 times');
+    assert.equal(song2.cdChangedHits.value, 2, '(2) Cd changed 2 times');
     //
 
 }

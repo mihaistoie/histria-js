@@ -6,9 +6,7 @@ import { propChanged, init, title, validate } from '../../../../src/index';
 export class CarEngineRules {
     @propChanged(Car, 'engine')
     static async afterEngineChanged(car: Car, eventInfo: any): Promise<void> {
-        let value = await car.engineChangedHits.value();
-        value++;
-        await car.engineChangedHits.value(value);
+        await car.engineChangedHits.setValue(car.engineChangedHits.value + 1);
 
     }
     @propChanged(Car, 'engine.name')
@@ -16,17 +14,14 @@ export class CarEngineRules {
         let ce = await car.engine();
         if (ce !== ce)
             throw "Invalid rule propagation";
-        await car.engineName(await engine.name())
+        await car.setEngineName(engine.name)
 
     }
     @propChanged(Engine, 'car')
     static async afterCarChanged(engine: Engine, eventInfo: any): Promise<void> {
-        let value = await engine.carChangedHits.value();
-        value++;
-        await engine.carChangedHits.value(value);
-
+        await engine.carChangedHits.setValue(engine.carChangedHits.value + 1);
     }
-    
+
 }
 
 

@@ -24,14 +24,17 @@ export class OrderItem extends Instance {
 	public get amount(): NumberValue {
 		return this._children.amount;
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public get orderId(): Promise<any> {
-		return this._children.orderId.value();
+	public get orderId(): any {
+		return this._children.orderId.value;
 	}
-	public order(value?: Order): Promise<Order> {
-		return this._children.order.value(value);
+	public order(): Promise<Order> {
+		return this._children.order.getValue();
+	}
+	public setOrder(value: Order): Promise<Order> {
+		return this._children.order.setValue(value);
 	}
 	public get $states(): OrderItemState {
 		return <OrderItemState>this._states;

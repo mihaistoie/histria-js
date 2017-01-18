@@ -21,23 +21,23 @@ export class Order extends Instance {
 		let that = this;
 		that._errors = new OrderErrors(that, that._schema);
 	}
-	public customerStatus(value?: string): Promise<string> {
-		return this.getOrSetProperty('customerStatus', value);
-	}
-	public getCustomerStatus(): string {
+	public get customerStatus(): string {
 		return this.getPropertyByName('customerStatus');
 	}
 	public setCustomerStatus(value: string): Promise<string> {
 		return this.setPropertyByName('customerStatus', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public get customerId(): Promise<any> {
-		return this._children.customerId.value();
+	public get customerId(): any {
+		return this._children.customerId.value;
 	}
-	public customer(value?: Customer): Promise<Customer> {
-		return this._children.customer.value(value);
+	public customer(): Promise<Customer> {
+		return this._children.customer.getValue();
+	}
+	public setCustomer(value: Customer): Promise<Customer> {
+		return this._children.customer.setValue(value);
 	}
 	public get $states(): OrderState {
 		return <OrderState>this._states;

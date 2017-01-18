@@ -16,17 +16,17 @@ async function testCreate(): Promise<void> {
     await order.items.add(item1);
     let parent = await item1.order();
     assert.equal(order, parent, '(1) Owner of orderItem1 is order');
-    assert.equal(await item1.orderId, order.uuid, '(2) Owner of orderItem1 is order');
+    assert.equal(item1.orderId, order.uuid, '(2) Owner of orderItem1 is order');
     let children = await order.items.toArray();
     assert.deepEqual(children.map(ii => { return ii.uuid }), [item1.uuid], '(3) Owner of orderItem1 is order');
 
-    await item2.order(order);
+    await item2.setOrder(order);
     children = await order.items.toArray();
 
     assert.equal(children.length, 2, '(1) Order has 2 items');
     assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid, item2.uuid], '(2) Order has 2 items');
 
-    await item1.order(null);
+    await item1.setOrder(null);
     children = await order.items.toArray();
     assert.deepEqual(children.map(ii => ii.uuid), [item2.uuid], '(1) Order has 1 items');
 
@@ -64,18 +64,18 @@ async function testRules(): Promise<void> {
     let item2 = await transaction.create<OrderItem>(OrderItem);
     await order.items.add(item1);
     await order.items.add(item2);
-    await item1.amount.value(10);
-    assert.equal(await order.totalAmount.value(), 10, 'Total amount  = 10');
-    await item2.amount.value(10);
-    assert.equal(await order.totalAmount.value(), 20, 'Total amount  = 20');
-    await item1.amount.value(5);
-    assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
+    await item1.amount.setValue(10);
+    assert.equal(order.totalAmount.value, 10, 'Total amount  = 10');
+    await item2.amount.setValue(10);
+    assert.equal(order.totalAmount.value, 20, 'Total amount  = 20');
+    await item1.amount.setValue(5);
+    assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
     await order.items.remove(item2);
-    assert.equal(await order.totalAmount.value(), 5, 'Total amount  = 5');
-    await item1.order(null);
-    assert.equal(await order.totalAmount.value(), 0, 'Total amount  = 0');
+    assert.equal(order.totalAmount.value, 5, 'Total amount  = 5');
+    await item1.setOrder(null);
+    assert.equal(order.totalAmount.value, 0, 'Total amount  = 0');
     await order.items.set([item1, item2]);
-    assert.equal(await order.totalAmount.value(), 15, 'Total amount  = 15');
+    assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
 
 
 }

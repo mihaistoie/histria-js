@@ -32,8 +32,8 @@ export class SalesOrder extends Instance {
 	public get grossAmount(): NumberValue {
 		return this._children.grossAmount;
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
 	public get $states(): SalesOrderState {
 		return <SalesOrderState>this._states;

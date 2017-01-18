@@ -50,7 +50,7 @@ export class Instance implements ObservableObject {
 		let localRole = that.getRoleByName(roleName);
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
-				await localRole.value(null)
+				await localRole.setValue(null)
 			else if (rel.type === RELATION_TYPE.hasMany)
 				await localRole.remove(instance)
 		}
@@ -61,7 +61,7 @@ export class Instance implements ObservableObject {
 		let localRole = that.getRoleByName(roleName);
 		if (rel && localRole) {
 			if (rel.type === RELATION_TYPE.hasOne)
-				await localRole.value(instance)
+				await localRole.setValue(instance)
 			else if (rel.type === RELATION_TYPE.hasMany)
 				await localRole.add(instance)
 		}

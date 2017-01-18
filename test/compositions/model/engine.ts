@@ -24,23 +24,23 @@ export class Engine extends Instance {
 	public get carChangedHits(): IntegerValue {
 		return this._children.carChangedHits;
 	}
-	public name(value?: string): Promise<string> {
-		return this.getOrSetProperty('name', value);
-	}
-	public getName(): string {
+	public get name(): string {
 		return this.getPropertyByName('name');
 	}
 	public setName(value: string): Promise<string> {
 		return this.setPropertyByName('name', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public get carId(): Promise<any> {
-		return this._children.carId.value();
+	public get carId(): any {
+		return this._children.carId.value;
 	}
-	public car(value?: Car): Promise<Car> {
-		return this._children.car.value(value);
+	public car(): Promise<Car> {
+		return this._children.car.getValue();
+	}
+	public setCar(value: Car): Promise<Car> {
+		return this._children.car.setValue(value);
 	}
 	public get $states(): EngineState {
 		return <EngineState>this._states;

@@ -21,20 +21,20 @@ export class Car extends Instance {
 		let that = this;
 		that._errors = new CarErrors(that, that._schema);
 	}
-	public driverName(value?: string): Promise<string> {
-		return this.getOrSetProperty('driverName', value);
-	}
-	public getDriverName(): string {
+	public get driverName(): string {
 		return this.getPropertyByName('driverName');
 	}
 	public setDriverName(value: string): Promise<string> {
 		return this.setPropertyByName('driverName', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public drivenBy(value?: Driver): Promise<Driver> {
-		return this._children.drivenBy.value(value);
+	public drivenBy(): Promise<Driver> {
+		return this._children.drivenBy.getValue();
+	}
+	public setDrivenBy(value: Driver): Promise<Driver> {
+		return this._children.drivenBy.setValue(value);
 	}
 	public get $states(): CarState {
 		return <CarState>this._states;

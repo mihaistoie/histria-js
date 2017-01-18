@@ -20,26 +20,20 @@ export class Department extends Instance {
 		let that = this;
 		that._errors = new DepartmentErrors(that, that._schema);
 	}
-	public code(value?: string): Promise<string> {
-		return this.getOrSetProperty('code', value);
-	}
-	public getCode(): string {
+	public get code(): string {
 		return this.getPropertyByName('code');
 	}
 	public setCode(value: string): Promise<string> {
 		return this.setPropertyByName('code', value);
 	}
-	public title(value?: string): Promise<string> {
-		return this.getOrSetProperty('title', value);
-	}
-	public getTitle(): string {
+	public get title(): string {
 		return this.getPropertyByName('title');
 	}
 	public setTitle(value: string): Promise<string> {
 		return this.setPropertyByName('title', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
 	public get $states(): DepartmentState {
 		return <DepartmentState>this._states;

@@ -19,12 +19,11 @@ export class Role<T extends ObservableObject> {
          this._value = value;
     }
 
-    public async value(value?: T): Promise<T> {
-        let that = this;
-        if (value === undefined)
-            return that._getValue();
-        else
-            return that._setValue(value);
+    public getValue(): Promise<T> {
+        return this._getValue();
+    }
+    public setValue(value: T): Promise<T> {
+        return this._setValue(value);
     }
     protected async _getValue(): Promise<T> {
         let that = this;

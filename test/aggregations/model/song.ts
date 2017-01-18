@@ -27,14 +27,17 @@ export class Song extends Instance {
 	public get cdChangedHits(): IntegerValue {
 		return this._children.cdChangedHits;
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public get cdId(): Promise<any> {
-		return this._children.cdId.value();
+	public get cdId(): any {
+		return this._children.cdId.value;
 	}
-	public cd(value?: Cd): Promise<Cd> {
-		return this._children.cd.value(value);
+	public cd(): Promise<Cd> {
+		return this._children.cd.getValue();
+	}
+	public setCd(value: Cd): Promise<Cd> {
+		return this._children.cd.setValue(value);
 	}
 	public get $states(): SongState {
 		return <SongState>this._states;

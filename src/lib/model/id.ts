@@ -15,9 +15,9 @@ export class IdValue {
         that._parent = null;
     }
 
-    public async value(): Promise<any> {
+    public get value(): any {
         let that = this;
-        return that._parent.getOrSetProperty(that._propertyName);
+        return that._parent.getPropertyByName(that._propertyName);
     }
 
 }

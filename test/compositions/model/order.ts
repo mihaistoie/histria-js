@@ -24,8 +24,8 @@ export class Order extends Instance {
 	public get totalAmount(): NumberValue {
 		return this._children.totalAmount;
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
 	get items(): HasManyComposition<OrderItem> {
 		return this._children.items;

@@ -24,8 +24,8 @@ export class Cd extends Instance {
 	public get duration(): IntegerValue {
 		return this._children.duration;
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
 	get songs(): HasManyAggregation<Song> {
 		return this._children.songs;

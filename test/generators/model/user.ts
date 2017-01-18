@@ -23,35 +23,26 @@ export class User extends Instance {
 	public get age(): IntegerValue {
 		return this._children.age;
 	}
-	public firstName(value?: string): Promise<string> {
-		return this.getOrSetProperty('firstName', value);
-	}
-	public getFirstName(): string {
+	public get firstName(): string {
 		return this.getPropertyByName('firstName');
 	}
 	public setFirstName(value: string): Promise<string> {
 		return this.setPropertyByName('firstName', value);
 	}
-	public lastName(value?: string): Promise<string> {
-		return this.getOrSetProperty('lastName', value);
-	}
-	public getLastName(): string {
+	public get lastName(): string {
 		return this.getPropertyByName('lastName');
 	}
 	public setLastName(value: string): Promise<string> {
 		return this.setPropertyByName('lastName', value);
 	}
-	public fullName(value?: string): Promise<string> {
-		return this.getOrSetProperty('fullName', value);
-	}
-	public getFullName(): string {
+	public get fullName(): string {
 		return this.getPropertyByName('fullName');
 	}
 	public setFullName(value: string): Promise<string> {
 		return this.setPropertyByName('fullName', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
 	public get $states(): UserState {
 		return <UserState>this._states;

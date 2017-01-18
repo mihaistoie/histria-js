@@ -24,23 +24,23 @@ export class Driver extends Instance {
 	public get carChangedHits(): IntegerValue {
 		return this._children.carChangedHits;
 	}
-	public name(value?: string): Promise<string> {
-		return this.getOrSetProperty('name', value);
-	}
-	public getName(): string {
+	public get name(): string {
 		return this.getPropertyByName('name');
 	}
 	public setName(value: string): Promise<string> {
 		return this.setPropertyByName('name', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public get drivesId(): Promise<any> {
-		return this._children.drivesId.value();
+	public get drivesId(): any {
+		return this._children.drivesId.value;
 	}
-	public drives(value?: Car): Promise<Car> {
-		return this._children.drives.value(value);
+	public drives(): Promise<Car> {
+		return this._children.drives.getValue();
+	}
+	public setDrives(value: Car): Promise<Car> {
+		return this._children.drives.setValue(value);
 	}
 	public get $states(): DriverState {
 		return <DriverState>this._states;

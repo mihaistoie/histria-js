@@ -18,8 +18,8 @@ export class SalesOrderRules {
     static async vatChanged(so: SalesOrder, eventInfo: any): Promise<void> {
         if (eventInfo.isTriggeredBy('netAmount', so))
             return;
-        let vat = await so.vat.value();
-        await so.netAmount.value(vat / VAT_TAX);
+        let vat = so.vat.value;
+        await so.netAmount.setValue(vat / VAT_TAX);
     }
 
     @propChanged(SalesOrder, 'grossAmount')
@@ -27,18 +27,15 @@ export class SalesOrderRules {
     static async grossAmountChanged(so: SalesOrder, eventInfo: any): Promise<void> {
         if (eventInfo.isTriggeredBy('netAmount', so)) 
             return;
-        let ga = await so.grossAmount.value();
-        await so.netAmount.value(ga / (1 + VAT_TAX));
+        let ga = so.grossAmount.value;
+        await so.netAmount.setValue(ga / (1 + VAT_TAX));
     }
 
 
     static async calculateVatAndAmont(so: SalesOrder, eventInfo: any): Promise<void> {
-        let rc = await so.ruleCount.value();
-        await so.ruleCount.value(rc + 1)
-        let na = await so.netAmount.value();
-        await so.vat.value(na * VAT_TAX);
-        let vat = await so.vat.value();
-        await so.grossAmount.value(na + vat);
+        await so.ruleCount.setValue(so.ruleCount.value + 1)
+        await so.vat.setValue(so.netAmount.value * VAT_TAX);
+        await so.grossAmount.setValue(so.netAmount.value + so.vat.value);
     }
 }
 

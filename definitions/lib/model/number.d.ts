@@ -8,14 +8,15 @@ export declare class BaseNumberValue {
     private _round(value);
     protected init(): void;
     destroy(): void;
-    value(value?: number): Promise<number>;
-    getValue(): number;
+    readonly value: number;
     setValue(value: number): Promise<number>;
-    decimals(value: number): Promise<number>;
+    readonly decimals: number;
+    setDecimals(value: number): Promise<number>;
 }
 export declare class IntegerValue extends BaseNumberValue {
 }
 export declare class NumberValue extends BaseNumberValue {
-    decimals(value: number): Promise<number>;
+    readonly decimals: number;
+    setDecimals(value: number): Promise<number>;
     protected _internalDecimals(): number;
 }

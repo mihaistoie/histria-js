@@ -34,15 +34,7 @@ export class BaseNumberValue {
         let that = this;
         that._parent = null;
     }
-
-    public async value(value?: number): Promise<number> {
-        let that = this;
-        if (value !== undefined) {
-            value = that._round(value);
-        }
-        return that._parent.getOrSetProperty(that._propertyName, value);
-    }
-    public getValue(): number {
+    public get value(): number {
         let that = this;
         return that._parent.getPropertyByName(that._propertyName);
     }
@@ -51,15 +43,16 @@ export class BaseNumberValue {
         value = that._round(value);
         return that._parent.setPropertyByName(that._propertyName, value);
     }
-
-    public async decimals(value: number): Promise<number> {
+    public get decimals(): number {
         let that = this;
-        if (value !== undefined) {
-            if (that._decimals != value) {
-                that._decimals = value;
-            }
-        }
         return that._decimals;
+    }
+
+    public setDecimals(value: number): Promise<number> {
+        let that = this;
+        if (that._decimals != value)
+            that._decimals = value;
+        return Promise.resolve(that._decimals);
     }
 
 }
@@ -68,14 +61,17 @@ export class IntegerValue extends BaseNumberValue {
 }
 
 export class NumberValue extends BaseNumberValue {
-    public async decimals(value: number): Promise<number> {
+    public get decimals(): number {
         let that = this;
-        if (value !== undefined) {
-            if (that._parent.$states[that._propertyName].decimals != value) {
-                that._parent.$states[that._propertyName].decimals = value;
-                let val = await that.value();
-                await that.value(val)
-            }
+        return that._parent.$states[that._propertyName].decimals;
+    }
+
+    public async setDecimals(value: number): Promise<number> {
+        let that = this;
+        if (that._parent.$states[that._propertyName].decimals != value) {
+            that._parent.$states[that._propertyName].decimals = value;
+            let val = that.value;
+            await that.setValue(val)
         }
         return that._parent.$states[that._propertyName].decimals;
     }

@@ -67,10 +67,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
                 case JSONTYPES.string:
                     let value1 = isReadOnly ? '' : 'value?: string'
                     let value2 = isReadOnly ? '' : ', value';
-                    code.push(_tab(1) + util.format('public %s(%s): Promise<string> {', propName, value1));
-                    code.push(_tab(2) + util.format('return this.getOrSetProperty(\'%s\'%s);', propName, value2));
-                    code.push(_tab(1) + '}');
-                    code.push(_tab(1) + util.format('public get%s(): string {', _upperFirstLetter(propName)));
+                    code.push(_tab(1) + util.format('public get %s(): string {', propName));
                     code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propName));
                     code.push(_tab(1) + '}');
                     if (!isReadOnly) {
@@ -80,8 +77,8 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
                     }
                     break;
                 case JSONTYPES.id:
-                    code.push(_tab(1) + util.format('public get %s(): Promise<any> {', propName));
-                    code.push(_tab(2) + util.format('return this._children.%s.value();', propName));
+                    code.push(_tab(1) + util.format('public get %s(): any {', propName));
+                    code.push(_tab(2) + util.format('return this._children.%s.value;', propName));
                     code.push(_tab(1) + '}');
                     break;
                 case JSONTYPES.integer:
@@ -101,14 +98,21 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
             let refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
             switch (relation.type) {
                 case RELATION_TYPE.hasOne:
-                    code.push(_tab(1) + util.format('public %s(value?: %s): Promise<%s> {', relName, refClass, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.value(value);', relName));
+                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relName));
+                    code.push(_tab(1) + '}');
+                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relName), refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relName));
                     code.push(_tab(1) + '}');
                     break;
                 case RELATION_TYPE.belongsTo:
-                    code.push(_tab(1) + util.format('public %s(value?: %s): Promise<%s> {', relName, refClass, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.value(value);', relName));
+                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relName));
                     code.push(_tab(1) + '}');
+                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relName), refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relName));
+                    code.push(_tab(1) + '}');
+
                     break;
                 case RELATION_TYPE.hasMany:
                     let cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';

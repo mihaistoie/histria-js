@@ -21,59 +21,47 @@ export class EmployeeAddress extends Instance {
 		let that = this;
 		that._errors = new EmployeeAddressErrors(that, that._schema);
 	}
-	public street(value?: string): Promise<string> {
-		return this.getOrSetProperty('street', value);
-	}
-	public getStreet(): string {
+	public get street(): string {
 		return this.getPropertyByName('street');
 	}
 	public setStreet(value: string): Promise<string> {
 		return this.setPropertyByName('street', value);
 	}
-	public city(value?: string): Promise<string> {
-		return this.getOrSetProperty('city', value);
-	}
-	public getCity(): string {
+	public get city(): string {
 		return this.getPropertyByName('city');
 	}
 	public setCity(value: string): Promise<string> {
 		return this.setPropertyByName('city', value);
 	}
-	public province(value?: string): Promise<string> {
-		return this.getOrSetProperty('province', value);
-	}
-	public getProvince(): string {
+	public get province(): string {
 		return this.getPropertyByName('province');
 	}
 	public setProvince(value: string): Promise<string> {
 		return this.setPropertyByName('province', value);
 	}
-	public postalCode(value?: string): Promise<string> {
-		return this.getOrSetProperty('postalCode', value);
-	}
-	public getPostalCode(): string {
+	public get postalCode(): string {
 		return this.getPropertyByName('postalCode');
 	}
 	public setPostalCode(value: string): Promise<string> {
 		return this.setPropertyByName('postalCode', value);
 	}
-	public country(value?: string): Promise<string> {
-		return this.getOrSetProperty('country', value);
-	}
-	public getCountry(): string {
+	public get country(): string {
 		return this.getPropertyByName('country');
 	}
 	public setCountry(value: string): Promise<string> {
 		return this.setPropertyByName('country', value);
 	}
-	public get id(): Promise<any> {
-		return this._children.id.value();
+	public get id(): any {
+		return this._children.id.value;
 	}
-	public get employeeId(): Promise<any> {
-		return this._children.employeeId.value();
+	public get employeeId(): any {
+		return this._children.employeeId.value;
 	}
-	public employee(value?: Employee): Promise<Employee> {
-		return this._children.employee.value(value);
+	public employee(): Promise<Employee> {
+		return this._children.employee.getValue();
+	}
+	public setEmployee(value: Employee): Promise<Employee> {
+		return this._children.employee.setValue(value);
 	}
 	public get $states(): EmployeeAddressState {
 		return <EmployeeAddressState>this._states;

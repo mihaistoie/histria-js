@@ -240,15 +240,16 @@ declare module 'histria-utils/lib/model/number' {
         protected _internalDecimals(): number;
         protected init(): void;
         destroy(): void;
-        value(value?: number): Promise<number>;
-        getValue(): number;
+        readonly value: number;
         setValue(value: number): Promise<number>;
-        decimals(value: number): Promise<number>;
+        readonly decimals: number;
+        setDecimals(value: number): Promise<number>;
     }
     export class IntegerValue extends BaseNumberValue {
     }
     export class NumberValue extends BaseNumberValue {
-        decimals(value: number): Promise<number>;
+        readonly decimals: number;
+        setDecimals(value: number): Promise<number>;
         protected _internalDecimals(): number;
     }
 }

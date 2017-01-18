@@ -9,7 +9,7 @@ export class CdRules {
         await song.cdChangedHits.setValue(song.cdChangedHits.getValue() + 1);
     }
     @propChanged(Song, 'duration')
-    static async afterDurationChanged(song: Song, eventInfo: any, oldValue: number, newValue: number): Promise<void> {
+    static async afterDurationChanged(song: Song, eventInfo: any, newValue: number, oldValue: number): Promise<void> {
         let cd = await song.cd();
         if (cd)
             await cd.duration.setValue(cd.duration.getValue() - oldValue + newValue);

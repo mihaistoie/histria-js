@@ -35,7 +35,6 @@
     "gen": "mocha -r ts-node/register test/**/*.gentest.ts",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "compositions": "mocha -r ts-node/register test/compositions/*.test.ts",
-    "aggregations": "mocha -r ts-node/register test/aggregations/*.test.ts",
-    "a": "mocha -r ts-node/register test/aggregations/aggregations-many.test.ts"
+    "aggregations": "mocha -r ts-node/register test/aggregations/*.test.ts"
   }
 }

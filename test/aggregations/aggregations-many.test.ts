@@ -62,11 +62,18 @@ async function testRules(): Promise<void> {
     await song1.duration.setValue(10);
     await song2.duration.setValue(5);
     await song1.cd(cd);
+    assert.equal(cd.duration.getValue(), 10, '(1) Duration is 10');
     await cd.songs.add(song2);
+    assert.equal(cd.duration.getValue(), 15, '(1) Duration is 15');
+    await song2.duration.setValue(7);
+    assert.equal(cd.duration.getValue(), 17, '(1) Duration is 17');
+
     assert.equal(song1.cdChangedHits.getValue(), 1, '(1) Cd changed');
     assert.equal(song2.cdChangedHits.getValue(), 1, '(2) Cd changed');
     await song1.cd(null);
+    assert.equal(cd.duration.getValue(), 7, '(1) Duration is 7');
     await cd.songs.remove(song2);
+    assert.equal(cd.duration.getValue(), 0, '(1) Duration is 0');
     let songs = await cd.songs.toArray();
     assert.equal(songs.length, 0, 'No songs on cd');
     assert.equal(song1.cdChangedHits.getValue(), 2, '(1) Cd changed 2 times');
@@ -87,7 +94,6 @@ describe('Relation One to many, Aggregation', () => {
         });
        
     });
-    /*
     it('One to many aggregation - create', function (done) {
         testCreate().then(function () {
             done();
@@ -106,7 +112,6 @@ describe('Relation One to many, Aggregation', () => {
 
 
     });
-    */
     it('One to many aggregation - rules', function (done) {
         testRules().then(function () {
             done();

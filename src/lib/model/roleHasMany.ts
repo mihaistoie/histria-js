@@ -170,6 +170,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             updateRoleRefs(that._relation, lmodel, null, true);
             let r = item.getRoleByName(that._relation.invRel, );
             if (r) await r.internalSetValueAndNotify(null, item);
+            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
         }
         return item;
     }
@@ -190,6 +191,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             let rmodel = that._parent.model();
             let r = item.getRoleByName(that._relation.invRel);
             if (r) await r.internalSetValueAndNotify(that._parent, item);
+            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
         }
         return item;
     }

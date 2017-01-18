@@ -7,7 +7,8 @@ export declare class Role<T extends ObservableObject> {
     protected _refClass: any;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     internalSetValue(value: T): void;
-    value(value?: T): Promise<T>;
+    getValue(): Promise<T>;
+    setValue(value: T): Promise<T>;
     protected _getValue(): Promise<T>;
     protected _setValue(value: T): Promise<T>;
     destroy(): void;

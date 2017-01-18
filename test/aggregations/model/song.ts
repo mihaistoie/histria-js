@@ -21,6 +21,12 @@ export class Song extends Instance {
 		let that = this;
 		that._errors = new SongErrors(that, that._schema);
 	}
+	public get duration(): IntegerValue {
+		return this._children.duration;
+	}
+	public get cdChangedHits(): IntegerValue {
+		return this._children.cdChangedHits;
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -42,6 +48,12 @@ export class SongErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get duration(): ErrorState {
+		return this._messages.duration;
+	}
+	public get cdChangedHits(): ErrorState {
+		return this._messages.cdChangedHits;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -54,6 +66,12 @@ export class SongErrors extends InstanceErrors {
 }
 
 export class SongState extends InstanceState {
+	public get duration(): IntegerState {
+		return this._states.duration;
+	}
+	public get cdChangedHits(): IntegerState {
+		return this._states.cdChangedHits;
+	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -67,6 +85,14 @@ const
 		"name": "song",
 		"nameSpace": "aggregations",
 		"properties": {
+			"duration": {
+				"type": "integer",
+				"default": 0
+			},
+			"cdChangedHits": {
+				"type": "integer",
+				"default": 0
+			},
 			"id": {
 				"type": "integer",
 				"generated": true,

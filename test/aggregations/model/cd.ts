@@ -21,6 +21,9 @@ export class Cd extends Instance {
 		let that = this;
 		that._errors = new CdErrors(that, that._schema);
 	}
+	public get duration(): IntegerValue {
+		return this._children.duration;
+	}
 	public get id(): Promise<any> {
 		return this._children.id.value();
 	}
@@ -39,6 +42,9 @@ export class CdErrors extends InstanceErrors {
 	public get $(): ErrorState {
 		return this._messages.$;
 	}
+	public get duration(): ErrorState {
+		return this._messages.duration;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -48,6 +54,9 @@ export class CdErrors extends InstanceErrors {
 }
 
 export class CdState extends InstanceState {
+	public get duration(): IntegerState {
+		return this._states.duration;
+	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -58,6 +67,10 @@ const
 		"name": "cd",
 		"nameSpace": "aggregations",
 		"properties": {
+			"duration": {
+				"type": "integer",
+				"default": 0
+			},
 			"id": {
 				"type": "integer",
 				"generated": true,

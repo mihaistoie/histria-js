@@ -6,6 +6,10 @@
         "duration": {
             "type": "integer",
             "default": 0
+        },
+        "cdChangedHits": {
+            "type": "integer",
+            "default": 0
         }
     },
     "relations": {

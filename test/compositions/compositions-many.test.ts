@@ -76,8 +76,6 @@ async function testRules(): Promise<void> {
     assert.equal(order.totalAmount.value, 0, 'Total amount  = 0');
     await order.items.set([item1, item2]);
     assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
-
-
 }
 
 
@@ -118,7 +116,7 @@ describe('Relation One to many, Composition', () => {
 
     });
 
-    it('One to one Many composition- states errors', function (done) {
+    it('One to one Many composition - states errors', function (done) {
         done();
 
     });

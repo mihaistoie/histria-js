@@ -93,4 +93,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Department, DEPARTMENT_SCHEMA.name, DEPARTMENT_SCHEMA.nameSpace);
+new ModelManager().registerClass(Department, DEPARTMENT_SCHEMA);

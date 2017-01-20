@@ -31,8 +31,10 @@ export class ModelManager {
         return null;
 
     }
-    public registerClass(constructor: any, className: string, nameSpace: string) {
+    public registerClass(constructor: any, schema: any) {
         let that = this;
+        let className = schema.name;
+        let nameSpace = schema.nameSpace;
         that._mapByClass = that._mapByClass || new Map<any, any>();
         that._classes = that._classes || new Map<string, any>();
         let classConstructor = that._classes.get(nameSpace + '.' + className);

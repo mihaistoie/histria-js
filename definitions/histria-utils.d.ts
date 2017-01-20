@@ -105,7 +105,7 @@ declare module 'histria-utils/lib/model/model-manager' {
             isRestore: boolean;
         }): T;
         classByName(className: string, namespace: string): any;
-        registerClass(constructor: any, className: string, nameSpace: string): void;
+        registerClass(constructor: any, schema: any): void;
         rulesForInit(classOfInstance: any): any[];
         rulesObjValidate(classOfInstance: any): any[];
         rulesForPropChange(classOfInstance: any, propertyName: string): any[];
@@ -311,6 +311,10 @@ declare module 'histria-utils/lib/model/interfaces' {
         country: string;
         locale: any;
         formatNumber(value: number, decimals: number): string;
+    }
+    export interface Store {
+        findOne(className: any, filter: any): Promise<any>;
+        find(className: any, filter: any): Promise<any[]>;
     }
     export interface TransactionContainer {
         context: UserContext;

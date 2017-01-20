@@ -29,6 +29,10 @@ export interface UserContext {
     locale: any;
     formatNumber(value: number, decimals: number): string;
 }
+export interface Store {
+    findOne(className: any, filter: any): Promise<any>;
+    find(className: any, filter: any): Promise<any[]>;
+}
 export interface TransactionContainer {
     context: UserContext;
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;

@@ -127,4 +127,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Engine, ENGINE_SCHEMA.name, ENGINE_SCHEMA.nameSpace);
+new ModelManager().registerClass(Engine, ENGINE_SCHEMA);

@@ -112,4 +112,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(OrderItem, ORDERITEM_SCHEMA.name, ORDERITEM_SCHEMA.nameSpace);
+new ModelManager().registerClass(OrderItem, ORDERITEM_SCHEMA);

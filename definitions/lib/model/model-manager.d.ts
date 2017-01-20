@@ -9,7 +9,7 @@ export declare class ModelManager {
         isRestore: boolean;
     }): T;
     classByName(className: string, namespace: string): any;
-    registerClass(constructor: any, className: string, nameSpace: string): void;
+    registerClass(constructor: any, schema: any): void;
     rulesForInit(classOfInstance: any): any[];
     rulesObjValidate(classOfInstance: any): any[];
     rulesForPropChange(classOfInstance: any, propertyName: string): any[];

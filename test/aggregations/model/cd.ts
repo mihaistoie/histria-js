@@ -95,4 +95,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Cd, CD_SCHEMA.name, CD_SCHEMA.nameSpace);
+new ModelManager().registerClass(Cd, CD_SCHEMA);

@@ -127,4 +127,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(User, USER_SCHEMA.name, USER_SCHEMA.nameSpace);
+new ModelManager().registerClass(User, USER_SCHEMA);

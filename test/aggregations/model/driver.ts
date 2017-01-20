@@ -127,4 +127,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Driver, DRIVER_SCHEMA.name, DRIVER_SCHEMA.nameSpace);
+new ModelManager().registerClass(Driver, DRIVER_SCHEMA);

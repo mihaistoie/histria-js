@@ -100,4 +100,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Car, CAR_SCHEMA.name, CAR_SCHEMA.nameSpace);
+new ModelManager().registerClass(Car, CAR_SCHEMA);

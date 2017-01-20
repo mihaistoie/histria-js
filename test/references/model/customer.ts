@@ -74,4 +74,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Customer, CUSTOMER_SCHEMA.name, CUSTOMER_SCHEMA.nameSpace);
+new ModelManager().registerClass(Customer, CUSTOMER_SCHEMA);

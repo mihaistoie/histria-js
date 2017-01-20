@@ -95,4 +95,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Order, ORDER_SCHEMA.name, ORDER_SCHEMA.nameSpace);
+new ModelManager().registerClass(Order, ORDER_SCHEMA);

@@ -125,4 +125,4 @@ const
 			}
 		}
 	};
-new ModelManager().registerClass(Song, SONG_SCHEMA.name, SONG_SCHEMA.nameSpace);
+new ModelManager().registerClass(Song, SONG_SCHEMA);

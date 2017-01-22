@@ -11,6 +11,7 @@ export declare class Transaction implements TransactionContainer {
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
     restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
     load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
+    createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     destroy(): void;
     private _addInstance(instance, classOfInstance);
     find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;

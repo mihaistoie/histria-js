@@ -30,7 +30,7 @@ export function typeOfProperty(propSchema: { type?: string, format?: string, ref
             else if (propSchema.format === JSONTYPES.id)
                 return JSONTYPES.id;
         } else if (ps === JSONTYPES.integer) {
-            if (propSchema.format === JSONTYPES.id) 
+            if (propSchema.format === JSONTYPES.id)
                 return JSONTYPES.id;
 
         }
@@ -78,6 +78,15 @@ export function updateRoleRefs(role: any, localModel: any, foreignModel: any, us
                     delete localModel[field];
             });
     }
+}
+export function enumCompositions(relations: any, cb: (relationName: string, relation: any) => void) {
+    relations && Object.keys(relations).forEach(relationName => {
+        let relation = relations[relationName];
+        if (relation.aggregationKind === AGGREGATION_KIND.composite && (relation.type === RELATION_TYPE.hasOne || relation.type === RELATION_TYPE.hasMany)) {
+            cb(relationName, relation);
+        }
+    });
+
 }
 
 
@@ -207,7 +216,7 @@ function _checkModel(schema, model) {
 function _checkRelations(schema, model) {
     schema.relations && Object.keys(schema.relations).forEach(relName => {
         let rel = schema.relations[relName];
-        rel.nameSpace =  rel.nameSpace || schema.nameSpace;
+        rel.nameSpace = rel.nameSpace || schema.nameSpace;
         if (!rel.type)
             throw util.format('Invalid relation "%s.%s", type is missing.', schema.name, relName);
         rel.title = rel.title || relName;
@@ -249,7 +258,7 @@ function _checkRelations(schema, model) {
             if (refRel.type === rel.type) {
                 throw util.format('Invalid type  %s.%s.type === %s.%s.type.', schema.name, relName, refModel.name, rel.invRel);
             }
-            rel.invType = refRel.type; 
+            rel.invType = refRel.type;
         }
 
         if (!rel.localFields || !rel.foreignFields) {

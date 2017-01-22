@@ -19,14 +19,13 @@ declare module 'histria-utils' {
 }
 
 declare module 'histria-utils/lib/model/base-object' {
-    import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from 'histria-utils/lib/model/interfaces';
+    import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from 'histria-utils/lib/model/interfaces';
     import { InstanceErrors } from 'histria-utils/lib/model/instance-errors';
     import { InstanceState } from 'histria-utils/lib/model/instance-state';
     export class Instance implements ObservableObject {
         protected _status: ObjectStatus;
         protected _transaction: TransactionContainer;
         protected _parent: ObservableObject;
-        protected _parentArray: ObservableArray;
         protected _children: any;
         protected _schema: any;
         protected _rootCache: ObservableObject;
@@ -55,6 +54,7 @@ declare module 'histria-utils/lib/model/base-object' {
         protected createStates(): void;
         status: ObjectStatus;
         getSchema(propName?: string): any;
+        isArrayComposition(propName: string): boolean;
         modelErrors(propName: string): {
             message: string;
             severity: MessageServerity;
@@ -70,7 +70,7 @@ declare module 'histria-utils/lib/model/base-object' {
         validate(options?: {
             full: boolean;
         }): Promise<void>;
-        constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
+        constructor(transaction: TransactionContainer, parent: ObservableObject, propertyName: string, value: any, options: {
             isRestore: boolean;
         });
         destroy(): void;
@@ -101,7 +101,7 @@ declare module 'histria-utils/lib/model/model-manager' {
     import { EventType, EventInfo, ObservableObject } from 'histria-utils/lib/model/interfaces';
     export class ModelManager {
         constructor();
-        createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: {
+        createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, parent: ObservableObject, propertyName: string, value: any, options: {
             isRestore: boolean;
         }): T;
         classByName(className: string, namespace: string): any;
@@ -136,6 +136,7 @@ declare module 'histria-utils/lib/factory/transaction' {
         create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
         restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
         load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
+        createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
         destroy(): void;
         find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
         findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
@@ -321,6 +322,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
         find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
         emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): any;
+        createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     }
     export interface ObservableObject {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -337,6 +339,7 @@ declare module 'histria-utils/lib/model/interfaces' {
         getRoot(): ObservableObject;
         destroy(): any;
         getRoleByName(roleName: string): any;
+        isArrayComposition(propertyName: string): boolean;
         addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
         rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
         changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
@@ -349,7 +352,6 @@ declare module 'histria-utils/lib/model/interfaces' {
     export interface ObservableArray {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
-        getPath(item?: ObservableObject): string;
         getRoot(): ObservableObject;
         destroy(): any;
     }
@@ -375,7 +377,6 @@ declare module 'histria-utils/lib/model/base-array' {
         protected _isUndefined: boolean;
         constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
         getRoot(): ObservableObject;
-        getPath(item?: ObservableObject): string;
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
         destroy(): void;

@@ -1,11 +1,10 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
 import { InstanceErrors } from './instance-errors';
 import { InstanceState } from './instance-state';
 export declare class Instance implements ObservableObject {
     protected _status: ObjectStatus;
     protected _transaction: TransactionContainer;
     protected _parent: ObservableObject;
-    protected _parentArray: ObservableArray;
     protected _children: any;
     protected _schema: any;
     protected _rootCache: ObservableObject;
@@ -38,6 +37,7 @@ export declare class Instance implements ObservableObject {
     status: ObjectStatus;
     getSchema(propName?: string): any;
     private _createProperties();
+    isArrayComposition(propName: string): boolean;
     modelErrors(propName: string): {
         message: string;
         severity: MessageServerity;
@@ -54,7 +54,7 @@ export declare class Instance implements ObservableObject {
     validate(options?: {
         full: boolean;
     }): Promise<void>;
-    constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: {
+    constructor(transaction: TransactionContainer, parent: ObservableObject, propertyName: string, value: any, options: {
         isRestore: boolean;
     });
     destroy(): void;

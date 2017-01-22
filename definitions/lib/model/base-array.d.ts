@@ -17,7 +17,6 @@ export declare class ObjectArray<T extends ObservableObject> extends BaseObjectA
     protected _isUndefined: boolean;
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
     getRoot(): ObservableObject;
-    getPath(item?: ObservableObject): string;
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     destroy(): void;

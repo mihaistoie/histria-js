@@ -54,10 +54,6 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
 
 
     }
-    public getPath(item?: ObservableObject): string {
-        let that = this;
-        return that._parent ? that._parent.getPath(that._propertyName) : that._propertyName;
-    }
     public propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
     }
     public stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {

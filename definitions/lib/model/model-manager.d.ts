@@ -5,7 +5,7 @@ export declare class ModelManager {
     private _mapRules;
     private static singleton;
     constructor();
-    createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: {
+    createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, parent: ObservableObject, propertyName: string, value: any, options: {
         isRestore: boolean;
     }): T;
     classByName(className: string, namespace: string): any;

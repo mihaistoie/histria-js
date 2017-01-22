@@ -38,6 +38,7 @@ export interface TransactionContainer {
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
     find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): any;
+    createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
 }
 export interface ObservableObject {
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
@@ -54,6 +55,7 @@ export interface ObservableObject {
     getRoot(): ObservableObject;
     destroy(): any;
     getRoleByName(roleName: string): any;
+    isArrayComposition(propertyName: string): boolean;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
@@ -66,7 +68,6 @@ export interface ObservableObject {
 export interface ObservableArray {
     propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
-    getPath(item?: ObservableObject): string;
     getRoot(): ObservableObject;
     destroy(): any;
 }

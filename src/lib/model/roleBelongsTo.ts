@@ -29,7 +29,7 @@ export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
         });
         let res = null;
         if (!valueIsNull)
-            res = await that._parent.transaction.findOne<T>(query, that._refClass);
+            res = await that._parent.transaction.findOne<T>(that._refClass, query);
         return res || null;
     }
     public destroy() {

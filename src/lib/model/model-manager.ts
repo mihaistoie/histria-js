@@ -19,10 +19,10 @@ export class ModelManager {
         }
         return ModelManager.singleton;
     }
-    public createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, value: any, options: { isRestore: boolean }): T {
+    public createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, parent: ObservableObject, propertyName: string, value: any, options: { isRestore: boolean }): T {
         let that = this;
         let ci = that._mapByClass.get(classOfInstance);
-        return new ci.factory(transaction, null, null, '', value, options);
+        return new ci.factory(transaction, parent, propertyName, value, options);
     }
     public classByName(className: string, namespace: string): any {
         let that = this;

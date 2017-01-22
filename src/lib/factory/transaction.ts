@@ -38,7 +38,7 @@ export class Transaction implements TransactionContainer {
         let nIstances = [ci];
         let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems].indexOf(eventType) >= 0;
         let pi = propagate && args && args.length ? 0 : -1;
-        
+
         let list = that._subscribers.get(eventType);
         if (list) {
             while (ci) {
@@ -68,7 +68,7 @@ export class Transaction implements TransactionContainer {
     public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
         let that = this;
         let mm = new ModelManager();
-        let instance: any = mm.createInstance<T>(classOfInstance, this, { $isNew: true }, { isRestore: true });
+        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: true });
         that._addInstance(instance, classOfInstance);
         await instance.afterCreated();
         return instance;
@@ -77,7 +77,7 @@ export class Transaction implements TransactionContainer {
         let mm = new ModelManager();
         let that = this;
         data = data || {};
-        let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: true });
+        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
         that._addInstance(instance, classOfInstance);
         await instance.afterCreated();
         return instance;
@@ -85,9 +85,16 @@ export class Transaction implements TransactionContainer {
     public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let that = this;
-        let instance: any = mm.createInstance<T>(classOfInstance, this, data, { isRestore: false });
+        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
         that._addInstance(instance, classOfInstance);
         await instance.afterCreated();
+        return instance;
+    }
+    public createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T {
+        let mm = new ModelManager();
+        let that = this;
+        let instance: any = mm.createInstance<T>(classOfInstance, this, parent, propertyName, data, { isRestore: isRestore });
+        that._addInstance(instance, classOfInstance);
         return instance;
     }
     public destroy() {
@@ -104,16 +111,16 @@ export class Transaction implements TransactionContainer {
             that._instances.set(classOfInstance, instances);
         }
         instances.set(instance.uuid, instance);
-
+      
     }
-    public async find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]> {
+    public async find<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T[]> {
         let that = this;
         let res = that._find<T>(filter, classOfInstance);
         if (res) return res;
         //TODO use persistence
         return [];
     }
-    public async findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T> {
+    public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T> {
         let that = this;
         let res = await that._findOne<T>(filter, classOfInstance);
         if (res) return res;

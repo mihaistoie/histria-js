@@ -7,7 +7,7 @@ import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 export class HasOne<T extends ObservableObject> extends Role<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
-        super(parent, propertyName, relation)
+        super(parent, propertyName, relation);
     }
     protected async _getValue(): Promise<T> {
         let that = this;
@@ -56,7 +56,7 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         if (valueIsNull)
             that._value = null;
         else
-            that._value = await that._parent.transaction.findOne<T>(query, that._refClass) || null;
+            that._value = await that._parent.transaction.findOne<T>(that._refClass, query) || null;
     }
 
     protected async _setValue(value: T): Promise<T> {
@@ -117,7 +117,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         if (valueIsNull)
             that._value = null;
         else {
-            that._value = await that._parent.transaction.findOne<T>(query, that._refClass);
+            that._value = await that._parent.transaction.findOne<T>(that._refClass, query);
             await that._updateInvSideAfterLazyLoading(that._value);
         }
     }
@@ -132,6 +132,16 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 }
 
 export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
+    constructor(parent: ObservableObject, propertyName: string, relation: any) {
+        super(parent, propertyName, relation);
+        let that = this;
+        let pmodel = that._parent.model();
+        let childModel = pmodel[propertyName];
+        if (childModel === null)
+            that._value = null;
+        else if (childModel)
+            that._value = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, childModel, false);
+    }
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;
         if (newValue)

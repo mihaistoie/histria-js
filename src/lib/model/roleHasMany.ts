@@ -120,7 +120,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             if (valueIsNull) {
                 that._model = null;
             } else {
-                let items = await that._parent.transaction.find<T>(query, that._refClass);
+                let items = await that._parent.transaction.find<T>(that._refClass,query);
                 if (items.length) {
                     that._model = new Array(items.length);
                     that._items = new Array(items.length);
@@ -211,7 +211,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
                     query[ff] = value;
             });
             if (!valueIsNull) {
-                let items = await that._parent.transaction.find<T>(query, that._refClass);
+                let items = await that._parent.transaction.find<T>(that._refClass, query);
                 if (items.length) {
                     that._items = new Array(items.length);
                     for (let index = 0; index < items.length; index++) {

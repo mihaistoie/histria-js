@@ -28,7 +28,6 @@ export class Instance implements ObservableObject {
 	protected _transaction: TransactionContainer;
 	//when set _parent reset _rootCache
 	protected _parent: ObservableObject;
-	protected _parentArray: ObservableArray;
 	protected _children: any;
 	protected _schema: any;
 	protected _rootCache: ObservableObject;
@@ -114,7 +113,7 @@ export class Instance implements ObservableObject {
 
 	public getPath(propName?: string): string {
 		let that = this;
-		let root = that._parentArray ? that._parentArray.getPath(that) : (that._parent ? that._parent.getPath(that._propertyName) : '');
+		let root = that._parent ? that._parent.getPath(that._propertyName) : '';
 		return propName ? (root ? (root + '.' + propName) : propName) : root;
 	}
 
@@ -125,7 +124,7 @@ export class Instance implements ObservableObject {
 	public getRoot(): ObservableObject {
 		let that = this;
 		if (!that._rootCache)
-			that._rootCache = that._parentArray ? that._parentArray.getRoot() : (that._parent ? that._parent.getRoot() : that);
+			that._rootCache = that._parent ? that._parent.getRoot() : that;
 		return that._rootCache;
 	}
 
@@ -231,11 +230,18 @@ export class Instance implements ObservableObject {
 			}
 		});
 	}
+	public isArrayComposition(propName: string): boolean {
+		let that = this;
+		if (that._schema.relations && that._schema.relations[propName]) {
+			let rel = that._schema.relations[propName];
+			return rel.type === RELATION_TYPE.hasMany && rel.aggregationKind === AGGREGATION_KIND.composite;
+		}
+	}
 
 	public modelErrors(propName: string): { message: string, severity: MessageServerity }[] {
 		let that = this;
 		that._model.$errors = that._model.$errors || {};
-		if (propName === '$' && !that._parentArray && that._parent && that._propertyName) {
+		if (propName === '$' && that._parent && that._propertyName && !that._parent.isArrayComposition(that._propertyName)) {
 			return that._parent.modelErrors(that._propertyName)
 		}
 		that._model.$errors[propName] = that._model.$errors[propName] || [];
@@ -383,11 +389,10 @@ export class Instance implements ObservableObject {
 	}
 
 
-	constructor(transaction: TransactionContainer, parent: ObservableObject, parentArray: ObservableArray, propertyName: string, value: any, options: { isRestore: boolean }) {
+	constructor(transaction: TransactionContainer, parent: ObservableObject, propertyName: string, value: any, options: { isRestore: boolean }) {
 		let that = this;
 		that._context = transaction.context;
 		that._parent = parent ? parent : undefined;
-		that._parentArray = parentArray;
 		that.status = options.isRestore ? ObjectStatus.restoring : ObjectStatus.creating;
 		that._propertyName = propertyName;
 		that._transaction = transaction;
@@ -423,7 +428,6 @@ export class Instance implements ObservableObject {
 		}
 		that._context = null;
 		that._parent = null;
-		that._parentArray = null;
 		that._propertyName = null;
 
 	}
@@ -438,11 +442,11 @@ export class Instance implements ObservableObject {
 
 function checkuuid(value: any) {
 	//check uuid 
-	if (value && !value.$uuid) {
+	if (!value.$uuid) {
 		if (value.$isNew || !value.id) {
 			value.$uuid = uuid.v1();
 			value.id = value.$uuid;
 		} else
-			value.$uuid = value.id + ' ';
+			value.$uuid = value.id + '';
 	}
 }

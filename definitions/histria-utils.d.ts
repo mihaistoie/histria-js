@@ -138,8 +138,8 @@ declare module 'histria-utils/lib/factory/transaction' {
         load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
         createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
         destroy(): void;
-        find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
-        findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
+        find<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T[]>;
+        findOne<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T>;
     }
 }
 
@@ -147,6 +147,7 @@ declare module 'histria-utils/lib/model/roleHasMany' {
     import { ObservableObject } from 'histria-utils/lib/model/interfaces';
     import { ObjectArray, BaseObjectArray } from 'histria-utils/lib/model/base-array';
     export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
+        constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
         remove(element: T | number): Promise<T>;
         add(item: T, index?: number): Promise<T>;
         set(items: T[]): Promise<void>;

@@ -54,6 +54,15 @@ async function testLoad(): Promise<void> {
     let children = await order.items.toArray();
     assert.equal(children.length, 2, '(1) Order has 2 items');
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [item1.uuid, item2.uuid].sort(), '(2) Order has 2 items');
+    
+    let order2 = await transaction.load<Order>(Order, { id: 1, items: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    let children2 = await order2.items.toArray();
+    
+    assert.equal(children2.length, 3, 'Order has 3 items');
+    let oi2 = await transaction.findOne<OrderItem>(OrderItem, { id: 2 });
+    assert.equal(oi2.orderId, order2.id, 'item.orderId === order.id');
+    assert.equal(children2[1], oi2, 'order.items[1] == oi');
+
 
 }
 

@@ -60,9 +60,10 @@ async function testLoad(): Promise<void> {
     assert.equal(await engine2.car(), car2, '(1) Owner of engine 2  is car 2');
     assert.equal(await car2.engine(), engine2, '(2) Owner of engine 2 is car 2');
 
-    let car3 = await transaction.load<Car>(Car, { id: 12, engine: { id: 10, carId: 12 } });
+    let car3 = await transaction.load<Car>(Car, { id: 12, engine: { id: 10 } });
      let engine3 = await car3.engine();
     assert.notEqual(engine3, null, 'Engine loaded');
+    assert.equal(engine3.carId, car3.id, 'After load engine.carId === car.id');
     let engine4 = await transaction.findOne<Engine>(Engine, { id: 10 });
     assert.equal(engine3, engine4, 'Engine found');
     

@@ -134,13 +134,18 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
+        let isRestore = false;
         let that = this;
         let pmodel = that._parent.model();
         let childModel = pmodel[propertyName];
         if (childModel === null)
             that._value = null;
-        else if (childModel)
-            that._value = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, childModel, false);
+        else if (childModel) {
+            that._value = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, childModel, isRestore);
+            if (!isRestore)
+                updateRoleRefs(that._relation, childModel, pmodel, true);
+
+        }
     }
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;

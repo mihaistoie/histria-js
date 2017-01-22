@@ -4,6 +4,21 @@ import { updateRoleRefs } from '../schema/schema-utils';
 import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
+    constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
+        super(parent, propertyName, relation, model);
+        let isRestore = false;
+        let that = this;
+        if (!that._isNull && !that._isUndefined) {
+            let pmodel = that._parent.model();
+            that._items = new Array(model.length);
+            that._model.forEach((itemModel, index) => {
+                let item = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, itemModel, isRestore);
+                that._items[index] = item;
+                if (!isRestore)
+                    updateRoleRefs(that._relation, itemModel, pmodel, true);
+            })
+        }
+    }
     private async _afterRemoveItem(item: T, notifyRemove: boolean): Promise<void> {
         let that = this;
         let lmodel = item.model();
@@ -120,7 +135,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             if (valueIsNull) {
                 that._model = null;
             } else {
-                let items = await that._parent.transaction.find<T>(that._refClass,query);
+                let items = await that._parent.transaction.find<T>(that._refClass, query);
                 if (items.length) {
                     that._model = new Array(items.length);
                     that._items = new Array(items.length);

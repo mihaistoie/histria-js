@@ -19,6 +19,7 @@ export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }
 export declare class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
+    constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }

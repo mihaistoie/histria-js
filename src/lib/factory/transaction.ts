@@ -70,9 +70,17 @@ export class Transaction implements TransactionContainer {
         let mm = new ModelManager();
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: true });
         that._addInstance(instance, classOfInstance);
-        await instance.afterCreated();
+        let instances = []
+        instance.enumChildren((child) => {
+            instances.push(child);
+        });
+        instances.push(instance);
+        for (let inst of instances) {
+            await inst.afterCreated();
+        }
         return instance;
     }
+
     public async restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let that = this;
@@ -82,12 +90,20 @@ export class Transaction implements TransactionContainer {
         await instance.afterCreated();
         return instance;
     }
+    
     public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
         that._addInstance(instance, classOfInstance);
-        await instance.afterCreated();
+        let instances = []
+        instance.enumChildren((child) => {
+            instances.push(child);
+        });
+        instances.push(instance);
+        for (let inst of instances) {
+            await inst.afterCreated();
+        }
         return instance;
     }
     public createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T {
@@ -111,7 +127,7 @@ export class Transaction implements TransactionContainer {
             that._instances.set(classOfInstance, instances);
         }
         instances.set(instance.uuid, instance);
-      
+
     }
     public async find<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T[]> {
         let that = this;

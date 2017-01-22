@@ -164,6 +164,7 @@ export class Instance implements ObservableObject {
 	}
 
 
+
 	public getSchema(propName?: string): any {
 		let that = this;
 		if (!propName || propName === '$') return that._schema;
@@ -371,6 +372,14 @@ export class Instance implements ObservableObject {
 		} finally {
 			that.status = ObjectStatus.idle;
 		}
+	}
+	public enumChildren(cb: (value: ObservableObject) => void) {
+		let that = this;
+		schemaUtils.enumCompositions(that._schema.relations, function (relationName, relation) {
+			let role = that._children[relationName];
+			if (role) role.enumChildren(cb);
+		});
+
 	}
 
 	public async validate(options?: { full: boolean }) {

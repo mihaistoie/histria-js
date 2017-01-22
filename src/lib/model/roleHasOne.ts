@@ -1,7 +1,8 @@
-import { ObservableObject } from './interfaces';
+import { ObservableObject, ObjectStatus } from './interfaces';
 import { Role } from './role';
 import { updateRoleRefs } from '../schema/schema-utils';
 import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
+
 
 
 export class HasOne<T extends ObservableObject> extends Role<T> {
@@ -134,8 +135,8 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
-        let isRestore = false;
         let that = this;
+        let isRestore = that._parent.status === ObjectStatus.restoring;
         let pmodel = that._parent.model();
         let childModel = pmodel[propertyName];
         if (childModel === null)
@@ -145,6 +146,13 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
             if (!isRestore)
                 updateRoleRefs(that._relation, childModel, pmodel, true);
 
+        }
+    }
+    public enumChildren(cb: (value: ObservableObject) => void) {
+        let that = this;
+        if (that._value) {
+            that._value.enumChildren(cb);
+            cb(that._value);
         }
     }
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {

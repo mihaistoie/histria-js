@@ -62,6 +62,13 @@ async function testLoad(): Promise<void> {
     let oi2 = await transaction.findOne<OrderItem>(OrderItem, { id: 2 });
     assert.equal(oi2.orderId, order2.id, 'item.orderId === order.id');
     assert.equal(children2[1], oi2, 'order.items[1] == oi');
+    let i = 0
+    order2.enumChildren(children => {
+        i++;
+    });
+    assert.equal(i, 3, 'Order has 3 children');
+
+
 
 
 }

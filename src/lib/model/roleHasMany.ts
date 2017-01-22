@@ -6,8 +6,8 @@ import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
         super(parent, propertyName, relation, model);
-        let isRestore = false;
         let that = this;
+        let isRestore = that._parent.status === ObjectStatus.restoring;
         if (!that._isNull && !that._isUndefined) {
             let pmodel = that._parent.model();
             that._items = new Array(model.length);
@@ -18,6 +18,13 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                     updateRoleRefs(that._relation, itemModel, pmodel, true);
             })
         }
+    }
+    public enumChildren(cb: (value: ObservableObject) => void) {
+        let that = this;
+        that._items && that._items.forEach(item => {
+            item.enumChildren(cb)
+            cb(item)
+        });
     }
     private async _afterRemoveItem(item: T, notifyRemove: boolean): Promise<void> {
         let that = this;

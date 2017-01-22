@@ -9,7 +9,7 @@ import { Engine } from './model/engine';
 import { test as test1 } from './model/rules/car-engine-rules';
 
 async function testCreate(): Promise<void> {
-    
+
     let transaction = new Transaction();
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
@@ -50,7 +50,7 @@ async function testCreate(): Promise<void> {
 async function testLoad(): Promise<void> {
     let transaction = new Transaction();
     let car1 = await transaction.create<Car>(Car);
-  
+
     let engine1 = await transaction.load<Engine>(Engine, { carId: car1.uuid });
     assert.equal(await car1.engine(), engine1, '(1) Owner of engine is car 1');
     assert.equal(await engine1.car(), car1, '(2) Owner of engine is car 1');
@@ -61,12 +61,21 @@ async function testLoad(): Promise<void> {
     assert.equal(await car2.engine(), engine2, '(2) Owner of engine 2 is car 2');
 
     let car3 = await transaction.load<Car>(Car, { id: 12, engine: { id: 10 } });
-     let engine3 = await car3.engine();
+    let engine3 = await car3.engine();
     assert.notEqual(engine3, null, 'Engine loaded');
     assert.equal(engine3.carId, car3.id, 'After load engine.carId === car.id');
     let engine4 = await transaction.findOne<Engine>(Engine, { id: 10 });
     assert.equal(engine3, engine4, 'Engine found');
-    
+
+    let i = 0
+    car3.enumChildren(children => {
+        i++;
+    });
+    assert.equal(i, 1, 'Car a child');
+
+
+
+
 
 }
 

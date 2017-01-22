@@ -74,12 +74,14 @@ export interface ObservableObject {
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
+    enumChildren(cb: (value: ObservableObject) => void)
 
     readonly parent: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;
     readonly uuid: string;
+    readonly status: ObjectStatus;
 }
 
 export interface ObservableArray {

@@ -51,6 +51,7 @@ export declare class Instance implements ObservableObject {
     getPropertyByName(propName: string, value?: any): any;
     setPropertyByName(propName: string, value?: any): Promise<any>;
     afterCreated(): Promise<void>;
+    enumChildren(cb: (value: ObservableObject) => void): void;
     validate(options?: {
         full: boolean;
     }): Promise<void>;

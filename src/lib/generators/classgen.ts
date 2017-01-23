@@ -28,7 +28,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         imports.push('import {');
         imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
         imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation,');
-        imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+        imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
         imports.push(_tab(1) + 'IntegerValue, NumberValue');
         imports.push('} from \'' + pathToLib + '\';');
 
@@ -65,13 +65,21 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
             let isReadOnly = schemaUtils.isReadOnly(propSchema);
             switch (stype) {
                 case JSONTYPES.string:
-                    let value1 = isReadOnly ? '' : 'value?: string'
-                    let value2 = isReadOnly ? '' : ', value';
                     code.push(_tab(1) + util.format('public get %s(): string {', propName));
                     code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propName));
                     code.push(_tab(1) + '}');
                     if (!isReadOnly) {
                         code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propName)));
+                        code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propName));
+                        code.push(_tab(1) + '}');
+                    }
+                    break;
+                case JSONTYPES.boolean:
+                    code.push(_tab(1) + util.format('public get %s(): boolean {', propName));
+                    code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propName));
+                    code.push(_tab(1) + '}');
+                    if (!isReadOnly) {
+                        code.push(_tab(1) + util.format('public set%s(value: boolean): Promise<boolean> {', _upperFirstLetter(propName)));
                         code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propName));
                         code.push(_tab(1) + '}');
                     }
@@ -215,6 +223,11 @@ function _genClassState(schema: any, className: string, baseClass: string, code:
             code.push(_tab(1) + '}');
         } else {
             switch (stype) {
+                case JSONTYPES.boolean:
+                    code.push(_tab(1) + util.format('public get %s(): BooleanState {', propName));
+                    code.push(_tab(2) + util.format('return this._states.%s;', propName));
+                    code.push(_tab(1) + '}');
+                    break;
                 case JSONTYPES.integer:
                     code.push(_tab(1) + util.format('public get %s(): IntegerState {', propName));
                     code.push(_tab(2) + util.format('return this._states.%s;', propName));

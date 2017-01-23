@@ -11,7 +11,7 @@ declare module 'histria-utils' {
     export { HasManyComposition, HasManyAggregation } from 'histria-utils/lib/model/roleHasMany';
     export { propChanged, addItem, rmvItem, setItems, init, title, loadRules, validate } from 'histria-utils/lib/model/rules';
     export { ErrorState } from 'histria-utils/lib/model/error-state';
-    export { State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
+    export { State, StringState, IdState, IntegerState, BooleanState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from 'histria-utils/lib/model/state';
     export { IntegerValue, NumberValue } from 'histria-utils/lib/model/number';
     export { fs } from 'histria-utils/lib/utils/promises';
     export { classGenerator } from 'histria-utils/lib/generators/classgen';
@@ -67,6 +67,7 @@ declare module 'histria-utils/lib/model/base-object' {
         getPropertyByName(propName: string, value?: any): any;
         setPropertyByName(propName: string, value?: any): Promise<any>;
         afterCreated(): Promise<void>;
+        enumChildren(cb: (value: ObservableObject) => void): void;
         validate(options?: {
             full: boolean;
         }): Promise<void>;
@@ -148,6 +149,7 @@ declare module 'histria-utils/lib/model/roleHasMany' {
     import { ObjectArray, BaseObjectArray } from 'histria-utils/lib/model/base-array';
     export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
         constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
+        enumChildren(cb: (value: ObservableObject) => void): void;
         remove(element: T | number): Promise<T>;
         add(item: T, index?: number): Promise<T>;
         set(items: T[]): Promise<void>;
@@ -196,6 +198,8 @@ declare module 'histria-utils/lib/model/state' {
         isHidden: boolean;
         isMandatory: boolean;
         isReadOnly: boolean;
+    }
+    export class BooleanState extends State {
     }
     export class IdState extends State {
     }
@@ -344,11 +348,13 @@ declare module 'histria-utils/lib/model/interfaces' {
         addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
         rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
         changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
+        enumChildren(cb: (value: ObservableObject) => void): any;
         readonly parent: ObservableObject;
         readonly propertyName: string;
         readonly context: UserContext;
         readonly transaction: TransactionContainer;
         readonly uuid: string;
+        readonly status: ObjectStatus;
     }
     export interface ObservableArray {
         propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;

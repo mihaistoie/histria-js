@@ -113,6 +113,9 @@ function validateProp(value: any, propName, propSchema: any, ctx: UserContext, e
         case JSONTYPES.id:
             //todo
             break;
+        case JSONTYPES.boolean:
+            //todo
+            break;
         case JSONTYPES.integer:
             _validateInteger(value, propSchema.title || propName, ctx, error, <IntegerState>state);
             break;

@@ -11,6 +11,8 @@ export declare class State {
     isMandatory: boolean;
     isReadOnly: boolean;
 }
+export declare class BooleanState extends State {
+}
 export declare class IdState extends State {
 }
 export declare class StringState extends State {

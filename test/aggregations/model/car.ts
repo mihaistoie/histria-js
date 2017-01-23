@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Driver } from './driver';

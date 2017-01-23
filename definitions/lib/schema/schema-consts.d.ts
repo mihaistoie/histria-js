@@ -1,6 +1,7 @@
 export declare const JSONTYPES: {
     string: string;
     integer: string;
+    boolean: string;
     number: string;
     object: string;
     array: string;

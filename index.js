@@ -28,6 +28,7 @@ exports.State = state_1.State;
 exports.StringState = state_1.StringState;
 exports.IdState = state_1.IdState;
 exports.IntegerState = state_1.IntegerState;
+exports.BooleanState = state_1.BooleanState;
 exports.EnumState = state_1.EnumState;
 exports.NumberState = state_1.NumberState;
 exports.DateState = state_1.DateState;

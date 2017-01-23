@@ -2,6 +2,7 @@ import { ObservableObject } from './interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
 export declare class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
+    enumChildren(cb: (value: ObservableObject) => void): void;
     private _afterRemoveItem(item, notifyRemove);
     private _afterAddItem(item, notifyAdd);
     remove(element: T | number): Promise<T>;

@@ -6,6 +6,10 @@
         "amount": {
             "type": "number",
             "default": 0
+        },
+        "loaded": {
+            "type": "boolean",
+            "default": false
         }
     },
     "relations": {

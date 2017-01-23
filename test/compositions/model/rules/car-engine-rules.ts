@@ -24,6 +24,4 @@ export class CarEngineRules {
 
 }
 
-
-
 export var test = 1;

@@ -1,7 +1,7 @@
 import {
 	Instance, InstanceState, InstanceErrors, ModelManager,
 	HasManyComposition, HasManyAggregation,
-	ErrorState, State, StringState, IdState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Order } from './order';
@@ -23,6 +23,12 @@ export class OrderItem extends Instance {
 	}
 	public get amount(): NumberValue {
 		return this._children.amount;
+	}
+	public get loaded(): boolean {
+		return this.getPropertyByName('loaded');
+	}
+	public setLoaded(value: boolean): Promise<boolean> {
+		return this.setPropertyByName('loaded', value);
 	}
 	public get id(): any {
 		return this._children.id.value;
@@ -51,6 +57,9 @@ export class OrderItemErrors extends InstanceErrors {
 	public get amount(): ErrorState {
 		return this._messages.amount;
 	}
+	public get loaded(): ErrorState {
+		return this._messages.loaded;
+	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -65,6 +74,9 @@ export class OrderItemErrors extends InstanceErrors {
 export class OrderItemState extends InstanceState {
 	public get amount(): NumberState {
 		return this._states.amount;
+	}
+	public get loaded(): BooleanState {
+		return this._states.loaded;
 	}
 	public get id(): IdState {
 		return this._states.id;
@@ -82,6 +94,10 @@ const
 			"amount": {
 				"type": "number",
 				"default": 0
+			},
+			"loaded": {
+				"type": "boolean",
+				"default": false
 			},
 			"id": {
 				"type": "integer",

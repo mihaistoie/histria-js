@@ -5,7 +5,7 @@ import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
 
 import { Order } from './model/order';
-import { OrderItem } from './model/orderItem';
+import { OrderItem } from './model/orderitem';
 import { test as test1 } from './model/rules/order-rules';
 
 async function testCreate(): Promise<void> {
@@ -55,11 +55,13 @@ async function testLoad(): Promise<void> {
     assert.equal(children.length, 2, '(1) Order has 2 items');
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [item1.uuid, item2.uuid].sort(), '(2) Order has 2 items');
     
-    let order2 = await transaction.load<Order>(Order, { id: 1, items: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    let order2 = await transaction.load<Order>(Order, { id: 101, items: [{ id: 1 }, { id: 2 }, { id: 3 }] });
     let children2 = await order2.items.toArray();
     
     assert.equal(children2.length, 3, 'Order has 3 items');
     let oi2 = await transaction.findOne<OrderItem>(OrderItem, { id: 2 });
+    
+
     assert.equal(oi2.orderId, order2.id, 'item.orderId === order.id');
     assert.equal(children2[1], oi2, 'order.items[1] == oi');
     let i = 0
@@ -68,6 +70,10 @@ async function testLoad(): Promise<void> {
     });
     assert.equal(i, 3, 'Order has 3 children');
 
+    assert.equal(children2[0].loaded, true, '(1)Init rule called');
+    assert.equal(children2[1].loaded, true, '(2) Init rule called');
+    assert.equal(children2[2].loaded, true, '(3)Init rule called');
+    
 
 
 
@@ -103,6 +109,7 @@ describe('Relation One to many, Composition', () => {
         }).catch((ex) => {
             done(ex);
         });
+        
     });
     it('One to many composition - create', function (done) {
         testCreate().then(function () {

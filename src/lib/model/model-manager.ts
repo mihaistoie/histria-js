@@ -38,11 +38,18 @@ export class ModelManager {
         that._mapByClass = that._mapByClass || new Map<any, any>();
         that._classes = that._classes || new Map<string, any>();
         let classConstructor = that._classes.get(nameSpace + '.' + className);
-        if (!classConstructor)
+        let found = true;
+        if (!classConstructor) {
             that._classes.set(nameSpace + '.' + className, constructor);
+            found = false;
 
+        }
         let ci = that._mapByClass.get(constructor);
         if (ci) return;
+        if (found) {
+           // return;
+            //throw util.format('Duplicated classname "%s".', nameSpace + '.' + className);
+        }
         ci = {
             name: constructor.name,
             factory: constructor,

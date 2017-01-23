@@ -25,6 +25,12 @@ export class OrderRules {
             total = total + await item.amount.value;
         await order.totalAmount.setValue(total);
     }
+    @init(OrderItem)
+    static async initOrderItem(oi: OrderItem, eventInfo: any): Promise<void> {
+        if (!oi.isNew) {
+            await oi.setLoaded(true);
+        }
+    }
 }
 
 

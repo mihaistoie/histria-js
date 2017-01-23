@@ -8,6 +8,7 @@ import { classGenerator } from '../../src/index';
 
 async function generateModel() {
     let pathToModel = path.join(__dirname, 'model', 'schemas');
+    //await classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../src/index');
     await classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../src/index');
 }
 

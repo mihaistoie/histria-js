@@ -40,6 +40,7 @@ export class Transaction implements TransactionContainer {
         let pi = propagate && args && args.length ? 0 : -1;
 
         let list = that._subscribers.get(eventType);
+
         if (list) {
             while (ci) {
                 for (let item of list)
@@ -87,7 +88,14 @@ export class Transaction implements TransactionContainer {
         data = data || {};
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
         that._addInstance(instance, classOfInstance);
-        await instance.afterCreated();
+        let instances = [];
+        instance.enumChildren((child) => {
+            instances.push(child);
+        });
+        instances.push(instance);
+        for (let inst of instances) {
+            await inst.afterCreated();
+        }
         return instance;
     }
     
@@ -96,7 +104,7 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
         that._addInstance(instance, classOfInstance);
-        let instances = []
+        let instances = [];
         instance.enumChildren((child) => {
             instances.push(child);
         });

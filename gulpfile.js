@@ -12,11 +12,17 @@ var shell = require('gulp-shell');
 gulp.task('clean', function () {
     return del([
         'lib/',
-        'tmptest/',
         './src/**/*.js',
-        './test/**/*.js',
         './src/**/*.d.ts',
         './index.js'
+    ]);
+
+});
+
+gulp.task('clean-tests', function () {
+    return del([
+        './tmptest/',
+        './test/**/*.js',
     ]);
 
 });
@@ -39,6 +45,14 @@ gulp.task('ts', ['clean'], function () {
     ]);
 
 });
+
+gulp.task('tests', ['clean-tests'], function () {
+    var tsProject = ts.createProject(path.resolve('./tsconfig.json'));
+    var tsResult = gulp.src(path.resolve('./test/**/*.ts')).pipe(tsProject());
+    tsResult.js.pipe(gulp.dest(path.resolve('./tmptest')));
+
+});
+
 
 gulp.task('build', function (done) {
     runSequence('ts', 'definition-bundle', done);

@@ -59,7 +59,6 @@ export function validate(targetClass: any, ...properties: string[]) {
 
 //decorator for init
 export function init(targetClass: any) {
-    let mm = new ModelManager();
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = new ModelManager();
         mm.addRule(targetClass, EventType.init, target[propertyKey]);

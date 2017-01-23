@@ -20,6 +20,7 @@ export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 }
 export declare class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
+    enumChildren(cb: (value: ObservableObject) => void): void;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }

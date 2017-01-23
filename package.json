@@ -33,8 +33,12 @@
   },
   "scripts": {
     "gen": "mocha -r ts-node/register test/**/*.gentest.ts",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "mocha --compilers ts:ts-node/register test/**/*.test.ts",
     "compositions": "mocha -r ts-node/register test/compositions/*.test.ts",
-    "aggregations": "mocha -r ts-node/register test/aggregations/*.test.ts"
+    "aggregations": "mocha -r ts-node/register test/aggregations/*.test.ts",
+    "latest": "mocha -r ts-node/register test/compositions/compositions-many.test.ts",
+    "testlatest": "node_modules/.bin/mocha --timeout 30000 tmptest/compositions/compositions-many.test.js"
+    
   }
 }
+

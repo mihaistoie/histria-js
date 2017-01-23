@@ -153,14 +153,10 @@ export class Instance implements ObservableObject {
 	protected createStates() { }
 
 	public get status(): ObjectStatus {
-		let that = this;
-		let root = <Instance>that.getRoot();
-		return root._status;
+		return this._status;
 	}
 	public set status(value: ObjectStatus) {
-		let that = this;
-		let root = <Instance>that.getRoot();
-		root._status = value;
+		this._status = value;
 	}
 
 

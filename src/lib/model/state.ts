@@ -68,6 +68,10 @@ export class State {
 
 }
 
+
+export class BooleanState extends State {
+
+}
 export class IdState extends State {
 
 }

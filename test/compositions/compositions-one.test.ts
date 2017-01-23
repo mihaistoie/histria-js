@@ -74,11 +74,6 @@ async function testLoad(): Promise<void> {
         i++;
     });
     assert.equal(i, 1, 'Car a child');
-
-
-
-
-
 }
 
 

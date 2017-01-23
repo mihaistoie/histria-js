@@ -54,13 +54,13 @@ async function testLoad(): Promise<void> {
     let children = await order.items.toArray();
     assert.equal(children.length, 2, '(1) Order has 2 items');
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [item1.uuid, item2.uuid].sort(), '(2) Order has 2 items');
-    
-    let order2 = await transaction.load<Order>(Order, { id: 101, items: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+
+    let order2 = await transaction.load<Order>(Order, { id: 101, items: [{ id: 1, amount: 0 }, { id: 2, amount: 0 }, { id: 3, amount: 0 }] });
     let children2 = await order2.items.toArray();
-    
+
     assert.equal(children2.length, 3, 'Order has 3 items');
     let oi2 = await transaction.findOne<OrderItem>(OrderItem, { id: 2 });
-    
+
 
     assert.equal(oi2.orderId, order2.id, 'item.orderId === order.id');
     assert.equal(children2[1], oi2, 'order.items[1] == oi');
@@ -73,8 +73,18 @@ async function testLoad(): Promise<void> {
     assert.equal(children2[0].loaded, true, '(1)Init rule called');
     assert.equal(children2[1].loaded, true, '(2) Init rule called');
     assert.equal(children2[2].loaded, true, '(3)Init rule called');
-    
 
+
+}
+
+
+async function testRestore(): Promise<void> {
+    let transaction1 = new Transaction();
+   let order1 = await transaction1.load<Order>(Order, { id: 101, items: [{ id: 1, amount: 0 }, { id: 2, amount: 0 }, { id: 3, amount: 0 }] });
+    let saved = JSON.parse(JSON.stringify(order1.model()));
+
+    let transaction2 = new Transaction();
+    let order2 = await transaction1.restore<Order>(Order, saved);
 
 
 }
@@ -109,7 +119,7 @@ describe('Relation One to many, Composition', () => {
         }).catch((ex) => {
             done(ex);
         });
-        
+
     });
     it('One to many composition - create', function (done) {
         testCreate().then(function () {
@@ -138,6 +148,16 @@ describe('Relation One to many, Composition', () => {
 
 
     });
+
+    it('One to one Many composition - restore', function (done) {
+        testRestore().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+
+    });
+
 
     it('One to one Many composition - states errors', function (done) {
         done();

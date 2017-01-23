@@ -4,11 +4,6 @@ export class State {
     protected _propertyName: string;
     protected _stateModel: any;
     protected init() {
-        let that = this;
-        that._stateModel.isDisabled = that._stateModel.isDisabled || false;
-        that._stateModel.isHidden = that._stateModel.isHidden || false;
-        that._stateModel.isMandatory = that._stateModel.isMandatory || false;
-        that._stateModel.isReadOnly = that._stateModel.isReadOnly || false;
     }
 
     constructor(parent: ObservableObject, propertyName: string) {
@@ -26,41 +21,45 @@ export class State {
 
     }
     public get isDisabled(): boolean {
-        return this._stateModel.isDisabled;
+        return this._stateModel.isDisabled || false;
     }
     public set isDisabled(value: boolean) {
         let that = this;
-        if (value !== that._stateModel.isDisabled) {
+        let oldValue = that._stateModel.isDisabled || false;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.isDisabled', value, that._stateModel.isDisabled);
             that._stateModel.isDisabled = value;
         }
     }
     public get isHidden(): boolean {
-        return this._stateModel.isHidden;
+        return this._stateModel.isHidden || false;
     }
     public set isHidden(value: boolean) {
         let that = this;
-        if (value !== that._stateModel.isHidden) {
+        let oldValue = that._stateModel.isHidden || false;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.isHidden', value, that._stateModel.isHidden);
             that._stateModel.isHidden = value;
         }
     }
     public get isMandatory(): boolean {
-        return this._stateModel.isMandatory;
+        return this._stateModel.isMandatory || false;
     }
     public set isMandatory(value: boolean) {
         let that = this;
-        if (value !== that._stateModel.isMandatory) {
+        let oldValue = that._stateModel.isMandatory || false;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.isMandatory', value, that._stateModel.isMandatory);
             that._stateModel.isMandatory = value;
         }
     }
     public get isReadOnly(): boolean {
-        return this._stateModel.isReadOnly;
+        return this._stateModel.isReadOnly || false;
     }
     public set isReadOnly(value: boolean) {
         let that = this;
-        if (value !== that._stateModel.isReadOnly) {
+        let oldValue = that._stateModel.isReadOnly || false;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.isReadOnly', value, that._stateModel.isReadOnly);
             that._stateModel.isReadOnly = value;
         }
@@ -77,29 +76,24 @@ export class IdState extends State {
 }
 
 export class StringState extends State {
-    protected init() {
-        super.init();
-        let that = this;
-        that._stateModel.maxLength = that._stateModel.maxLength || 0;
-        that._stateModel.minLength = that._stateModel.minLength || 0;
-
-    }
     public get maxLength(): number {
-        return this._stateModel.maxLength;
+        return this._stateModel.maxLength || 0;
     }
     public set maxLength(value: number) {
         let that = this;
-        if (value !== that._stateModel.maxLength) {
+        let oldvalue = that._stateModel.maxLength || 0;
+        if (value !== oldvalue) {
             that._parent.stateChanged(that._propertyName + '.maxLength', value, that._stateModel.maxLength)
             that._stateModel.maxLength = value;
         }
     }
     public get minLength(): number {
-        return this._stateModel.minLength;
+        return this._stateModel.minLength || 0;
     }
     public set minLength(value: number) {
         let that = this;
-        if (value !== that._stateModel.minLength) {
+        let oldvalue = that._stateModel.minLength || 0;
+        if (value !== oldvalue) {
             that._parent.stateChanged(that._propertyName + '.minLength', value, that._stateModel.minLength)
             that._stateModel.minLength = value;
         }
@@ -109,32 +103,26 @@ export class StringState extends State {
 
 
 export class NumberBaseState extends State {
-    protected init() {
-        super.init();
-        let that = this;
-        that._stateModel.exclusiveMaximum = that._stateModel.exclusiveMaximum;
-        that._stateModel.exclusiveMinimum = that._stateModel.exclusiveMinimum;
-        that._stateModel.minimum = that._stateModel.minimum;
-        that._stateModel.maximum = that._stateModel.maximum;
-    }
 
     public get exclusiveMaximum(): boolean {
-        return this._stateModel.exclusiveMaximum;
+        return this._stateModel.exclusiveMaximum || false;
     }
     public set exclusiveMaximum(value: boolean) {
         let that = this;
-        if (value !== that._stateModel.exclusiveMaximum) {
+        let oldValue = that._stateModel.exclusiveMaximum || false;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.exclusiveMaximum', value, that._stateModel.exclusiveMaximum)
             that._stateModel.exclusiveMaximum = value;
         }
     }
 
     public get exclusiveMinimum(): boolean {
-        return this._stateModel.exclusiveMinimum;
+        return this._stateModel.exclusiveMinimum || false;
     }
     public set exclusiveMinimum(value: boolean) {
         let that = this;
-        if (value !== that._stateModel.exclusiveMinimum) {
+        let oldValue = that._stateModel.exclusiveMinimum || false;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.exclusiveMinimum', value, that._stateModel.exclusiveMinimum)
             that._stateModel.exclusiveMinimum = value;
         }
@@ -150,7 +138,7 @@ export class NumberBaseState extends State {
             that._stateModel.minimum = value;
         }
     }
-    
+
     public get maximum(): number {
         return this._stateModel.maximum;
     }
@@ -165,17 +153,13 @@ export class NumberBaseState extends State {
 
 
 export class NumberState extends NumberBaseState {
-    protected init() {
-        super.init();
-        let that = this;
-        that._stateModel.decimals = that._stateModel.decimals || 0;
-    }
     public get decimals(): number {
-        return this._stateModel.decimals;
+        return this._stateModel.decimals || 0;
     }
     public set decimals(value: number) {
         let that = this;
-        if (value !== that._stateModel.decimals) {
+        let oldValue = that._stateModel.decimals || 0;
+        if (value !== oldValue) {
             that._parent.stateChanged(that._propertyName + '.decimals', value, that._stateModel.decimals)
             that._stateModel.decimals = value;
         }
@@ -183,12 +167,6 @@ export class NumberState extends NumberBaseState {
 }
 
 export class IntegerState extends NumberBaseState {
-    protected init() {
-        super.init();
-        let that = this;
-        that._stateModel.decimals = that._stateModel.decimals || 0;
-    }
-    
 }
 
 export class DateState extends State {

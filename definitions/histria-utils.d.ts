@@ -204,23 +204,19 @@ declare module 'histria-utils/lib/model/state' {
     export class IdState extends State {
     }
     export class StringState extends State {
-        protected init(): void;
         maxLength: number;
         minLength: number;
     }
     export class NumberBaseState extends State {
-        protected init(): void;
         exclusiveMaximum: boolean;
         exclusiveMinimum: boolean;
         minimum: number;
         maximum: number;
     }
     export class NumberState extends NumberBaseState {
-        protected init(): void;
         decimals: number;
     }
     export class IntegerState extends NumberBaseState {
-        protected init(): void;
     }
     export class DateState extends State {
     }

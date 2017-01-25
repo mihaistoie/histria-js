@@ -69,7 +69,7 @@ export class Transaction implements TransactionContainer {
     public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
         let that = this;
         let mm = new ModelManager();
-        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: true });
+        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: false });
         that._addInstance(instance, classOfInstance);
         let instances = []
         instance.enumChildren((child) => {

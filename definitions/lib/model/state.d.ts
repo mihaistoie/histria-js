@@ -16,23 +16,19 @@ export declare class BooleanState extends State {
 export declare class IdState extends State {
 }
 export declare class StringState extends State {
-    protected init(): void;
     maxLength: number;
     minLength: number;
 }
 export declare class NumberBaseState extends State {
-    protected init(): void;
     exclusiveMaximum: boolean;
     exclusiveMinimum: boolean;
     minimum: number;
     maximum: number;
 }
 export declare class NumberState extends NumberBaseState {
-    protected init(): void;
     decimals: number;
 }
 export declare class IntegerState extends NumberBaseState {
-    protected init(): void;
 }
 export declare class DateState extends State {
 }

@@ -137,6 +137,7 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         super(parent, propertyName, relation);
         let that = this;
         let isRestore = that._parent.status === ObjectStatus.restoring;
+        
         let pmodel = that._parent.model();
         let childModel = pmodel[propertyName];
         if (childModel === null)

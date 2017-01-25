@@ -80,12 +80,25 @@ async function testLoad(): Promise<void> {
 
 async function testRestore(): Promise<void> {
     let transaction1 = new Transaction();
-   let order1 = await transaction1.load<Order>(Order, { id: 101, items: [{ id: 1, amount: 0 }, { id: 2, amount: 0 }, { id: 3, amount: 0 }] });
+    let order1 = await transaction1.load<Order>(Order, { id: 101, totalAmount: 0, items: [{ id: 1, amount: 0 }, { id: 2, amount: 0 }, { id: 3, amount: 0 }] });
+    let children1 = await order1.items.toArray();
+    assert.equal(children1[1].loaded, true, '(1) Loaded = true Init rule called');
+    await children1[1].setLoaded(false);
+    assert.equal(children1[1].loaded, false, '(1) Loaded = false');
+    
+    await children1[2].amount.setValue(10);
+    assert.equal(order1.totalAmount.value, 10, '(1) Rule called');
+
     let saved = JSON.parse(JSON.stringify(order1.model()));
 
     let transaction2 = new Transaction();
     let order2 = await transaction1.restore<Order>(Order, saved);
+    let children2 = await order2.items.toArray();
 
+    assert.equal(children2.length, 3, 'Order has 3 items');
+    assert.equal(children2[1].loaded, false, '(2) Loaded = false');
+    await children2[0].amount.setValue(10);
+    assert.equal(order2.totalAmount.value, 20, '(2) Rule called');
 
 }
 

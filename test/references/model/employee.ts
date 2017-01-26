@@ -5,7 +5,7 @@ import {
 	IntegerValue, NumberValue
 } from '../../../src/index';
 import { Department } from './department';
-import { EmployeeAddress } from './employeeaddress';
+import { EmployeeAddress } from './employee-address';
 
 
 export class Employee extends Instance {

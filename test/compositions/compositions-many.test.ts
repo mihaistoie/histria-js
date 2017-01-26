@@ -5,7 +5,7 @@ import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
 
 import { Order } from './model/order';
-import { OrderItem } from './model/orderitem';
+import { OrderItem } from './model/order-item';
 import { test as test1 } from './model/rules/order-rules';
 
 async function testCreate(): Promise<void> {

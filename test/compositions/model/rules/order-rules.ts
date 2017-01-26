@@ -1,5 +1,5 @@
 import { Order } from '../order';
-import { OrderItem } from '../orderitem';
+import { OrderItem } from '../order-item';
 import { propChanged, addItem, rmvItem, setItems, init, title, validate } from '../../../../src/index';
 
 

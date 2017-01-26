@@ -4,7 +4,7 @@ import {
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
 } from '../../../src/index';
-import { OrderItem } from './orderitem';
+import { OrderItem } from './order-item';
 
 
 export class Order extends Instance {

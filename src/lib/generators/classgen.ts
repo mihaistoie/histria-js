@@ -9,7 +9,8 @@ import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from 'histria-utils';
 
 async function saveCode(codeByClass: any, dstFolder: string) {
     let writers = Object.keys(codeByClass).map(name => {
-        return fsPromises.writeFile(path.join(dstFolder, name + '.ts'), codeByClass[name].code.join('\n'));
+        let item = codeByClass[name];
+        return fsPromises.writeFile(path.join(dstFolder, item.fileName + '.ts'), item.code.join('\n'));
     });
     await Promise.all(writers);
 }
@@ -151,7 +152,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 
         schema.relations && Object.keys(schema.relations).forEach(relName => {
             let relation = schema.relations[relName];
-            imports.push(util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), relation.model.toLowerCase()));
+            imports.push(util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), _extractFileName(relation.model)));
         });
         imports.push('');
 
@@ -168,6 +169,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 
         code = imports.concat(code);
         codeByClass[schema.name.toLowerCase()] = {
+            fileName: _extractFileName(schema.name),
             code: code,
             depends: []
         }
@@ -285,4 +287,16 @@ function _tab(ident: number) {
 }
 function _upperFirstLetter(value: string): string {
     return value.substr(0, 1).toUpperCase() + value.substring(1);
+}
+
+function _extractFileName(value: string): string {
+    let lc = value.toLowerCase();
+    let res = [lc.charAt(0)];
+    for (let i = 1; i < value.length; i++) {
+        if (value.charAt(i) !== lc.charAt(i))
+            res.push('-');
+        res.push(lc.charAt(i));
+
+    }
+    return res.join('');
 }

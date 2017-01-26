@@ -1,7 +1,7 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { HasOneRef, HasOneComposition, HasOneAggregation } from './relations/roleHasOne';
-import { CompositionBelongsTo, AggregationBelongsTo } from './relations/roleBelongsTo';
-import { HasManyComposition, HasManyAggregation } from './relations/roleHasMany';
+import { HasOneRef, HasOneComposition, HasOneAggregation } from './relations/role-has-one';
+import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
+import { HasManyComposition, HasManyAggregation } from './relations/role-has-many';
 
 import { ApplicationError, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
 import { ModelManager } from './model-manager';

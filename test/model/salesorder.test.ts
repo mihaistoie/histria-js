@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { SalesOrder } from './salesorder';
+import { SalesOrder } from './sales-order';
 import * as sorules from './rules/salesorder-rules';
 
 
@@ -49,7 +49,7 @@ async function testSales(): Promise<void> {
     assert.equal(na, 172.69, 'Decimals test');
 
     so.netAmount.setValue(172.68);
-    vat =so.vat.value;
+    vat = so.vat.value;
     assert.equal(vat, 33.33, 'Decimals test');
 
     await so.netAmount.setDecimals(1);

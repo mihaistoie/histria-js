@@ -1,5 +1,5 @@
-import { ObservableObject } from './interfaces';
-import { ModelManager } from './model-manager';
+import { ObservableObject } from '../interfaces';
+import { ModelManager } from '../model-manager';
 
 export class Role<T extends ObservableObject> {
     protected _value: T;

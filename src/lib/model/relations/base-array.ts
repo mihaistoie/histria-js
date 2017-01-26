@@ -1,5 +1,5 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { ModelManager } from './model-manager';
+import { ModelManager } from '../model-manager';
 
 export class BaseObjectArray<T extends ObservableObject> {
     protected _parent: ObservableObject;
@@ -53,10 +53,6 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
         return this._parent.getRoot();
 
 
-    }
-    public propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
-    }
-    public stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
     }
     public destroy() {
         let that = this;

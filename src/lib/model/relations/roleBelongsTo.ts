@@ -1,4 +1,4 @@
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 import { Role } from './role';
 import { AGGREGATION_KIND, DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 import { updateRoleRefs } from '../schema/schema-utils';

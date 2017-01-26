@@ -129,9 +129,7 @@ export class Instance implements ObservableObject {
 	}
 
 
-	public propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
-	}
-	public stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
+	public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
 	}
 	protected init() {
 	}

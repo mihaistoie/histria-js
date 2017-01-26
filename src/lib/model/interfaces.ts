@@ -59,8 +59,7 @@ export interface TransactionContainer {
 
 
 export interface ObservableObject {
-    propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
-    stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
+    changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     model(propName?: string): any;
@@ -75,7 +74,6 @@ export interface ObservableObject {
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
     enumChildren(cb: (value: ObservableObject) => void)
-
     readonly parent: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;
@@ -85,8 +83,6 @@ export interface ObservableObject {
 }
 
 export interface ObservableArray {
-    propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
-    stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     getRoot(): ObservableObject;
     destroy();
 }

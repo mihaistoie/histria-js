@@ -1,4 +1,4 @@
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
 export declare class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);

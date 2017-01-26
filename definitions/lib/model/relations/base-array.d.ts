@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo } from './interfaces';
+import { ObservableObject, ObservableArray } from '../interfaces';
 export declare class BaseObjectArray<T extends ObservableObject> {
     protected _parent: ObservableObject;
     protected _items: T[];
@@ -17,8 +17,6 @@ export declare class ObjectArray<T extends ObservableObject> extends BaseObjectA
     protected _isUndefined: boolean;
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
     getRoot(): ObservableObject;
-    propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
-    stateChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     destroy(): void;
     protected destroyItems(): void;
     protected setValue(value?: T[]): void;

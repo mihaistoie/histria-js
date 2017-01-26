@@ -41,8 +41,7 @@ export interface TransactionContainer {
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
 }
 export interface ObservableObject {
-    propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
-    stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
+    changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     model(propName?: string): any;
@@ -68,8 +67,6 @@ export interface ObservableObject {
     readonly status: ObjectStatus;
 }
 export interface ObservableArray {
-    propertyChanged(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
-    stateChanged(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     getRoot(): ObservableObject;
     destroy(): any;
 }

@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from '../interfaces';
 import { ModelManager } from '../model-manager';
 
 export class BaseObjectArray<T extends ObservableObject> {

@@ -1,5 +1,5 @@
 import { UserContext } from '../model/interfaces';
-import { locale } from '../locale/locale';
+import { locale } from 'histria-utils';
 
 export class TranContext implements UserContext {
     private _lang: string;

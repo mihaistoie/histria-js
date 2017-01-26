@@ -4,10 +4,7 @@ import * as util from 'util';
 import { State, EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
 import { ErrorState } from './error-state';
 import { IntegerValue, NumberValue } from './number';
-import * as schemaUtils from '../schema/schema-utils';
-import { JSONTYPES, JSONFORMATS } from '../schema/schema-consts';
-import { messages } from '../locale/messages';
-import { format } from '../utils/helper';
+import { JSONTYPES, JSONFORMATS, schemaUtils, messages, helper } from 'histria-utils';
 import { UserContext, EventInfo } from './interfaces';
 
 
@@ -33,22 +30,22 @@ function _validateInteger(value: number, propTitle: string, ctx: UserContext, er
     let res = true, msg = messages(ctx.lang);
     if (state.exclusiveMinimum) {
         if (state.minimum !== undefined && value <= state.minimum) {
-            error.error = format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, 0));
+            error.error = helper.format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, 0));
         }
     } else {
         if (state.minimum != undefined && value < state.minimum) {
-            error.error = format(msg.schema.minNumber, propTitle, ctx.formatNumber(state.minimum, 0));
+            error.error = helper.format(msg.schema.minNumber, propTitle, ctx.formatNumber(state.minimum, 0));
             res = false;
         }
     }
     if (state.exclusiveMaximum) {
         if (state.maximum !== undefined && value >= state.maximum) {
-            error.error = format(msg.schema.maxNumberExclusive, propTitle, ctx.formatNumber(state.maximum, 0));
+            error.error = helper.format(msg.schema.maxNumberExclusive, propTitle, ctx.formatNumber(state.maximum, 0));
             res = false;
         }
     } else {
         if (state.maximum !== undefined && value > state.maximum) {
-            error.error = format(msg.schema.maxNumber, propTitle, ctx.formatNumber(state.maximum, 0));
+            error.error = helper.format(msg.schema.maxNumber, propTitle, ctx.formatNumber(state.maximum, 0));
             res = false;
         }
 
@@ -60,22 +57,22 @@ function _validateNumber(value: number, propTitle: string, ctx: UserContext, err
     let res = true, msg = messages(ctx.lang);
     if (state.exclusiveMinimum) {
         if (state.minimum !== undefined && value <= state.minimum) {
-            error.error = format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, state.decimals));
+            error.error = helper.format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, state.decimals));
         }
     } else {
         if (state.minimum !== undefined && value < state.minimum) {
-            error.error = format(msg.schema.minNumber, propTitle, ctx.formatNumber(state.minimum, state.decimals));
+            error.error = helper.format(msg.schema.minNumber, propTitle, ctx.formatNumber(state.minimum, state.decimals));
             res = false;
         }
     }
     if (state.exclusiveMaximum) {
         if (state.maximum !== undefined && value >= state.maximum) {
-            error.error = format(msg.schema.maxNumberExclusive, propTitle, ctx.formatNumber(state.maximum, state.decimals));
+            error.error = helper.format(msg.schema.maxNumberExclusive, propTitle, ctx.formatNumber(state.maximum, state.decimals));
             res = false;
         }
     } else {
         if (state.maximum !== undefined && value > state.maximum) {
-            error.error = format(msg.schema.maxNumber, propTitle, ctx.formatNumber(state.maximum, state.decimals));
+            error.error = helper.format(msg.schema.maxNumber, propTitle, ctx.formatNumber(state.maximum, state.decimals));
             res = false;
         }
 
@@ -86,7 +83,7 @@ function _validateNumber(value: number, propTitle: string, ctx: UserContext, err
 function _validateString(value: string, schema: any, propTitle: string, ctx: UserContext, error: ErrorState, state: StringState): boolean {
     let res = true, msg = messages(ctx.lang);
     if (state.isMandatory && !value && (value === '' || value === undefined || value === null)) {
-        error.error = format(msg.schema.required, propTitle);
+        error.error = helper.format(msg.schema.required, propTitle);
         res = false;
     }
     if (schema.format) {

@@ -1,6 +1,6 @@
 {
-  "name": "histria-utils",
-  "description": "Node Tools",
+  "name": "histria-js",
+  "description": "Histria Js",
   "version": "1.0.0",
   "author": "Mihai STOIE <mihaistoie@gmail.com>",
   "license": "MIT",
@@ -10,10 +10,7 @@
     "@types/node": "latest",
     "@types/uuid": "latest",
     "del": "latest",
-    "dts-bundle": "latest",
     "gulp": "latest",
-    "gulp-shell": "latest",
-    "gulp-sourcemaps": "latest",
     "gulp-typescript": "latest",
     "merge2": "latest",
     "mocha": "latest",
@@ -22,21 +19,19 @@
     "typescript": "2.x.x"
   },
   "dependencies": {
-    "uuid": "latest"
-  },
-  "typescript": {
-    "definition": "definitions/histria-utils.d.ts"
+    "uuid": "latest",
+    "histria-utils": "https://github.com/mihaistoie/histria-utils.git#master"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mihaistoie/histria-utils"
+    "url": "https://github.com/mihaistoie/histria-cli"
   },
+  "types": "/definitions/index.d.ts",
   "scripts": {
-    "gen": "mocha --compilers ts:ts-node/register test/**/*.gentest.ts",
     "test": "mocha --compilers ts:ts-node/register test/**/*.test.ts",
+    "gen": "mocha --compilers ts:ts-node/register test/**/*.gentest.ts",
     "compositions": "mocha --compilers ts:ts-node/register test/compositions/*.test.ts",
     "aggregations": "mocha --compilers ts:ts-node/register test/aggregations/*.test.ts",
-    "latest": "mocha --compilers ts:ts-node/register test/compositions/compositions-many.test.ts",
-    "testlatest": "node_modules/.bin/mocha --timeout 30000 tmptest/compositions/compositions-many.test.js"
+    "latest": "mocha --compilers ts:ts-node/register test/compositions/compositions-many.test.ts"
   }
 }

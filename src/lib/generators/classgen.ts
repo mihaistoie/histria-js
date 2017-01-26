@@ -2,14 +2,14 @@ import * as util from 'util';
 import * as path from 'path';
 
 
-import * as promises from '../utils/promises';
-import * as schemaUtils from '../schema/schema-utils';
-import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from '../schema/schema-consts';
+import { fs as fsPromises } from 'histria-utils';
+import { schemaUtils } from 'histria-utils';
+import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from 'histria-utils';
 
 
 async function saveCode(codeByClass: any, dstFolder: string) {
     let writers = Object.keys(codeByClass).map(name => {
-        return promises.fs.writeFile(path.join(dstFolder, name + '.ts'), codeByClass[name].code.join('\n'));
+        return fsPromises.writeFile(path.join(dstFolder, name + '.ts'), codeByClass[name].code.join('\n'));
     });
     await Promise.all(writers);
 }

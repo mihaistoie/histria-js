@@ -1,6 +1,5 @@
 import { Instance } from './base-object';
-import { ApplicationError } from '../utils/errors';
-import { messages } from '../locale/messages';
+import { ApplicationError, messages } from 'histria-utils';
 
 export class IdValue {
     protected _parent: Instance;

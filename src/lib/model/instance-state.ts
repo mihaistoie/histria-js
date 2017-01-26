@@ -1,8 +1,6 @@
 import { EnumState, IdState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
 import { ObservableObject } from './interfaces';
-import { JSONTYPES } from '../schema/schema-consts';
-import * as schemaUtils from '../schema/schema-utils';
-import * as helper from '../utils/helper';
+import { JSONTYPES, schemaUtils, helper } from 'histria-utils';
 
 export class InstanceState {
     protected _states: any;
@@ -44,18 +42,18 @@ export class InstanceState {
 
         });
         schema && schema.relations && Object.keys(schema.relations).forEach(propName => {
-/*
-                    case JSONTYPES.array:
-                        break;
-                    case JSONTYPES.object:
-                        break;
-                    case JSONTYPES.refobject:
-                        that._states[propName] = new RefObjectState(that._parent, propName);
-                        break;
-                    case JSONTYPES.refarray:
-                        that._states[propName] = new RefArrayState(that._parent, propName);
-                        break;
- */           
+            /*
+                                case JSONTYPES.array:
+                                    break;
+                                case JSONTYPES.object:
+                                    break;
+                                case JSONTYPES.refobject:
+                                    that._states[propName] = new RefObjectState(that._parent, propName);
+                                    break;
+                                case JSONTYPES.refarray:
+                                    that._states[propName] = new RefArrayState(that._parent, propName);
+                                    break;
+             */
         });
 
     }

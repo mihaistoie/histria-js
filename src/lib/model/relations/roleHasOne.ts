@@ -1,7 +1,6 @@
-import { ObservableObject, ObjectStatus } from './interfaces';
+import { ObservableObject, ObjectStatus } from '../interfaces';
 import { Role } from './role';
-import { updateRoleRefs } from '../schema/schema-utils';
-import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
+import { schemaUtils, DEFAULT_PARENT_NAME } from 'histria-utils';
 
 
 
@@ -70,7 +69,7 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
             that._value = value;
             let lmodel = that._parent.model();
             let fmodel = that._value ? that._value.model() : null;
-            updateRoleRefs(that._relation, lmodel, fmodel, false);
+            schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
         });
         return that._value;
     }
@@ -91,11 +90,11 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
                 let fmodel = that._parent.model(), lmodel;
                 if (oldValue) {
                     lmodel = oldValue.model();
-                    updateRoleRefs(that._relation, lmodel, null, true);
+                    schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
                 }
                 if (that._value) {
                     lmodel = that._value.model();
-                    updateRoleRefs(that._relation, lmodel, fmodel, true);
+                    schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, true);
                 }
             }
         });
@@ -145,7 +144,7 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         else if (childModel) {
             that._value = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, childModel, isRestore);
             if (!isRestore)
-                updateRoleRefs(that._relation, childModel, pmodel, true);
+                schemaUtils.updateRoleRefs(that._relation, childModel, pmodel, true);
 
         }
     }

@@ -1,7 +1,7 @@
 import { ObservableObject } from '../interfaces';
 import { Role } from './role';
-import { AGGREGATION_KIND, DEFAULT_PARENT_NAME } from '../schema/schema-consts';
-import { updateRoleRefs } from '../schema/schema-utils';
+import { AGGREGATION_KIND, DEFAULT_PARENT_NAME } from 'histria-utils';
+import { schemaUtils } from 'histria-utils';
 
 
 
@@ -59,7 +59,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         let that = this;
         await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
             that.internalSetValue(newValue);
-            updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
+            schemaUtils.updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
         });
     }
     protected async _setValue(value: T): Promise<T> {
@@ -118,7 +118,7 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
         }
         if (!changeParentCalled) {
             let p: any = that._parent;
-            updateRoleRefs(that._relation, that._parent.model(), newParent ? newParent.model() : null, false);
+            schemaUtils.updateRoleRefs(that._relation, that._parent.model(), newParent ? newParent.model() : null, false);
             // parent of p is newParent
             await p.changeParent(newParent, that._relation.invRel, that._propertyName || DEFAULT_PARENT_NAME, true);
         }

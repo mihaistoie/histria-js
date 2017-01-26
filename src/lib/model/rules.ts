@@ -1,7 +1,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as promises from '../utils/promises';
+import { fs as fsPromises } from 'histria-utils';
 import { ModelManager } from './model-manager';
 import { EventType } from './interfaces';
 
@@ -73,12 +73,12 @@ export function init(targetClass: any) {
 var module_holder = {};
 // load rules from folder
 export async function loadRules(folder: string): Promise<void> {
-    let files = await promises.fs.readdir(folder);
+    let files = await fsPromises.readdir(folder);
     let stats: fs.Stats[];
     let folders = [];
-    stats = await Promise.all(files.map((fileName) => {
+    stats = await Promise.all<fs.Stats>(files.map((fileName) => {
         let fn = path.join(folder, fileName);
-        return promises.fs.lstat(fn);
+        return fsPromises.lstat(fn);
     }));
 
     stats.forEach((stat, index) => {

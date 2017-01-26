@@ -2,7 +2,7 @@ import * as util from 'util';
 import * as uuid from 'uuid';
 import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
 import { validateAfterPropChanged } from '../model/validation';
-import { findInMap } from '../db/mongo-filter';
+import { findInMap } from 'histria-utils';
 
 import { TranContext } from './user-context';
 import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from '../model/interfaces';
@@ -98,7 +98,7 @@ export class Transaction implements TransactionContainer {
         }
         return instance;
     }
-    
+
     public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
         let mm = new ModelManager();
         let that = this;

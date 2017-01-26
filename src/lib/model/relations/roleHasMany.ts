@@ -1,7 +1,7 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from '../interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
-import { updateRoleRefs } from '../schema/schema-utils';
-import { DEFAULT_PARENT_NAME } from '../schema/schema-consts';
+import { schemaUtils } from 'histria-utils';
+import { DEFAULT_PARENT_NAME } from 'histria-utils';
 
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
@@ -15,7 +15,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                 let item = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, itemModel, isRestore);
                 that._items[index] = item;
                 if (!isRestore)
-                    updateRoleRefs(that._relation, itemModel, pmodel, true);
+                    schemaUtils.updateRoleRefs(that._relation, itemModel, pmodel, true);
             })
         }
     }
@@ -29,7 +29,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
     private async _afterRemoveItem(item: T, notifyRemove: boolean): Promise<void> {
         let that = this;
         let lmodel = item.model();
-        updateRoleRefs(that._relation, lmodel, null, true);
+        schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
         await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyRemove)
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
@@ -39,7 +39,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         let that = this;
         let lmodel = item.model();
         let rmodel = that._parent.model();
-        updateRoleRefs(that._relation, lmodel, rmodel, true);
+        schemaUtils.updateRoleRefs(that._relation, lmodel, rmodel, true);
         await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyAdd)
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
@@ -189,7 +189,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         that._items.splice(ii, 1);
         if (item) {
             let lmodel = item.model();
-            updateRoleRefs(that._relation, lmodel, null, true);
+            schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
             let r = item.getRoleByName(that._relation.invRel, );
             if (r) await r.internalSetValueAndNotify(null, item);
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);

@@ -1,12 +1,10 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { HasOneRef, HasOneComposition, HasOneAggregation } from './roleHasOne';
-import { CompositionBelongsTo, AggregationBelongsTo } from './roleBelongsTo';
-import { HasManyComposition, HasManyAggregation } from './roleHasMany';
+import { HasOneRef, HasOneComposition, HasOneAggregation } from './relations/roleHasOne';
+import { CompositionBelongsTo, AggregationBelongsTo } from './relations/roleBelongsTo';
+import { HasManyComposition, HasManyAggregation } from './relations/roleHasMany';
 
-import { ApplicationError } from '../utils/errors';
+import { ApplicationError, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
 import { ModelManager } from './model-manager';
-import * as schemaUtils from '../schema/schema-utils';
-import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME } from '../schema/schema-consts';
 
 import { IntegerValue, NumberValue } from './number';
 import { IdValue } from './id';
@@ -15,7 +13,6 @@ import { InstanceErrors } from './instance-errors'
 import { InstanceState } from './instance-state'
 import { EventInfoStack } from './event-stack'
 
-import * as helper from '../utils/helper';
 import * as util from 'util';
 import * as uuid from 'uuid';
 

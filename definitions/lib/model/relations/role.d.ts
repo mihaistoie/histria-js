@@ -1,4 +1,4 @@
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 export declare class Role<T extends ObservableObject> {
     protected _value: T;
     protected _relation: any;

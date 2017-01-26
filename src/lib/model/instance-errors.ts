@@ -1,6 +1,6 @@
 import { ErrorState } from './error-state';
 import { ObservableObject } from './interfaces';
-import * as helper from '../utils/helper';
+import { helper } from 'histria-utils';
 
 export class InstanceErrors {
     protected _messages: any;

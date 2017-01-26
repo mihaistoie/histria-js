@@ -1,4 +1,4 @@
-# histriajs
+# histriaJs
 Node.js rule engine
 
 ## How to write an application

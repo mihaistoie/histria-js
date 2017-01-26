@@ -1,4 +1,4 @@
-import { Instance } from './base-object';
+import { Instance } from '../base-object';
 export declare class BaseNumberValue {
     protected _parent: Instance;
     protected _decimals: number;

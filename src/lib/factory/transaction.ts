@@ -1,7 +1,7 @@
 import * as util from 'util';
 import * as uuid from 'uuid';
 import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
-import { validateAfterPropChanged } from '../model/validation';
+import { validateAfterPropChanged } from './validation';
 import { findInMap } from 'histria-utils';
 
 import { TranContext } from './user-context';

@@ -1,5 +1,5 @@
 import { ErrorState } from './error-state';
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 import { helper } from 'histria-utils';
 
 export class InstanceErrors {

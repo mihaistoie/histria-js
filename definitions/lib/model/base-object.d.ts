@@ -1,6 +1,6 @@
 import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { InstanceErrors } from './instance-errors';
-import { InstanceState } from './instance-state';
+import { InstanceErrors } from './states/instance-errors';
+import { InstanceState } from './states/instance-state';
 export declare class Instance implements ObservableObject {
     protected _status: ObjectStatus;
     protected _transaction: TransactionContainer;
@@ -47,8 +47,8 @@ export declare class Instance implements ObservableObject {
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
     getOrSetProperty(propName: string, value?: any): Promise<any>;
-    getPropertyByName(propName: string, value?: any): any;
-    setPropertyByName(propName: string, value?: any): Promise<any>;
+    getPropertyByName(propName: string): any;
+    setPropertyByName(propName: string, value: any): Promise<any>;
     afterCreated(): Promise<void>;
     enumChildren(cb: (value: ObservableObject) => void): void;
     validate(options?: {

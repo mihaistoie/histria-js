@@ -1,11 +1,10 @@
 import * as util from 'util';
 
 
-import { State, EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
-import { ErrorState } from './error-state';
-import { IntegerValue, NumberValue } from './number';
+import { State, EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from '../model/states/state';
+import { ErrorState } from '../model/states/error-state';
 import { JSONTYPES, JSONFORMATS, schemaUtils, messages, helper } from 'histria-utils';
-import { UserContext, EventInfo } from './interfaces';
+import { UserContext, EventInfo } from '../model/interfaces';
 
 
 function _validateEmail(email: string): boolean {

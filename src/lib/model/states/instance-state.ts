@@ -1,5 +1,5 @@
 import { EnumState, IdState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from './state';
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 import { JSONTYPES, schemaUtils, helper } from 'histria-utils';
 
 export class InstanceState {

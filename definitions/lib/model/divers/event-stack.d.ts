@@ -1,4 +1,4 @@
-import { EventInfo } from './interfaces';
+import { EventInfo } from '../interfaces';
 export declare class EventInfoStack implements EventInfo {
     private _stack;
     constructor();

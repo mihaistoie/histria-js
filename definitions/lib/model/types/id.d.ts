@@ -1,4 +1,4 @@
-import { Instance } from './base-object';
+import { Instance } from '../base-object';
 export declare class IdValue {
     protected _parent: Instance;
     protected _propertyName: string;

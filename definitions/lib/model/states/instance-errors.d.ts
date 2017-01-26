@@ -1,6 +1,6 @@
-import { ObservableObject } from './interfaces';
-export declare class InstanceState {
-    protected _states: any;
+import { ObservableObject } from '../interfaces';
+export declare class InstanceErrors {
+    protected _messages: any;
     private _schema;
     private _parent;
     constructor(parent: ObservableObject, schema: any);

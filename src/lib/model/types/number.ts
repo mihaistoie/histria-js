@@ -1,4 +1,4 @@
-import { Instance } from './base-object';
+import { Instance } from '../base-object';
 import { ApplicationError, messages } from 'histria-utils';
 
 export class BaseNumberValue {

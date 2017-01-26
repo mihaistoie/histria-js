@@ -6,12 +6,12 @@ import { HasManyComposition, HasManyAggregation } from './relations/role-has-man
 import { ApplicationError, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
 import { ModelManager } from './model-manager';
 
-import { IntegerValue, NumberValue } from './number';
-import { IdValue } from './id';
+import { IntegerValue, NumberValue } from './types/number';
+import { IdValue } from './types/id';
 
-import { InstanceErrors } from './instance-errors'
-import { InstanceState } from './instance-state'
-import { EventInfoStack } from './event-stack'
+import { InstanceErrors } from './states/instance-errors'
+import { InstanceState } from './states/instance-state'
+import { EventInfoStack } from './divers/event-stack'
 
 import * as util from 'util';
 import * as uuid from 'uuid';
@@ -323,7 +323,7 @@ export class Instance implements ObservableObject {
 		return that._model[propName];
 	}
 
-	public getPropertyByName(propName: string, value?: any): any {
+	public getPropertyByName(propName: string): any {
 		let that = this;
 		let propSchema = that._schema.properties[propName];
 		let mm = new ModelManager();
@@ -332,7 +332,7 @@ export class Instance implements ObservableObject {
 		return that._model[propName];
 	}
 
-	public async setPropertyByName(propName: string, value?: any): Promise<any> {
+	public async setPropertyByName(propName: string, value: any): Promise<any> {
 		let that = this;
 
 		let propSchema = that._schema.properties[propName];

@@ -2,8 +2,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fs as fsPromises } from 'histria-utils';
-import { ModelManager } from './model-manager';
-import { EventType } from './interfaces';
+import { ModelManager } from '../model-manager';
+import { EventType } from '../interfaces';
 
 
 //Title decorator

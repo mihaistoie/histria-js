@@ -1,4 +1,4 @@
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 export declare class ErrorState {
     private _errorModel;
     private _parent;

@@ -73,7 +73,11 @@ export interface ObservableObject {
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
-    enumChildren(cb: (value: ObservableObject) => void)
+    enumChildren(cb: (value: ObservableObject) => void);
+    getPropertyByName(propName: string): any;
+    setPropertyByName(propName: string, value: any): Promise<any>;
+
+
     readonly parent: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;

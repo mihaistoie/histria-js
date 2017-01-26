@@ -47,7 +47,7 @@ export class ModelManager {
         let ci = that._mapByClass.get(constructor);
         if (ci) return;
         if (found) {
-           // return;
+            // return;
             //throw util.format('Duplicated classname "%s".', nameSpace + '.' + className);
         }
         ci = {

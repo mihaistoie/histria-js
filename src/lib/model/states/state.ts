@@ -1,4 +1,4 @@
-import { ObservableObject } from './interfaces';
+import { ObservableObject } from '../interfaces';
 export class State {
     protected _parent: ObservableObject;
     protected _propertyName: string;

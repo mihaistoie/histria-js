@@ -29,7 +29,7 @@ export class TranContext implements UserContext {
     }
     public get locale(): any {
         let that = this;
-        return locale[that._lang + '_' + that._country];
+        return locale(that._lang + '_' + that._country);
     }
     public formatNumber(value: number, decimals: number): string {
         return value.toFixed(decimals);

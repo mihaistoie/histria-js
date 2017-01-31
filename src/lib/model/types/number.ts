@@ -1,4 +1,7 @@
 import { Instance } from '../base-object';
+import { NumberState } from '../states/state';
+
+
 import { ApplicationError, messages } from 'histria-utils';
 
 export class BaseNumberValue {
@@ -60,22 +63,29 @@ export class IntegerValue extends BaseNumberValue {
 }
 
 export class NumberValue extends BaseNumberValue {
-    public get decimals(): number {
+    private _state(): NumberState {
         let that = this;
-        return that._parent.$states[that._propertyName].decimals;
+        let parentStates: any = that._parent.$states;
+        return <NumberState>parentStates[that._propertyName];
     }
+    public get decimals(): number {
+        let state = this._state();
+        return state.decimals;
+    }
+
 
     public async setDecimals(value: number): Promise<number> {
         let that = this;
-        if (that._parent.$states[that._propertyName].decimals != value) {
-            that._parent.$states[that._propertyName].decimals = value;
+        let state = that._state();
+        if (state.decimals != value) {
+            state.decimals = value;
             let val = that.value;
             await that.setValue(val)
         }
-        return that._parent.$states[that._propertyName].decimals;
+        return state.decimals;
     }
     protected _internalDecimals(): number {
-        let that = this;
-        return that._parent.$states[that._propertyName].decimals;
+        let state = this._state();
+        return state.decimals;
     }
 }

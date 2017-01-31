@@ -54,6 +54,7 @@ export declare class Instance implements ObservableObject {
     validate(options?: {
         full: boolean;
     }): Promise<void>;
+    private _errorByName(propName);
     constructor(transaction: TransactionContainer, parent: ObservableObject, propertyName: string, value: any, options: {
         isRestore: boolean;
     });

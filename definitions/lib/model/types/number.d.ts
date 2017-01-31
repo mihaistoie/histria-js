@@ -16,6 +16,7 @@ export declare class BaseNumberValue {
 export declare class IntegerValue extends BaseNumberValue {
 }
 export declare class NumberValue extends BaseNumberValue {
+    private _state();
     readonly decimals: number;
     setDecimals(value: number): Promise<number>;
     protected _internalDecimals(): number;

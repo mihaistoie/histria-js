@@ -43,17 +43,13 @@ export interface UserContext {
 }
 
 
-export interface Store {
-    findOne(className, filter: any): Promise<any>;
-    find(className, filter: any): Promise<any[]>;
-}
 
 
 export interface TransactionContainer {
     context: UserContext
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
     find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
-    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args);
+    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
 }
 
@@ -67,13 +63,13 @@ export interface ObservableObject {
     modelErrors(propName: string): { message: string, severity: MessageServerity }[];
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
-    destroy();
+    destroy(): void;
     getRoleByName(roleName: string): any;
     isArrayComposition(propertyName: string): boolean
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
-    enumChildren(cb: (value: ObservableObject) => void);
+    enumChildren(cb: (value: ObservableObject) => void): void;
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;
 
@@ -88,6 +84,6 @@ export interface ObservableObject {
 
 export interface ObservableArray {
     getRoot(): ObservableObject;
-    destroy();
+    destroy(): void;
 }
 

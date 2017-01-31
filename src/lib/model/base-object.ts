@@ -10,6 +10,8 @@ import { IntegerValue, NumberValue } from './types/number';
 import { IdValue } from './types/id';
 
 import { InstanceErrors } from './states/instance-errors'
+import { ErrorState } from './states/error-state'
+
 import { InstanceState } from './states/instance-state'
 import { EventInfoStack } from './divers/event-stack'
 
@@ -275,14 +277,14 @@ export class Instance implements ObservableObject {
 
 	}
 
-	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd): Promise<void> {
+	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void> {
 		let that = this;
 		let eventInfo = that._getEventInfo();
 		eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
 		try {
 			try {
 				// clear errors for propName
-				that._errors[propName].error = '';
+				that._errorByName(propName).error = '';
 				await that.beforePropertyChanged(propName, oldValue, newValue);
 				//change property
 				hnd();
@@ -293,7 +295,7 @@ export class Instance implements ObservableObject {
 					await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that, propName, newValue, oldValue);
 				}
 			} catch (ex) {
-				that._errors[propName].addException(ex);
+				that._errorByName(propName).addException(ex);
 			}
 		} finally {
 			eventInfo.pop()
@@ -383,9 +385,15 @@ export class Instance implements ObservableObject {
 			try {
 				await that._transaction.emitInstanceEvent(EventType.objValidate, eventInfo, that);
 			} catch (ex) {
-				that._errors['$'].addException(ex);
+				that._errorByName('$').addException(ex);
 			}
 		}
+	}
+
+	private _errorByName(propName: string): ErrorState {
+		let that = this;
+		let errors: any = that._errors;
+		return <ErrorState>errors[propName];
 	}
 
 

@@ -69,10 +69,10 @@ export class Transaction implements TransactionContainer {
     public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
         let that = this;
         let mm = new ModelManager();
-        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: false });
+        let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: false });
         that._addInstance(instance, classOfInstance);
-        let instances = []
-        instance.enumChildren((child) => {
+        let instances: any[] = []
+        instance.enumChildren((child: any) => {
             instances.push(child);
         });
         instances.push(instance);
@@ -88,8 +88,8 @@ export class Transaction implements TransactionContainer {
         data = data || {};
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
         that._addInstance(instance, classOfInstance);
-        let instances = [];
-        instance.enumChildren((child) => {
+        let instances: any[] = []
+        instance.enumChildren((child: any) => {
             instances.push(child);
         });
         instances.push(instance);
@@ -104,8 +104,8 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
         that._addInstance(instance, classOfInstance);
-        let instances = [];
-        instance.enumChildren((child) => {
+        let instances: any[] = []
+        instance.enumChildren((child: any) => {
             instances.push(child);
         });
         instances.push(instance);

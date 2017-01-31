@@ -29,15 +29,11 @@ export interface UserContext {
     locale: any;
     formatNumber(value: number, decimals: number): string;
 }
-export interface Store {
-    findOne(className: any, filter: any): Promise<any>;
-    find(className: any, filter: any): Promise<any[]>;
-}
 export interface TransactionContainer {
     context: UserContext;
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
     find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
-    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): any;
+    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
 }
 export interface ObservableObject {
@@ -52,13 +48,13 @@ export interface ObservableObject {
     }[];
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
-    destroy(): any;
+    destroy(): void;
     getRoleByName(roleName: string): any;
     isArrayComposition(propertyName: string): boolean;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
-    enumChildren(cb: (value: ObservableObject) => void): any;
+    enumChildren(cb: (value: ObservableObject) => void): void;
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;
     readonly parent: ObservableObject;
@@ -70,5 +66,5 @@ export interface ObservableObject {
 }
 export interface ObservableArray {
     getRoot(): ObservableObject;
-    destroy(): any;
+    destroy(): void;
 }

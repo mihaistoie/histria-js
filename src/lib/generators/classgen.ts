@@ -21,9 +21,9 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         let schema = model[name];
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
-        let code = [];
-        let imports = [];
-        let cc = {}
+        let code: string[] = [];
+        let imports: string[] = [];
+        let cc: any = {}
 
         pathToLib = pathToLib || 'histria--utils'
         imports.push('import {');

@@ -103,7 +103,7 @@ function _validateString(value: string, schema: any, propTitle: string, ctx: Use
     return res;
 }
 
-function validateProp(value: any, propName, propSchema: any, ctx: UserContext, error: ErrorState, state: State) {
+function validateProp(value: any, propName: string, propSchema: any, ctx: UserContext, error: ErrorState, state: State) {
     let propType = schemaUtils.typeOfProperty(propSchema);
     switch (propType) {
         case JSONTYPES.id:

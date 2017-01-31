@@ -3,7 +3,7 @@ import * as util from 'util';
 import { EventType, EventInfo, ObservableObject } from './interfaces';
 
 function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
-    let res = [];
+    let res: any[] = [];
     rulesInfo.forEach(ri => { if (!ri.isDisabled) res.push(ri.rule); });
     return res;
 }
@@ -67,7 +67,7 @@ export class ModelManager {
 
     public rulesForInit(classOfInstance: any): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.initRules) {
@@ -77,7 +77,7 @@ export class ModelManager {
     }
     public rulesObjValidate(classOfInstance: any): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.objValidateRules) {
@@ -87,7 +87,7 @@ export class ModelManager {
     }
     public rulesForPropChange(classOfInstance: any, propertyName: string): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.propChangeRules[propertyName]) {
@@ -97,7 +97,7 @@ export class ModelManager {
     }
     public rulesForPropValidate(classOfInstance: any, propertyName: string): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.propValidateRules[propertyName]) {
@@ -108,7 +108,7 @@ export class ModelManager {
 
     public rulesForAddItem(classOfInstance: any, propertyName: string): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.addItemRules[propertyName]) {
@@ -119,7 +119,7 @@ export class ModelManager {
 
     public rulesForRmvItem(classOfInstance: any, propertyName: string): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.rmvItemRules[propertyName]) {
@@ -129,7 +129,7 @@ export class ModelManager {
     }
     public rulesForSetItems(classOfInstance: any, propertyName: string): any[] {
         let that = this;
-        let res = [];
+        let res: any[] = [];
         let ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.setItemsRules[propertyName]) {
@@ -169,14 +169,14 @@ export class ModelManager {
         }
 
         if (ruleType === EventType.propChanged) {
-            ruleParams && ruleParams.forEach(propName => {
+            ruleParams && ruleParams.forEach((propName: string) => {
                 ci.propChangeRules[propName] = ci.propChangeRules[propName] || [];
                 ci.propChangeRules[propName].push(ri);
             });
         } else if (ruleType === EventType.init) {
             ci.initRules.push(ri);
         } else if (ruleType === EventType.propValidate) {
-            ruleParams && ruleParams.forEach(propName => {
+            ruleParams && ruleParams.forEach((propName: string) => {
                 ci.propValidateRules[propName] = ci.propValidateRules[propName] || [];
                 ci.propValidateRules[propName].push(ri);
             });

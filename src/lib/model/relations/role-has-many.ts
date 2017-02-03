@@ -11,7 +11,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (!that._isNull && !that._isUndefined) {
             let pmodel = that._parent.model();
             that._items = new Array(model.length);
-            that._model.forEach((itemModel, index) => {
+            that._model.forEach((itemModel: any , index: number) => {
                 let item = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, itemModel, isRestore);
                 that._items[index] = item;
                 if (!isRestore)
@@ -131,7 +131,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (that._isUndefined) {
             let lmodel = that._parent.model();
             let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field, index) => {
+            that._relation.localFields.forEach((field:string, index: number) => {
                 let ff = that._relation.foreignFields[index];
                 let value = lmodel[field];
                 if (value === null || value === '' || value === undefined)
@@ -224,7 +224,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             that._loaded = true;
             let lmodel = that._parent.model();
             let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field, index) => {
+            that._relation.localFields.forEach((field: string , index: number) => {
                 let ff = that._relation.foreignFields[index];
                 let value = lmodel[field];
                 if (value === null || value === '' || value === undefined)

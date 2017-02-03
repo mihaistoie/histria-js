@@ -19,7 +19,7 @@ export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
         let that = this;
         let lmodel = that._parent.model();
         let query: any = {}, valueIsNull = false;
-        that._relation.foreignFields.forEach((field, index) => {
+        that._relation.foreignFields.forEach((field: string, index: number) => {
             let ff = that._relation.localFields[index];
             let value = lmodel[ff];
             if (value === null || value === '' || value === undefined)

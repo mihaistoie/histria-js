@@ -5,9 +5,9 @@
   "author": "Mihai STOIE <mihaistoie@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/power-assert": "latest",
     "@types/mocha": "latest",
     "@types/node": "latest",
+    "@types/power-assert": "latest",
     "@types/uuid": "latest",
     "del": "latest",
     "gulp": "latest",
@@ -19,8 +19,8 @@
     "typescript": "2.x.x"
   },
   "dependencies": {
-    "uuid": "latest",
-    "histria-utils": "https://github.com/mihaistoie/histria-utils.git#master"
+    "histria-utils": "https://github.com/mihaistoie/histria-utils.git#master",
+    "uuid": "latest"
   },
   "repository": {
     "type": "git",

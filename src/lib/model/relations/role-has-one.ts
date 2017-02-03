@@ -26,7 +26,7 @@ export class HasOne<T extends ObservableObject> extends Role<T> {
         let that = this;
         let pmodel = that._parent.model();
         let nmodel = that._value ? that._value.model() : null;
-        that._relation.localFields.forEach((field, index) => {
+        that._relation.localFields.forEach((field: string, index: number) => {
             let ff = that._relation.foreignFields[index];
             if (that._value)
                 pmodel[field] = nmodel[ff]
@@ -45,7 +45,7 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         let that = this;
         let lmodel = that._parent.model();
         let query: any = {}, valueIsNull = false;
-        that._relation.foreignFields.forEach((field, index) => {
+        that._relation.foreignFields.forEach((field: string, index: number) => {
             let ff = that._relation.localFields[index];
             let value = lmodel[ff];
             if (value === null || value === '' || value === undefined)
@@ -106,7 +106,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         let that = this;
         let lmodel = that._parent.model();
         let query: any = {}, valueIsNull = false;
-        that._relation.localFields.forEach((field, index) => {
+        that._relation.localFields.forEach((field: string, index: number) => {
             let ff = that._relation.foreignFields[index];
             let value = lmodel[field];
             if (value === null || value === '' || value === undefined)

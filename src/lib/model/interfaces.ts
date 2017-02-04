@@ -72,8 +72,6 @@ export interface ObservableObject {
     enumChildren(cb: (value: ObservableObject) => void): void;
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;
-
-
     readonly parent: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;

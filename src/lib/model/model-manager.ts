@@ -9,7 +9,6 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 }
 
 export class ModelManager {
-    private _namespaces: Map<string, any>;  
     private _mapByClass: Map<any, any>;
     private _classes: Map<string, any>;
     private _mapRules: Map<any, any>;

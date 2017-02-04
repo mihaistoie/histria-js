@@ -9,10 +9,11 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 }
 
 export class ModelManager {
+    private _namespaces: Map<string, any>;  
     private _mapByClass: Map<any, any>;
     private _classes: Map<string, any>;
     private _mapRules: Map<any, any>;
-    private static singleton: ModelManager;
+    public static singleton: ModelManager;
     constructor() {
         if (!ModelManager.singleton) {
             ModelManager.singleton = this;
@@ -201,7 +202,7 @@ export class ModelManager {
 
 
 export async function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let rules = mm.rulesForInit(classOfInstance);
     if (rules.length) {
         let rArgs = instances.concat(eventInfo);
@@ -214,7 +215,7 @@ export async function initRules(eventInfo: EventInfo, classOfInstance: any, inst
 
 
 export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForPropChange(classOfInstance, propName);
     if (rules.length) {
@@ -230,7 +231,7 @@ export async function propagationRules(eventInfo: EventInfo, classOfInstance: an
 
 
 export async function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForPropValidate(classOfInstance, propName);
     if (rules.length) {
@@ -246,7 +247,7 @@ export async function propValidateRules(eventInfo: EventInfo, classOfInstance: a
 
 
 export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let rules = mm.rulesObjValidate(classOfInstance);
 
     if (rules && rules.length) {
@@ -260,7 +261,7 @@ export async function objValidateRules(eventInfo: EventInfo, classOfInstance: an
 
 
 export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForAddItem(classOfInstance, propName);
     if (rules.length) {
@@ -276,7 +277,7 @@ export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, i
 }
 
 export async function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForRmvItem(classOfInstance, propName);
     if (rules.length) {
@@ -292,7 +293,7 @@ export async function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, i
 
 
 export async function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
-    let mm = new ModelManager();
+    let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForSetItems(classOfInstance, propName);
     if (rules.length) {
@@ -304,6 +305,12 @@ export async function setItemsRules(eventInfo: EventInfo, classOfInstance: any, 
             await rule.apply(null, rArgs);
         }
     }
+}
+
+export function modelManager(): ModelManager {
+    if (ModelManager.singleton)
+        return ModelManager.singleton;
+    return new ModelManager();
 }
 
 

@@ -1,5 +1,5 @@
 import {
-	Instance, InstanceState, InstanceErrors, ModelManager,
+	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
@@ -125,6 +125,7 @@ const
 			"fullName": {
 				"isReadOnly": true
 			}
-		}
+		},
+		"meta": {}
 	};
-new ModelManager().registerClass(User, USER_SCHEMA);
+modelManager().registerClass(User, USER_SCHEMA);

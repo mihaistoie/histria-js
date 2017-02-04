@@ -27,7 +27,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 
         pathToLib = pathToLib || 'histria--utils'
         imports.push('import {');
-        imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, ModelManager,');
+        imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, modelManager,');
         imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation,');
         imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
         imports.push(_tab(1) + 'IntegerValue, NumberValue');
@@ -162,7 +162,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 
         _genSchema(schema, className, code)
 
-        code.push(util.format('new ModelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
+        code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
 
 
 

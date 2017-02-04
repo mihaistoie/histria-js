@@ -1,5 +1,5 @@
 import { ObservableObject } from '../interfaces';
-import { ModelManager } from '../model-manager';
+import { modelManager } from '../model-manager';
 
 export class Role<T extends ObservableObject> {
     protected _value: T;
@@ -13,7 +13,7 @@ export class Role<T extends ObservableObject> {
         that._propertyName = propertyName;
         that._relation = relation;
         that._parent = parent;
-        that._refClass = new ModelManager().classByName(that._relation.model,that._relation.nameSpace);
+        that._refClass = modelManager().classByName(that._relation.model,that._relation.nameSpace);
     }
     public internalSetValue(value: T) {
          this._value = value;

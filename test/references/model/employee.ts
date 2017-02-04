@@ -1,5 +1,5 @@
 import {
-	Instance, InstanceState, InstanceErrors, ModelManager,
+	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
@@ -167,6 +167,7 @@ const
 					"employeeId"
 				]
 			}
-		}
+		},
+		"meta": {}
 	};
-new ModelManager().registerClass(Employee, EMPLOYEE_SCHEMA);
+modelManager().registerClass(Employee, EMPLOYEE_SCHEMA);

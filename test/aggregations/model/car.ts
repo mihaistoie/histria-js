@@ -1,5 +1,5 @@
 import {
-	Instance, InstanceState, InstanceErrors, ModelManager,
+	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
@@ -98,6 +98,7 @@ const
 					"drivesId"
 				]
 			}
-		}
+		},
+		"meta": {}
 	};
-new ModelManager().registerClass(Car, CAR_SCHEMA);
+modelManager().registerClass(Car, CAR_SCHEMA);

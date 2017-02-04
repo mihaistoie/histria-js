@@ -1,9 +1,10 @@
 import { EventType, EventInfo, ObservableObject } from './interfaces';
 export declare class ModelManager {
+    private _namespaces;
     private _mapByClass;
     private _classes;
     private _mapRules;
-    private static singleton;
+    static singleton: ModelManager;
     constructor();
     createInstance<T extends ObservableObject>(classOfInstance: any, transaction: any, parent: ObservableObject, propertyName: string, value: any, options: {
         isRestore: boolean;
@@ -28,3 +29,4 @@ export declare function objValidateRules(eventInfo: EventInfo, classOfInstance: 
 export declare function addItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 export declare function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 export declare function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function modelManager(): ModelManager;

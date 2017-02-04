@@ -1,6 +1,6 @@
 import * as util from 'util';
 import * as uuid from 'uuid';
-import { ModelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
+import { modelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
 import { validateAfterPropChanged } from './validation';
 import { findInMap } from 'histria-utils';
 
@@ -68,7 +68,7 @@ export class Transaction implements TransactionContainer {
 
     public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
         let that = this;
-        let mm = new ModelManager();
+        let mm = modelManager();
         let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: false });
         that._addInstance(instance, classOfInstance);
         let instances: any[] = []
@@ -83,7 +83,7 @@ export class Transaction implements TransactionContainer {
     }
 
     public async restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
-        let mm = new ModelManager();
+        let mm = modelManager();
         let that = this;
         data = data || {};
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
@@ -100,7 +100,7 @@ export class Transaction implements TransactionContainer {
     }
 
     public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
-        let mm = new ModelManager();
+        let mm = modelManager();
         let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
         that._addInstance(instance, classOfInstance);
@@ -115,7 +115,7 @@ export class Transaction implements TransactionContainer {
         return instance;
     }
     public createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T {
-        let mm = new ModelManager();
+        let mm = modelManager();
         let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, parent, propertyName, data, { isRestore: isRestore });
         that._addInstance(instance, classOfInstance);

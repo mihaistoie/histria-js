@@ -1,5 +1,5 @@
 import {
-	Instance, InstanceState, InstanceErrors, ModelManager,
+	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
@@ -93,6 +93,7 @@ const
 					"orderId"
 				]
 			}
-		}
+		},
+		"meta": {}
 	};
-new ModelManager().registerClass(Order, ORDER_SCHEMA);
+modelManager().registerClass(Order, ORDER_SCHEMA);

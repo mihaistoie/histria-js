@@ -1,5 +1,5 @@
 import {
-	Instance, InstanceState, InstanceErrors, ModelManager,
+	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	IntegerValue, NumberValue
@@ -123,6 +123,7 @@ const
 					"id"
 				]
 			}
-		}
+		},
+		"meta": {}
 	};
-new ModelManager().registerClass(Song, SONG_SCHEMA);
+modelManager().registerClass(Song, SONG_SCHEMA);

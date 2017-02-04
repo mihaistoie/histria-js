@@ -4,7 +4,7 @@ import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-bel
 import { HasManyComposition, HasManyAggregation } from './relations/role-has-many';
 
 import { ApplicationError, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
-import { ModelManager } from './model-manager';
+import { modelManager } from './model-manager';
 
 import { IntegerValue, NumberValue } from './types/number';
 import { IdValue } from './types/id';
@@ -309,7 +309,7 @@ export class Instance implements ObservableObject {
 		let isSet = (value !== undefined);
 
 		let propSchema = that._schema.properties[propName];
-		let mm = new ModelManager();
+		let mm = modelManager();
 		if (!propSchema)
 			throw new ApplicationError(util.format('Property not found: "%s".', propName));
 		if (isSet) isSet = !schemaUtils.isReadOnly(propSchema);
@@ -328,7 +328,7 @@ export class Instance implements ObservableObject {
 	public getPropertyByName(propName: string): any {
 		let that = this;
 		let propSchema = that._schema.properties[propName];
-		let mm = new ModelManager();
+		let mm = modelManager();
 		if (!propSchema)
 			throw new ApplicationError(util.format('Property not found: "%s".', propName))
 		return that._model[propName];
@@ -338,7 +338,7 @@ export class Instance implements ObservableObject {
 		let that = this;
 
 		let propSchema = that._schema.properties[propName];
-		let mm = new ModelManager();
+		let mm = modelManager();
 		if (!propSchema)
 			throw new ApplicationError(util.format('Property not found: "%s".', propName));
 		if (!schemaUtils.isReadOnly(propSchema)) {

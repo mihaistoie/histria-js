@@ -1,5 +1,5 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from '../interfaces';
-import { ModelManager } from '../model-manager';
+import { modelManager } from '../model-manager';
 
 export class BaseObjectArray<T extends ObservableObject> {
     protected _parent: ObservableObject;
@@ -13,7 +13,7 @@ export class BaseObjectArray<T extends ObservableObject> {
         that._propertyName = propertyName;
         that._relation = relation;
         that._items = [];
-        that._refClass = new ModelManager().classByName(that._relation.model, that._relation.nameSpace);
+        that._refClass = modelManager().classByName(that._relation.model, that._relation.nameSpace);
     }
     public destroy() {
         let that = this;

@@ -15,9 +15,10 @@ export declare class Transaction implements TransactionContainer {
     destroy(): void;
     private _addInstance(instance, classOfInstance);
     find<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T[]>;
-    findOne<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T>;
+    findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T>;
     private _getInstances(classOfInstance);
     private _findById<T>(id, classOfInstance);
     private _findOne<T>(query, classOfInstance);
     private _find<T>(filter, classOfInstance);
+    private _store(classOfInstance);
 }

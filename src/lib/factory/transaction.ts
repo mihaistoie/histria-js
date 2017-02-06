@@ -2,7 +2,7 @@ import * as util from 'util';
 import * as uuid from 'uuid';
 import { modelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
 import { validateAfterPropChanged } from './validation';
-import { findInMap } from 'histria-utils';
+import { findInMap, IStore, dbManager } from 'histria-utils';
 
 import { TranContext } from './user-context';
 import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from '../model/interfaces';
@@ -30,7 +30,7 @@ export class Transaction implements TransactionContainer {
     public get context(): UserContext {
         return this._ctx;
     }
-
+    
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
         let that = this;
         let ci = instance;
@@ -141,14 +141,27 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let res = that._find<T>(filter, classOfInstance);
         if (res) return res;
-        //TODO use persistence
+        let store = that._store(classOfInstance);
+        if (store) {
+            let list = await store.find(classOfInstance.name, filter, {compositions: false});
+            if (list && list.length) {
+                let promises = list.map(item => that.load<T>(classOfInstance, item));
+                await Promise.all(promises);
+            }
+        }
         return [];
     }
-    public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T> {
+    public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T> {
         let that = this;
         let res = await that._findOne<T>(filter, classOfInstance);
         if (res) return res;
-        //TODO use persistence
+        let store = that._store(classOfInstance);
+        if (store) {
+            let list = await store.findOne(classOfInstance.name, filter, {compositions: true});
+            if (list && list.length) {
+                return   await that.load<T>(classOfInstance, list[0]);
+            }
+        }
         return null;
     }
     private _getInstances(classOfInstance: any): Map<string, ObservableObject> {
@@ -177,6 +190,12 @@ export class Transaction implements TransactionContainer {
         let instances = that._getInstances(classOfInstance);
         if (!instances) return [];
         return findInMap(filter, instances, { findFirst: false, transform: (item) => { return item.model(); } });
+    }
+    private _store(classOfInstance: any): IStore {
+        let nameSpace  = classOfInstance.nameSpace;
+        if (!nameSpace) return;
+        return dbManager().store(nameSpace);
+       
     }
 
 }

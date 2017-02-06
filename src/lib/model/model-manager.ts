@@ -31,6 +31,7 @@ export class ModelManager {
         return null;
 
     }
+
     public registerClass(constructor: any, schema: any) {
         let that = this;
         let className = schema.name;
@@ -50,6 +51,7 @@ export class ModelManager {
             // return;
             //throw util.format('Duplicated classname "%s".', nameSpace + '.' + className);
         }
+        constructor.nameSpace = nameSpace;
         ci = {
             name: constructor.name,
             factory: constructor,

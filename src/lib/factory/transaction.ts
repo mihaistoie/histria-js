@@ -30,7 +30,7 @@ export class Transaction implements TransactionContainer {
     public get context(): UserContext {
         return this._ctx;
     }
-    
+
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
         let that = this;
         let ci = instance;
@@ -137,16 +137,18 @@ export class Transaction implements TransactionContainer {
         instances.set(instance.uuid, instance);
 
     }
-    public async find<T extends ObservableObject>(classOfInstance: any, filter: any): Promise<T[]> {
+    public async find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T[]> {
         let that = this;
         let res = that._find<T>(filter, classOfInstance);
         if (res) return res;
-        let store = that._store(classOfInstance);
-        if (store) {
-            let list = await store.find(classOfInstance.name, filter, {compositions: false});
-            if (list && list.length) {
-                let promises = list.map(item => that.load<T>(classOfInstance, item));
-                await Promise.all(promises);
+        if (!options || !options.onlyCache) {
+            let store = that._store(classOfInstance);
+            if (store) {
+                let list = await store.find(classOfInstance.entityName, filter, { compositions: false });
+                if (list && list.length) {
+                    let promises = list.map(item => that.load<T>(classOfInstance, item));
+                    await Promise.all(promises);
+                }
             }
         }
         return [];
@@ -155,11 +157,13 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let res = await that._findOne<T>(filter, classOfInstance);
         if (res) return res;
-        let store = that._store(classOfInstance);
-        if (store) {
-            let list = await store.findOne(classOfInstance.name, filter, {compositions: true});
-            if (list && list.length) {
-                return   await that.load<T>(classOfInstance, list[0]);
+        if (!options || !options.onlyCache) {
+            let store = that._store(classOfInstance);
+            if (store) {
+                let data = await store.findOne(classOfInstance.entityName, filter, { compositions: true });
+                if (data) {
+                    return await that.load<T>(classOfInstance, data);
+                }
             }
         }
         return null;
@@ -192,10 +196,10 @@ export class Transaction implements TransactionContainer {
         return findInMap(filter, instances, { findFirst: false, transform: (item) => { return item.model(); } });
     }
     private _store(classOfInstance: any): IStore {
-        let nameSpace  = classOfInstance.nameSpace;
+        let nameSpace = classOfInstance.nameSpace;
         if (!nameSpace) return;
         return dbManager().store(nameSpace);
-       
+
     }
 
 }

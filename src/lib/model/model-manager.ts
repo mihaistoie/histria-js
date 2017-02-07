@@ -1,5 +1,6 @@
 import * as util from 'util';
-
+ 
+import { schemaManager } from 'histria-utils';
 import { EventType, EventInfo, ObservableObject } from './interfaces';
 
 function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
@@ -36,6 +37,7 @@ export class ModelManager {
         let that = this;
         let className = schema.name;
         let nameSpace = schema.nameSpace;
+        constructor.entityName = schema.name;
         that._mapByClass = that._mapByClass || new Map<any, any>();
         that._classes = that._classes || new Map<string, any>();
         let classConstructor = that._classes.get(nameSpace + '.' + className);
@@ -48,8 +50,7 @@ export class ModelManager {
         let ci = that._mapByClass.get(constructor);
         if (ci) return;
         if (found) {
-            // return;
-            //throw util.format('Duplicated classname "%s".', nameSpace + '.' + className);
+            throw util.format('Duplicated classname "%s".', nameSpace + '.' + className);
         }
         constructor.nameSpace = nameSpace;
         ci = {
@@ -65,6 +66,7 @@ export class ModelManager {
             initRules: [],
         };
         that._mapByClass.set(constructor, ci);
+        schemaManager().registerSchema(schema);
     }
 
     public rulesForInit(classOfInstance: any): any[] {

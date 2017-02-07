@@ -19,6 +19,7 @@
     "typescript": "2.x.x"
   },
   "dependencies": {
+    "histria-db-memory": "https://github.com/mihaistoie/histria-db-memory.git#master",
     "histria-utils": "https://github.com/mihaistoie/histria-utils.git#master",
     "uuid": "latest"
   },

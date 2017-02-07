@@ -3,7 +3,8 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-
+import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
+import * as dbMemory from 'histria-db-memory';
 import { Car } from './model/car';
 import { Engine } from './model/engine';
 
@@ -74,6 +75,15 @@ async function testLoad(): Promise<void> {
         i++;
     });
     assert.equal(i, 1, 'Car a child');
+
+    //DB test
+    let scar = await transaction.findOne<Car>(Car, {id: 1001})
+    assert.notEqual(scar, null, 'Car found');
+    assert.equal(scar.id, 1001, 'Car id is 1001');
+    let engine =  await scar.engine();
+    assert.notEqual(engine, null, 'Car has engine ');
+    assert.equal(engine.id, 2001, 'Engine id is 200041');
+
 }
 
 
@@ -95,15 +105,49 @@ async function testRules(): Promise<void> {
     assert.equal(car.engineChangedHits.value, 3, '(1) Rule called 3 times');
     assert.equal(engine.carChangedHits.value, 3, '(2) Rule called 3 times');
 
-    await engine.setCar(car);
-    await engine.setName('v8');
+    await engine.setCar(car); 
+    await engine.setName('v8');   
     assert.equal(await car.engineName, 'v8', 'Rule propagation');
+
 
 }
 
 
 describe('Relation One to One, Composition', () => {
     before(function (done) {
+        let dm: DbManager =  dbManager();
+        dm.registerNameSpace('compositions', 'memory', {compositionsInParent :true});
+        let store = dm.store('compositions');
+        store.initNameSpace('compositions', {
+            car: [
+                {
+                    id: 1001, 
+                    engineChangedHits: 0, 
+                    engineName: 'v1',
+                    engine: {
+                        id: 2001,
+                        carId: 1001, 
+                        carChangedHits: 0,
+                        name: 'v1'
+
+                    }
+                },
+                {
+                    id: 1002, 
+                    engineChangedHits: 0, 
+                    engineName: 'v2',
+                    engine: {
+                        id: 2002,
+                        carId: 1002, 
+                        carChangedHits: 0,
+                        name: 'v2'
+
+                    }
+                }
+                
+            ]
+        });
+
         assert.equal(test1, 1);
         loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
             done();

@@ -1,4 +1,4 @@
-import { ObservableObject, ObjectStatus } from '../interfaces';
+import { ObservableObject, ObjectStatus, FindOptions } from '../interfaces';
 import { Role } from './role';
 import { schemaUtils, DEFAULT_PARENT_NAME } from 'histria-utils';
 
@@ -55,8 +55,10 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         });
         if (valueIsNull)
             that._value = null;
-        else
-            that._value = await that._parent.transaction.findOne<T>(that._refClass, query) || null;
+        else {
+            let opts: FindOptions = { onlyInCache: false };
+            that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts) || null;
+        }
     }
 
     protected async _setValue(value: T): Promise<T> {
@@ -117,7 +119,8 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         if (valueIsNull)
             that._value = null;
         else {
-            that._value = await that._parent.transaction.findOne<T>(that._refClass, query);
+            let opts: FindOptions = { onlyInCache: false };
+            that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts);
             await that._updateInvSideAfterLazyLoading(that._value);
         }
     }
@@ -136,7 +139,7 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         super(parent, propertyName, relation);
         let that = this;
         let isRestore = that._parent.status === ObjectStatus.restoring;
-        
+
         let pmodel = that._parent.model();
         let childModel = pmodel[propertyName];
         if (childModel === null)

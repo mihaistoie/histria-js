@@ -82,8 +82,15 @@ async function testLoad(): Promise<void> {
     assert.equal(scar.id, 1001, 'Car id is 1001');
     let engine =  await scar.engine();
     assert.notEqual(engine, null, 'Car has engine ');
-    assert.equal(engine.id, 2001, 'Engine id is 200041');
+    assert.equal(engine.id, 2001, 'Engine id is 2001');
+    await engine.setName('v3')
 
+    let cars = await transaction.find<Car>(Car, {});
+    let lc = cars.find(car => { return car.id === 1001});
+    assert.equal(scar, lc, 'Car found in cache');
+
+    lc = cars.find(car => { return car.id === 1002});
+    assert.notEqual(lc, null, 'Car found in db');
 }
 
 
@@ -176,7 +183,7 @@ describe('Relation One to One, Composition', () => {
             done();
         }).catch(function (ex) {
             done(ex);
-        })
+        });
 
     });
 

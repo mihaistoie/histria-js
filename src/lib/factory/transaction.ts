@@ -5,7 +5,7 @@ import { validateAfterPropChanged } from './validation';
 import { findInMap, IStore, dbManager } from 'histria-utils';
 
 import { TranContext } from './user-context';
-import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions } from '../model/interfaces';
 
 export class Transaction implements TransactionContainer {
     private _id: any;
@@ -137,27 +137,37 @@ export class Transaction implements TransactionContainer {
         instances.set(instance.uuid, instance);
 
     }
-    public async find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T[]> {
+    public async find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T[]> {
         let that = this;
-        let res = that._find<T>(filter, classOfInstance);
-        if (res) return res;
-        if (!options || !options.onlyCache) {
+        let res = await that._find<T>(filter, classOfInstance);
+        if (!options || !options.onlyInCache) {
             let store = that._store(classOfInstance);
             if (store) {
                 let list = await store.find(classOfInstance.entityName, filter, { compositions: false });
                 if (list && list.length) {
-                    let promises = list.map(item => that.load<T>(classOfInstance, item));
-                    await Promise.all(promises);
+                    let map: any = {};
+                    let instances = that._getInstances(classOfInstance);
+                    let promises = list.map(item => {
+                        let o = instances ? <T>instances.get(item.id + '') : null;
+                        map[item.id + ''] = true;
+                        return o ? Promise.resolve(o) : that.load<T>(classOfInstance, item);
+                    });
+                    let dbList = await Promise.all(promises);
+                    res && res.forEach(item => {
+                        if (!map[item.uuid])
+                            dbList.push(item)
+                    });
+                    res = dbList;
                 }
             }
         }
-        return [];
+        return res || [];
     }
-    public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T> {
+    public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T> {
         let that = this;
         let res = await that._findOne<T>(filter, classOfInstance);
         if (res) return res;
-        if (!options || !options.onlyCache) {
+        if (!options || !options.onlyInCache) {
             let store = that._store(classOfInstance);
             if (store) {
                 let data = await store.findOne(classOfInstance.entityName, filter, { compositions: true });

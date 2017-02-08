@@ -1,6 +1,3 @@
-
-
-
 export enum ObjectStatus {
     idle = 0,
     restoring = 1,
@@ -16,9 +13,6 @@ export enum EventType {
     removeItem = 5,
     setItems = 6
 }
-
-
-
 
 export enum MessageServerity {
     error = 0,
@@ -42,13 +36,11 @@ export interface UserContext {
     formatNumber(value: number, decimals: number): string
 }
 
-
-
-
+export type FindOptions = { onlyInCache?: boolean };
 export interface TransactionContainer {
     context: UserContext
-    findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
-    find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
+    findOne<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T>;
+    find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
 }
@@ -78,6 +70,7 @@ export interface ObservableObject {
     readonly transaction: TransactionContainer;
     readonly uuid: string;
     readonly status: ObjectStatus;
+    readonly isNew: boolean;
 }
 
 export interface ObservableArray {

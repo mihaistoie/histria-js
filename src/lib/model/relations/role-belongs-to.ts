@@ -1,4 +1,4 @@
-import { ObservableObject } from '../interfaces';
+import { ObservableObject, FindOptions } from '../interfaces';
 import { Role } from './role';
 import { AGGREGATION_KIND, DEFAULT_PARENT_NAME } from 'histria-utils';
 import { schemaUtils } from 'histria-utils';
@@ -28,8 +28,10 @@ export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
                 query[field] = value;
         });
         let res = null;
-        if (!valueIsNull)
-            res = await that._parent.transaction.findOne<T>(that._refClass, query);
+        if (!valueIsNull) {
+            let opts: FindOptions = { onlyInCache: false };
+            res = await that._parent.transaction.findOne<T>(that._refClass, query, opts);
+        }
         return res || null;
     }
     public destroy() {

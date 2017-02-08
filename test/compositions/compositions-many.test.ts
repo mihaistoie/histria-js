@@ -3,6 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
+import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 import { Order } from './model/order';
 import { OrderItem } from './model/order-item';
@@ -85,7 +86,7 @@ async function testRestore(): Promise<void> {
     assert.equal(children1[1].loaded, true, '(1) Loaded = true Init rule called');
     await children1[1].setLoaded(false);
     assert.equal(children1[1].loaded, false, '(1) Loaded = false');
-    
+
     await children1[2].amount.setValue(10);
     assert.equal(order1.totalAmount.value, 10, '(1) Rule called');
 
@@ -127,6 +128,52 @@ async function testRules(): Promise<void> {
 describe('Relation One to many, Composition', () => {
     before(function (done) {
         assert.equal(test1, 1);
+        let dm: DbManager = dbManager();
+        dm.registerNameSpace('compositions', 'memory', { compositionsInParent: true });
+        let store = dm.store('compositions');
+        store.initNameSpace('compositions', {
+            order: [
+                {
+                    id: 1001,
+                    totalAmount: 100,
+                    items: [{
+                        id: 2001,
+                        amount: 50,
+                        orderId: 1001,
+                        loaded: true
+
+                    },
+                    {
+                        id: 2002,
+                        amount: 50,
+                        orderId: 1001,
+                        loaded: true
+
+                    }
+                    ]
+                },
+                {
+                    id: 1002,
+                    totalAmount: 100,
+                    items: [{
+                        id: 2003,
+                        amount: 50,
+                        orderId: 1002,
+                        loaded: true
+
+                    },
+                    {
+                        id: 2004,
+                        amount: 50,
+                        orderId: 1002,
+                        loaded: true
+                    }
+                    ]
+                },
+
+            ]
+        });
+
         loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
             done();
         }).catch((ex) => {

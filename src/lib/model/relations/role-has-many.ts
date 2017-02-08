@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from '../interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, FindOptions } from '../interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
 import { schemaUtils } from 'histria-utils';
 import { DEFAULT_PARENT_NAME } from 'histria-utils';
@@ -11,7 +11,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (!that._isNull && !that._isUndefined) {
             let pmodel = that._parent.model();
             that._items = new Array(model.length);
-            that._model.forEach((itemModel: any , index: number) => {
+            that._model.forEach((itemModel: any, index: number) => {
                 let item = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, itemModel, isRestore);
                 that._items[index] = item;
                 if (!isRestore)
@@ -131,7 +131,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (that._isUndefined) {
             let lmodel = that._parent.model();
             let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field:string, index: number) => {
+            that._relation.localFields.forEach((field: string, index: number) => {
                 let ff = that._relation.foreignFields[index];
                 let value = lmodel[field];
                 if (value === null || value === '' || value === undefined)
@@ -142,7 +142,8 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             if (valueIsNull) {
                 that._model = null;
             } else {
-                let items = await that._parent.transaction.find<T>(that._refClass, query);
+                let opts: FindOptions = { onlyInCache: that._parent.isNew };
+                let items = await that._parent.transaction.find<T>(that._refClass, query, opts);
                 if (items.length) {
                     that._model = new Array(items.length);
                     that._items = new Array(items.length);
@@ -224,7 +225,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             that._loaded = true;
             let lmodel = that._parent.model();
             let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field: string , index: number) => {
+            that._relation.localFields.forEach((field: string, index: number) => {
                 let ff = that._relation.foreignFields[index];
                 let value = lmodel[field];
                 if (value === null || value === '' || value === undefined)
@@ -233,6 +234,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
                     query[ff] = value;
             });
             if (!valueIsNull) {
+                let opts: FindOptions = { onlyInCache: false };
                 let items = await that._parent.transaction.find<T>(that._refClass, query);
                 if (items.length) {
                     that._items = new Array(items.length);

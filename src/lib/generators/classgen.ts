@@ -33,8 +33,6 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         imports.push(_tab(1) + 'IntegerValue, NumberValue');
         imports.push('} from \'' + pathToLib + '\';');
 
-
-
         // Generate Class
         code.push('');
         code.push(util.format('export class %s extends %s {', className, baseClass));

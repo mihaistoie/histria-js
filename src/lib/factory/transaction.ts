@@ -10,6 +10,7 @@ import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObje
 export class Transaction implements TransactionContainer {
     private _id: any;
     private _subscribers: Map<EventType, any[]>;
+    private _removedInstances: Map<any, Map<string, ObservableObject>>;
     private _instances: Map<any, Map<string, ObservableObject>>;
     private _ctx: UserContext;
     constructor(ctx?: UserContext) {
@@ -26,10 +27,22 @@ export class Transaction implements TransactionContainer {
         that.subscribe(EventType.objValidate, objValidateRules);
         that.subscribe(EventType.init, initRules);
     }
-
     public get context(): UserContext {
         return this._ctx;
     }
+    private _saveToJson(): void {
+        let that = this;
+        let res:any = {};
+        if (that._removedInstances) {
+            res.removed = [];
+            for(let item of that._removedInstances ) {
+                for(let instance of item[1]) {
+                    res.removed.push(instance[1].model());
+                }
+            }
+        }
+    }
+
 
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
         let that = this;
@@ -178,12 +191,29 @@ export class Transaction implements TransactionContainer {
         }
         return null;
     }
+    public remove(instance: ObservableObject): void {
+        let that = this;
+        that._removedInstances = that._removedInstances || new Map<any, Map<string, ObservableObject>>();
+        let instances = that._removedInstances.get(instance.constructor);
+        if (!instances) {
+            instances = new Map<string, ObservableObject>();
+            that._removedInstances.set(instance.constructor, instances);
+        }
+        instances.set(instance.uuid, instance);
+    }
+
     private _getInstances(classOfInstance: any): Map<string, ObservableObject> {
         let that = this;
         if (!that._instances) return null;
         return that._instances.get(classOfInstance);
-
     }
+
+    private _getRemovedInstances(classOfInstance: any): Map<string, ObservableObject> {
+        let that = this;
+        if (!that._removedInstances) return null;
+        return that._removedInstances.get(classOfInstance);
+    }
+
     private _findById<T extends ObservableObject>(id: string, classOfInstance: any): T {
         let that = this;
         let instances = that._getInstances(classOfInstance);

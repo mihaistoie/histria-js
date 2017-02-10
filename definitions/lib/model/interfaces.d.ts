@@ -29,10 +29,14 @@ export interface UserContext {
     locale: any;
     formatNumber(value: number, decimals: number): string;
 }
+export declare type FindOptions = {
+    onlyInCache?: boolean;
+};
 export interface TransactionContainer {
     context: UserContext;
-    findOne<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T>;
-    find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]>;
+    remove(instance: ObservableObject): void;
+    findOne<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T>;
+    find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
 }
@@ -63,6 +67,7 @@ export interface ObservableObject {
     readonly transaction: TransactionContainer;
     readonly uuid: string;
     readonly status: ObjectStatus;
+    readonly isNew: boolean;
 }
 export interface ObservableArray {
     getRoot(): ObservableObject;

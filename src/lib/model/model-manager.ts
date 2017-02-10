@@ -10,6 +10,8 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 }
 
 export class ModelManager {
+    private _dirty: boolean;
+    private _roots: Map<any, number>;
     private _mapByClass: Map<any, any>;
     private _classes: Map<string, any>;
     private _mapRules: Map<any, any>;
@@ -35,6 +37,7 @@ export class ModelManager {
 
     public registerClass(constructor: any, schema: any) {
         let that = this;
+        that._dirty = true;
         let className = schema.name;
         let nameSpace = schema.nameSpace;
         constructor.entityName = schema.name;
@@ -67,6 +70,17 @@ export class ModelManager {
         };
         that._mapByClass.set(constructor, ci);
         schemaManager().registerSchema(schema);
+    }
+
+    private _loaded() {
+        let that = this;
+        if (!that._dirty) return;
+        that._dirty = false;
+    }
+
+    public  hasParent(classOfInstance: any) {
+        let that = this;
+        that._loaded();
     }
 
     public rulesForInit(classOfInstance: any): any[] {

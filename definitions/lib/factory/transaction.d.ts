@@ -1,11 +1,13 @@
-import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions } from '../model/interfaces';
 export declare class Transaction implements TransactionContainer {
     private _id;
     private _subscribers;
+    private _removedInstances;
     private _instances;
     private _ctx;
     constructor(ctx?: UserContext);
     readonly context: UserContext;
+    private _saveToJson();
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
@@ -14,9 +16,11 @@ export declare class Transaction implements TransactionContainer {
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     destroy(): void;
     private _addInstance(instance, classOfInstance);
-    find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T[]>;
-    findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: any): Promise<T>;
+    find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T[]>;
+    findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T>;
+    remove(instance: ObservableObject): void;
     private _getInstances(classOfInstance);
+    private _getRemovedInstances(classOfInstance);
     private _findById<T>(id, classOfInstance);
     private _findOne<T>(query, classOfInstance);
     private _find<T>(filter, classOfInstance);

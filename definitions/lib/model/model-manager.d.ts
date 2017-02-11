@@ -1,5 +1,7 @@
 import { EventType, EventInfo, ObservableObject } from './interfaces';
 export declare class ModelManager {
+    private _dirty;
+    private _roots;
     private _mapByClass;
     private _classes;
     private _mapRules;
@@ -10,6 +12,8 @@ export declare class ModelManager {
     }): T;
     classByName(className: string, namespace: string): any;
     registerClass(constructor: any, schema: any): void;
+    private _loaded();
+    hasParent(classOfInstance: any): void;
     rulesForInit(classOfInstance: any): any[];
     rulesObjValidate(classOfInstance: any): any[];
     rulesForPropChange(classOfInstance: any, propertyName: string): any[];

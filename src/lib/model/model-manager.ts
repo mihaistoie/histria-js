@@ -59,6 +59,7 @@ export class ModelManager {
         ci = {
             name: constructor.name,
             factory: constructor,
+            schemaName: schema.name,
             nameSpace: nameSpace,
             propChangeRules: {},
             addItemRules: {},
@@ -73,12 +74,35 @@ export class ModelManager {
     }
 
     private _loaded() {
+
+        //allChildren 
         let that = this;
         if (!that._dirty) return;
+
+        //->
+        let allChildren = new Map<any, string>(); 
+        let allParents = new Map<any, any>(); 
+        let parents: any[] = []; 
+        let sm = schemaManager();
+        for(let item of that._classes) {
+            let fullClassName = item[0];
+            let currentClass = item[1];
+            if (allChildren.get(currentClass)) 
+                continue;
+            const children = sm.childrenOfClass(fullClassName);
+            children.forEach(cn => {
+                let child = that._classes.get(cn);
+                allChildren.set(child, fullClassName);
+
+            }); 
+        
+        }
+
+
         that._dirty = false;
     }
 
-    public  hasParent(classOfInstance: any) {
+    public hasParent(classOfInstance: any) {
         let that = this;
         that._loaded();
     }

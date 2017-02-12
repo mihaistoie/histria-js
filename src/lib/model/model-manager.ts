@@ -1,5 +1,5 @@
 import * as util from 'util';
- 
+
 import { schemaManager } from 'histria-utils';
 import { EventType, EventInfo, ObservableObject } from './interfaces';
 
@@ -11,6 +11,7 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 
 export class ModelManager {
     private _dirty: boolean;
+    private _sortedClasses: any[];
     private _roots: Map<any, number>;
     private _mapByClass: Map<any, any>;
     private _classes: Map<string, any>;
@@ -74,31 +75,43 @@ export class ModelManager {
     }
 
     private _loaded() {
-
-        //allChildren 
         let that = this;
         if (!that._dirty) return;
-
-        //->
-        let allChildren = new Map<any, string>(); 
-        let allParents = new Map<any, any>(); 
-        let parents: any[] = []; 
+        let allChildren = new Map<string, boolean>();
+        let parents: { name: string, mapRefs: any, children: string[] }[] = [];
         let sm = schemaManager();
-        for(let item of that._classes) {
+        for (let item of that._classes) {
             let fullClassName = item[0];
             let currentClass = item[1];
-            if (allChildren.get(currentClass)) 
+            if (allChildren.get(fullClassName) || sm.isChild(fullClassName))
                 continue;
-            const children = sm.childrenOfClass(fullClassName);
-            children.forEach(cn => {
-                let child = that._classes.get(cn);
-                allChildren.set(child, fullClassName);
+            const deps = sm.childrenAndRefsOfClass(fullClassName);
+            let mapRefs: any = {};
+            let parent = { name: fullClassName, mapRefs: mapRefs, children: deps.children }
+            deps.children.forEach(cn => {
+                allChildren.set(cn, true);
+            });
+            deps.refs.forEach(cn => {
+                mapRefs[cn] = true;
+            });
+            parents.push(parent);
 
-            }); 
-        
         }
+        parents.sort((a, b) => {
+            if (b.mapRefs[a.name]) return -1;
+            if (a.mapRefs[b.name]) return 1;
+            return 0;
+        });
+        that._sortedClasses = [];
+        parents.forEach(parent => {
+            let pc = that._classes.get(parent.name);
+            that._sortedClasses.push(pc);
+            parent.children.forEach(cn => {
+                let cc = that._classes.get(cn)
+                that._sortedClasses.push(cc);
+            })
 
-
+        });
         that._dirty = false;
     }
 

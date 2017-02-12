@@ -1,6 +1,7 @@
 import { EventType, EventInfo, ObservableObject } from './interfaces';
 export declare class ModelManager {
     private _dirty;
+    private _sortedClasses;
     private _roots;
     private _mapByClass;
     private _classes;

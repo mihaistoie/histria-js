@@ -57,6 +57,7 @@ export interface ObservableObject {
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
     destroy(): void;
+    standalone(): boolean;
     getRoleByName(roleName: string): any;
     isArrayComposition(propertyName: string): boolean
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;

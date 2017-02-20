@@ -126,7 +126,11 @@ export class Instance implements ObservableObject {
 			that._rootCache = that._parent ? that._parent.getRoot() : that;
 		return that._rootCache;
 	}
-
+    public standalone(): boolean {
+		let that = this;
+		if (!that._schema.meta || !that._schema.meta.parent) return true;
+		return !!that._parent;
+	}
 
 	public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
 	}

@@ -32,14 +32,37 @@ export class Transaction implements TransactionContainer {
     }
     private _saveToJson(): void {
         let that = this;
-        let res:any = {};
+        let res: any = { instances: [] };
         if (that._removedInstances) {
+
+            //classname must be saved
             res.removed = [];
-            for(let item of that._removedInstances ) {
-                for(let instance of item[1]) {
+            for (let item of that._removedInstances) {
+                for (let instance of item[1]) {
                     res.removed.push(instance[1].model());
                 }
             }
+        }
+        if (that._instances) {
+            let mm = modelManager();
+            mm.enumClasses(item => {
+                if (item.isView) {
+
+                } else {
+                    let instances = that._instances.get(item.classOfInstance);
+                    if (instances) {
+                        for (let ii of instances) {
+                            const instance: ObservableObject = ii[1];
+                            if (!item.isChild || instance.standalone())
+                                res.instances.push({ className: item.className, data: instance.model() });
+
+                        }
+
+
+                    }
+
+                }
+            });
         }
     }
 

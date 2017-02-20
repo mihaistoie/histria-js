@@ -28,6 +28,7 @@ export declare class Instance implements ObservableObject {
     getPath(propName?: string): string;
     readonly propertyName: string;
     getRoot(): ObservableObject;
+    standalone(): boolean;
     changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     protected init(): void;
     protected _setModel(value: any): void;

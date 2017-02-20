@@ -11,7 +11,7 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 
 export class ModelManager {
     private _dirty: boolean;
-    private _sortedClasses: any[];
+    private _sortedClasses: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }[];
     private _roots: Map<any, number>;
     private _mapByClass: Map<any, any>;
     private _classes: Map<string, any>;
@@ -34,6 +34,10 @@ export class ModelManager {
             return that._classes.get(namespace + '.' + className);
         return null;
 
+    }
+    public enumClasses(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }) => void) {
+        let that = this;
+        that._sortedClasses.forEach(item => cb(item));
     }
 
     public registerClass(constructor: any, schema: any) {
@@ -74,9 +78,10 @@ export class ModelManager {
         schemaManager().registerSchema(schema);
     }
 
+
     private _loaded() {
         let that = this;
-        if (!that._dirty) return;
+        if (!that._dirty && that._sortedClasses) return;
         let allChildren = new Map<string, boolean>();
         let parents: { name: string, mapRefs: any, children: string[] }[] = [];
         let sm = schemaManager();
@@ -105,10 +110,10 @@ export class ModelManager {
         that._sortedClasses = [];
         parents.forEach(parent => {
             let pc = that._classes.get(parent.name);
-            that._sortedClasses.push(pc);
+            that._sortedClasses.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name });
             parent.children.forEach(cn => {
                 let cc = that._classes.get(cn)
-                that._sortedClasses.push(cc);
+                that._sortedClasses.push({ classOfInstance: cc, isChild: true, isView: false, className: cn });
             })
 
         });

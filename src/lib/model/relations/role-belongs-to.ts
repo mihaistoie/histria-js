@@ -95,10 +95,11 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
             res = await that._lazyLoad() || null;
             let p: any = that._parent;
             // parent of p is res
-            await p.changeParent(res, that._relation.invRel, that._propertyName || DEFAULT_PARENT_NAME, false );
+            await p.changeParent(res, that._relation.invRel, that._propertyName || DEFAULT_PARENT_NAME, false);
         }
         return res;
     }
+    
     public internalSetValue(value: any) {
     }
     protected async _setValue(value: T): Promise<T> {

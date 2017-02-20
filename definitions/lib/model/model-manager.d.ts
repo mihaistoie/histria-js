@@ -12,6 +12,12 @@ export declare class ModelManager {
         isRestore: boolean;
     }): T;
     classByName(className: string, namespace: string): any;
+    enumClasses(cb: (item: {
+        classOfInstance: any;
+        isChild: boolean;
+        isView: boolean;
+        className: string;
+    }) => void): void;
     registerClass(constructor: any, schema: any): void;
     private _loaded();
     hasParent(classOfInstance: any): void;

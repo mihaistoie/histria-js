@@ -30,7 +30,7 @@ export class Transaction implements TransactionContainer {
     public get context(): UserContext {
         return this._ctx;
     }
-    private _saveToJson(): void {
+    private _saveToJson(): any {
         let that = this;
         let res: any = { instances: [] };
         if (that._removedInstances) {
@@ -64,8 +64,13 @@ export class Transaction implements TransactionContainer {
                 }
             });
         }
+        return res;
     }
 
+    private _loadFromJson(data: any): void {
+        let that = this;
+        
+    }
 
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
         let that = this;

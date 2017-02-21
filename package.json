@@ -29,10 +29,10 @@
   },
   "types": "./definitions/index.d.ts",
   "scripts": {
-    "test": "mocha --compilers ts:ts-node/register test/**/*.test.ts",
+    "test": "mocha --compilers ts:ts-node/register test/**/*.specs.ts",
     "gen": "mocha --compilers ts:ts-node/register test/**/*.gentest.ts",
-    "compositions": "mocha --compilers ts:ts-node/register test/compositions/*.test.ts",
-    "aggregations": "mocha --compilers ts:ts-node/register test/aggregations/*.test.ts",
-    "latest": "mocha --compilers ts:ts-node/register test/compositions/compositions-many.test.ts"
+    "compositions": "mocha --compilers ts:ts-node/register test/compositions/*.specs.ts",
+    "aggregations": "mocha --compilers ts:ts-node/register test/aggregations/*.specs.ts",
+    "latest": "mocha --compilers ts:ts-node/register test/compositions/compositions-many.specs.ts"
   }
 }

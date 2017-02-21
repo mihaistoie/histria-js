@@ -157,8 +157,35 @@ export class Transaction implements TransactionContainer {
         that._addInstance(instance, classOfInstance);
         return instance;
     }
+    public clear() {
+        let that = this;
+        if (that._instances) {
+            let mm = modelManager();
+            mm.enumRoots(item => {
+                let instances = that._instances.get(item.classOfInstance);
+                if (instances) {
+                    let toDestroy: ObservableObject[] = [];
+                    for (let ii of instances) {
+                        toDestroy.push(ii[1]);
+                    }
+                    toDestroy.forEach(instance => instance.destroy());
+                }
+            });
+            for (let classOfInstance of that._instances) {
+                let map = classOfInstance[1];
+                let toDestroy: ObservableObject[] = [];
+                for (let ii of map) {
+                    toDestroy.push(ii[1]);
+                }
+                toDestroy.forEach(instance => instance.destroy());
+            }
+            that._instances = null;
+        }
+
+    }
     public destroy() {
         let that = this;
+        that.clear();
         that._subscribers = null;
         that._ctx = null;
     }
@@ -213,6 +240,15 @@ export class Transaction implements TransactionContainer {
             }
         }
         return null;
+    }
+    public removeInstance(classOfInstance: any, instance: ObservableObject) {
+        let that = this;
+        if (that._instances) {
+            let byClass = that._instances.get(classOfInstance);
+            if (byClass) 
+                byClass.delete(instance.uuid)
+        }
+
     }
     public remove(instance: ObservableObject): void {
         let that = this;

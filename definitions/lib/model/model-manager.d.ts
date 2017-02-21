@@ -18,9 +18,14 @@ export declare class ModelManager {
         isView: boolean;
         className: string;
     }) => void): void;
+    enumRoots(cb: (item: {
+        classOfInstance: any;
+        isChild: boolean;
+        isView: boolean;
+        className: string;
+    }) => void): void;
     registerClass(constructor: any, schema: any): void;
     private _loaded();
-    hasParent(classOfInstance: any): void;
     rulesForInit(classOfInstance: any): any[];
     rulesObjValidate(classOfInstance: any): any[];
     rulesForPropChange(classOfInstance: any, propertyName: string): any[];

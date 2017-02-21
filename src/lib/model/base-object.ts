@@ -22,6 +22,7 @@ import * as uuid from 'uuid';
 
 
 export class Instance implements ObservableObject {
+	private _destroyCount: number;
 	//used only in root
 	protected _status: ObjectStatus;
 	protected _transaction: TransactionContainer;
@@ -126,7 +127,7 @@ export class Instance implements ObservableObject {
 			that._rootCache = that._parent ? that._parent.getRoot() : that;
 		return that._rootCache;
 	}
-    public standalone(): boolean {
+	public standalone(): boolean {
 		let that = this;
 		if (!that._schema.meta || !that._schema.meta.parent) return true;
 		return !!that._parent;
@@ -416,9 +417,11 @@ export class Instance implements ObservableObject {
 
 	public destroy() {
 		let that = this;
-		that._schema = null;
-		that._model = null;
-		that._rootCache = null;
+		that._destroyCount = that._destroyCount || 0;
+		that._destroyCount++;
+		if (that._destroyCount > 0)
+			throw "Destroy called more than once."
+
 		if (that._states) {
 			that._states.destroy();
 			that._states = null;
@@ -438,6 +441,14 @@ export class Instance implements ObservableObject {
 			that._errors = null;
 
 		}
+		if (that._transaction) {
+			that._transaction.removeInstance(modelManager().classByName(that._schema.name, that._schema.nameSpace), that);
+			that._transaction = null;
+		}
+		that._schema = null;
+		that._model = null;
+		that._rootCache = null;
+
 		that._context = null;
 		that._parent = null;
 		that._propertyName = null;

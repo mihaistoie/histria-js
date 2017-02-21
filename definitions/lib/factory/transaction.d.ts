@@ -14,10 +14,12 @@ export declare class Transaction implements TransactionContainer {
     restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
     load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
+    clear(): void;
     destroy(): void;
     private _addInstance(instance, classOfInstance);
     find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T[]>;
     findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T>;
+    removeInstance(classOfInstance: any, instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
     private _getInstances(classOfInstance);
     private _getRemovedInstances(classOfInstance);

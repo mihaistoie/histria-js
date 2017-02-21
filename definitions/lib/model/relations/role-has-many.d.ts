@@ -9,6 +9,7 @@ export declare class HasManyComposition<T extends ObservableObject> extends Obje
     add(item: T, index?: number): Promise<T>;
     set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
+    destroy(): void;
 }
 export declare class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {
     private _loaded;

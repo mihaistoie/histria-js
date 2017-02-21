@@ -47,6 +47,8 @@ async function testCreate(): Promise<void> {
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
 
+    transaction.destroy();
+
 }
 
 
@@ -91,6 +93,9 @@ async function testLoad(): Promise<void> {
 
     lc = cars.find(car => { return car.id === 1002});
     assert.notEqual(lc, null, 'Car found in db');
+    
+    
+    transaction.destroy();
 }
 
 
@@ -115,6 +120,9 @@ async function testRules(): Promise<void> {
     await engine.setCar(car); 
     await engine.setName('v8');   
     assert.equal(await car.engineName, 'v8', 'Rule propagation');
+    
+    
+    transaction.destroy();
 
 
 }

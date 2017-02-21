@@ -37,7 +37,16 @@ export class ModelManager {
     }
     public enumClasses(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }) => void) {
         let that = this;
+        that._loaded()
         that._sortedClasses.forEach(item => cb(item));
+    }
+    public enumRoots(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }) => void) {
+        let that = this;
+        that._loaded()
+        that._sortedClasses.forEach(item => {
+            if (!item.isChild)
+                cb(item); }
+        );
     }
 
     public registerClass(constructor: any, schema: any) {
@@ -120,11 +129,7 @@ export class ModelManager {
         that._dirty = false;
     }
 
-    public hasParent(classOfInstance: any) {
-        let that = this;
-        that._loaded();
-    }
-
+    
     public rulesForInit(classOfInstance: any): any[] {
         let that = this;
         let res: any[] = [];

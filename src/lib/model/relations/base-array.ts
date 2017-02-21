@@ -63,15 +63,12 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
 
     protected destroyItems() {
         let that = this
-        that._items && that._items.forEach(item => {
-            //TODO: remove item from cache
-            //item.destroy();
-        });
-        that._items = [];
+        that._items = null;
     }
     protected setValue(value?: T[]) {
         let that = this;
         that.destroyItems();
+        that._items = [];
         that._isNull = value === null;
         that._isUndefined = value === undefined;
         that._model = value;

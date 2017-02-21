@@ -163,6 +163,15 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         }
 
     }
+    public destroy() {
+        let that = this;
+        that._items && that._items.forEach(item => {
+            item.destroy();
+        });
+        that._items = null;
+        super.destroy();
+    }
+
 
 }
 

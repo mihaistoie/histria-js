@@ -2,6 +2,7 @@ import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContex
 import { InstanceErrors } from './states/instance-errors';
 import { InstanceState } from './states/instance-state';
 export declare class Instance implements ObservableObject {
+    private _destroyCount;
     protected _status: ObjectStatus;
     protected _transaction: TransactionContainer;
     protected _parent: ObservableObject;

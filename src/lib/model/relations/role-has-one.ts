@@ -172,6 +172,14 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
 
         }
     }
+    public destroy() {
+        let that = this;
+        if (that._value) {
+            that._value.destroy();
+            that._value = null;
+        }
+        super.destroy();
+    }
 }
 
 

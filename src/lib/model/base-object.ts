@@ -419,7 +419,7 @@ export class Instance implements ObservableObject {
 		let that = this;
 		that._destroyCount = that._destroyCount || 0;
 		that._destroyCount++;
-		if (that._destroyCount > 0)
+		if (that._destroyCount > 1)
 			throw "Destroy called more than once."
 
 		if (that._states) {

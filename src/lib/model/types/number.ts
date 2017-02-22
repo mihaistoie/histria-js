@@ -52,7 +52,7 @@ export class BaseNumberValue {
 
     public setDecimals(value: number): Promise<number> {
         let that = this;
-        if (that._decimals != value)
+        if (that._decimals !== value)
             that._decimals = value;
         return Promise.resolve(that._decimals);
     }

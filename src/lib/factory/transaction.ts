@@ -30,7 +30,7 @@ export class Transaction implements TransactionContainer {
     public get context(): UserContext {
         return this._ctx;
     }
-    private _saveToJson(): any {
+    public saveToJson(): any {
         let that = this;
         let res: any = { instances: [] };
         if (that._removedInstances) {
@@ -67,9 +67,17 @@ export class Transaction implements TransactionContainer {
         return res;
     }
 
-    private _loadFromJson(data: any): void {
+    public loadFromJson(data: any): void {
         let that = this;
-        
+        let mm = modelManager();
+        data && data.instances.forEach((item: { className: string, data: any }) => {
+            let cn = item.className.split('.');
+            let factory = mm.classByName(cn[0], cn[1]);
+            if (!factory)
+                throw util.format('Class not found "%s".', item.className);
+            that.restore(factory, item.data);
+        });
+
     }
 
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
@@ -111,23 +119,6 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let mm = modelManager();
         let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: false });
-        that._addInstance(instance, classOfInstance);
-        let instances: any[] = []
-        instance.enumChildren((child: any) => {
-            instances.push(child);
-        });
-        instances.push(instance);
-        for (let inst of instances) {
-            await inst.afterCreated();
-        }
-        return instance;
-    }
-
-    public async restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
-        let mm = modelManager();
-        let that = this;
-        data = data || {};
-        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
         that._addInstance(instance, classOfInstance);
         let instances: any[] = []
         instance.enumChildren((child: any) => {
@@ -250,7 +241,7 @@ export class Transaction implements TransactionContainer {
         let that = this;
         if (that._instances) {
             let byClass = that._instances.get(classOfInstance);
-            if (byClass) 
+            if (byClass)
                 byClass.delete(instance.uuid)
         }
 
@@ -264,6 +255,21 @@ export class Transaction implements TransactionContainer {
             that._removedInstances.set(instance.constructor, instances);
         }
         instances.set(instance.uuid, instance);
+    }
+    public restore<T extends ObservableObject>(classOfInstance: any, data: any): T {
+        let mm = modelManager();
+        let that = this;
+        data = data || {};
+        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
+        that._addInstance(instance, classOfInstance);
+        let instances: any[] = []
+        instance.enumChildren((child: any) => {
+            instances.push(child);
+        });
+        instances.push(instance);
+        for (let inst of instances)
+            inst.afterRestore();
+        return instance;
     }
 
     private _getInstances(classOfInstance: any): Map<string, ObservableObject> {
@@ -305,6 +311,8 @@ export class Transaction implements TransactionContainer {
         return dbManager().store(nameSpace);
 
     }
+
+
 
 }
 

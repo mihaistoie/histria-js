@@ -92,7 +92,7 @@ async function testRestore(): Promise<void> {
     let saved = JSON.parse(JSON.stringify(order1.model()));
 
     let transaction2 = new Transaction();
-    let order2 = await transaction1.restore<Order>(Order, saved);
+    let order2 = transaction1.restore<Order>(Order, saved);
     let children2 = await order2.items.toArray();
 
     assert.equal(children2.length, 3, 'Order has 3 items');

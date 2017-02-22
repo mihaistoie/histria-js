@@ -7,12 +7,11 @@ export declare class Transaction implements TransactionContainer {
     private _ctx;
     constructor(ctx?: UserContext);
     readonly context: UserContext;
-    private _saveToJson();
-    private _loadFromJson(data);
+    saveToJson(): any;
+    loadFromJson(data: any): void;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
-    restore<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
     load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     clear(): void;
@@ -28,4 +27,5 @@ export declare class Transaction implements TransactionContainer {
     private _findOne<T>(query, classOfInstance);
     private _find<T>(filter, classOfInstance);
     private _store(classOfInstance);
+    private _restore<T>(classOfInstance, data);
 }

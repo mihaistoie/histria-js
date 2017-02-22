@@ -130,7 +130,7 @@ export class Instance implements ObservableObject {
 	public standalone(): boolean {
 		let that = this;
 		if (!that._schema.meta || !that._schema.meta.parent) return true;
-		return !!that._parent;
+		return !!!that._parent;
 	}
 
 	public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
@@ -371,6 +371,13 @@ export class Instance implements ObservableObject {
 			that.status = ObjectStatus.idle;
 		}
 	}
+	public afterRestore() {
+		let that = this;
+		if (that._afterCreateCalled) return;
+		that._afterCreateCalled = true;
+		that.status = ObjectStatus.idle;
+	}
+
 	public enumChildren(cb: (value: ObservableObject) => void) {
 		let that = this;
 		schemaUtils.enumCompositions(that._schema.relations, function (relationName, relation) {

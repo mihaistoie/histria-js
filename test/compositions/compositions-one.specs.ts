@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
+import { DbDriver, dbManager, DbManager, IStore} from 'histria-utils';
 import * as dbMemory from 'histria-db-memory';
 import { Car, Engine } from './model/compositions-model';
 
@@ -14,10 +14,19 @@ import { test as test1 } from './model/rules/car-engine-rules';
 async function testCreate(): Promise<void> {
 
     let transaction = new Transaction();
+    
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
 
     await car.setEngine(engine);
+    await car.setEngine(null);
+
+    let data = transaction.saveToJson();
+    console.log(JSON.stringify(data, null, 2));
+
+    await car.setEngine(engine);
+
+    
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
     assert.equal(engine.carId, car.uuid, 'Owner of engine is car');
@@ -46,6 +55,8 @@ async function testCreate(): Promise<void> {
     assert.equal(engine.carId, undefined, 'Owner of engine null 3 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
+    
+    
 
     transaction.destroy();
 

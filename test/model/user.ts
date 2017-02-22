@@ -90,7 +90,7 @@ export class UserState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	USER_SCHEMA = {
 		"name": "user",
 		"type": "object",
@@ -128,4 +128,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(User, USER_SCHEMA);

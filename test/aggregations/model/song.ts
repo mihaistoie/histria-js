@@ -82,7 +82,7 @@ export class SongState extends InstanceState {
 		return this._states.cdId;
 	}
 }
-const
+export const
 	SONG_SCHEMA = {
 		"type": "object",
 		"name": "song",
@@ -126,4 +126,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Song, SONG_SCHEMA);

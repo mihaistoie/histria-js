@@ -2,8 +2,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { Cd } from './model/cd';
-import { Song } from './model/song';
+import { Cd, Song } from './model/aggregations-model';
 import { test as test1 } from './model/rules/cd-rules';
 
 async function testCreate(): Promise<void> {

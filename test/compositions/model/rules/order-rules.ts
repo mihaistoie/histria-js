@@ -1,5 +1,4 @@
-import { Order } from '../order';
-import { OrderItem } from '../order-item';
+import { Order, OrderItem } from '../compositions-model';
 import { propChanged, addItem, rmvItem, setItems, init, title, validate } from '../../../../src/index';
 
 

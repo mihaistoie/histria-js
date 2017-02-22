@@ -1,5 +1,4 @@
-import { Car } from '../car';
-import { Driver } from '../driver';
+import { Car, Driver } from '../aggregations-model';
 import { propChanged, init, title, validate } from '../../../../src/index';
 
 

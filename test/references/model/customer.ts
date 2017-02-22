@@ -57,7 +57,7 @@ export class CustomerState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	CUSTOMER_SCHEMA = {
 		"type": "object",
 		"nameSpace": "references",
@@ -75,4 +75,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Customer, CUSTOMER_SCHEMA);

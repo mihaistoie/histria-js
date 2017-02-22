@@ -69,7 +69,7 @@ export class DepartmentState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	DEPARTMENT_SCHEMA = {
 		"type": "object",
 		"nameSpace": "references",
@@ -94,4 +94,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Department, DEPARTMENT_SCHEMA);

@@ -2,8 +2,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { Car } from './model/car';
-import { Driver } from './model/driver';
+import { Car, Driver } from './model/aggregations-model';
 import { test as test1 } from './model/rules/car-driver-rules';
 
 async function testCreate(): Promise<void> {

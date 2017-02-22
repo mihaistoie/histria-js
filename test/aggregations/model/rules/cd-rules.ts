@@ -1,5 +1,4 @@
-import { Cd } from '../cd';
-import { Song } from '../song';
+import { Cd, Song } from '../aggregations-model';
 import { propChanged, addItem, rmvItem, setItems, init, title, validate } from '../../../../src/index';
 
 

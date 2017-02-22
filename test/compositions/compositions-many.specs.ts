@@ -5,8 +5,7 @@ import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
-import { Order } from './model/order';
-import { OrderItem } from './model/order-item';
+import { Order, OrderItem } from './model/compositions-model';
 import { test as test1 } from './model/rules/order-rules';
 
 async function testCreate(): Promise<void> {

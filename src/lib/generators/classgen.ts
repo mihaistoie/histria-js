@@ -7,22 +7,33 @@ import { schemaUtils } from 'histria-utils';
 import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from 'histria-utils';
 
 
-async function saveCode(codeByClass: any, dstFolder: string) {
-    let writers = Object.keys(codeByClass).map(name => {
+async function saveCode(codeByClass: any, codeByNamespace: any, dstFolder: string) {
+    let writersClasses = Object.keys(codeByClass).map(name => {
         let item = codeByClass[name];
         return fsPromises.writeFile(path.join(dstFolder, item.fileName + '.ts'), item.code.join('\n'));
     });
-    await Promise.all(writers);
+    let writersNamespaces = Object.keys(codeByNamespace).map(name => {
+        let item = codeByNamespace[name];
+        return fsPromises.writeFile(path.join(dstFolder, item.fileName + '.ts'), item.import.concat(item.code).join('\n'));
+    });
+    await Promise.all(writersClasses.concat(writersNamespaces));
 }
 
-function _generate(codeByClass: any, model: any, pathToLib?: string) {
-    let baseClass = 'Instance'
+function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib?: string) {
+    let baseClass = 'Instance';
     Object.keys(model).forEach((name) => {
         let schema = model[name];
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
         let code: string[] = [];
         let imports: string[] = [];
+        let ns = codeByNameSpace[schema.nameSpace];
+        if (!ns) {
+            ns = { code: [], import: [], fileName: _extractFileName(schema.nameSpace) + '-model' };
+            ns.import.push('import {modelManager} from \'' + pathToLib + '\';');
+            ns.import.push('');
+            codeByNameSpace[schema.nameSpace] = ns;
+        }
         let cc: any = {}
 
         pathToLib = pathToLib || 'histria--utils'
@@ -34,8 +45,13 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
         imports.push('} from \'' + pathToLib + '\';');
 
         // Generate Class
+        ns.import.push(util.format('import {%s, %s_SCHEMA} from \'./%s\';', className, className.toUpperCase(), _extractFileName(schema.name)));
+        ns.import.push(util.format('export {%s} from \'./%s\';', className, _extractFileName(schema.name)));
+
         code.push('');
         code.push(util.format('export class %s extends %s {', className, baseClass));
+
+
         //add private 
 
         //add constructor
@@ -160,9 +176,8 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 
         _genSchema(schema, className, code)
 
-        code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
-
-
+        //code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
+        ns.code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
 
 
         code = imports.concat(code);
@@ -176,7 +191,7 @@ function _generate(codeByClass: any, model: any, pathToLib?: string) {
 }
 
 function _genSchema(schema: any, className: string, code: string[]) {
-    code.push('const');
+    code.push('export const');
     let schemaStr = JSON.stringify(schema, null, _tab(1)).split('\n');
     code.push(_tab(1) + util.format('%s_SCHEMA = %s', className.toUpperCase(), schemaStr[0]));
     let len = schemaStr.length - 1;
@@ -272,8 +287,9 @@ export async function classGenerator(srcFolder: string, dstFolder: string, pathT
     let model = {};
     await schemaUtils.loadModel(srcFolder, model);
     let codeByClass = {};
-    _generate(codeByClass, model, pathToLib);
-    await saveCode(codeByClass, dstFolder);
+    let codeByNamespace = {};
+    _generate(codeByClass, codeByNamespace, model, pathToLib);
+    await saveCode(codeByClass, codeByNamespace, dstFolder);
 }
 
 

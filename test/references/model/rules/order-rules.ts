@@ -1,4 +1,4 @@
-import { Order } from '../order';
+import { Order } from '../references-model';
 import { propChanged, init, title, validate } from '../../../../src/index';
 
 

@@ -1,4 +1,4 @@
-import { SalesOrder } from '../sales-order';
+import { SalesOrder } from '../model-model';
 import { propChanged, init, title } from '../../../src/index';
 
 

@@ -85,7 +85,7 @@ export class DriverState extends InstanceState {
 		return this._states.drivesId;
 	}
 }
-const
+export const
 	DRIVER_SCHEMA = {
 		"type": "object",
 		"name": "driver",
@@ -128,4 +128,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Driver, DRIVER_SCHEMA);

@@ -81,7 +81,7 @@ export class SalesOrderState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	SALESORDER_SCHEMA = {
 		"name": "salesOrder",
 		"type": "object",
@@ -122,4 +122,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(SalesOrder, SALESORDER_SCHEMA);

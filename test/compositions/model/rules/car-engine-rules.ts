@@ -1,5 +1,4 @@
-import { Car } from '../car';
-import { Engine } from '../engine';
+import { Car, Engine } from '../compositions-model';
 import { propChanged, init, title, validate } from '../../../../src/index';
 
 

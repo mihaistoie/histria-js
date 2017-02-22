@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { SalesOrder } from './sales-order';
+import { SalesOrder } from './model-model';
 import * as sorules from './rules/salesorder-rules';
 
 

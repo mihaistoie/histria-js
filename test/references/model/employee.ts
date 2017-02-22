@@ -110,7 +110,7 @@ export class EmployeeState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	EMPLOYEE_SCHEMA = {
 		"type": "object",
 		"nameSpace": "references",
@@ -170,4 +170,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Employee, EMPLOYEE_SCHEMA);

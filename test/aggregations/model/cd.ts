@@ -61,7 +61,7 @@ export class CdState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	CD_SCHEMA = {
 		"type": "object",
 		"name": "cd",
@@ -96,4 +96,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Cd, CD_SCHEMA);

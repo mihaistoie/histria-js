@@ -1,4 +1,4 @@
-import { User } from '../user';
+import { User } from '../model-model';
 import { propChanged, init, title, validate } from '../../../src/index';
 
 

@@ -76,7 +76,7 @@ export class CarState extends InstanceState {
 		return this._states.id;
 	}
 }
-const
+export const
 	CAR_SCHEMA = {
 		"type": "object",
 		"name": "car",
@@ -114,4 +114,3 @@ const
 		},
 		"meta": {}
 	};
-modelManager().registerClass(Car, CAR_SCHEMA);

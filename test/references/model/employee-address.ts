@@ -124,7 +124,7 @@ export class EmployeeAddressState extends InstanceState {
 		return this._states.employeeId;
 	}
 }
-const
+export const
 	EMPLOYEEADDRESS_SCHEMA = {
 		"type": "object",
 		"name": "employeeAddress",
@@ -182,4 +182,3 @@ const
 			"parent": "employee"
 		}
 	};
-modelManager().registerClass(EmployeeAddress, EMPLOYEEADDRESS_SCHEMA);

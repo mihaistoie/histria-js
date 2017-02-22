@@ -85,7 +85,7 @@ export class EngineState extends InstanceState {
 		return this._states.carId;
 	}
 }
-const
+export const
 	ENGINE_SCHEMA = {
 		"type": "object",
 		"name": "engine",
@@ -130,4 +130,3 @@ const
 			"parent": "car"
 		}
 	};
-modelManager().registerClass(Engine, ENGINE_SCHEMA);

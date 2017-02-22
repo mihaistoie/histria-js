@@ -5,8 +5,8 @@ import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 import * as dbMemory from 'histria-db-memory';
-import { Car } from './model/car';
-import { Engine } from './model/engine';
+import { Car, Engine } from './model/compositions-model';
+
 
 import { test as test1 } from './model/rules/car-engine-rules';
 

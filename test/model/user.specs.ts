@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { User } from './user';
+import { User } from './model-model';
 import * as urules from './rules/user-rules';
 
 async function testUser(): Promise<void> {

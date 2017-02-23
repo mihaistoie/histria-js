@@ -72,9 +72,10 @@ export class Transaction implements TransactionContainer {
         let mm = modelManager();
         data && data.instances.forEach((item: { className: string, data: any }) => {
             let cn = item.className.split('.');
-            let factory = mm.classByName(cn[0], cn[1]);
-            if (!factory)
+            let factory = mm.classByName(cn[1], cn[0]);
+            if (!factory) {
                 throw util.format('Class not found "%s".', item.className);
+            }
             that.restore(factory, item.data);
         });
 

@@ -73,6 +73,7 @@ export class Instance implements ObservableObject {
 		that._parent = newParent;
 		that._propertyName = that._parent ? foreignPropName : '';
 		that._rootCache = null;
+		
 		if (notify && localPropName) {
 			await that.changeProperty(localPropName, that._parent, newParent, function () {
 				that._parent = newParent;

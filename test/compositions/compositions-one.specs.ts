@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../src/index';
-import { DbDriver, dbManager, DbManager, IStore} from 'histria-utils';
+import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 import * as dbMemory from 'histria-db-memory';
 import { Car, Engine } from './model/compositions-model';
 
@@ -14,19 +14,13 @@ import { test as test1 } from './model/rules/car-engine-rules';
 async function testCreate(): Promise<void> {
 
     let transaction = new Transaction();
-    
+
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
 
     await car.setEngine(engine);
-    await car.setEngine(null);
-
-    let data = transaction.saveToJson();
-    console.log(JSON.stringify(data, null, 2));
-
-    await car.setEngine(engine);
-
     
+
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
     assert.equal(engine.carId, car.uuid, 'Owner of engine is car');
@@ -55,9 +49,17 @@ async function testCreate(): Promise<void> {
     assert.equal(engine.carId, undefined, 'Owner of engine null 3 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
-    
-    
 
+    
+    transaction.clear();
+    let car3 = await transaction.create<Car>(Car);
+    let engine3 = await transaction.create<Engine>(Engine);
+    await engine3.setCar(car3);
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test 1');
     transaction.destroy();
 
 }
@@ -90,22 +92,29 @@ async function testLoad(): Promise<void> {
     assert.equal(i, 1, 'Car a child');
 
     //DB test
-    let scar = await transaction.findOne<Car>(Car, {id: 1001})
+    let scar = await transaction.findOne<Car>(Car, { id: 1001 })
     assert.notEqual(scar, null, 'Car found');
     assert.equal(scar.id, 1001, 'Car id is 1001');
-    let engine =  await scar.engine();
+    let engine = await scar.engine();
     assert.notEqual(engine, null, 'Car has engine ');
     assert.equal(engine.id, 2001, 'Engine id is 2001');
     await engine.setName('v3')
 
     let cars = await transaction.find<Car>(Car, {});
-    let lc = cars.find(car => { return car.id === 1001});
+    let lc = cars.find(car => { return car.id === 1001 });
     assert.equal(scar, lc, 'Car found in cache');
 
-    lc = cars.find(car => { return car.id === 1002});
+    lc = cars.find(car => { return car.id === 1002 });
     assert.notEqual(lc, null, 'Car found in db');
-    
-    
+
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test 2');
+
+
     transaction.destroy();
 }
 
@@ -128,11 +137,16 @@ async function testRules(): Promise<void> {
     assert.equal(car.engineChangedHits.value, 3, '(1) Rule called 3 times');
     assert.equal(engine.carChangedHits.value, 3, '(2) Rule called 3 times');
 
-    await engine.setCar(car); 
-    await engine.setName('v8');   
+    await engine.setCar(car);
+    await engine.setName('v8');
     assert.equal(await car.engineName, 'v8', 'Rule propagation');
-    
-    
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test 3');
+
     transaction.destroy();
 
 
@@ -141,36 +155,36 @@ async function testRules(): Promise<void> {
 
 describe('Relation One to One, Composition', () => {
     before(function (done) {
-        let dm: DbManager =  dbManager();
-        dm.registerNameSpace('compositions', 'memory', {compositionsInParent :true});
+        let dm: DbManager = dbManager();
+        dm.registerNameSpace('compositions', 'memory', { compositionsInParent: true });
         let store = dm.store('compositions');
         store.initNameSpace('compositions', {
             car: [
                 {
-                    id: 1001, 
-                    engineChangedHits: 0, 
+                    id: 1001,
+                    engineChangedHits: 0,
                     engineName: 'v1',
                     engine: {
                         id: 2001,
-                        carId: 1001, 
+                        carId: 1001,
                         carChangedHits: 0,
                         name: 'v1'
 
                     }
                 },
                 {
-                    id: 1002, 
-                    engineChangedHits: 0, 
+                    id: 1002,
+                    engineChangedHits: 0,
                     engineName: 'v2',
                     engine: {
                         id: 2002,
-                        carId: 1002, 
+                        carId: 1002,
                         carChangedHits: 0,
                         name: 'v2'
 
                     }
                 }
-                
+
             ]
         });
 
@@ -213,3 +227,6 @@ describe('Relation One to One, Composition', () => {
 
 
 });
+
+
+//console.log(JSON.stringify(data, null, 2));

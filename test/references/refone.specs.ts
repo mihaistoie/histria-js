@@ -19,6 +19,14 @@ async function testCreate(): Promise<void> {
     assert.equal(employee.departmentCode, department.code, 'set department not null');
     await employee.setDepartment(null);
     assert.equal(employee.departmentCode, undefined, 'departmentCode is undefined');
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();
 }
 
 async function testLoad(): Promise<void> {
@@ -32,6 +40,14 @@ async function testLoad(): Promise<void> {
     await employee.setDepartment(null);
     let depCode = employee.departmentCode;
     assert.equal(depCode, undefined, 'departmentCode is undefined');
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();
 }
 
 async function testRefById(): Promise<void> {
@@ -45,6 +61,14 @@ async function testRefById(): Promise<void> {
     await order.setCustomer(null);
     customerId = order.customerId;
     assert.equal(customerId, undefined, 'customerId is undefined');
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();
 }
 
 
@@ -56,6 +80,13 @@ async function testRules(): Promise<void> {
     assert.equal(order.customerStatus, 'not null', 'Rule called 1');
     await order.setCustomer(null);
     assert.equal(order.customerStatus, 'null', 'Rule called 2');
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+    transaction.destroy();
 }
 
 

@@ -41,6 +41,15 @@ async function testCreate(): Promise<void> {
     assert.equal(await driver.drives(), null, 'Driver hasn\'t a car 3');
     assert.equal(await car2.drivenBy(), driver2, 'Car2 is driven by driver2');
 
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();    
+    
+
 }
 
 
@@ -56,7 +65,15 @@ async function testLoad(): Promise<void> {
     let driver2 = await transaction.load<Driver>(Driver, { drivesId: car2.uuid });
     assert.equal(await driver2.drives(), car2, '(1) Driver 2 drivers car 2 ');
     assert.equal(await car2.drivenBy(), driver2, '(1) Driver 2 drivers car 2 ');
+    
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
+    transaction.destroy();    
+    
 }
 
 async function testRules(): Promise<void> {
@@ -75,7 +92,15 @@ async function testRules(): Promise<void> {
     await driver.setDrives(car);
     assert.equal(driver.carChangedHits.value, 3, '(1) Rule called  3 times');
     assert.equal(car.driverName, 'joe', '(2) Rule called  3 times');
-  
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();    
+      
 }
 
 

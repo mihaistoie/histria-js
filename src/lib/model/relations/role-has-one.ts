@@ -160,17 +160,21 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     }
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
         let that = this;
-        if (newValue)
-            await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true)
-        if (oldValue)
+        if (newValue) {
+            await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+            that._parent.model()[that._propertyName] = newValue.model();
+        }
+        if (oldValue) {
             await oldValue.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true)
+        }
+        if (!newValue) {
+            that._parent.model()[that._propertyName] = null;
+        }
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         let that = this;
-        if (newValue) {
+        if (newValue) 
             await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, false);
-
-        }
     }
     public destroy() {
         let that = this;

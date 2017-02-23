@@ -111,6 +111,7 @@ export class ModelManager {
             parents.push(parent);
 
         }
+       
         parents.sort((a, b) => {
             if (b.mapRefs[a.name]) return -1;
             if (a.mapRefs[b.name]) return 1;

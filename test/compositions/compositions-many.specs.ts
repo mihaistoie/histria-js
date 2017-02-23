@@ -40,8 +40,14 @@ async function testCreate(): Promise<void> {
     assert.equal(children.length, 1, '(4) Order has 1 items');
     assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid], '(5) Order has 1 items');
     assert.equal(await item2.order(), null, '(6) Parent is null');
+ 
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test in create');
 
-
+    transaction.destroy();    
 }
 
 
@@ -73,14 +79,20 @@ async function testLoad(): Promise<void> {
     assert.equal(children2[0].loaded, true, '(1)Init rule called');
     assert.equal(children2[1].loaded, true, '(2) Init rule called');
     assert.equal(children2[2].loaded, true, '(3)Init rule called');
+    
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test in load');
 
-
+    transaction.destroy();  
 }
 
 
 async function testRestore(): Promise<void> {
-    let transaction1 = new Transaction();
-    let order1 = await transaction1.load<Order>(Order, { id: 101, totalAmount: 0, items: [{ id: 1, amount: 0 }, { id: 2, amount: 0 }, { id: 3, amount: 0 }] });
+    let transaction = new Transaction();
+    let order1 = await transaction.load<Order>(Order, { id: 101, totalAmount: 0, items: [{ id: 1, amount: 0 }, { id: 2, amount: 0 }, { id: 3, amount: 0 }] });
     let children1 = await order1.items.toArray();
     assert.equal(children1[1].loaded, true, '(1) Loaded = true Init rule called');
     await children1[1].setLoaded(false);
@@ -92,13 +104,22 @@ async function testRestore(): Promise<void> {
     let saved = JSON.parse(JSON.stringify(order1.model()));
 
     let transaction2 = new Transaction();
-    let order2 = transaction1.restore<Order>(Order, saved);
+    let order2 = transaction.restore<Order>(Order, saved);
     let children2 = await order2.items.toArray();
 
     assert.equal(children2.length, 3, 'Order has 3 items');
     assert.equal(children2[1].loaded, false, '(2) Loaded = false');
     await children2[0].amount.setValue(10);
     assert.equal(order2.totalAmount.value, 20, '(2) Rule called');
+    
+    
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test in restore');
+
+    transaction.destroy();  
 
 }
 
@@ -121,6 +142,14 @@ async function testRules(): Promise<void> {
     assert.equal(order.totalAmount.value, 0, 'Total amount  = 0');
     await order.items.set([item1, item2]);
     assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
+
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Restore test in rules');
+
+    transaction.destroy();
 }
 
 

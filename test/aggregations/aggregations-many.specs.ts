@@ -23,6 +23,8 @@ async function testCreate(): Promise<void> {
     assert.equal(children.length, 2, '(1) Cd has 2 songs');
     assert.deepEqual(children.map(ii => ii.uuid), [song1.uuid, song2.uuid], '(2) Cd has 2 songs');
 
+
+
     await song1.setCd(null);
     children = await cd.songs.toArray();
     assert.deepEqual(children.map(ii => ii.uuid), [song2.uuid], '(1) Cd has a song');
@@ -30,6 +32,8 @@ async function testCreate(): Promise<void> {
     await cd.songs.add(song1, 0);
     children = await cd.songs.toArray();
     assert.equal(children.length, 2, '(1) Cd has 2 songs');
+
+    
     assert.deepEqual(children.map(ii => ii.uuid), [song1.uuid, song2.uuid], '(2) Cd has 2 songs');
 
     await cd.songs.remove(song2)
@@ -38,8 +42,14 @@ async function testCreate(): Promise<void> {
     assert.deepEqual(children.map(ii => ii.uuid), [song1.uuid], '(5) Cd has a song');
     assert.equal(await song2.cd(), null, '(6) Song2 hasn\'t cd');
 
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+    transaction.destroy();    
+}   
 
-}
 
 
 async function testLoad(): Promise<void> {
@@ -51,6 +61,15 @@ async function testLoad(): Promise<void> {
     let children = await cd.songs.toArray();
     assert.equal(children.length, 2, '(1) Cd has 2 songs');
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [song1.uuid, song2.uuid].sort(), '(2) Cd has 2 songs');
+    
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();    
+    
 }
 
 async function testRules(): Promise<void> {
@@ -78,6 +97,14 @@ async function testRules(): Promise<void> {
     assert.equal(song1.cdChangedHits.value, 2, '(1) Cd changed 2 times');
     assert.equal(song2.cdChangedHits.value, 2, '(2) Cd changed 2 times');
     //
+    let data1 = transaction.saveToJson();
+    transaction.clear();
+    transaction.loadFromJson(data1);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(data1, data2, 'Test transaction save/restore');
+
+    transaction.destroy();   
+
 
 }
 

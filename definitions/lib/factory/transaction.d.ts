@@ -21,11 +21,11 @@ export declare class Transaction implements TransactionContainer {
     findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T>;
     removeInstance(classOfInstance: any, instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
+    restore<T extends ObservableObject>(classOfInstance: any, data: any): T;
     private _getInstances(classOfInstance);
     private _getRemovedInstances(classOfInstance);
     private _findById<T>(id, classOfInstance);
     private _findOne<T>(query, classOfInstance);
     private _find<T>(filter, classOfInstance);
     private _store(classOfInstance);
-    private _restore<T>(classOfInstance, data);
 }

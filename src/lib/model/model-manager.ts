@@ -45,8 +45,16 @@ export class ModelManager {
         that._loaded()
         that._sortedClasses.forEach(item => {
             if (!item.isChild)
-                cb(item); }
-        );
+                cb(item);
+        });
+    }
+
+    public sortedClasses(): string[] {
+        let res: string[] = [];
+        let that = this;
+        that._loaded();
+        that.enumClasses(item => res.push(item.className));
+        return res;
     }
 
     public registerClass(constructor: any, schema: any) {
@@ -93,6 +101,7 @@ export class ModelManager {
         if (!that._dirty && that._sortedClasses) return;
         let allChildren = new Map<string, boolean>();
         let parents: { name: string, mapRefs: any, children: string[] }[] = [];
+        let allParents: any = {};
         let sm = schemaManager();
         for (let item of that._classes) {
             let fullClassName = item[0];
@@ -101,22 +110,35 @@ export class ModelManager {
                 continue;
             const deps = sm.childrenAndRefsOfClass(fullClassName);
             let mapRefs: any = {};
-            let parent = { name: fullClassName, mapRefs: mapRefs, children: deps.children }
+            let parent = { name: fullClassName, mapRefs: mapRefs, children: deps.children };
             deps.children.forEach(cn => {
                 allChildren.set(cn, true);
             });
             deps.refs.forEach(cn => {
                 mapRefs[cn] = true;
             });
-            parents.push(parent);
+            allParents[parent.name] = parent;
+            //parents.push(parent);
 
         }
-       
-        parents.sort((a, b) => {
-            if (b.mapRefs[a.name]) return -1;
-            if (a.mapRefs[b.name]) return 1;
-            return 0;
+        let pa: any = {};;
+        let addItem = function (name: string) {
+            if (pa[name]) return;
+            let item: { name: string, mapRefs: any, children: string[] } = allParents[name];
+            Object.keys(item.mapRefs).sort().forEach(function (refName) {
+                if (pa[refName]) return;
+                addItem(refName);
+            })
+            if (!pa[name]) {
+                parents.push(item);
+                pa[name] = true;
+            }
+        }
+
+        Object.keys(allParents).sort().forEach(name => {
+            addItem(name)
         });
+
         that._sortedClasses = [];
         parents.forEach(parent => {
             let pc = that._classes.get(parent.name);
@@ -130,7 +152,7 @@ export class ModelManager {
         that._dirty = false;
     }
 
-    
+
     public rulesForInit(classOfInstance: any): any[] {
         let that = this;
         let res: any[] = [];

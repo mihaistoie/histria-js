@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
-import { Transaction, loadRules } from '../../src/index';
+import { Transaction, loadRules, modelManager } from '../../src/index';
 import { Cd, Song } from './model/aggregations-model';
 import { test as test1 } from './model/rules/cd-rules';
 
@@ -48,6 +48,10 @@ async function testCreate(): Promise<void> {
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();    
+
+    let classes = modelManager().sortedClasses();
+    assert.equal(classes.indexOf('aggregations.song') > classes.indexOf('aggregations.cd'), true, 'Song depends on Cd');
+
 }   
 
 

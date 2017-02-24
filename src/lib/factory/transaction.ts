@@ -6,9 +6,12 @@ import { findInMap, IStore, dbManager } from 'histria-utils';
 
 import { TranContext } from './user-context';
 import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions } from '../model/interfaces';
+import { EventInfoStack } from './divers/event-stack'
 
 export class Transaction implements TransactionContainer {
     private _id: any;
+    private _eventInfo: EventInfo;
+
     private _subscribers: Map<EventType, any[]>;
     private _removedInstances: Map<any, Map<string, ObservableObject>>;
     private _instances: Map<any, Map<string, ObservableObject>>;
@@ -29,6 +32,12 @@ export class Transaction implements TransactionContainer {
     }
     public get context(): UserContext {
         return this._ctx;
+    }
+    public get eventInfo(): EventInfo {
+        let that = this;
+        if (!that._eventInfo)
+            that._eventInfo = new EventInfoStack()
+        return this._eventInfo;
     }
     public saveToJson(): any {
         let that = this;
@@ -183,6 +192,10 @@ export class Transaction implements TransactionContainer {
     public destroy() {
         let that = this;
         that.clear();
+        if (that._eventInfo) {
+            that._eventInfo.destroy();
+            that._eventInfo = null;
+        }
         that._subscribers = null;
         that._ctx = null;
     }

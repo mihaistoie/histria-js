@@ -2,7 +2,7 @@ import {
 	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
-	IntegerValue, NumberValue
+	NumberValue
 } from '../../../src/index';
 import { Song } from './song';
 
@@ -21,8 +21,11 @@ export class Cd extends Instance {
 		let that = this;
 		that._errors = new CdErrors(that, that._schema);
 	}
-	public get duration(): IntegerValue {
-		return this._children.duration;
+	public get duration(): number {
+		return this._children.duration.value;
+	}
+	public setDuration(value: number): Promise<number> {
+		return this._children.duration.setValue(value);
 	}
 	public get id(): any {
 		return this._children.id.value;

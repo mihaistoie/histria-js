@@ -59,6 +59,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
         that._model = null;
         that.destroyItems();
         super.destroy();
+        
     }
 
     protected destroyItems() {

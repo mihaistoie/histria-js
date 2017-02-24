@@ -33,7 +33,7 @@ export class SalesOrderRules {
 
 
     static async calculateVatAndAmont(so: SalesOrder, eventInfo: any): Promise<void> {
-        await so.ruleCount.setValue(so.ruleCount.value + 1)
+        await so.setRuleCount(so.ruleCount + 1)
         await so.vat.setValue(so.netAmount.value * VAT_TAX);
         await so.grossAmount.setValue(so.netAmount.value + so.vat.value);
     }

@@ -81,25 +81,25 @@ async function testRules(): Promise<void> {
     let cd = await transaction.create<Cd>(Cd);
     let song1 = await transaction.create<Song>(Song);
     let song2 = await transaction.create<Song>(Song);
-    await song1.duration.setValue(10);
-    await song2.duration.setValue(5);
+    await song1.setDuration(10);
+    await song2.setDuration(5);
     await song1.setCd(cd);
-    assert.equal(cd.duration.value, 10, '(1) Duration is 10');
+    assert.equal(cd.duration, 10, '(1) Duration is 10');
     await cd.songs.add(song2);
-    assert.equal(cd.duration.value, 15, '(1) Duration is 15');
-    await song2.duration.setValue(7);
-    assert.equal(cd.duration.value, 17, '(1) Duration is 17');
+    assert.equal(cd.duration, 15, '(1) Duration is 15');
+    await song2.setDuration(7);
+    assert.equal(cd.duration, 17, '(1) Duration is 17');
 
-    assert.equal(song1.cdChangedHits.value, 1, '(1) Cd changed');
-    assert.equal(song2.cdChangedHits.value, 1, '(2) Cd changed');
+    assert.equal(song1.cdChangedHits, 1, '(1) Cd changed');
+    assert.equal(song2.cdChangedHits, 1, '(2) Cd changed');
     await song1.setCd(null);
-    assert.equal(cd.duration.value, 7, '(1) Duration is 7');
+    assert.equal(cd.duration, 7, '(1) Duration is 7');
     await cd.songs.remove(song2);
-    assert.equal(cd.duration.value, 0, '(1) Duration is 0');
+    assert.equal(cd.duration, 0, '(1) Duration is 0');
     let songs = await cd.songs.toArray();
     assert.equal(songs.length, 0, 'No songs on cd');
-    assert.equal(song1.cdChangedHits.value, 2, '(1) Cd changed 2 times');
-    assert.equal(song2.cdChangedHits.value, 2, '(2) Cd changed 2 times');
+    assert.equal(song1.cdChangedHits, 2, '(1) Cd changed 2 times');
+    assert.equal(song2.cdChangedHits, 2, '(2) Cd changed 2 times');
     //
     let data1 = transaction.saveToJson();
     transaction.clear();

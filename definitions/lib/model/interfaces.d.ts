@@ -40,6 +40,7 @@ export interface TransactionContainer {
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     removeInstance(classOfInstance: any, instance: ObservableObject): void;
+    readonly eventInfo: EventInfo;
 }
 export interface ObservableObject {
     changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;

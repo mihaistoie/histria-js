@@ -2,7 +2,7 @@ import {
 	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
-	IntegerValue, NumberValue
+	NumberValue
 } from '../../../src/index';
 import { Engine } from './engine';
 
@@ -21,8 +21,11 @@ export class Car extends Instance {
 		let that = this;
 		that._errors = new CarErrors(that, that._schema);
 	}
-	public get engineChangedHits(): IntegerValue {
-		return this._children.engineChangedHits;
+	public get engineChangedHits(): number {
+		return this._children.engineChangedHits.value;
+	}
+	public setEngineChangedHits(value: number): Promise<number> {
+		return this._children.engineChangedHits.setValue(value);
 	}
 	public get engineName(): string {
 		return this.getPropertyByName('engineName');

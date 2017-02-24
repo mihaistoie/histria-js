@@ -1,28 +1,22 @@
-import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, TransactionContainer, EventType } from './interfaces';
 import { InstanceErrors } from './states/instance-errors';
 import { InstanceState } from './states/instance-state';
-export declare class Instance implements ObservableObject {
-    private _destroyCount;
+import { BaseInstance } from './base-instance';
+export declare class Instance extends BaseInstance implements ObservableObject {
     protected _status: ObjectStatus;
-    protected _transaction: TransactionContainer;
     protected _parent: ObservableObject;
     protected _children: any;
     protected _schema: any;
     protected _rootCache: ObservableObject;
-    private _eventInfo;
     private _afterCreateCalled;
     protected _model: any;
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
     protected _propertyName: string;
-    private _context;
     getRoleByName(roleName: string): any;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
-    protected _getEventInfo(): EventInfo;
-    readonly context: UserContext;
-    readonly transaction: TransactionContainer;
     readonly parent: ObservableObject;
     readonly uuid: string;
     readonly isNew: boolean;

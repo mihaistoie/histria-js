@@ -41,7 +41,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, modelManager,');
         imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation,');
         imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
-        imports.push(_tab(1) + 'IntegerValue, NumberValue');
+        imports.push(_tab(1) + 'NumberValue');
         imports.push('} from \'' + pathToLib + '\';');
 
         // Generate Class
@@ -105,9 +105,14 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
                     code.push(_tab(1) + '}');
                     break;
                 case JSONTYPES.integer:
-                    code.push(_tab(1) + util.format('public get %s(): IntegerValue {', propName));
-                    code.push(_tab(2) + util.format('return this._children.%s;', propName));
+                    code.push(_tab(1) + util.format('public get %s(): number {', propName));
+                    code.push(_tab(2) + util.format('return this._children.%s.value;', propName));
                     code.push(_tab(1) + '}');
+                    if (!isReadOnly) {
+                        code.push(_tab(1) + util.format('public set%s(value: number): Promise<number> {', _upperFirstLetter(propName)));
+                        code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', propName));
+                        code.push(_tab(1) + '}');
+                    }
                     break;
                 case JSONTYPES.number:
                     code.push(_tab(1) + util.format('public get %s(): NumberValue {', propName));

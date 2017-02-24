@@ -2,7 +2,7 @@ import {
 	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
-	IntegerValue, NumberValue
+	NumberValue
 } from '../../src/index';
 
 
@@ -20,8 +20,11 @@ export class User extends Instance {
 		let that = this;
 		that._errors = new UserErrors(that, that._schema);
 	}
-	public get age(): IntegerValue {
-		return this._children.age;
+	public get age(): number {
+		return this._children.age.value;
+	}
+	public setAge(value: number): Promise<number> {
+		return this._children.age.setValue(value);
 	}
 	public get firstName(): string {
 		return this.getPropertyByName('firstName');

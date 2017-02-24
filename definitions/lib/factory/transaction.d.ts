@@ -1,12 +1,14 @@
 import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions } from '../model/interfaces';
 export declare class Transaction implements TransactionContainer {
     private _id;
+    private _eventInfo;
     private _subscribers;
     private _removedInstances;
     private _instances;
     private _ctx;
     constructor(ctx?: UserContext);
     readonly context: UserContext;
+    readonly eventInfo: EventInfo;
     saveToJson(): any;
     loadFromJson(data: any): void;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;

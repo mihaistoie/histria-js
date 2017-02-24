@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
-import { Transaction, loadRules } from '../../src/index';
+import { Transaction, loadRules, modelManager } from '../../src/index';
 import { Car, Driver } from './model/aggregations-model';
 import { test as test1 } from './model/rules/car-driver-rules';
 
@@ -82,15 +82,15 @@ async function testRules(): Promise<void> {
     let driver = await transaction.create<Driver>(Driver);
     await driver.setName('joe');
     await car.setDrivenBy(driver);
-    assert.equal(driver.carChangedHits.value, 1, '(1) Rule called one time');
+    assert.equal(driver.carChangedHits, 1, '(1) Rule called one time');
     assert.equal(car.driverName, 'joe', '(2) Rule called one time');
    
     await car.setDrivenBy(null);
-    assert.equal(driver.carChangedHits.value, 2, '(1) Rule called 2 times');
+    assert.equal(driver.carChangedHits, 2, '(1) Rule called 2 times');
     assert.equal(car.driverName, '', '(2) Rule called 2 times');
   
     await driver.setDrives(car);
-    assert.equal(driver.carChangedHits.value, 3, '(1) Rule called  3 times');
+    assert.equal(driver.carChangedHits, 3, '(1) Rule called  3 times');
     assert.equal(car.driverName, 'joe', '(2) Rule called  3 times');
 
     let data1 = transaction.saveToJson();
@@ -100,7 +100,9 @@ async function testRules(): Promise<void> {
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
     transaction.destroy();    
-      
+    let classes = modelManager().sortedClasses();
+    assert.equal(classes.indexOf('aggregations.car') < classes.indexOf('aggregations.driver'), true, 'Song depends on Cd');
+  
 }
 
 

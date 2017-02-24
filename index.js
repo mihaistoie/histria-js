@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var base_object_1 = require("./lib/model/base-object");
 exports.Instance = base_object_1.Instance;
 var instance_errors_1 = require("./lib/model/states/instance-errors");

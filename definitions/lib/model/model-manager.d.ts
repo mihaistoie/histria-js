@@ -24,6 +24,7 @@ export declare class ModelManager {
         isView: boolean;
         className: string;
     }) => void): void;
+    sortedClasses(): string[];
     registerClass(constructor: any, schema: any): void;
     private _loaded();
     rulesForInit(classOfInstance: any): any[];

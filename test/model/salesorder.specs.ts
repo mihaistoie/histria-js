@@ -12,7 +12,7 @@ async function testSales(): Promise<void> {
     let transaction = new Transaction();
     let so = await transaction.create<SalesOrder>(SalesOrder);
 
-    await so.ruleCount.setValue(0);
+    await so.setRuleCount(0);
     await so.netAmount.setValue(100);
     let na = so.netAmount.value;
     let vat = so.vat.value;
@@ -40,7 +40,7 @@ async function testSales(): Promise<void> {
     assert.equal(vat, 53.39, 'Vat after set Vat');
     assert.equal(ga, 330, 'GrossAmount after set Vat');
 
-    let rc = so.ruleCount.value;
+    let rc = so.ruleCount;
     assert.equal(rc, 3, 'calculateVatAndAmont was called 3 times');
 
     // decimals tests

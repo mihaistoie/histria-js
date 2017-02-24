@@ -11,9 +11,9 @@ export class CarEngineRules {
 
     @propChanged(Driver, 'drives')
     static async afterCarChanged(driver: Driver, eventInfo: any): Promise<void> {
-        let value = driver.carChangedHits.value;
+        let value = driver.carChangedHits;
         value++;
-        await driver.carChangedHits.setValue(value);
+        await driver.setCarChangedHits(value);
 
     }
 

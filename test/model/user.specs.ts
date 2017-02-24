@@ -12,8 +12,8 @@ async function testUser(): Promise<void> {
     await user.setFirstName('John');                   // user.firstName = 'John';
     let fullName = user.fullName;
     assert.equal(fullName, 'John', 'Rules call ');
-    await user.age.setValue(10.25);
-    let age = user.age.value;
+    await user.setAge(10.25);
+    let age = user.age;
     assert.equal(age, 10, 'Age set/get');
 
     await user.setLastName('Doe');          // user.lastName = 'Doe';
@@ -40,9 +40,9 @@ async function testUser(): Promise<void> {
     await user.setFirstName('Doe');
     await user.validate();
     assert.equal(user.$errors.$.error, 'FirstName === LastName', 'Has error ');
-
-
 }
+
+
 
 describe('User Model Test', () => {
     before(function (done) {

@@ -1,4 +1,4 @@
-import { EventInfo, EventType } from '../interfaces';
+import { EventInfo, EventType } from '../../model/interfaces';
 
 export class EventInfoStack implements EventInfo {
 	private _stack: any[];

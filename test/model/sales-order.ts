@@ -2,7 +2,7 @@ import {
 	Instance, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
-	IntegerValue, NumberValue
+	NumberValue
 } from '../../src/index';
 
 
@@ -20,8 +20,11 @@ export class SalesOrder extends Instance {
 		let that = this;
 		that._errors = new SalesOrderErrors(that, that._schema);
 	}
-	public get ruleCount(): IntegerValue {
-		return this._children.ruleCount;
+	public get ruleCount(): number {
+		return this._children.ruleCount.value;
+	}
+	public setRuleCount(value: number): Promise<number> {
+		return this._children.ruleCount.setValue(value);
 	}
 	public get netAmount(): NumberValue {
 		return this._children.netAmount;

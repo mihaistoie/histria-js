@@ -5,7 +5,7 @@ import { propChanged, init, title, validate } from '../../../../src/index';
 export class CarEngineRules {
     @propChanged(Car, 'engine')
     static async afterEngineChanged(car: Car, eventInfo: any): Promise<void> {
-        await car.engineChangedHits.setValue(car.engineChangedHits.value + 1);
+        await car.setEngineChangedHits(car.engineChangedHits + 1);
 
     }
     @propChanged(Car, 'engine.name')
@@ -18,7 +18,7 @@ export class CarEngineRules {
     }
     @propChanged(Engine, 'car')
     static async afterCarChanged(engine: Engine, eventInfo: any): Promise<void> {
-        await engine.carChangedHits.setValue(engine.carChangedHits.value + 1);
+        await engine.setCarChangedHits(engine.carChangedHits + 1);
     }
 
 }

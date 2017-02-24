@@ -13,7 +13,9 @@ import { InstanceErrors } from './states/instance-errors'
 import { ErrorState } from './states/error-state'
 
 import { InstanceState } from './states/instance-state'
-import { EventInfoStack } from './divers/event-stack'
+
+import { BaseInstance } from './base-instance'
+
 
 import * as util from 'util';
 import * as uuid from 'uuid';
@@ -21,23 +23,19 @@ import * as uuid from 'uuid';
 
 
 
-export class Instance implements ObservableObject {
-	private _destroyCount: number;
-	//used only in root
+export class Instance extends BaseInstance implements ObservableObject {
 	protected _status: ObjectStatus;
-	protected _transaction: TransactionContainer;
 	//when set _parent reset _rootCache
 	protected _parent: ObservableObject;
 	protected _children: any;
 	protected _schema: any;
 	protected _rootCache: ObservableObject;
-	private _eventInfo: EventInfo;
 	private _afterCreateCalled: boolean;
 	protected _model: any;
 	protected _states: InstanceState;
 	protected _errors: InstanceErrors;
 	protected _propertyName: string;
-	private _context: UserContext;
+
 
 	public getRoleByName(roleName: string) {
 		return this._children[roleName];
@@ -54,6 +52,7 @@ export class Instance implements ObservableObject {
 				await localRole.remove(instance)
 		}
 	}
+
 	public async addObjectToRole(roleName: string, instance: ObservableObject): Promise<void> {
 		let that = this;
 		let rel = that._schema.relations[roleName];
@@ -73,7 +72,7 @@ export class Instance implements ObservableObject {
 		that._parent = newParent;
 		that._propertyName = that._parent ? foreignPropName : '';
 		that._rootCache = null;
-		
+
 		if (notify && localPropName) {
 			await that.changeProperty(localPropName, that._parent, newParent, function () {
 				that._parent = newParent;
@@ -84,23 +83,7 @@ export class Instance implements ObservableObject {
 	}
 
 
-	protected _getEventInfo(): EventInfo {
-		let that = this;
-		let root = <Instance>that.getRoot();
-		if (root === this) {
-			if (!that._eventInfo)
-				that._eventInfo = new EventInfoStack();
-			return that._eventInfo;
-		} else
-			return root._getEventInfo();
-	}
 
-	public get context(): UserContext {
-		return this._context;
-	}
-	public get transaction(): TransactionContainer {
-		return this._transaction;
-	}
 	public get parent(): ObservableObject {
 		return this._parent;
 	}
@@ -133,7 +116,6 @@ export class Instance implements ObservableObject {
 		if (!that._schema.meta || !that._schema.meta.parent) return true;
 		return !!!that._parent;
 	}
-
 	public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
 	}
 	protected init() {
@@ -176,9 +158,8 @@ export class Instance implements ObservableObject {
 		that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
 			let cs = that._schema.properties[propName];
 			let propType = schemaUtils.typeOfProperty(cs);
-			if (that.isNew && cs.default !== undefined && that._model[propName] === undefined) {
+			if (that.isNew && cs.default !== undefined && that._model[propName] === undefined)
 				that._model[propName] = cs.default;
-			}
 			switch (propType) {
 				case JSONTYPES.integer:
 					that._children[propName] = new IntegerValue(that, propName);
@@ -273,7 +254,7 @@ export class Instance implements ObservableObject {
 
 	public async notifyOperation(propName: string, op: EventType, param: any): Promise<void> {
 		let that = this;
-		let eventInfo = that._getEventInfo();
+		let eventInfo = that.transaction.eventInfo;
 		eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
 		try {
 			await that._transaction.emitInstanceEvent(op, eventInfo, that, propName, param);
@@ -285,7 +266,7 @@ export class Instance implements ObservableObject {
 
 	public async changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void> {
 		let that = this;
-		let eventInfo = that._getEventInfo();
+		let eventInfo = that.transaction.eventInfo;
 		eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
 		try {
 			try {
@@ -363,7 +344,7 @@ export class Instance implements ObservableObject {
 		let that = this;
 		if (that._afterCreateCalled) return;
 		that._afterCreateCalled = true;
-		let eventInfo = that._getEventInfo();
+		let eventInfo = that.transaction.eventInfo;
 		try {
 			if (that.status === ObjectStatus.creating) {
 				await that._transaction.emitInstanceEvent(EventType.init, eventInfo, that);
@@ -390,7 +371,7 @@ export class Instance implements ObservableObject {
 
 	public async validate(options?: { full: boolean }) {
 		let that = this;
-		let eventInfo = that._getEventInfo();
+		let eventInfo = that.transaction.eventInfo;
 		if (that.status === ObjectStatus.idle) {
 			if (options && options.full) {
 				//TODO validate all properties
@@ -411,12 +392,11 @@ export class Instance implements ObservableObject {
 
 
 	constructor(transaction: TransactionContainer, parent: ObservableObject, propertyName: string, value: any, options: { isRestore: boolean }) {
+		super(transaction);
 		let that = this;
-		that._context = transaction.context;
 		that._parent = parent ? parent : undefined;
 		that.status = options.isRestore ? ObjectStatus.restoring : ObjectStatus.creating;
 		that._propertyName = propertyName;
-		that._transaction = transaction;
 		that.init();
 		//check uid 
 		checkuuid(value);
@@ -425,10 +405,6 @@ export class Instance implements ObservableObject {
 
 	public destroy() {
 		let that = this;
-		that._destroyCount = that._destroyCount || 0;
-		that._destroyCount++;
-		if (that._destroyCount > 1)
-			throw "Destroy called more than once."
 
 		if (that._states) {
 			that._states.destroy();
@@ -439,11 +415,6 @@ export class Instance implements ObservableObject {
 			that._children = null;
 
 		}
-		if (that._eventInfo) {
-			that._eventInfo.destroy();
-			that._eventInfo = null;
-
-		}
 		if (that._errors) {
 			that._errors.destroy();
 			that._errors = null;
@@ -451,15 +422,14 @@ export class Instance implements ObservableObject {
 		}
 		if (that._transaction) {
 			that._transaction.removeInstance(modelManager().classByName(that._schema.name, that._schema.nameSpace), that);
-			that._transaction = null;
 		}
 		that._schema = null;
 		that._model = null;
 		that._rootCache = null;
 
-		that._context = null;
 		that._parent = null;
 		that._propertyName = null;
+		super.destroy();
 
 	}
 	public get $states(): InstanceState {

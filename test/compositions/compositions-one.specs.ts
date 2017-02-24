@@ -124,18 +124,18 @@ async function testRules(): Promise<void> {
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
     await car.setEngine(engine);
-    assert.equal(car.engineChangedHits.value, 1, '(1) Rule called one time');
-    assert.equal(engine.carChangedHits.value, 1, '(2) Rule called one time');
+    assert.equal(car.engineChangedHits, 1, '(1) Rule called one time');
+    assert.equal(engine.carChangedHits, 1, '(2) Rule called one time');
     await car.setEngine(engine);
-    assert.equal(car.engineChangedHits.value, 1, '(1) Rule called one time');
-    assert.equal(engine.carChangedHits.value, 1, '(2) Rule called one time');
+    assert.equal(car.engineChangedHits, 1, '(1) Rule called one time');
+    assert.equal(engine.carChangedHits, 1, '(2) Rule called one time');
     await car.setEngine(null);
-    assert.equal(car.engineChangedHits.value, 2, '(1) Rule called 2 times');
-    assert.equal(engine.carChangedHits.value, 2, '(2) Rule called 2 times');
+    assert.equal(car.engineChangedHits, 2, '(1) Rule called 2 times');
+    assert.equal(engine.carChangedHits, 2, '(2) Rule called 2 times');
 
     await engine.setCar(car);
-    assert.equal(car.engineChangedHits.value, 3, '(1) Rule called 3 times');
-    assert.equal(engine.carChangedHits.value, 3, '(2) Rule called 3 times');
+    assert.equal(car.engineChangedHits, 3, '(1) Rule called 3 times');
+    assert.equal(engine.carChangedHits, 3, '(2) Rule called 3 times');
 
     await engine.setCar(car);
     await engine.setName('v8');

@@ -14,7 +14,6 @@
     "gulp-typescript": "latest",
     "merge2": "latest",
     "mocha": "latest",
-    "run-sequence": "latest",
     "ts-node": "latest",
     "typescript": "2.x.x"
   },
@@ -29,10 +28,10 @@
   },
   "types": "./definitions/index.d.ts",
   "scripts": {
-    "test": "mocha --compilers ts:ts-node/register test/**/*.specs.ts",
-    "gen": "mocha --compilers ts:ts-node/register test/**/*.gentest.ts",
-    "compositions": "mocha --compilers ts:ts-node/register test/compositions/*.specs.ts",
-    "aggregations": "mocha --compilers ts:ts-node/register test/aggregations/*.specs.ts",
-    "latest": "mocha --compilers ts:ts-node/register test/compositions/compositions-many.specs.ts"
+    "test": "mocha test/**/*.specs.js",
+    "gen": "mocha --compilers ts:ts-node/register src/test/**/*.gentest.ts",
+    "compositions": "mocha  test/compositions/*.specs.js",
+    "aggregations": "mocha test/aggregations/*.specs.js",
+    "latest": "mocha test/compositions/compositions-many.specs.js"
   }
 }

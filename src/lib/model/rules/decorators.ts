@@ -83,10 +83,10 @@ export async function loadRules(folder: string): Promise<void> {
 
     stats.forEach((stat, index) => {
         let fn = path.join(folder, files[index]);
-        if (stat.isDirectory())
+        if (stat.isDirectory()) {
             folders.push(loadRules(fn));
-        else if (path.extname(fn) === '.js') {
-            require(folder)(module_holder);
+        } else if (path.extname(fn) === '.js') {
+            require(fn);
         }
 
     });

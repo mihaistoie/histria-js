@@ -3,8 +3,6 @@ import { ObjectArray, BaseObjectArray } from './base-array';
 import { schemaUtils } from 'histria-utils';
 import { DEFAULT_PARENT_NAME } from 'histria-utils';
 
-export class HasManyList<T extends ObservableObject> extends BaseObjectArray<T> {
-}
 
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
@@ -29,7 +27,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             cb(item)
         });
     }
-    private async _afterRemoveItem(item: T, notifyRemove: boolean): Promise<void> {
+    private async _removed(item: T, notifyRemove: boolean): Promise<void> {
         let that = this;
         let lmodel = item.model();
         schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
@@ -38,7 +36,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
 
     }
-    private async _afterAddItem(item: T, notifyAdd: boolean): Promise<void> {
+    private async _added(item: T, notifyAdd: boolean): Promise<void> {
         let that = this;
         let lmodel = item.model();
         let rmodel = that._parent.model();
@@ -48,39 +46,22 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
 
     }
-    public async remove(element: T | number): Promise<T> {
+
+    protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
         let that = this;
-        await that.lazyLoad();
-        let ii: number, item: T;
-        if (typeof element === 'number') {
-            ii = <number>element;
-            if (ii >= 0 && ii < that._items.length) {
-                item = that._items[ii];
-            } else {
-                ii = -1;
-                item = null;
-            }
-        } else {
-            item = <T>element;
-            ii = that._items.indexOf(item);
-            if (ii < 0)
-                item = null;
-        }
-        if (!item) return null;
-        that._items.splice(ii, 1);
         that._model.splice(ii, 1);
         if (!that._model.length) {
             that._model = null;
             that._parent.model()[that._propertyName] = that._model;
         }
         if (item)
-            await that._afterRemoveItem(item, true);
+            await that._removed(item, true);
         that._isNull = (that._model === null);
-        return item;
     }
+
     public async add(item: T, index?: number): Promise<T> {
         let that = this;
-        if (!item) return;
+        if (!item) return null;
         await that.lazyLoad();
         if (that._items.indexOf(item) >= 0)
             return item;
@@ -100,15 +81,17 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._model.push(that._model);
         }
         if (item)
-            await that._afterAddItem(item, true);
+            await that._added(item, true);
 
         return item;
     }
+
+
     public async set(items: T[]): Promise<void> {
         let that = this;
         await that.lazyLoad();
         for (let item of that._items) {
-            await that._afterRemoveItem(item, false);
+            await that._removed(item, false);
         }
         that._items = [];
         if (items && items.length) {
@@ -117,7 +100,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                 let imodel = item.model();
                 that._model.push(imodel);
                 that._items.push(item);
-                await that._afterAddItem(item, false);
+                await that._added(item, false);
             }
 
         } else {
@@ -134,7 +117,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (that._isUndefined) {
             let lmodel = that._parent.model();
             var query = schemaUtils.roleToQuery(that._relation, lmodel)
-             if(query) {
+            if (query) {
                 let opts: FindOptions = { onlyInCache: that._parent.isNew };
                 let items = await that._parent.transaction.find<T>(that._refClass, query, opts);
                 if (items.length) {
@@ -149,7 +132,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                     }
                 } else
                     that._model = null;
-            } else 
+            } else
                 that._model = null;
             that._isUndefined = false;
             that._isNull = that._model === null;
@@ -171,26 +154,9 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
 
 export class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {
     private _loaded: boolean;
-    public async remove(element: T | number): Promise<T> {
+
+    protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
         let that = this;
-        await that.lazyLoad();
-        let ii: number, item: T;
-        if (typeof element === 'number') {
-            ii = <number>element;
-            if (ii >= 0 && ii < that._items.length) {
-                item = that._items[ii];
-            } else {
-                ii = -1;
-                item = null;
-            }
-        } else {
-            item = <T>element;
-            ii = that._items.indexOf(item);
-            if (ii < 0)
-                item = null;
-        }
-        if (!item) return null;
-        that._items.splice(ii, 1);
         if (item) {
             let lmodel = item.model();
             schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
@@ -198,29 +164,17 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             if (r) await r.internalSetValueAndNotify(null, item);
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
         }
-        return item;
     }
-    public async add(item: T, index?: number): Promise<T> {
+    protected async _afterAddItem(item: T): Promise<void> {
         let that = this;
-        if (!item) return;
-        await that.lazyLoad();
-        if (that._items.indexOf(item) >= 0)
-            return item;
-        if (index === undefined || (index < 0 && index >= that._items.length))
-            index = -1;
-        if (index >= 0)
-            that._items.splice(index, 0, item);
-        else
-            that._items.push(item);
-        if (item) {
-            let lmodel = item.model();
-            let rmodel = that._parent.model();
-            let r = item.getRoleByName(that._relation.invRel);
-            if (r) await r.internalSetValueAndNotify(that._parent, item);
-            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-        }
-        return item;
+        let lmodel = item.model();
+        let rmodel = that._parent.model();
+        let r = item.getRoleByName(that._relation.invRel);
+        if (r) await r.internalSetValueAndNotify(that._parent, item);
+        await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
+
     }
+
     protected async lazyLoad(): Promise<void> {
         let that = this;
         if (!that._parent) return;
@@ -242,17 +196,13 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         }
 
     }
-
-    protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
+    private async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         //after lazy loading
         let that = this;
         if (newValue) {
             //roleInv is AggregationBelongsTo
             let roleInv = newValue.getRoleByName(that._relation.invRel);
             if (roleInv) roleInv.internalSetValue(that._parent);
-
         }
-
     }
-
 }

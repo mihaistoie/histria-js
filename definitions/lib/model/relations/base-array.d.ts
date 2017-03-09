@@ -10,6 +10,10 @@ export declare class BaseObjectArray<T extends ObservableObject> {
     protected lazyLoad(): Promise<void>;
     toArray(): Promise<T[]>;
     indexOf(item: T): Promise<number>;
+    remove(element: T | number): Promise<T>;
+    add(item: T, index?: number): Promise<T>;
+    protected _afterRemoveItem(item: T, ii: number): Promise<void>;
+    protected _afterAddItem(item: T): Promise<void>;
 }
 export declare class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> implements ObservableArray {
     protected _model: any;

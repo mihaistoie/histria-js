@@ -36,6 +36,47 @@ export class BaseObjectArray<T extends ObservableObject> {
         return (that._items || []).indexOf(item);
     }
 
+    public async remove(element: T | number): Promise<T> {
+        let that = this;
+        await that.lazyLoad();
+        let ii: number, item: T;
+        if (typeof element === 'number') {
+            ii = <number>element;
+            if (ii >= 0 && ii < that._items.length) {
+                item = that._items[ii];
+            } else {
+                ii = -1;
+                item = null;
+            }
+        } else {
+            item = <T>element;
+            ii = that._items.indexOf(item);
+            if (ii < 0)
+                item = null;
+        }
+        if (!item) return null;
+        that._items.splice(ii, 1);
+        await that._afterRemoveItem(item, ii);
+        return item;
+    }
+    public async add(item: T, index?: number): Promise<T> {
+        let that = this;
+        if (!item) return null;
+        await that.lazyLoad();
+        if (that._items.indexOf(item) >= 0)
+            return item;
+        if (index === undefined || (index < 0 && index >= that._items.length))
+            index = -1;
+        if (index >= 0)
+            that._items.splice(index, 0, item);
+        else
+            that._items.push(item);
+        await that._afterAddItem(item);
+        return item;
+    }
+    protected async _afterRemoveItem(item: T, ii: number): Promise<void> { }
+    protected async _afterAddItem(item: T): Promise<void> { }
+
 
 }
 
@@ -59,7 +100,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
         that._model = null;
         that.destroyItems();
         super.destroy();
-        
+
     }
 
     protected destroyItems() {

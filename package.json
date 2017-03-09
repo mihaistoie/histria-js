@@ -14,6 +14,7 @@
     "gulp-typescript": "latest",
     "merge2": "latest",
     "mocha": "latest",
+    "source-map-support": "latest",
     "ts-node": "latest",
     "typescript": "2.x.x"
   },

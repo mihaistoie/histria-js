@@ -3,6 +3,9 @@ import { ObjectArray, BaseObjectArray } from './base-array';
 import { schemaUtils } from 'histria-utils';
 import { DEFAULT_PARENT_NAME } from 'histria-utils';
 
+export class HasManyList<T extends ObservableObject> extends BaseObjectArray<T> {
+}
+
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
         super(parent, propertyName, relation, model);
@@ -130,18 +133,8 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         if (!that._parent) return;
         if (that._isUndefined) {
             let lmodel = that._parent.model();
-            let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field: string, index: number) => {
-                let ff = that._relation.foreignFields[index];
-                let value = lmodel[field];
-                if (value === null || value === '' || value === undefined)
-                    valueIsNull = true;
-                else
-                    query[ff] = value;
-            });
-            if (valueIsNull) {
-                that._model = null;
-            } else {
+            var query = schemaUtils.roleToQuery(that._relation, lmodel)
+             if(query) {
                 let opts: FindOptions = { onlyInCache: that._parent.isNew };
                 let items = await that._parent.transaction.find<T>(that._refClass, query, opts);
                 if (items.length) {
@@ -156,7 +149,8 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                     }
                 } else
                     that._model = null;
-            }
+            } else 
+                that._model = null;
             that._isUndefined = false;
             that._isNull = that._model === null;
             lmodel[that._propertyName] = that._model;
@@ -232,17 +226,8 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         if (!that._parent) return;
         if (!that._loaded) {
             that._loaded = true;
-            let lmodel = that._parent.model();
-            let query: any = {}, valueIsNull = false;
-            that._relation.localFields.forEach((field: string, index: number) => {
-                let ff = that._relation.foreignFields[index];
-                let value = lmodel[field];
-                if (value === null || value === '' || value === undefined)
-                    valueIsNull = true;
-                else
-                    query[ff] = value;
-            });
-            if (!valueIsNull) {
+            let query = schemaUtils.roleToQuery(that._relation, that._parent.model());
+            if (query) {
                 let opts: FindOptions = { onlyInCache: false };
                 let items = await that._parent.transaction.find<T>(that._refClass, query);
                 if (items.length) {

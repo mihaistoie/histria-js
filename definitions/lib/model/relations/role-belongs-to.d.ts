@@ -1,10 +1,7 @@
 import { ObservableObject } from '../interfaces';
 import { Role } from './role';
 export declare class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
-    protected _value: T;
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _lazyLoad(): Promise<T>;
-    destroy(): void;
 }
 export declare class AggregationBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {
     protected _getValue(): Promise<T>;

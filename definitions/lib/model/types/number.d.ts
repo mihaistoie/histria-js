@@ -1,9 +1,9 @@
-import { Instance } from '../base-object';
+import { ModelObject } from '../model-object';
 export declare class BaseNumberValue {
-    protected _parent: Instance;
+    protected _parent: ModelObject;
     protected _decimals: number;
     protected _propertyName: string;
-    constructor(parent: Instance, propertyName: string);
+    constructor(parent: ModelObject, propertyName: string);
     protected _internalDecimals(): number;
     private _round(value);
     protected init(): void;

@@ -9,6 +9,5 @@ export { propChanged, addItem, rmvItem, setItems, init, title, loadRules, valida
 export { State, StringState, IdState, IntegerState, BooleanState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from './lib/model/states/state';
 export { IntegerValue, NumberValue } from './lib/model/types/number';
 export { IdValue } from './lib/model/types/id';
-
 export { classGenerator } from './lib/generators/classgen';
 

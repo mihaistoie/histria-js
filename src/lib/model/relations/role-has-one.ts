@@ -22,19 +22,6 @@ export class HasOne<T extends ObservableObject> extends Role<T> {
         return Promise.resolve();
     }
 
-    private _updateParentRefs() {
-        let that = this;
-        let pmodel = that._parent.model();
-        let nmodel = that._value ? that._value.model() : null;
-        that._relation.localFields.forEach((field: string, index: number) => {
-            let ff = that._relation.foreignFields[index];
-            if (that._value)
-                pmodel[field] = nmodel[ff]
-            else
-                delete pmodel[field];
-        });
-    }
-
 }
 
 export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
@@ -43,22 +30,12 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     }
     protected async _lazyLoad(): Promise<void> {
         let that = this;
-        let lmodel = that._parent.model();
-        let query: any = {}, valueIsNull = false;
-        that._relation.foreignFields.forEach((field: string, index: number) => {
-            let ff = that._relation.localFields[index];
-            let value = lmodel[ff];
-            if (value === null || value === '' || value === undefined)
-                valueIsNull = true;
-            else
-                query[field] = value;
-        });
-        if (valueIsNull)
-            that._value = null;
-        else {
+        let query: any = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
+        if (query) {
             let opts: FindOptions = { onlyInCache: false };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts) || null;
-        }
+        } else
+            that._value = null;
     }
 
     protected async _setValue(value: T): Promise<T> {
@@ -106,23 +83,14 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 
     protected async _lazyLoad(): Promise<void> {
         let that = this;
-        let lmodel = that._parent.model();
-        let query: any = {}, valueIsNull = false;
-        that._relation.localFields.forEach((field: string, index: number) => {
-            let ff = that._relation.foreignFields[index];
-            let value = lmodel[field];
-            if (value === null || value === '' || value === undefined)
-                valueIsNull = true;
-            else
-                query[ff] = value;
-        });
-        if (valueIsNull)
+        let query: any = schemaUtils.roleToQuery(that._relation, that._parent.model());
+        if (query) {
             that._value = null;
-        else {
             let opts: FindOptions = { onlyInCache: false };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts);
             await that._updateInvSideAfterLazyLoading(that._value);
-        }
+        } else
+            that._value = null;
     }
 
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void> {
@@ -173,7 +141,7 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         let that = this;
-        if (newValue) 
+        if (newValue)
             await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, false);
     }
     public destroy() {
@@ -190,10 +158,6 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
 export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
-    }
-    protected async _setValue(value: T): Promise<T> {
-        let that = this;
-        return super._setValue(value);
     }
 
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {

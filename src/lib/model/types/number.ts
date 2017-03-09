@@ -1,14 +1,14 @@
-import { Instance } from '../base-object';
+import { ModelObject } from '../model-object';
 import { NumberState } from '../states/state';
 
 
 import { ApplicationError, messages } from 'histria-utils';
 
 export class BaseNumberValue {
-    protected _parent: Instance;
+    protected _parent: ModelObject;
     protected _decimals: number;
     protected _propertyName: string;
-    constructor(parent: Instance, propertyName: string) {
+    constructor(parent: ModelObject, propertyName: string) {
         let that = this;
         that._parent = parent;
 

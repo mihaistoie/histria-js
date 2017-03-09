@@ -4,40 +4,15 @@ import { AGGREGATION_KIND, DEFAULT_PARENT_NAME } from 'histria-utils';
 import { schemaUtils } from 'histria-utils';
 
 
-
-
-
-
 export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
-    protected _value: T;
-
-    constructor(parent: ObservableObject, propertyName: string, relation: any) {
-        super(parent, propertyName, relation);
-
-    }
     protected async _lazyLoad(): Promise<T> {
         let that = this;
-        let lmodel = that._parent.model();
-        let query: any = {}, valueIsNull = false;
-        that._relation.foreignFields.forEach((field: string, index: number) => {
-            let ff = that._relation.localFields[index];
-            let value = lmodel[ff];
-            if (value === null || value === '' || value === undefined)
-                valueIsNull = true;
-            else
-                query[field] = value;
-        });
-        let res = null;
-        if (!valueIsNull) {
+        let query = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
+        if (query) {
             let opts: FindOptions = { onlyInCache: false };
-            res = await that._parent.transaction.findOne<T>(that._refClass, query, opts);
+            return await that._parent.transaction.findOne<T>(that._refClass, query, opts);
         }
-        return res || null;
-    }
-    public destroy() {
-        let that = this;
-        that._value = null;
-        super.destroy();
+        return null;
     }
 }
 
@@ -54,9 +29,9 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         return res;
     }
     public internalSetValue(value: any) {
-        let that = this;
-        that._value = value;
+        this._value = value;
     }
+
     public async internalSetValueAndNotify(newValue: any, oldValue: any): Promise<void> {
         let that = this;
         await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
@@ -64,6 +39,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
             schemaUtils.updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
         });
     }
+    
     protected async _setValue(value: T): Promise<T> {
         let that = this;
         let oldValue = that._value;
@@ -102,6 +78,7 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
     
     public internalSetValue(value: any) {
     }
+
     protected async _setValue(value: T): Promise<T> {
         let that = this;
         let oldParent = await that._getValue();

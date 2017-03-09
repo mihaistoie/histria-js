@@ -1,10 +1,10 @@
-import { Instance } from '../base-object';
+import { ModelObject } from '../model-object';
 import { ApplicationError, messages } from 'histria-utils';
 
 export class IdValue {
-    protected _parent: Instance;
+    protected _parent: ModelObject;
     protected _propertyName: string;
-    constructor(parent: Instance, propertyName: string) {
+    constructor(parent: ModelObject, propertyName: string) {
         let that = this;
         that._parent = parent;
         that._propertyName = propertyName;

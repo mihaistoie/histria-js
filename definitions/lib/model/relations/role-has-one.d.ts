@@ -5,7 +5,6 @@ export declare class HasOne<T extends ObservableObject> extends Role<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _getValue(): Promise<T>;
     protected _lazyLoad(): Promise<void>;
-    private _updateParentRefs();
 }
 export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
@@ -27,7 +26,6 @@ export declare class HasOneComposition<T extends ObservableObject> extends HasOn
 }
 export declare class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
-    protected _setValue(value: T): Promise<T>;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }

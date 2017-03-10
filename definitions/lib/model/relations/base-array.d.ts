@@ -24,4 +24,5 @@ export declare class ObjectArray<T extends ObservableObject> extends BaseObjectA
     destroy(): void;
     protected destroyItems(): void;
     protected setValue(value?: T[]): void;
+    add(item: T, index?: number): Promise<T>;
 }

@@ -115,6 +115,33 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
         that._isUndefined = value === undefined;
         that._model = value;
     }
+    
+    public async add(item: T, index?: number): Promise<T> {
+        let that = this;
+        if (!item) return null;
+        await that.lazyLoad();
+        if (that._items.indexOf(item) >= 0)
+            return item;
+        if (index === undefined || (index < 0 && index >= that._items.length))
+            index = -1;
+        if (!that._model) {
+            that._model = [];
+            that._isNull = false;
+            that._parent.model()[that._propertyName] = that._model;
+        }
+        let imodel = item.model();
+        if (index >= 0) {
+            that._items.splice(index, 0, item);
+            that._model.splice(index, 0, imodel);
+        } else {
+            that._items.push(item);
+            that._model.push(that._model);
+        }
+        await that._afterAddItem(item);
+        return item;
+    }
+
+
 
 }
 

@@ -6,7 +6,7 @@ export declare class HasManyComposition<T extends ObservableObject> extends Obje
     private _removed(item, notifyRemove);
     private _added(item, notifyAdd);
     protected _afterRemoveItem(item: T, ii: number): Promise<void>;
-    add(item: T, index?: number): Promise<T>;
+    protected _afterAddItem(item: T): Promise<void>;
     set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
     destroy(): void;

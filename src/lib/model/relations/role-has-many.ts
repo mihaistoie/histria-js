@@ -46,7 +46,6 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
 
     }
-
     protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
         let that = this;
         that._model.splice(ii, 1);
@@ -58,35 +57,11 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             await that._removed(item, true);
         that._isNull = (that._model === null);
     }
-
-    public async add(item: T, index?: number): Promise<T> {
+    protected async _afterAddItem(item: T): Promise<void> {
         let that = this;
-        if (!item) return null;
-        await that.lazyLoad();
-        if (that._items.indexOf(item) >= 0)
-            return item;
-        if (index === undefined || (index < 0 && index >= that._items.length))
-            index = -1;
-        if (!that._model) {
-            that._model = [];
-            that._isNull = false;
-            that._parent.model()[that._propertyName] = that._model;
-        }
-        let imodel = item.model();
-        if (index >= 0) {
-            that._items.splice(index, 0, item);
-            that._model.splice(index, 0, imodel);
-        } else {
-            that._items.push(item);
-            that._model.push(that._model);
-        }
-        if (item)
-            await that._added(item, true);
+        await that._added(item, true);
 
-        return item;
     }
-
-
     public async set(items: T[]): Promise<void> {
         let that = this;
         await that.lazyLoad();
@@ -137,7 +112,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._isUndefined = false;
             that._isNull = that._model === null;
             lmodel[that._propertyName] = that._model;
-        }
+        } 
 
     }
     public destroy() {

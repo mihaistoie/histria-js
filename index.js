@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var base_object_1 = require("./lib/model/base-object");
 exports.Instance = base_object_1.Instance;
+var base_view_1 = require("./lib/model/base-view");
+exports.View = base_view_1.View;
 var instance_errors_1 = require("./lib/model/states/instance-errors");
 exports.InstanceErrors = instance_errors_1.InstanceErrors;
 var instance_state_1 = require("./lib/model/states/instance-state");

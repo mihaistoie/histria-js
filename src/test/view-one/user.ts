@@ -3,7 +3,7 @@ import {
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	NumberValue
-} from '../../../index';
+} from '../../index';
 
 
 export class User extends Instance {
@@ -38,12 +38,6 @@ export class User extends Instance {
 	public setLastName(value: string): Promise<string> {
 		return this.setPropertyByName('lastName', value);
 	}
-	public get fullName(): string {
-		return this.getPropertyByName('fullName');
-	}
-	public setFullName(value: string): Promise<string> {
-		return this.setPropertyByName('fullName', value);
-	}
 	public get id(): any {
 		return this._children.id.value;
 	}
@@ -68,9 +62,6 @@ export class UserErrors extends InstanceErrors {
 	public get lastName(): ErrorState {
 		return this._messages.lastName;
 	}
-	public get fullName(): ErrorState {
-		return this._messages.fullName;
-	}
 	public get id(): ErrorState {
 		return this._messages.id;
 	}
@@ -86,9 +77,6 @@ export class UserState extends InstanceState {
 	public get lastName(): StringState {
 		return this._states.lastName;
 	}
-	public get fullName(): StringState {
-		return this._states.fullName;
-	}
 	public get id(): IdState {
 		return this._states.id;
 	}
@@ -97,7 +85,7 @@ export const
 	USER_SCHEMA = {
 		"name": "user",
 		"type": "object",
-		"nameSpace": "salesorder",
+		"nameSpace": "view-one",
 		"properties": {
 			"age": {
 				"title": "Age",
@@ -111,10 +99,6 @@ export const
 				"title": "Last Name",
 				"type": "string"
 			},
-			"fullName": {
-				"title": "Full Name",
-				"type": "string"
-			},
 			"id": {
 				"type": "integer",
 				"generated": true,
@@ -125,7 +109,7 @@ export const
 			"firstName": {
 				"isMandatory": true
 			},
-			"fullName": {
+			"lastName": {
 				"isReadOnly": true
 			}
 		},

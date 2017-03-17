@@ -21,8 +21,10 @@ async function saveCode(codeByClass: any, codeByNamespace: any, dstFolder: strin
 
 function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib?: string) {
     let baseClass = 'Instance';
+    let baseViewClass = 'View';
     Object.keys(model).forEach((name) => {
-        let schema = model[name];
+        let schema: any = model[name];
+        let isView: boolean = schema.view ? true: false;
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
         let code: string[] = [];
@@ -38,7 +40,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
         pathToLib = pathToLib || 'histria--utils'
         imports.push('import {');
-        imports.push(_tab(1) + 'Instance, InstanceState, InstanceErrors, modelManager,');
+        imports.push(_tab(1) + 'Instance, View, InstanceState, InstanceErrors, modelManager,');
         imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation,');
         imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
         imports.push(_tab(1) + 'NumberValue');
@@ -49,7 +51,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         ns.import.push(util.format('export {%s} from \'./%s\';', className, _extractFileName(schema.name)));
 
         code.push('');
-        code.push(util.format('export class %s extends %s {', className, baseClass));
+        code.push(util.format('export class %s extends %s {', className,isView ? baseViewClass: baseClass));
 
 
         //add private 

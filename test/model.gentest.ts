@@ -1,11 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
-const index_1 = require("../../index");
+
+import * as fs from 'fs';
+import * as path from 'path';
+import * as assert from 'assert';
+import * as mochaUtils from 'mocha';
+import { classGenerator } from '../../index';
+
+
 async function generateModel() {
     let pathToModel = path.join(__dirname, 'model', 'schemas');
-    await index_1.classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../index');
+    await classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../index');
 }
+
 describe('Generate Model', () => {
     it('Generate class code', function (done) {
         generateModel().then(() => {
@@ -15,3 +20,5 @@ describe('Generate Model', () => {
         });
     });
 });
+
+

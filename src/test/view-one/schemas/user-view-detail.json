@@ -1,0 +1,24 @@
+{
+    "name": "UserDetail",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-one",
+    "properties": {
+        "fullName": {
+            "title": "FullName Name",
+            "type": "string"
+        }
+    },
+    "relations": {
+        "master": {
+            "type": "hasOne",
+            "model": "user",
+            "aggregationKind": "composite"
+        }
+    },
+    "states": {
+        "fullName": {
+            "isReadOnly": true
+        }
+    }
+}

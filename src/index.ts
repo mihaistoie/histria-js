@@ -1,4 +1,5 @@
 export { Instance } from './lib/model/base-object';
+export { View } from './lib/model/base-view';
 export { InstanceErrors } from './lib/model/states/instance-errors';
 export { InstanceState } from './lib/model/states/instance-state';
 export { ErrorState } from './lib/model/states/error-state';

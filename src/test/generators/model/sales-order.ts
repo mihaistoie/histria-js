@@ -1,5 +1,5 @@
 import {
-	Instance, InstanceState, InstanceErrors, modelManager,
+	Instance, View, InstanceState, InstanceErrors, modelManager,
 	HasManyComposition, HasManyAggregation,
 	ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
 	NumberValue

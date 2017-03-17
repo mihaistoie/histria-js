@@ -1,0 +1,27 @@
+{
+    "name": "user",
+    "type": "object",
+    "nameSpace": "view-one",
+    "properties": {
+        "age": {
+            "title": "Age",
+            "type": "integer"
+        },
+        "firstName": {
+            "title": "First Name",
+            "type": "string"
+        },
+        "lastName": {
+            "title": "Last Name",
+            "type": "string"
+        }
+    },
+    "states": {
+        "firstName": {
+            "isMandatory": true
+        },
+        "lastName": {
+            "isReadOnly": true
+        }
+    }
+}

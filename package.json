@@ -11,10 +11,12 @@
     "@types/uuid": "latest",
     "del": "latest",
     "gulp": "latest",
+    "gulp-tslint": "latest",
     "gulp-typescript": "latest",
     "merge2": "latest",
     "mocha": "latest",
     "source-map-support": "latest",
+    "tslint": "latest",
     "ts-node": "latest",
     "typescript": "2.x.x"
   },

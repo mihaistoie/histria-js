@@ -44,7 +44,7 @@ export class Transaction implements TransactionContainer {
         let res: any = { instances: [] };
         if (that._removedInstances) {
 
-            //classname must be saved
+            // Classname must be saved
             res.removed = [];
             for (let item of that._removedInstances) {
                 for (let instance of item[1]) {
@@ -106,11 +106,11 @@ export class Transaction implements TransactionContainer {
                     await item(eventInfo, ci.constructor, nIstances, args)
                 if (!propagate)
                     break;
-                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                //TODO code review
+                // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                // TODO code review
                 args[pi] = ci.propertyName + '.' + args[pi];
                 ci = ci.parent;
-                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 nIstances.unshift(ci)
             }
         }
@@ -323,10 +323,6 @@ export class Transaction implements TransactionContainer {
         let nameSpace = classOfInstance.nameSpace;
         if (!nameSpace) return;
         return dbManager().store(nameSpace);
-
     }
-
-
-
 }
 

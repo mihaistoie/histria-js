@@ -24,7 +24,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
     let baseViewClass = 'View';
     Object.keys(model).forEach((name) => {
         let schema: any = model[name];
-        let isView: boolean = schema.view ? true: false;
+        let isView: boolean = schema.view ? true : false;
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
         let code: string[] = [];
@@ -51,12 +51,12 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         ns.import.push(util.format('export {%s} from \'./%s\';', className, _extractFileName(schema.name)));
 
         code.push('');
-        code.push(util.format('export class %s extends %s {', className,isView ? baseViewClass: baseClass));
+        code.push(util.format('export class %s extends %s {', className, isView ? baseViewClass : baseClass));
 
 
-        //add private 
+        // Add private
 
-        //add constructor
+        // Add constructor
         code.push(_tab(1) + 'protected init() {');
         code.push(_tab(2) + 'super.init();');
         code.push(_tab(2) + 'let that = this;');
@@ -169,7 +169,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         _genClassErrors(schema, className, baseClass, code);
         _genClassState(schema, className, baseClass, code);
 
-        //Generate 
+        // Generate
 
         schema.relations && Object.keys(schema.relations).forEach(relName => {
             let relation = schema.relations[relName];
@@ -183,7 +183,6 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
         _genSchema(schema, className, code)
 
-        //code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
         ns.code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
 
 
@@ -199,7 +198,8 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
 function _genSchema(schema: any, className: string, code: string[]) {
     code.push('export const');
-    let schemaStr = JSON.stringify(schema, null, _tab(1)).split('\n');
+    let schemaStr = JSON.stringify(schema, null, _tab(1)).replace(/\"([^(\")"]+)\":/g, '$1:').replace(/\"/g, '\'').split('\n');
+
     code.push(_tab(1) + util.format('%s_SCHEMA = %s', className.toUpperCase(), schemaStr[0]));
     let len = schemaStr.length - 1;
     for (let i = 1; i <= len; i++) {
@@ -302,8 +302,8 @@ export async function classGenerator(srcFolder: string, dstFolder: string, pathT
 
 function _tab(ident: number) {
     let res = [];
-    for (var i = 0; i < ident; i++)
-        res.push('\t');
+    for (let i = 0; i < ident; i++)
+        res.push('    ');
     return res.join('');
 }
 function _upperFirstLetter(value: string): string {

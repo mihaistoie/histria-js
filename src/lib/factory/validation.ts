@@ -8,7 +8,7 @@ import { UserContext, EventInfo } from '../model/interfaces';
 
 
 function _validateEmail(email: string): boolean {
-    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    const re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     return re.test(email);
 }
 
@@ -32,7 +32,7 @@ function _validateInteger(value: number, propTitle: string, ctx: UserContext, er
             error.error = helper.format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, 0));
         }
     } else {
-        if (state.minimum != undefined && value < state.minimum) {
+        if (state.minimum !== undefined && value < state.minimum) {
             error.error = helper.format(msg.schema.minNumber, propTitle, ctx.formatNumber(state.minimum, 0));
             res = false;
         }
@@ -107,10 +107,10 @@ function validateProp(value: any, propName: string, propSchema: any, ctx: UserCo
     let propType = schemaUtils.typeOfProperty(propSchema);
     switch (propType) {
         case JSONTYPES.id:
-            //todo
+            // TODO
             break;
         case JSONTYPES.boolean:
-            //todo
+            // TODO
             break;
         case JSONTYPES.integer:
             _validateInteger(value, propSchema.title || propName, ctx, error, <IntegerState>state);

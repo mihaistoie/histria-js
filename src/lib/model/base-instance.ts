@@ -9,10 +9,10 @@ export class BaseInstance {
     }
 	
     public get context(): UserContext {
-		return this.transaction.context;
+       return this.transaction.context;
 	}
-	public get transaction(): TransactionContainer {
-		return this._transaction;
+    public get transaction(): TransactionContainer {
+        return this._transaction;
 	}
     public destroy() {
         let that = this;

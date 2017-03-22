@@ -1,8 +1,9 @@
-var path = require('path');
-var gulp = require('gulp');
-var del = require('del');
-var merge = require('merge2');
-var ts = require('gulp-typescript');
+let path = require('path');
+let gulp = require('gulp');
+let del = require('del');
+let merge = require('merge2');
+let tslint = require('gulp-tslint');
+let ts = require('gulp-typescript');
 
 
 
@@ -19,9 +20,9 @@ gulp.task('clean', function () {
 });
 
 
-gulp.task('ts', ['clean'], function () {
-    var tsProject = ts.createProject(path.resolve('./tsconfig.json'));
-    var tsResult = gulp.src(['./src/**/*.ts', '!./src/test/**']).pipe(tsProject());
+gulp.task('ts', ['tslint'], function () {
+    let tsProject = ts.createProject(path.resolve('./tsconfig.json'));
+    let tsResult = gulp.src(['./src/**/*.ts', '!./src/test/**']).pipe(tsProject());
     return merge([
         tsResult.dts.pipe(gulp.dest('definitions')),
         tsResult.js.pipe(gulp.dest(path.resolve('./')))
@@ -30,10 +31,19 @@ gulp.task('ts', ['clean'], function () {
 });
 
 gulp.task('test', ['ts'], function () {
-    var tsProject = ts.createProject(path.resolve('./tsconfig.json'));
-    var tsResult = gulp.src(['./src/test/**/*.ts']).pipe(tsProject());
+    let tsProject = ts.createProject(path.resolve('./tsconfig.json'));
+    let tsResult = gulp.src(['./src/test/**/*.ts']).pipe(tsProject());
     tsResult.js.pipe(gulp.dest(path.resolve('./test')))
 });
+
+gulp.task('tslint', ['clean'], () => {
+    return gulp.src("src/**/*.ts")
+        .pipe(tslint({
+            formatter: "verbose"
+        }))
+        .pipe(tslint.report())
+});
+
 
 
 

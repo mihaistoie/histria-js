@@ -23,8 +23,8 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         if (res === undefined) {
             res = await that._lazyLoad() || null;
             that._value = res;
-            //TODO: update side
-            //that._updateInvSide()
+            // TODO: update side
+            // that._updateInvSide()
         }
         return res;
     }
@@ -39,7 +39,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
             schemaUtils.updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
         });
     }
-    
+
     protected async _setValue(value: T): Promise<T> {
         let that = this;
         let oldValue = that._value;
@@ -75,7 +75,7 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
         }
         return res;
     }
-    
+
     public internalSetValue(value: any) {
     }
 

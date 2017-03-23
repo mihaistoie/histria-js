@@ -90,8 +90,8 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         let that = this;
         if (!that._parent) return;
         if (that._isUndefined) {
-            let lmodel = that._parent.model();
-            var query = schemaUtils.roleToQuery(that._relation, lmodel)
+            const lmodel = that._parent.model();
+            const query = schemaUtils.roleToQuery(that._relation, lmodel)
             if (query) {
                 let opts: FindOptions = { onlyInCache: that._parent.isNew };
                 let items = await that._parent.transaction.find<T>(that._refClass, query, opts);
@@ -112,7 +112,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             that._isUndefined = false;
             that._isNull = that._model === null;
             lmodel[that._propertyName] = that._model;
-        } 
+        }
 
     }
     public destroy() {
@@ -133,7 +133,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
     protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
         let that = this;
         if (item) {
-            let lmodel = item.model();
+            const lmodel = item.model();
             schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
             let r = item.getRoleByName(that._relation.invRel, );
             if (r) await r.internalSetValueAndNotify(null, item);
@@ -141,10 +141,10 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         }
     }
     protected async _afterAddItem(item: T): Promise<void> {
-        let that = this;
-        let lmodel = item.model();
-        let rmodel = that._parent.model();
-        let r = item.getRoleByName(that._relation.invRel);
+        const that = this;
+        const lmodel = item.model();
+        const rmodel = that._parent.model();
+        const r = item.getRoleByName(that._relation.invRel);
         if (r) await r.internalSetValueAndNotify(that._parent, item);
         await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
 
@@ -172,10 +172,10 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
 
     }
     private async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
-        //after lazy loading
+        // After lazy loading
         let that = this;
         if (newValue) {
-            //roleInv is AggregationBelongsTo
+            // roleInv is AggregationBelongsTo
             let roleInv = newValue.getRoleByName(that._relation.invRel);
             if (roleInv) roleInv.internalSetValue(that._parent);
         }

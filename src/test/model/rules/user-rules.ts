@@ -36,8 +36,6 @@ export class UserRules {
     }
 }
 
-export var test = 1;
-
 
 
 

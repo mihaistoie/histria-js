@@ -12,7 +12,7 @@ export class CarEngineRules {
     static async afterEngineNameChanged(car: Car, engine: Engine, eventInfo: any): Promise<void> {
         let ce = await car.engine();
         if (ce !== ce)
-            throw "Invalid rule propagation";
+            throw 'Invalid rule propagation';
         await car.setEngineName(engine.name)
 
     }
@@ -22,5 +22,3 @@ export class CarEngineRules {
     }
 
 }
-
-export var test = 1;

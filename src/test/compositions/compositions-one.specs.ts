@@ -8,9 +8,6 @@ import * as dbMemory from 'histria-db-memory';
 import { Car, Engine } from './model/compositions-model';
 
 
-import { test as test1 } from './model/rules/car-engine-rules';
-
-
 async function testCreate(): Promise<void> {
 
     let transaction = new Transaction();
@@ -19,7 +16,6 @@ async function testCreate(): Promise<void> {
     let engine = await transaction.create<Engine>(Engine);
 
     await car.setEngine(engine);
-    
 
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
@@ -50,7 +46,7 @@ async function testCreate(): Promise<void> {
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
 
-    
+
     transaction.clear();
     let car3 = await transaction.create<Car>(Car);
     let engine3 = await transaction.create<Engine>(Engine);
@@ -91,7 +87,7 @@ async function testLoad(): Promise<void> {
     });
     assert.equal(i, 1, 'Car a child');
 
-    //DB test
+    // DB test
     let scar = await transaction.findOne<Car>(Car, { id: 1001 })
     assert.notEqual(scar, null, 'Car found');
     assert.equal(scar.id, 1001, 'Car id is 1001');
@@ -188,7 +184,6 @@ describe('Relation One to One, Composition', () => {
             ]
         });
 
-        assert.equal(test1, 1);
         loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
             done();
         }).catch((ex) => {
@@ -227,6 +222,3 @@ describe('Relation One to One, Composition', () => {
 
 
 });
-
-
-//console.log(JSON.stringify(data, null, 2));

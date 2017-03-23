@@ -45,10 +45,7 @@ async function testCreate(): Promise<void> {
     transaction.loadFromJson(data1);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
-
-    transaction.destroy();    
-    
-
+    transaction.destroy();
 }
 
 
@@ -56,7 +53,7 @@ async function testLoad(): Promise<void> {
     let transaction = new Transaction();
     let car1 = await transaction.create<Car>(Car);
     let driver1 = await transaction.load<Driver>(Driver, { drivesId: car1.uuid });
-   
+
     assert.equal(await car1.drivenBy(), driver1, '(1) Driver 1 drivers car 1 ');
     assert.equal(await driver1.drives(), car1, '(1) Driver 1 drivers car 1 ');
 
@@ -64,15 +61,13 @@ async function testLoad(): Promise<void> {
     let driver2 = await transaction.load<Driver>(Driver, { drivesId: car2.uuid });
     assert.equal(await driver2.drives(), car2, '(1) Driver 2 drivers car 2 ');
     assert.equal(await car2.drivenBy(), driver2, '(1) Driver 2 drivers car 2 ');
-    
+
     let data1 = transaction.saveToJson();
     transaction.clear();
     transaction.loadFromJson(data1);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
-
-    transaction.destroy();    
-    
+    transaction.destroy();
 }
 
 async function testRules(): Promise<void> {
@@ -83,11 +78,11 @@ async function testRules(): Promise<void> {
     await car.setDrivenBy(driver);
     assert.equal(driver.carChangedHits, 1, '(1) Rule called one time');
     assert.equal(car.driverName, 'joe', '(2) Rule called one time');
-   
+
     await car.setDrivenBy(null);
     assert.equal(driver.carChangedHits, 2, '(1) Rule called 2 times');
     assert.equal(car.driverName, '', '(2) Rule called 2 times');
-  
+
     await driver.setDrives(car);
     assert.equal(driver.carChangedHits, 3, '(1) Rule called  3 times');
     assert.equal(car.driverName, 'joe', '(2) Rule called  3 times');
@@ -98,10 +93,10 @@ async function testRules(): Promise<void> {
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
-    transaction.destroy();    
+    transaction.destroy();
     let classes = modelManager().sortedClasses();
     assert.equal(classes.indexOf('aggregations.car') < classes.indexOf('aggregations.driver'), true, 'Song depends on Cd');
-  
+
 }
 
 

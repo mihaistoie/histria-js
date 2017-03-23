@@ -6,8 +6,8 @@ import { modelManager } from '../model-manager';
 import { EventType } from '../interfaces';
 
 
-//Title decorator
-// Allow title add a title && an description 
+// Title decorator
+// Allow title add a title && an description
 export function title(targetClass: any, title: string, description?: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = modelManager();
@@ -16,7 +16,7 @@ export function title(targetClass: any, title: string, description?: string) {
 }
 
 
-//decorator for propChanged
+// Decorator  for propChanged
 export function propChanged(targetClass: any, ...properties: string[]) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = modelManager();
@@ -25,7 +25,7 @@ export function propChanged(targetClass: any, ...properties: string[]) {
 }
 
 
-//decorators for composition list
+// Decorators for composition list
 export function addItem(targetClass: any, propertyName: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = modelManager();
@@ -49,7 +49,7 @@ export function setItems(targetClass: any, propertyName: string) {
 
 
 
-//decorator for validate
+// Decorator for validate
 export function validate(targetClass: any, ...properties: string[]) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = modelManager();
@@ -57,7 +57,7 @@ export function validate(targetClass: any, ...properties: string[]) {
     }
 }
 
-//decorator for init
+// Decorator for init
 export function init(targetClass: any) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = modelManager();
@@ -65,13 +65,8 @@ export function init(targetClass: any) {
     }
 }
 
-
-
-
-
-
-var module_holder = {};
-// load rules from folder
+const module_holder = {};
+// Load rules from folder
 export async function loadRules(folder: string): Promise<void> {
     let files = await fsPromises.readdir(folder);
     let stats: fs.Stats[];

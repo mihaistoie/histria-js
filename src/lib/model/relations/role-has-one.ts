@@ -173,10 +173,10 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
         }
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
-        //after lazy loading
+        // After lazy loading
         let that = this;
         if (newValue) {
-            //roleInv is AggregationBelongsTo
+            // roleInv is AggregationBelongsTo
             let roleInv = newValue.getRoleByName(that._relation.invRel);
             if (roleInv) roleInv.internalSetValue(that._parent);
 

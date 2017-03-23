@@ -31,6 +31,3 @@ export class OrderRules {
         }
     }
 }
-
-
-export var test = 1;

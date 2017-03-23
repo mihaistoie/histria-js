@@ -118,10 +118,8 @@ export class ModelManager {
                 mapRefs[cn] = true;
             });
             allParents[parent.name] = parent;
-            //parents.push(parent);
-
         }
-        let pa: any = {};;
+        let pa: any = {};
         let addItem = function (name: string) {
             if (pa[name]) return;
             let item: { name: string, mapRefs: any, children: string[] } = allParents[name];

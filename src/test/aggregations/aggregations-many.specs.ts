@@ -31,8 +31,6 @@ async function testCreate(): Promise<void> {
     await cd.songs.add(song1, 0);
     children = await cd.songs.toArray();
     assert.equal(children.length, 2, '(1) Cd has 2 songs');
-
-    
     assert.deepEqual(children.map(ii => ii.uuid), [song1.uuid, song2.uuid], '(2) Cd has 2 songs');
 
     await cd.songs.remove(song2)
@@ -46,12 +44,12 @@ async function testCreate(): Promise<void> {
     transaction.loadFromJson(data1);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
-    transaction.destroy();    
+    transaction.destroy();
 
     let classes = modelManager().sortedClasses();
     assert.equal(classes.indexOf('aggregations.song') > classes.indexOf('aggregations.cd'), true, 'Song depends on Cd');
 
-}   
+}
 
 
 
@@ -64,15 +62,15 @@ async function testLoad(): Promise<void> {
     let children = await cd.songs.toArray();
     assert.equal(children.length, 2, '(1) Cd has 2 songs');
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [song1.uuid, song2.uuid].sort(), '(2) Cd has 2 songs');
-    
+
     let data1 = transaction.saveToJson();
     transaction.clear();
     transaction.loadFromJson(data1);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
-    transaction.destroy();    
-    
+    transaction.destroy();
+
 }
 
 async function testRules(): Promise<void> {
@@ -106,7 +104,7 @@ async function testRules(): Promise<void> {
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
-    transaction.destroy();   
+    transaction.destroy();
 
 
 }
@@ -120,8 +118,8 @@ describe('Relation One to many, Aggregation', () => {
         }).catch((ex) => {
             done(ex);
         });
-       
     });
+
     it('One to many aggregation - create', function (done) {
         testCreate().then(function () {
             done();

@@ -115,7 +115,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
         that._isUndefined = value === undefined;
         that._model = value;
     }
-    
+
     public async add(item: T, index?: number): Promise<T> {
         let that = this;
         if (!item) return null;

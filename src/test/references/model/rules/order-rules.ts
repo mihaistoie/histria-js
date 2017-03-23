@@ -12,4 +12,3 @@ export class OrderRules {
             await order.setCustomerStatus('null');
     }
 }
-export var test = 1;

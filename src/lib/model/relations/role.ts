@@ -13,10 +13,10 @@ export class Role<T extends ObservableObject> {
         that._propertyName = propertyName;
         that._relation = relation;
         that._parent = parent;
-        that._refClass = modelManager().classByName(that._relation.model,that._relation.nameSpace);
+        that._refClass = modelManager().classByName(that._relation.model, that._relation.nameSpace);
     }
     public internalSetValue(value: T) {
-         this._value = value;
+        this._value = value;
     }
 
     public getValue(): Promise<T> {
@@ -32,7 +32,7 @@ export class Role<T extends ObservableObject> {
     protected async _setValue(value: T): Promise<T> {
         return Promise.resolve(null);
     }
-    
+
     public destroy() {
         let that = this;
         that._relation = null;

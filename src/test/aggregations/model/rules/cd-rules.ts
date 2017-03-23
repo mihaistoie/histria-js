@@ -23,5 +23,3 @@ export class CdRules {
         await cd.setDuration(cd.duration - song.duration);
     }
 }
-
-export var test = 1;

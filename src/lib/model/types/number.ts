@@ -77,7 +77,7 @@ export class NumberValue extends BaseNumberValue {
     public async setDecimals(value: number): Promise<number> {
         let that = this;
         let state = that._state();
-        if (state.decimals != value) {
+        if (state.decimals !== value) {
             state.decimals = value;
             let val = that.value;
             await that.setValue(val)

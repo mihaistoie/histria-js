@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class SalesOrder extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.SALESORDER_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new SalesOrderState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new SalesOrderErrors(that, that._schema);
-    }
     get ruleCount() {
         return this._children.ruleCount.value;
     }
@@ -38,6 +25,19 @@ class SalesOrder extends index_1.Instance {
     }
     get $errors() {
         return this._errors;
+    }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.SALESORDER_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new SalesOrderState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new SalesOrderErrors(that, that._schema);
     }
 }
 exports.SalesOrder = SalesOrder;

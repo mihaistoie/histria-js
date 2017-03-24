@@ -8,19 +8,6 @@ import { Order } from './order';
 
 
 export class OrderItem extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = ORDERITEM_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new OrderItemState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new OrderItemErrors(that, that._schema);
-    }
     public get amount(): NumberValue {
         return this._children.amount;
     }
@@ -48,6 +35,19 @@ export class OrderItem extends Instance {
     public get $errors(): OrderItemErrors {
         return <OrderItemErrors>this._errors;
     }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = ORDERITEM_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new OrderItemState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new OrderItemErrors(that, that._schema);
+    }
 }
 
 export class OrderItemErrors extends InstanceErrors {
@@ -65,9 +65,6 @@ export class OrderItemErrors extends InstanceErrors {
     }
     public get orderId(): ErrorState {
         return this._messages.orderId;
-    }
-    public get order(): ErrorState {
-        return this._messages.order;
     }
 }
 

@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class OrderItem extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.ORDERITEM_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new OrderItemState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new OrderItemErrors(that, that._schema);
-    }
     get amount() {
         return this._children.amount;
     }
@@ -42,6 +29,19 @@ class OrderItem extends index_1.Instance {
     get $errors() {
         return this._errors;
     }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.ORDERITEM_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new OrderItemState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new OrderItemErrors(that, that._schema);
+    }
 }
 exports.OrderItem = OrderItem;
 class OrderItemErrors extends index_1.InstanceErrors {
@@ -59,9 +59,6 @@ class OrderItemErrors extends index_1.InstanceErrors {
     }
     get orderId() {
         return this._messages.orderId;
-    }
-    get order() {
-        return this._messages.order;
     }
 }
 exports.OrderItemErrors = OrderItemErrors;

@@ -29,3 +29,7 @@ export declare class HasOneAggregation<T extends ObservableObject> extends HasOn
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }
+export declare class HasOneRefObject<T extends ObservableObject> extends Role<T> {
+    protected _value: T;
+    constructor(parent: ObservableObject, propertyName: string, relation: any);
+}

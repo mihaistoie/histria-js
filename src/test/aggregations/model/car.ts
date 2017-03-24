@@ -8,19 +8,6 @@ import { Driver } from './driver';
 
 
 export class Car extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = CAR_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new CarState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new CarErrors(that, that._schema);
-    }
     public get driverName(): string {
         return this.getPropertyByName('driverName');
     }
@@ -41,6 +28,19 @@ export class Car extends Instance {
     }
     public get $errors(): CarErrors {
         return <CarErrors>this._errors;
+    }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = CAR_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new CarState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new CarErrors(that, that._schema);
     }
 }
 

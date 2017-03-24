@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class Car extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.CAR_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new CarState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new CarErrors(that, that._schema);
-    }
     get driverName() {
         return this.getPropertyByName('driverName');
     }
@@ -35,6 +22,19 @@ class Car extends index_1.Instance {
     }
     get $errors() {
         return this._errors;
+    }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.CAR_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new CarState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new CarErrors(that, that._schema);
     }
 }
 exports.Car = Car;

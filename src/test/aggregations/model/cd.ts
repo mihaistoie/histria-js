@@ -8,19 +8,6 @@ import { Song } from './song';
 
 
 export class Cd extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = CD_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new CdState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new CdErrors(that, that._schema);
-    }
     public get duration(): number {
         return this._children.duration.value;
     }
@@ -39,6 +26,19 @@ export class Cd extends Instance {
     public get $errors(): CdErrors {
         return <CdErrors>this._errors;
     }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = CD_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new CdState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new CdErrors(that, that._schema);
+    }
 }
 
 export class CdErrors extends InstanceErrors {
@@ -50,9 +50,6 @@ export class CdErrors extends InstanceErrors {
     }
     public get id(): ErrorState {
         return this._messages.id;
-    }
-    public get songs(): ErrorState {
-        return this._messages.songs;
     }
 }
 

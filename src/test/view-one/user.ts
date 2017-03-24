@@ -7,19 +7,6 @@ import {
 
 
 export class User extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = USER_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new UserState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new UserErrors(that, that._schema);
-    }
     public get age(): number {
         return this._children.age.value;
     }
@@ -46,6 +33,19 @@ export class User extends Instance {
     }
     public get $errors(): UserErrors {
         return <UserErrors>this._errors;
+    }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = USER_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new UserState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new UserErrors(that, that._schema);
     }
 }
 
@@ -103,14 +103,6 @@ export const
                 type: 'integer',
                 generated: true,
                 format: 'id'
-            }
-        },
-        states: {
-            firstName: {
-                isMandatory: true
-            },
-            lastName: {
-                isReadOnly: true
             }
         },
         meta: {}

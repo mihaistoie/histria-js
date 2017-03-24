@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../index");
 class User extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.USER_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new UserState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new UserErrors(that, that._schema);
-    }
     get age() {
         return this._children.age.value;
     }
@@ -47,6 +34,19 @@ class User extends index_1.Instance {
     }
     get $errors() {
         return this._errors;
+    }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.USER_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new UserState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new UserErrors(that, that._schema);
     }
 }
 exports.User = User;

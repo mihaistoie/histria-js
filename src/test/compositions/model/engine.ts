@@ -8,19 +8,6 @@ import { Car } from './car';
 
 
 export class Engine extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = ENGINE_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new EngineState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new EngineErrors(that, that._schema);
-    }
     public get carChangedHits(): number {
         return this._children.carChangedHits.value;
     }
@@ -51,6 +38,19 @@ export class Engine extends Instance {
     public get $errors(): EngineErrors {
         return <EngineErrors>this._errors;
     }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = ENGINE_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new EngineState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new EngineErrors(that, that._schema);
+    }
 }
 
 export class EngineErrors extends InstanceErrors {
@@ -68,9 +68,6 @@ export class EngineErrors extends InstanceErrors {
     }
     public get carId(): ErrorState {
         return this._messages.carId;
-    }
-    public get car(): ErrorState {
-        return this._messages.car;
     }
 }
 

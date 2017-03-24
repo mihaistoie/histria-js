@@ -10,9 +10,10 @@
         }
     },
     "relations": {
-        "master": {
+        "user": {
             "type": "hasOne",
             "model": "user",
+            "embedded": true,
             "aggregationKind": "composite"
         }
     },

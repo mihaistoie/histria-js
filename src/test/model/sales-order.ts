@@ -7,19 +7,6 @@ import {
 
 
 export class SalesOrder extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = SALESORDER_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new SalesOrderState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new SalesOrderErrors(that, that._schema);
-    }
     public get ruleCount(): number {
         return this._children.ruleCount.value;
     }
@@ -43,6 +30,19 @@ export class SalesOrder extends Instance {
     }
     public get $errors(): SalesOrderErrors {
         return <SalesOrderErrors>this._errors;
+    }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = SALESORDER_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new SalesOrderState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new SalesOrderErrors(that, that._schema);
     }
 }
 

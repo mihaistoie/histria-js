@@ -9,19 +9,6 @@ import { EmployeeAddress } from './employee-address';
 
 
 export class Employee extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = EMPLOYEE_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new EmployeeState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new EmployeeErrors(that, that._schema);
-    }
     public get firstName(): string {
         return this.getPropertyByName('firstName');
     }
@@ -64,6 +51,19 @@ export class Employee extends Instance {
     public get $errors(): EmployeeErrors {
         return <EmployeeErrors>this._errors;
     }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = EMPLOYEE_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new EmployeeState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new EmployeeErrors(that, that._schema);
+    }
 }
 
 export class EmployeeErrors extends InstanceErrors {
@@ -87,9 +87,6 @@ export class EmployeeErrors extends InstanceErrors {
     }
     public get department(): ErrorState {
         return this._messages.department;
-    }
-    public get address(): ErrorState {
-        return this._messages.address;
     }
 }
 

@@ -7,19 +7,6 @@ import {
 
 
 export class Customer extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = CUSTOMER_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new CustomerState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new CustomerErrors(that, that._schema);
-    }
     public get title(): string {
         return this.getPropertyByName('title');
     }
@@ -34,6 +21,19 @@ export class Customer extends Instance {
     }
     public get $errors(): CustomerErrors {
         return <CustomerErrors>this._errors;
+    }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = CUSTOMER_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new CustomerState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new CustomerErrors(that, that._schema);
     }
 }
 

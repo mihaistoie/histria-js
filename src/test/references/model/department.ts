@@ -7,19 +7,6 @@ import {
 
 
 export class Department extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = DEPARTMENT_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new DepartmentState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new DepartmentErrors(that, that._schema);
-    }
     public get code(): string {
         return this.getPropertyByName('code');
     }
@@ -40,6 +27,19 @@ export class Department extends Instance {
     }
     public get $errors(): DepartmentErrors {
         return <DepartmentErrors>this._errors;
+    }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = DEPARTMENT_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new DepartmentState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new DepartmentErrors(that, that._schema);
     }
 }
 

@@ -22,8 +22,8 @@ async function saveCode(codeByClass: any, codeByNamespace: any, dstFolder: strin
 function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib?: string) {
     let baseClass = 'Instance';
     let baseViewClass = 'View';
-    Object.keys(model).forEach((name) => {
-        let schema: any = model[name];
+    Object.keys(model).forEach((fullName) => {
+        let schema: any = model[fullName];
         let isView: boolean = schema.view ? true : false;
         let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
@@ -54,7 +54,18 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         code.push(util.format('export class %s extends %s {', className, isView ? baseViewClass : baseClass));
 
 
-        // Add private
+        // Add public properties
+        _genSchemaProperties(schema, code, model);
+        _genSchemaRelations(schema, code, model);
+
+
+        code.push(_tab(1) + util.format('public get $states(): %sState {', className));
+        code.push(_tab(2) + util.format('return <%sState>this._states;', className));
+        code.push(_tab(1) + '}');
+
+        code.push(_tab(1) + util.format('public get $errors(): %sErrors {', className));
+        code.push(_tab(2) + util.format('return <%sErrors>this._errors;', className));
+        code.push(_tab(1) + '}');
 
         // Add constructor
         code.push(_tab(1) + 'protected init() {');
@@ -73,101 +84,14 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         code.push(_tab(2) + 'let that = this;');
         code.push(_tab(2) + util.format('that._errors = new %sErrors(that, that._schema);', className, ));
         code.push(_tab(1) + '}');
-
-
-        Object.keys(schema.properties || {}).forEach(propName => {
-            let propSchema = schema.properties[propName];
-            if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
-            let stype = schemaUtils.typeOfProperty(propSchema);
-            let isReadOnly = schemaUtils.isReadOnly(propSchema);
-            switch (stype) {
-                case JSONTYPES.string:
-                    code.push(_tab(1) + util.format('public get %s(): string {', propName));
-                    code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propName));
-                    code.push(_tab(1) + '}');
-                    if (!isReadOnly) {
-                        code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propName)));
-                        code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propName));
-                        code.push(_tab(1) + '}');
-                    }
-                    break;
-                case JSONTYPES.boolean:
-                    code.push(_tab(1) + util.format('public get %s(): boolean {', propName));
-                    code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propName));
-                    code.push(_tab(1) + '}');
-                    if (!isReadOnly) {
-                        code.push(_tab(1) + util.format('public set%s(value: boolean): Promise<boolean> {', _upperFirstLetter(propName)));
-                        code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propName));
-                        code.push(_tab(1) + '}');
-                    }
-                    break;
-                case JSONTYPES.id:
-                    code.push(_tab(1) + util.format('public get %s(): any {', propName));
-                    code.push(_tab(2) + util.format('return this._children.%s.value;', propName));
-                    code.push(_tab(1) + '}');
-                    break;
-                case JSONTYPES.integer:
-                    code.push(_tab(1) + util.format('public get %s(): number {', propName));
-                    code.push(_tab(2) + util.format('return this._children.%s.value;', propName));
-                    code.push(_tab(1) + '}');
-                    if (!isReadOnly) {
-                        code.push(_tab(1) + util.format('public set%s(value: number): Promise<number> {', _upperFirstLetter(propName)));
-                        code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', propName));
-                        code.push(_tab(1) + '}');
-                    }
-                    break;
-                case JSONTYPES.number:
-                    code.push(_tab(1) + util.format('public get %s(): NumberValue {', propName));
-                    code.push(_tab(2) + util.format('return this._children.%s;', propName));
-                    code.push(_tab(1) + '}');
-                    break;
-            }
-        });
-        schema.relations && Object.keys(schema.relations).forEach(relName => {
-            let relation = schema.relations[relName];
-            let refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
-            switch (relation.type) {
-                case RELATION_TYPE.hasOne:
-                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relName, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relName));
-                    code.push(_tab(1) + '}');
-                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relName), refClass, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relName));
-                    code.push(_tab(1) + '}');
-                    break;
-                case RELATION_TYPE.belongsTo:
-                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relName, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relName));
-                    code.push(_tab(1) + '}');
-                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relName), refClass, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relName));
-                    code.push(_tab(1) + '}');
-
-                    break;
-                case RELATION_TYPE.hasMany:
-                    let cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';
-                    code.push(_tab(1) + util.format('get %s(): %s<%s> {', relName, cn, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s;', relName));
-                    code.push(_tab(1) + '}');
-                    break;
-
-            }
-        });
-
-
-
-        code.push(_tab(1) + util.format('public get $states(): %sState {', className));
-        code.push(_tab(2) + util.format('return <%sState>this._states;', className));
-        code.push(_tab(1) + '}');
-
-        code.push(_tab(1) + util.format('public get $errors(): %sErrors {', className));
-        code.push(_tab(2) + util.format('return <%sErrors>this._errors;', className));
-        code.push(_tab(1) + '}');
         code.push('}');
+
 
 
         _genClassErrors(schema, className, baseClass, code);
         _genClassState(schema, className, baseClass, code);
+
+
 
         // Generate
 
@@ -196,12 +120,171 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
 }
 
-function _genSchema(schema: any, className: string, code: string[]) {
+function _genSchemaProperties(schema: any, code: string[], model: any): void {
+    Object.keys(schema.properties || {}).forEach(propertyName => {
+        let propSchema = schema.properties[propertyName];
+        if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
+        let stype = schemaUtils.typeOfProperty(propSchema);
+        let isReadOnly = schemaUtils.isReadOnly(propSchema);
+        switch (stype) {
+            case JSONTYPES.string:
+                code.push(_tab(1) + util.format('public get %s(): string {', propertyName));
+                code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propertyName));
+                code.push(_tab(1) + '}');
+                if (!isReadOnly) {
+                    code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propertyName)));
+                    code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propertyName));
+                    code.push(_tab(1) + '}');
+                }
+                break;
+            case JSONTYPES.boolean:
+                code.push(_tab(1) + util.format('public get %s(): boolean {', propertyName));
+                code.push(_tab(2) + util.format('return this.getPropertyByName(\'%s\');', propertyName));
+                code.push(_tab(1) + '}');
+                if (!isReadOnly) {
+                    code.push(_tab(1) + util.format('public set%s(value: boolean): Promise<boolean> {', _upperFirstLetter(propertyName)));
+                    code.push(_tab(2) + util.format('return this.setPropertyByName(\'%s\', value);', propertyName));
+                    code.push(_tab(1) + '}');
+                }
+                break;
+            case JSONTYPES.id:
+                code.push(_tab(1) + util.format('public get %s(): any {', propertyName));
+                code.push(_tab(2) + util.format('return this._children.%s.value;', propertyName));
+                code.push(_tab(1) + '}');
+                break;
+            case JSONTYPES.integer:
+                code.push(_tab(1) + util.format('public get %s(): number {', propertyName));
+                code.push(_tab(2) + util.format('return this._children.%s.value;', propertyName));
+                code.push(_tab(1) + '}');
+                if (!isReadOnly) {
+                    code.push(_tab(1) + util.format('public set%s(value: number): Promise<number> {', _upperFirstLetter(propertyName)));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', propertyName));
+                    code.push(_tab(1) + '}');
+                }
+                break;
+            case JSONTYPES.number:
+                code.push(_tab(1) + util.format('public get %s(): NumberValue {', propertyName));
+                code.push(_tab(2) + util.format('return this._children.%s;', propertyName));
+                code.push(_tab(1) + '}');
+                break;
+        }
+    });
+    if (schema.view)
+        _genEmbeddedRelationsProperties(schema, code, model);
+
+}
+function _genEmbeddedRelationsProperties(schema: any, code: string[], model: any): void {
+    schema.relations && Object.keys(schema.relations).forEach(relationName => {
+        const relation = schema.relations[relationName];
+
+        if (relation.embedded && relation.type === RELATION_TYPE.hasOne && relation.aggregationKind === AGGREGATION_KIND.composite) {
+            // Fusion relation properties  with view properties
+            // 1 - get remote schema
+            const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1);
+            const refSchema = model[relation.model.namespace || schema.nameSpace + '.' + relation.model];
+            // 2 - generate properties
+            if (refSchema)
+                _genEmbedddedSchemaProperties(refSchema, schema, relationName, code);
+
+        }
+    });
+}
+
+function _genEmbedddedSchemaProperties(schema: any, parentSchema: any, relationName: string, code: string[]): void {
+    const parentProps = parentSchema.properties || {};
+    Object.keys(schema.properties || {}).forEach(propertyName => {
+        if (parentProps[propertyName]) return;
+        const propSchema = schema.properties[propertyName];
+        if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
+        const stype = schemaUtils.typeOfProperty(propSchema);
+        const isReadOnly = schemaUtils.isReadOnly(propSchema);
+        switch (stype) {
+            case JSONTYPES.string:
+                code.push(_tab(1) + util.format('public get %s(): string {', propertyName));
+                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+                code.push(_tab(1) + '}');
+                if (!isReadOnly) {
+                    code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propertyName)));
+                    code.push(_tab(2) + util.format('return this.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
+                    code.push(_tab(1) + '}');
+                }
+                break;
+            case JSONTYPES.boolean:
+                code.push(_tab(1) + util.format('public get %s(): boolean {', propertyName));
+                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+                code.push(_tab(1) + '}');
+                if (!isReadOnly) {
+                    code.push(_tab(1) + util.format('public set%s(value: boolean): Promise<boolean> {', _upperFirstLetter(propertyName)));
+                    code.push(_tab(2) + util.format('return this.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
+                    code.push(_tab(1) + '}');
+                }
+                break;
+            case JSONTYPES.id:
+                code.push(_tab(1) + util.format('public get %s(): any {', propertyName));
+                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+                code.push(_tab(1) + '}');
+                break;
+            case JSONTYPES.integer:
+                code.push(_tab(1) + util.format('public get %s(): number {', propertyName));
+                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+                code.push(_tab(1) + '}');
+                if (!isReadOnly) {
+                    code.push(_tab(1) + util.format('public set%s(value: number): Promise<number> {', _upperFirstLetter(propertyName)));
+                    code.push(_tab(2) + util.format('return this._children.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
+
+                    code.push(_tab(1) + '}');
+                }
+                break;
+            case JSONTYPES.number:
+                code.push(_tab(1) + util.format('public get %s(): NumberValue {', propertyName));
+                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+                code.push(_tab(1) + '}');
+                break;
+        }
+    });
+
+}
+
+function _genSchemaRelations(schema: any, code: string[], model: any): void {
+    schema.relations && Object.keys(schema.relations).forEach(relationName => {
+        const relation = schema.relations[relationName];
+        const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
+        switch (relation.type) {
+            case RELATION_TYPE.hasOne:
+                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
+                code.push(_tab(1) + '}');
+                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
+                code.push(_tab(1) + '}');
+                break;
+            case RELATION_TYPE.belongsTo:
+                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
+                code.push(_tab(1) + '}');
+                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
+                code.push(_tab(1) + '}');
+
+                break;
+            case RELATION_TYPE.hasMany:
+                const cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';
+                code.push(_tab(1) + util.format('get %s(): %s<%s> {', relationName, cn, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                code.push(_tab(1) + '}');
+                break;
+
+        }
+    });
+
+}
+
+function _genSchema(schema: any, className: string, code: string[]): void {
     code.push('export const');
-    let schemaStr = JSON.stringify(schema, null, _tab(1)).replace(/\"([^(\")"]+)\":/g, '$1:').replace(/\"/g, '\'').split('\n');
+    const schemaStr = JSON.stringify(schema, null, _tab(1)).replace(/\"([^(\")"]+)\":/g, '$1:').replace(/\"/g, '\'').split('\n');
 
     code.push(_tab(1) + util.format('%s_SCHEMA = %s', className.toUpperCase(), schemaStr[0]));
-    let len = schemaStr.length - 1;
+    const len = schemaStr.length - 1;
     for (let i = 1; i <= len; i++) {
         code.push(_tab(1) + schemaStr[i] + (i === len ? ';' : ''));
     }
@@ -216,17 +299,31 @@ function _genClassErrors(schema: any, className: string, baseClass: string, code
     code.push(_tab(1) + '}');
 
     Object.keys(schema.properties || {}).forEach(propName => {
-        let propSchema = schema.properties[propName];
+        const propSchema = schema.properties[propName];
         if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
         code.push(_tab(1) + util.format('public get %s(): ErrorState {', propName));
         code.push(_tab(2) + util.format('return this._messages.%s;', propName));
         code.push(_tab(1) + '}');
     });
     schema.relations && Object.keys(schema.relations).forEach(relName => {
-        let relation = schema.relations[relName];
-        code.push(_tab(1) + util.format('public get %s(): ErrorState {', relName));
-        code.push(_tab(2) + util.format('return this._messages.%s;', relName));
-        code.push(_tab(1) + '}');
+        const relation = schema.relations[relName];
+        let generateError = false;
+        switch (relation.type) {
+            case RELATION_TYPE.hasMany:
+                generateError = (relation.aggregationKind === AGGREGATION_KIND.composite);
+                break;
+            case RELATION_TYPE.hasOne:
+                generateError = (relation.aggregationKind !== AGGREGATION_KIND.composite);
+                break;
+            case RELATION_TYPE.belongsTo:
+                generateError = false;
+                break;
+        }
+        if (generateError) {
+            code.push(_tab(1) + util.format('public get %s(): ErrorState {', relName));
+            code.push(_tab(2) + util.format('return this._messages.%s;', relName));
+            code.push(_tab(1) + '}');
+        }
     });
 
     code.push('}');

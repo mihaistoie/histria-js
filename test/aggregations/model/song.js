@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class Song extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.SONG_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new SongState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new SongErrors(that, that._schema);
-    }
     get duration() {
         return this._children.duration.value;
     }
@@ -45,6 +32,19 @@ class Song extends index_1.Instance {
     get $errors() {
         return this._errors;
     }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.SONG_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new SongState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new SongErrors(that, that._schema);
+    }
 }
 exports.Song = Song;
 class SongErrors extends index_1.InstanceErrors {
@@ -62,9 +62,6 @@ class SongErrors extends index_1.InstanceErrors {
     }
     get cdId() {
         return this._messages.cdId;
-    }
-    get cd() {
-        return this._messages.cd;
     }
 }
 exports.SongErrors = SongErrors;

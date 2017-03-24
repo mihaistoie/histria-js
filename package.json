@@ -16,8 +16,8 @@
     "merge2": "latest",
     "mocha": "latest",
     "source-map-support": "latest",
-    "tslint": "latest",
     "ts-node": "latest",
+    "tslint": "latest",
     "typescript": "2.x.x"
   },
   "dependencies": {

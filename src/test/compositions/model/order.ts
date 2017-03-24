@@ -8,19 +8,6 @@ import { OrderItem } from './order-item';
 
 
 export class Order extends Instance {
-    protected init() {
-        super.init();
-        let that = this;
-        that._schema = ORDER_SCHEMA;
-    }
-    protected createStates() {
-        let that = this;
-        that._states = new OrderState(that, that._schema);
-    }
-    protected createErrors() {
-        let that = this;
-        that._errors = new OrderErrors(that, that._schema);
-    }
     public get totalAmount(): NumberValue {
         return this._children.totalAmount;
     }
@@ -35,6 +22,19 @@ export class Order extends Instance {
     }
     public get $errors(): OrderErrors {
         return <OrderErrors>this._errors;
+    }
+    protected init() {
+        super.init();
+        let that = this;
+        that._schema = ORDER_SCHEMA;
+    }
+    protected createStates() {
+        let that = this;
+        that._states = new OrderState(that, that._schema);
+    }
+    protected createErrors() {
+        let that = this;
+        that._errors = new OrderErrors(that, that._schema);
     }
 }
 

@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class Department extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.DEPARTMENT_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new DepartmentState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new DepartmentErrors(that, that._schema);
-    }
     get code() {
         return this.getPropertyByName('code');
     }
@@ -35,6 +22,19 @@ class Department extends index_1.Instance {
     }
     get $errors() {
         return this._errors;
+    }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.DEPARTMENT_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new DepartmentState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new DepartmentErrors(that, that._schema);
     }
 }
 exports.Department = Department;

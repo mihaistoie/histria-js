@@ -8,6 +8,48 @@ import { User } from './user';
 
 
 export class UserDetail extends View {
+    public get fullName(): string {
+        return this.getPropertyByName('fullName');
+    }
+    public setFullName(value: string): Promise<string> {
+        return this.setPropertyByName('fullName', value);
+    }
+    public get id(): any {
+        return this._children.id.value;
+    }
+    public get userId(): any {
+        return this._children.userId.value;
+    }
+    public get age(): number {
+        return this.user.age;
+    }
+    public setAge(value: number): Promise<number> {
+        return this._children.user.setAge(value);
+    }
+    public get firstName(): string {
+        return this.user.firstName;
+    }
+    public setFirstName(value: string): Promise<string> {
+        return this.user.setFirstName(value);
+    }
+    public get lastName(): string {
+        return this.user.lastName;
+    }
+    public setLastName(value: string): Promise<string> {
+        return this.user.setLastName(value);
+    }
+    public user(): Promise<User> {
+        return this._children.user.getValue();
+    }
+    public setUser(value: User): Promise<User> {
+        return this._children.user.setValue(value);
+    }
+    public get $states(): UserDetailState {
+        return <UserDetailState>this._states;
+    }
+    public get $errors(): UserDetailErrors {
+        return <UserDetailErrors>this._errors;
+    }
     protected init() {
         super.init();
         let that = this;
@@ -21,30 +63,6 @@ export class UserDetail extends View {
         let that = this;
         that._errors = new UserDetailErrors(that, that._schema);
     }
-    public get fullName(): string {
-        return this.getPropertyByName('fullName');
-    }
-    public setFullName(value: string): Promise<string> {
-        return this.setPropertyByName('fullName', value);
-    }
-    public get id(): any {
-        return this._children.id.value;
-    }
-    public get masterId(): any {
-        return this._children.masterId.value;
-    }
-    public master(): Promise<User> {
-        return this._children.master.getValue();
-    }
-    public setMaster(value: User): Promise<User> {
-        return this._children.master.setValue(value);
-    }
-    public get $states(): UserDetailState {
-        return <UserDetailState>this._states;
-    }
-    public get $errors(): UserDetailErrors {
-        return <UserDetailErrors>this._errors;
-    }
 }
 
 export class UserDetailErrors extends InstanceErrors {
@@ -57,11 +75,8 @@ export class UserDetailErrors extends InstanceErrors {
     public get id(): ErrorState {
         return this._messages.id;
     }
-    public get masterId(): ErrorState {
-        return this._messages.masterId;
-    }
-    public get master(): ErrorState {
-        return this._messages.master;
+    public get userId(): ErrorState {
+        return this._messages.userId;
     }
 }
 
@@ -72,8 +87,8 @@ export class UserDetailState extends InstanceState {
     public get id(): IdState {
         return this._states.id;
     }
-    public get masterId(): IdState {
-        return this._states.masterId;
+    public get userId(): IdState {
+        return this._states.userId;
     }
 }
 export const
@@ -92,21 +107,22 @@ export const
                 generated: true,
                 format: 'id'
             },
-            masterId: {
+            userId: {
                 type: 'integer',
                 isReadOnly: true,
                 format: 'id'
             }
         },
         relations: {
-            master: {
+            user: {
                 type: 'hasOne',
                 model: 'user',
+                embedded: true,
                 aggregationKind: 'composite',
                 nameSpace: 'view-one',
-                title: 'master',
+                title: 'user',
                 localFields: [
-                    'masterId'
+                    'userId'
                 ],
                 foreignFields: [
                     'id'

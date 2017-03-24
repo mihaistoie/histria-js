@@ -15,13 +15,5 @@
             "title": "Last Name",
             "type": "string"
         }
-    },
-    "states": {
-        "firstName": {
-            "isMandatory": true
-        },
-        "lastName": {
-            "isReadOnly": true
-        }
     }
 }

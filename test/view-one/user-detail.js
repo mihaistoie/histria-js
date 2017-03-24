@@ -2,6 +2,48 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../index");
 class UserDetail extends index_1.View {
+    get fullName() {
+        return this.getPropertyByName('fullName');
+    }
+    setFullName(value) {
+        return this.setPropertyByName('fullName', value);
+    }
+    get id() {
+        return this._children.id.value;
+    }
+    get userId() {
+        return this._children.userId.value;
+    }
+    get age() {
+        return this.user.age;
+    }
+    setAge(value) {
+        return this._children.user.setAge(value);
+    }
+    get firstName() {
+        return this.user.firstName;
+    }
+    setFirstName(value) {
+        return this.user.setFirstName(value);
+    }
+    get lastName() {
+        return this.user.lastName;
+    }
+    setLastName(value) {
+        return this.user.setLastName(value);
+    }
+    user() {
+        return this._children.user.getValue();
+    }
+    setUser(value) {
+        return this._children.user.setValue(value);
+    }
+    get $states() {
+        return this._states;
+    }
+    get $errors() {
+        return this._errors;
+    }
     init() {
         super.init();
         let that = this;
@@ -15,30 +57,6 @@ class UserDetail extends index_1.View {
         let that = this;
         that._errors = new UserDetailErrors(that, that._schema);
     }
-    get fullName() {
-        return this.getPropertyByName('fullName');
-    }
-    setFullName(value) {
-        return this.setPropertyByName('fullName', value);
-    }
-    get id() {
-        return this._children.id.value;
-    }
-    get masterId() {
-        return this._children.masterId.value;
-    }
-    master() {
-        return this._children.master.getValue();
-    }
-    setMaster(value) {
-        return this._children.master.setValue(value);
-    }
-    get $states() {
-        return this._states;
-    }
-    get $errors() {
-        return this._errors;
-    }
 }
 exports.UserDetail = UserDetail;
 class UserDetailErrors extends index_1.InstanceErrors {
@@ -51,11 +69,8 @@ class UserDetailErrors extends index_1.InstanceErrors {
     get id() {
         return this._messages.id;
     }
-    get masterId() {
-        return this._messages.masterId;
-    }
-    get master() {
-        return this._messages.master;
+    get userId() {
+        return this._messages.userId;
     }
 }
 exports.UserDetailErrors = UserDetailErrors;
@@ -66,8 +81,8 @@ class UserDetailState extends index_1.InstanceState {
     get id() {
         return this._states.id;
     }
-    get masterId() {
-        return this._states.masterId;
+    get userId() {
+        return this._states.userId;
     }
 }
 exports.UserDetailState = UserDetailState;
@@ -86,21 +101,22 @@ exports.USERDETAIL_SCHEMA = {
             generated: true,
             format: 'id'
         },
-        masterId: {
+        userId: {
             type: 'integer',
             isReadOnly: true,
             format: 'id'
         }
     },
     relations: {
-        master: {
+        user: {
             type: 'hasOne',
             model: 'user',
+            embedded: true,
             aggregationKind: 'composite',
             nameSpace: 'view-one',
-            title: 'master',
+            title: 'user',
             localFields: [
-                'masterId'
+                'userId'
             ],
             foreignFields: [
                 'id'

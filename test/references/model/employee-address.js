@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class EmployeeAddress extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.EMPLOYEEADDRESS_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new EmployeeAddressState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new EmployeeAddressErrors(that, that._schema);
-    }
     get street() {
         return this.getPropertyByName('street');
     }
@@ -63,6 +50,19 @@ class EmployeeAddress extends index_1.Instance {
     get $errors() {
         return this._errors;
     }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.EMPLOYEEADDRESS_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new EmployeeAddressState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new EmployeeAddressErrors(that, that._schema);
+    }
 }
 exports.EmployeeAddress = EmployeeAddress;
 class EmployeeAddressErrors extends index_1.InstanceErrors {
@@ -89,9 +89,6 @@ class EmployeeAddressErrors extends index_1.InstanceErrors {
     }
     get employeeId() {
         return this._messages.employeeId;
-    }
-    get employee() {
-        return this._messages.employee;
     }
 }
 exports.EmployeeAddressErrors = EmployeeAddressErrors;

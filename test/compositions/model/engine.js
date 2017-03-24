@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class Engine extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.ENGINE_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new EngineState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new EngineErrors(that, that._schema);
-    }
     get carChangedHits() {
         return this._children.carChangedHits.value;
     }
@@ -45,6 +32,19 @@ class Engine extends index_1.Instance {
     get $errors() {
         return this._errors;
     }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.ENGINE_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new EngineState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new EngineErrors(that, that._schema);
+    }
 }
 exports.Engine = Engine;
 class EngineErrors extends index_1.InstanceErrors {
@@ -62,9 +62,6 @@ class EngineErrors extends index_1.InstanceErrors {
     }
     get carId() {
         return this._messages.carId;
-    }
-    get car() {
-        return this._messages.car;
     }
 }
 exports.EngineErrors = EngineErrors;

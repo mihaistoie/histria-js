@@ -2,19 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
 class Driver extends index_1.Instance {
-    init() {
-        super.init();
-        let that = this;
-        that._schema = exports.DRIVER_SCHEMA;
-    }
-    createStates() {
-        let that = this;
-        that._states = new DriverState(that, that._schema);
-    }
-    createErrors() {
-        let that = this;
-        that._errors = new DriverErrors(that, that._schema);
-    }
     get carChangedHits() {
         return this._children.carChangedHits.value;
     }
@@ -45,6 +32,19 @@ class Driver extends index_1.Instance {
     get $errors() {
         return this._errors;
     }
+    init() {
+        super.init();
+        let that = this;
+        that._schema = exports.DRIVER_SCHEMA;
+    }
+    createStates() {
+        let that = this;
+        that._states = new DriverState(that, that._schema);
+    }
+    createErrors() {
+        let that = this;
+        that._errors = new DriverErrors(that, that._schema);
+    }
 }
 exports.Driver = Driver;
 class DriverErrors extends index_1.InstanceErrors {
@@ -62,9 +62,6 @@ class DriverErrors extends index_1.InstanceErrors {
     }
     get drivesId() {
         return this._messages.drivesId;
-    }
-    get drives() {
-        return this._messages.drives;
     }
 }
 exports.DriverErrors = DriverErrors;

@@ -184,3 +184,11 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
 
     }
 }
+
+
+export class HasOneRefObject<T extends ObservableObject> extends Role<T> {
+    protected _value: T;
+    constructor(parent: ObservableObject, propertyName: string, relation: any) {
+        super(parent, propertyName, relation);
+    }
+}

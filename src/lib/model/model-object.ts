@@ -85,11 +85,15 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         return this._parent;
     }
     public get uuid(): string {
-        return this._model.$uuid;
+        return this._model._uuid;
     }
 
     public get isNew(): boolean {
-        return this._model.$isNew === true;
+        return this._model._isNew === true;
+    }
+
+    public get isDirty(): boolean {
+        return this._model._isDirty;
     }
 
     public getPath(propName?: string): string {
@@ -396,7 +400,8 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that._propertyName = propertyName;
         that.init();
         // Check uid
-        checkuuid(value);
+        checkUuid(value);
+        if (value._isNew) value._isDirty = true;
         that._setModel(value);
     }
 
@@ -438,14 +443,14 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
 }
 
-function checkuuid(value: any) {
+function checkUuid(value: any) {
     // Check uuid
-    if (!value.$uuid) {
-        if (value.$isNew || !value.id) {
-            value.$uuid = uuid.v1();
-            value.id = value.$uuid;
+    if (!value._uuid) {
+        if (value._isNew || !value.id) {
+            value._uuid = uuid.v1();
+            value.id = value._uuid
         } else
-            value.$uuid = value.id + '';
+            value._uuid = value.id + '';
     }
 }
 

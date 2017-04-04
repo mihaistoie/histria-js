@@ -46,6 +46,7 @@ class Engine extends index_1.Instance {
         that._errors = new EngineErrors(that, that._schema);
     }
 }
+Engine.isPersistent = true;
 exports.Engine = Engine;
 class EngineErrors extends index_1.InstanceErrors {
     get $() {

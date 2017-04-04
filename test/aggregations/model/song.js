@@ -46,6 +46,7 @@ class Song extends index_1.Instance {
         that._errors = new SongErrors(that, that._schema);
     }
 }
+Song.isPersistent = true;
 exports.Song = Song;
 class SongErrors extends index_1.InstanceErrors {
     get $() {

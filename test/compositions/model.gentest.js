@@ -7,7 +7,7 @@ async function generateModel() {
     await index_1.classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../index');
 }
 describe('Generate Model', () => {
-    it('Generate class code', function (done) {
+    it('Generate class code', (done) => {
         generateModel().then(() => {
             done();
         }).catch((ex) => {

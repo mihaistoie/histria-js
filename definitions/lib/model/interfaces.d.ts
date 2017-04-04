@@ -71,6 +71,7 @@ export interface ObservableObject {
     readonly uuid: string;
     readonly status: ObjectStatus;
     readonly isNew: boolean;
+    readonly isDirty: boolean;
 }
 export interface ObservableArray {
     getRoot(): ObservableObject;

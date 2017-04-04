@@ -36,7 +36,7 @@ async function testCreate() {
     assert.equal(await car2.drivenBy(), driver2, 'Car2 is driven by driver2');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -53,7 +53,7 @@ async function testLoad() {
     assert.equal(await car2.drivenBy(), driver2, '(1) Driver 2 drivers car 2 ');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -74,7 +74,7 @@ async function testRules() {
     assert.equal(car.driverName, 'joe', '(2) Rule called  3 times');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();

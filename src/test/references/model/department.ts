@@ -7,6 +7,7 @@ import {
 
 
 export class Department extends Instance {
+    public static isPersistent: boolean = true;
     public get code(): string {
         return this.getPropertyByName('code');
     }

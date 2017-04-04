@@ -7,6 +7,7 @@ import {
 
 
 export class SalesOrder extends Instance {
+    public static isPersistent: boolean = true;
     public get ruleCount(): number {
         return this._children.ruleCount.value;
     }

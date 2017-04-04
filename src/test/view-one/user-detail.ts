@@ -8,6 +8,7 @@ import { User } from './user';
 
 
 export class UserDetail extends View {
+    public static isPersistent: boolean = false;
     public get fullName(): string {
         return this.getPropertyByName('fullName');
     }
@@ -38,11 +39,11 @@ export class UserDetail extends View {
     public setLastName(value: string): Promise<string> {
         return this.user.setLastName(value);
     }
-    public user(): Promise<User> {
-        return this._children.user.getValue();
+    public get user(): User {
+        return this._children.user.getSyncValue();
     }
-    public setUser(value: User): Promise<User> {
-        return this._children.user.setValue(value);
+    public set user(value: User) {
+        this._children.user.setSyncValue(value);
     }
     public get $states(): UserDetailState {
         return <UserDetailState>this._states;

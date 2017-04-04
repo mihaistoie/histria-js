@@ -8,6 +8,7 @@ import { Engine } from './engine';
 
 
 export class Car extends Instance {
+    public static isPersistent: boolean = true;
     public get engineChangedHits(): number {
         return this._children.engineChangedHits.value;
     }

@@ -34,7 +34,7 @@ async function testCreate() {
     assert.equal(await item2.order(), null, '(6) Parent is null');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test in create');
     transaction.destroy();
@@ -63,7 +63,7 @@ async function testLoad() {
     assert.equal(children2[2].loaded, true, '(3)Init rule called');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test in load');
     transaction.destroy();
@@ -79,7 +79,7 @@ async function testRestore() {
     assert.equal(order1.totalAmount.value, 10, '(1) Rule called');
     let saved = JSON.parse(JSON.stringify(order1.model()));
     let transaction2 = new index_1.Transaction();
-    let order2 = transaction.restore(compositions_model_1.Order, saved);
+    let order2 = await transaction.restore(compositions_model_1.Order, saved, false);
     let children2 = await order2.items.toArray();
     assert.equal(children2.length, 3, 'Order has 3 items');
     assert.equal(children2[1].loaded, false, '(2) Loaded = false');
@@ -87,7 +87,7 @@ async function testRestore() {
     assert.equal(order2.totalAmount.value, 20, '(2) Rule called');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test in restore');
     transaction.destroy();
@@ -113,7 +113,7 @@ async function testRules() {
     assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test in rules');
     transaction.destroy();

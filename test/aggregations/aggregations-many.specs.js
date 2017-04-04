@@ -33,7 +33,7 @@ async function testCreate() {
     assert.equal(await song2.cd(), null, '(6) Song2 hasn\'t cd');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -50,7 +50,7 @@ async function testLoad() {
     assert.deepEqual(children.map(ii => ii.uuid).sort(), [song1.uuid, song2.uuid].sort(), '(2) Cd has 2 songs');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -81,7 +81,7 @@ async function testRules() {
     //
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();

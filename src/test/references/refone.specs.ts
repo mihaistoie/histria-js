@@ -20,7 +20,7 @@ async function testCreate(): Promise<void> {
 
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
@@ -41,7 +41,7 @@ async function testLoad(): Promise<void> {
 
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
@@ -62,7 +62,7 @@ async function testRefById(): Promise<void> {
 
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
 
@@ -81,7 +81,7 @@ async function testRules(): Promise<void> {
 
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();

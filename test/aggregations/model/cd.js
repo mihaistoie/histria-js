@@ -34,6 +34,7 @@ class Cd extends index_1.Instance {
         that._errors = new CdErrors(that, that._schema);
     }
 }
+Cd.isPersistent = true;
 exports.Cd = Cd;
 class CdErrors extends index_1.InstanceErrors {
     get $() {

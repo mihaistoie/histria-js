@@ -8,6 +8,7 @@ import { Cd } from './cd';
 
 
 export class Song extends Instance {
+    public static isPersistent: boolean = true;
     public get duration(): number {
         return this._children.duration.value;
     }

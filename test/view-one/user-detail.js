@@ -32,11 +32,11 @@ class UserDetail extends index_1.View {
     setLastName(value) {
         return this.user.setLastName(value);
     }
-    user() {
+    get user() {
         return this._children.user.getValue();
     }
-    setUser(value) {
-        return this._children.user.setValue(value);
+    set user(value) {
+        this._children.user.setValue(value);
     }
     get $states() {
         return this._states;
@@ -58,6 +58,7 @@ class UserDetail extends index_1.View {
         that._errors = new UserDetailErrors(that, that._schema);
     }
 }
+UserDetail.isPersistent = false;
 exports.UserDetail = UserDetail;
 class UserDetailErrors extends index_1.InstanceErrors {
     get $() {

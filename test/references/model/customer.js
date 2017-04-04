@@ -31,6 +31,7 @@ class Customer extends index_1.Instance {
         that._errors = new CustomerErrors(that, that._schema);
     }
 }
+Customer.isPersistent = true;
 exports.Customer = Customer;
 class CustomerErrors extends index_1.InstanceErrors {
     get $() {

@@ -37,6 +37,7 @@ class Department extends index_1.Instance {
         that._errors = new DepartmentErrors(that, that._schema);
     }
 }
+Department.isPersistent = true;
 exports.Department = Department;
 class DepartmentErrors extends index_1.InstanceErrors {
     get $() {

@@ -64,6 +64,7 @@ class EmployeeAddress extends index_1.Instance {
         that._errors = new EmployeeAddressErrors(that, that._schema);
     }
 }
+EmployeeAddress.isPersistent = true;
 exports.EmployeeAddress = EmployeeAddress;
 class EmployeeAddressErrors extends index_1.InstanceErrors {
     get $() {

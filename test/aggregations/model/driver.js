@@ -46,6 +46,7 @@ class Driver extends index_1.Instance {
         that._errors = new DriverErrors(that, that._schema);
     }
 }
+Driver.isPersistent = true;
 exports.Driver = Driver;
 class DriverErrors extends index_1.InstanceErrors {
     get $() {

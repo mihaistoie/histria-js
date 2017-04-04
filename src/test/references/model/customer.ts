@@ -7,6 +7,7 @@ import {
 
 
 export class Customer extends Instance {
+    public static isPersistent: boolean = true;
     public get title(): string {
         return this.getPropertyByName('title');
     }

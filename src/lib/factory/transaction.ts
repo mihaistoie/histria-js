@@ -76,17 +76,19 @@ export class Transaction implements TransactionContainer {
         return res;
     }
 
-    public loadFromJson(data: any): void {
+    public async loadFromJson(data: any, reload: boolean): Promise<void> {
         let that = this;
         let mm = modelManager();
+        let restoreList: Promise<ObservableObject>[] = [];
         data && data.instances.forEach((item: { className: string, data: any }) => {
             let cn = item.className.split('.');
             let factory = mm.classByName(cn[1], cn[0]);
-            if (!factory) {
+            if (!factory)
                 throw util.format('Class not found "%s".', item.className);
-            }
-            that.restore(factory, item.data);
+            restoreList.push(that.restore(factory, item.data, reload));
         });
+        await Promise.all(restoreList);
+
 
     }
 
@@ -128,7 +130,7 @@ export class Transaction implements TransactionContainer {
     public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
         let that = this;
         let mm = modelManager();
-        let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { $isNew: true }, { isRestore: false });
+        let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { _isNew: true }, { isRestore: false });
         that._addInstance(instance, classOfInstance);
         let instances: any[] = []
         instance.enumChildren((child: any) => {
@@ -213,6 +215,8 @@ export class Transaction implements TransactionContainer {
     public async find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T[]> {
         let that = this;
         let res = await that._find<T>(filter, classOfInstance);
+        if (!classOfInstance.isPersistent)
+            return res || [];
         if (!options || !options.onlyInCache) {
             let store = that._store(classOfInstance);
             if (store) {
@@ -240,6 +244,8 @@ export class Transaction implements TransactionContainer {
         let that = this;
         let res = await that._findOne<T>(filter, classOfInstance);
         if (res) return res;
+        if (!classOfInstance.isPersistent)
+            return res;
         if (!options || !options.onlyInCache) {
             let store = that._store(classOfInstance);
             if (store) {
@@ -270,10 +276,19 @@ export class Transaction implements TransactionContainer {
         }
         instances.set(instance.uuid, instance);
     }
-    public restore<T extends ObservableObject>(classOfInstance: any, data: any): T {
-        let mm = modelManager();
-        let that = this;
+    public async restore<T extends ObservableObject>(classOfInstance: any, data: any, reload: boolean): Promise<T> {
+        const that = this;
+        const mm = modelManager();
         data = data || {};
+        if (reload && classOfInstance.isPersistent && !data._isDirty) {
+            let store = that._store(classOfInstance);
+            if (store) {
+                let cd = await store.find(classOfInstance.entityName, { id: data.id }, { compositions: true });
+                if (cd)
+                    return that.restore<T>(classOfInstance, cd, false);
+            }
+        }
+
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
         that._addInstance(instance, classOfInstance);
         let instances: any[] = []

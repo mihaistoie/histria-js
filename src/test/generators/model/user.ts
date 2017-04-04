@@ -7,6 +7,7 @@ import {
 
 
 export class User extends Instance {
+    public static isPersistent: boolean = true;
     public get age(): number {
         return this._children.age.value;
     }

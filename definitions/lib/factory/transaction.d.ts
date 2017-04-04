@@ -10,7 +10,7 @@ export declare class Transaction implements TransactionContainer {
     readonly context: UserContext;
     readonly eventInfo: EventInfo;
     saveToJson(): any;
-    loadFromJson(data: any): void;
+    loadFromJson(data: any, reload: boolean): Promise<void>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
@@ -23,7 +23,7 @@ export declare class Transaction implements TransactionContainer {
     findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T>;
     removeInstance(classOfInstance: any, instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
-    restore<T extends ObservableObject>(classOfInstance: any, data: any): T;
+    restore<T extends ObservableObject>(classOfInstance: any, data: any, reload: boolean): Promise<T>;
     private _getInstances(classOfInstance);
     private _getRemovedInstances(classOfInstance);
     private _findById<T>(id, classOfInstance);

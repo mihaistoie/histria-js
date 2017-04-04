@@ -52,11 +52,15 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
         code.push('');
         code.push(util.format('export class %s extends %s {', className, isView ? baseViewClass : baseClass));
+        code.push(_tab(1) + util.format('public static isPersistent: boolean = %s;', isView ? 'false' : 'true'));
 
 
         // Add public properties
         _genSchemaProperties(schema, code, model);
-        _genSchemaRelations(schema, code, model);
+        if (schema.view)
+            _genVewRelations(schema, code, model);
+        else
+            _genSchemaRelations(schema, code, model);
 
 
         code.push(_tab(1) + util.format('public get $states(): %sState {', className));
@@ -184,13 +188,13 @@ function _genEmbeddedRelationsProperties(schema: any, code: string[], model: any
             const refSchema = model[relation.model.namespace || schema.nameSpace + '.' + relation.model];
             // 2 - generate properties
             if (refSchema)
-                _genEmbedddedSchemaProperties(refSchema, schema, relationName, code);
+                _genEmbeddedSchemaProperties(refSchema, schema, relationName, code);
 
         }
     });
 }
 
-function _genEmbedddedSchemaProperties(schema: any, parentSchema: any, relationName: string, code: string[]): void {
+function _genEmbeddedSchemaProperties(schema: any, parentSchema: any, relationName: string, code: string[]): void {
     const parentProps = parentSchema.properties || {};
     Object.keys(schema.properties || {}).forEach(propertyName => {
         if (parentProps[propertyName]) return;
@@ -245,6 +249,28 @@ function _genEmbedddedSchemaProperties(schema: any, parentSchema: any, relationN
 
 }
 
+function _genVewRelations(schema: any, code: string[], model: any): void {
+    schema.relations && Object.keys(schema.relations).forEach(relationName => {
+        const relation = schema.relations[relationName];
+        const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
+        switch (relation.type) {
+            case RELATION_TYPE.hasOne:
+                code.push(_tab(1) + util.format('public get %s(): %s {', relationName, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.getSyncValue();', relationName));
+                code.push(_tab(1) + '}');
+                code.push(_tab(1) + util.format('public set %s(value: %s) {', relationName, refClass));
+                code.push(_tab(2) + util.format('this._children.%s.setSyncValue(value);', relationName));
+                code.push(_tab(1) + '}');
+                break;
+            case RELATION_TYPE.belongsTo:
+                break;
+            case RELATION_TYPE.hasMany:
+                break;
+
+        }
+    });
+}
+
 function _genSchemaRelations(schema: any, code: string[], model: any): void {
     schema.relations && Object.keys(schema.relations).forEach(relationName => {
         const relation = schema.relations[relationName];
@@ -265,7 +291,6 @@ function _genSchemaRelations(schema: any, code: string[], model: any): void {
                 code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
                 code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
                 code.push(_tab(1) + '}');
-
                 break;
             case RELATION_TYPE.hasMany:
                 const cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';

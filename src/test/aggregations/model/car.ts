@@ -8,6 +8,7 @@ import { Driver } from './driver';
 
 
 export class Car extends Instance {
+    public static isPersistent: boolean = true;
     public get driverName(): string {
         return this.getPropertyByName('driverName');
     }

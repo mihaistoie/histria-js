@@ -12,7 +12,7 @@ async function generateModel() {
 }
 
 describe('Generate Model', () => {
-    it('Generate class code', function (done) {
+    it('Generate class code', (done) => {
         generateModel().then(() => {
             done();
         }).catch((ex) => {

@@ -8,6 +8,7 @@ import { OrderItem } from './order-item';
 
 
 export class Order extends Instance {
+    public static isPersistent: boolean = true;
     public get totalAmount(): NumberValue {
         return this._children.totalAmount;
     }

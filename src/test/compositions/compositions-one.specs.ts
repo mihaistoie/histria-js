@@ -53,7 +53,7 @@ async function testCreate(): Promise<void> {
     await engine3.setCar(car3);
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 1');
     transaction.destroy();
@@ -106,7 +106,7 @@ async function testLoad(): Promise<void> {
 
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 2');
 
@@ -139,7 +139,7 @@ async function testRules(): Promise<void> {
 
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 3');
 
@@ -190,32 +190,32 @@ describe('Relation One to One, Composition', () => {
             done(ex);
         });
     });
-    it('One to one composition - create', function (done) {
-        testCreate().then(function () {
+    it('One to one composition - create', (done) => {
+        testCreate().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         })
 
 
     });
-    it('One to one composition - load', function (done) {
-        testLoad().then(function () {
+    it('One to one composition - load', (done) => {
+        testLoad().then(() => {
             done();
         }).catch(function (ex) {
             done(ex);
         });
     });
-    it('One to one composition - rules', function (done) {
-        testRules().then(function () {
+    it('One to one composition - rules', (done) => {
+        testRules().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
 
     });
 
-    it('One to one composition - states errors', function (done) {
+    it('One to one composition - states errors', (done) => {
         done();
 
     });

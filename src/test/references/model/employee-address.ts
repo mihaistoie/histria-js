@@ -8,6 +8,7 @@ import { Employee } from './employee';
 
 
 export class EmployeeAddress extends Instance {
+    public static isPersistent: boolean = true;
     public get street(): string {
         return this.getPropertyByName('street');
     }

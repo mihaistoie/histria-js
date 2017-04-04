@@ -43,6 +43,7 @@ class Car extends index_1.Instance {
         that._errors = new CarErrors(that, that._schema);
     }
 }
+Car.isPersistent = true;
 exports.Car = Car;
 class CarErrors extends index_1.InstanceErrors {
     get $() {

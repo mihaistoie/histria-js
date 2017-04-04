@@ -43,6 +43,7 @@ class OrderItem extends index_1.Instance {
         that._errors = new OrderItemErrors(that, that._schema);
     }
 }
+OrderItem.isPersistent = true;
 exports.OrderItem = OrderItem;
 class OrderItemErrors extends index_1.InstanceErrors {
     get $() {

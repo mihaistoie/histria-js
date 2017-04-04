@@ -17,7 +17,7 @@ async function testCreate() {
     assert.equal(employee.departmentCode, undefined, 'departmentCode is undefined');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -35,7 +35,7 @@ async function testLoad() {
     assert.equal(depCode, undefined, 'departmentCode is undefined');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -53,7 +53,7 @@ async function testRefById() {
     assert.equal(customerId, undefined, 'customerId is undefined');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
@@ -68,7 +68,7 @@ async function testRules() {
     assert.equal(order.customerStatus, 'null', 'Rule called 2');
     let data1 = transaction.saveToJson();
     transaction.clear();
-    transaction.loadFromJson(data1);
+    await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();

@@ -8,6 +8,7 @@ import { Customer } from './customer';
 
 
 export class Order extends Instance {
+    public static isPersistent: boolean = true;
     public get customerStatus(): string {
         return this.getPropertyByName('customerStatus');
     }

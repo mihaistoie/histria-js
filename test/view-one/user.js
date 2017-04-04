@@ -43,6 +43,7 @@ class User extends index_1.Instance {
         that._errors = new UserErrors(that, that._schema);
     }
 }
+User.isPersistent = true;
 exports.User = User;
 class UserErrors extends index_1.InstanceErrors {
     get $() {

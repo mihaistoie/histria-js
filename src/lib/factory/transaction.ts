@@ -118,7 +118,6 @@ export class Transaction implements TransactionContainer {
         else {
             for (let item of list)
                 await item(eventInfo, instance.constructor, [instance], args)
-            return;
         }
 
     }

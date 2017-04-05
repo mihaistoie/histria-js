@@ -11,6 +11,7 @@ export declare class Transaction implements TransactionContainer {
     readonly eventInfo: EventInfo;
     saveToJson(): any;
     loadFromJson(data: any, reload: boolean): Promise<void>;
+    private _propagateEvent(list, eventInfo, instance, nInstances, args, argIndex);
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;

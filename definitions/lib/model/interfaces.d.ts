@@ -64,6 +64,13 @@ export interface ObservableObject {
     enumChildren(cb: (value: ObservableObject) => void): void;
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;
+    addListener(listener: any, parent: ObservableObject, propertyName: string): void;
+    getListeners(): {
+        instance: ObservableObject;
+        propertyName: string;
+        isOwner: boolean;
+    }[];
+    rmvListener(listener: any): void;
     readonly parent: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;

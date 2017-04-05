@@ -32,4 +32,11 @@ export declare class HasOneAggregation<T extends ObservableObject> extends HasOn
 export declare class HasOneRefObject<T extends ObservableObject> extends Role<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
+    private _subscribe();
+    unsubscribe(): void;
+    enumChildren(cb: (value: ObservableObject) => void): void;
+    readonly syncValue: T;
+    destroy(): void;
+    protected _setValue(value: T): Promise<T>;
+    protected _lazyLoad(): Promise<void>;
 }

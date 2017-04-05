@@ -1,5 +1,5 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
-import { HasOneRef, HasOneComposition, HasOneAggregation } from './relations/role-has-one';
+import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from './relations/role-has-one';
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
 import { HasManyComposition, HasManyAggregation } from './relations/role-has-many';
 
@@ -21,9 +21,14 @@ import * as util from 'util';
 import * as uuid from 'uuid';
 
 export class ModelObject extends BaseInstance implements ObservableObject {
+
+    context: UserContext;
+    transaction: TransactionContainer;
+
     protected _status: ObjectStatus;
     // When set _parent reset _rootCache
     protected _parent: ObservableObject;
+    protected _listeners: { listener: any, parent: ObservableObject, propertyName: string }[];
     protected _children: any;
     protected _schema: any;
     protected _rootCache: ObservableObject;
@@ -32,6 +37,27 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
     protected _propertyName: string;
+
+    public addListener(listener: any, parent: ObservableObject, propertyName: string): void {
+        const that = this;
+        that._listeners = that._listeners || [];
+        that._listeners.push({ listener: listener, parent: parent, propertyName: propertyName });
+    }
+    public rmvListener(listener: any): void {
+        const that = this;
+        if (that._listeners) {
+            const index = that._listeners.findIndex(value => value.listener === listener);
+            if (index >= 0) that._listeners.splice(index, 1);
+        }
+    }
+    public getListeners(): { instance: ObservableObject; propertyName: string; isOwner: boolean; }[] {
+        const that = this;
+        const res: { instance: ObservableObject; propertyName: string; isOwner: boolean; }[] = [];
+        if (that._parent)
+            res.push({ instance: that._parent, propertyName: that.propertyName, isOwner: true });
+        that._listeners && that._listeners.forEach(item => res.push({ instance: item.parent, propertyName: item.propertyName, isOwner: false }))
+        return res;
+    }
 
 
     public getRoleByName(roleName: string) {
@@ -153,28 +179,10 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         return that._schema.properties[propName];
     }
 
-
-    private _createProperties() {
-        let that = this;
-        that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
-            let cs = that._schema.properties[propName];
-            let propType = schemaUtils.typeOfProperty(cs);
-            if (that.isNew && cs.default !== undefined && that._model[propName] === undefined)
-                that._model[propName] = cs.default;
-            switch (propType) {
-                case JSONTYPES.integer:
-                    that._children[propName] = new IntegerValue(that, propName);
-                    break;
-                case JSONTYPES.id:
-                    that._children[propName] = new IdValue(that, propName);
-                    break;
-                case JSONTYPES.number:
-                    that._children[propName] = new NumberValue(that, propName);
-                    break;
-            }
-        });
+    private _createRelations() {
+        const that = this;
         that._schema && that._schema.relations && Object.keys(that._schema.relations).forEach(relName => {
-            let relation = that._schema.relations[relName];
+            const relation = that._schema.relations[relName];
             switch (relation.type) {
                 case RELATION_TYPE.hasOne:
                     if (relation.aggregationKind === AGGREGATION_KIND.none) {
@@ -211,6 +219,46 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
             }
         });
+
+    }
+    private _createViewRelations() {
+        const that = this;
+        that._schema && that._schema.relations && Object.keys(that._schema.relations).forEach(relName => {
+            const relation = that._schema.relations[relName];
+            switch (relation.type) {
+                case RELATION_TYPE.hasOne:
+                    that._children[relName] = new HasOneRefObject(that, relName, relation);
+                    break;
+                case RELATION_TYPE.hasMany:
+                    break
+
+            }
+        });
+    }
+
+    private _createProperties() {
+        const that = this;
+        that._schema && that._schema.properties && Object.keys(that._schema.properties).forEach(propName => {
+            let cs = that._schema.properties[propName];
+            let propType = schemaUtils.typeOfProperty(cs);
+            if (that.isNew && cs.default !== undefined && that._model[propName] === undefined)
+                that._model[propName] = cs.default;
+            switch (propType) {
+                case JSONTYPES.integer:
+                    that._children[propName] = new IntegerValue(that, propName);
+                    break;
+                case JSONTYPES.id:
+                    that._children[propName] = new IdValue(that, propName);
+                    break;
+                case JSONTYPES.number:
+                    that._children[propName] = new NumberValue(that, propName);
+                    break;
+            }
+        });
+        if (that._schema.view)
+            that._createViewRelations();
+        else
+            that._createRelations();
     }
     public isArrayComposition(propName: string): boolean {
         let that = this;
@@ -270,9 +318,10 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         let eventInfo = that.transaction.eventInfo;
         eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
         try {
+            const error = that._errorByName(propName);
+            if (error) error.error = '';
             try {
                 // Clear errors for propName
-                that._errorByName(propName).error = '';
                 await that.beforePropertyChanged(propName, oldValue, newValue);
                 // Change property
                 hnd();
@@ -283,7 +332,8 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                     await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that, propName, newValue, oldValue);
                 }
             } catch (ex) {
-                that._errorByName(propName).addException(ex);
+                if (error)
+                    error.addException(ex);
             }
         } finally {
             eventInfo.pop()
@@ -406,7 +456,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     }
 
     public destroy() {
-        let that = this;
+        const that = this;
 
         if (that._states) {
             that._states.destroy();
@@ -424,6 +474,11 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         }
         if (that._transaction) {
             that._transaction.removeInstance(modelManager().classByName(that._schema.name, that._schema.nameSpace), that);
+        }
+        if (that._listeners) {
+            let list = that._listeners;
+            that._listeners = null;
+            list.forEach(item => item.listener.unsubscribe());
         }
         that._schema = null;
         that._model = null;

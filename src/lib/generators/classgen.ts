@@ -173,81 +173,81 @@ function _genSchemaProperties(schema: any, code: string[], model: any): void {
                 break;
         }
     });
-    if (schema.view)
-        _genEmbeddedRelationsProperties(schema, code, model);
+//    if (schema.view)
+//        _genEmbeddedRelationsProperties(schema, code, model);
 
 }
-function _genEmbeddedRelationsProperties(schema: any, code: string[], model: any): void {
-    schema.relations && Object.keys(schema.relations).forEach(relationName => {
-        const relation = schema.relations[relationName];
+// function _genEmbeddedRelationsProperties(schema: any, code: string[], model: any): void {
+//     schema.relations && Object.keys(schema.relations).forEach(relationName => {
+//         const relation = schema.relations[relationName];
 
-        if (relation.embedded && relation.type === RELATION_TYPE.hasOne && relation.aggregationKind === AGGREGATION_KIND.composite) {
-            // Fusion relation properties  with view properties
-            // 1 - get remote schema
-            const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1);
-            const refSchema = model[relation.model.namespace || schema.nameSpace + '.' + relation.model];
-            // 2 - generate properties
-            if (refSchema)
-                _genEmbeddedSchemaProperties(refSchema, schema, relationName, code);
+//         if (relation.embedded && relation.type === RELATION_TYPE.hasOne && relation.aggregationKind === AGGREGATION_KIND.composite) {
+//             // Fusion relation properties  with view properties
+//             // 1 - get remote schema
+//             const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1);
+//             const refSchema = model[relation.model.namespace || schema.nameSpace + '.' + relation.model];
+//             // 2 - generate properties
+//             if (refSchema)
+//                 _genEmbeddedSchemaProperties(refSchema, schema, relationName, code);
 
-        }
-    });
-}
+//         }
+//     });
+// }
 
-function _genEmbeddedSchemaProperties(schema: any, parentSchema: any, relationName: string, code: string[]): void {
-    const parentProps = parentSchema.properties || {};
-    Object.keys(schema.properties || {}).forEach(propertyName => {
-        if (parentProps[propertyName]) return;
-        const propSchema = schema.properties[propertyName];
-        if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
-        const stype = schemaUtils.typeOfProperty(propSchema);
-        const isReadOnly = schemaUtils.isReadOnly(propSchema);
-        switch (stype) {
-            case JSONTYPES.string:
-                code.push(_tab(1) + util.format('public get %s(): string {', propertyName));
-                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
-                code.push(_tab(1) + '}');
-                if (!isReadOnly) {
-                    code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propertyName)));
-                    code.push(_tab(2) + util.format('return this.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
-                    code.push(_tab(1) + '}');
-                }
-                break;
-            case JSONTYPES.boolean:
-                code.push(_tab(1) + util.format('public get %s(): boolean {', propertyName));
-                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
-                code.push(_tab(1) + '}');
-                if (!isReadOnly) {
-                    code.push(_tab(1) + util.format('public set%s(value: boolean): Promise<boolean> {', _upperFirstLetter(propertyName)));
-                    code.push(_tab(2) + util.format('return this.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
-                    code.push(_tab(1) + '}');
-                }
-                break;
-            case JSONTYPES.id:
-                code.push(_tab(1) + util.format('public get %s(): any {', propertyName));
-                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
-                code.push(_tab(1) + '}');
-                break;
-            case JSONTYPES.integer:
-                code.push(_tab(1) + util.format('public get %s(): number {', propertyName));
-                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
-                code.push(_tab(1) + '}');
-                if (!isReadOnly) {
-                    code.push(_tab(1) + util.format('public set%s(value: number): Promise<number> {', _upperFirstLetter(propertyName)));
-                    code.push(_tab(2) + util.format('return this._children.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
+// function _genEmbeddedSchemaProperties(schema: any, parentSchema: any, relationName: string, code: string[]): void {
+//     const parentProps = parentSchema.properties || {};
+//     Object.keys(schema.properties || {}).forEach(propertyName => {
+//         if (parentProps[propertyName]) return;
+//         const propSchema = schema.properties[propertyName];
+//         if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
+//         const stype = schemaUtils.typeOfProperty(propSchema);
+//         const isReadOnly = schemaUtils.isReadOnly(propSchema);
+//         switch (stype) {
+//             case JSONTYPES.string:
+//                 code.push(_tab(1) + util.format('public get %s(): string {', propertyName));
+//                 code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+//                 code.push(_tab(1) + '}');
+//                 if (!isReadOnly) {
+//                     code.push(_tab(1) + util.format('public set%s(value: string): Promise<string> {', _upperFirstLetter(propertyName)));
+//                     code.push(_tab(2) + util.format('return this.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
+//                     code.push(_tab(1) + '}');
+//                 }
+//                 break;
+//             case JSONTYPES.boolean:
+//                 code.push(_tab(1) + util.format('public get %s(): boolean {', propertyName));
+//                 code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+//                 code.push(_tab(1) + '}');
+//                 if (!isReadOnly) {
+//                     code.push(_tab(1) + util.format('public set%s(value: boolean): Promise<boolean> {', _upperFirstLetter(propertyName)));
+//                     code.push(_tab(2) + util.format('return this.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
+//                     code.push(_tab(1) + '}');
+//                 }
+//                 break;
+//             case JSONTYPES.id:
+//                 code.push(_tab(1) + util.format('public get %s(): any {', propertyName));
+//                 code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+//                 code.push(_tab(1) + '}');
+//                 break;
+//             case JSONTYPES.integer:
+//                 code.push(_tab(1) + util.format('public get %s(): number {', propertyName));
+//                 code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+//                 code.push(_tab(1) + '}');
+//                 if (!isReadOnly) {
+//                     code.push(_tab(1) + util.format('public set%s(value: number): Promise<number> {', _upperFirstLetter(propertyName)));
+//                     code.push(_tab(2) + util.format('return this._children.%s.set%s(value);', relationName, _upperFirstLetter(propertyName)));
 
-                    code.push(_tab(1) + '}');
-                }
-                break;
-            case JSONTYPES.number:
-                code.push(_tab(1) + util.format('public get %s(): NumberValue {', propertyName));
-                code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
-                code.push(_tab(1) + '}');
-                break;
-        }
-    });
+//                     code.push(_tab(1) + '}');
+//                 }
+//                 break;
+//             case JSONTYPES.number:
+//                 code.push(_tab(1) + util.format('public get %s(): NumberValue {', propertyName));
+//                 code.push(_tab(2) + util.format('return this.%s.%s;', relationName, propertyName));
+//                 code.push(_tab(1) + '}');
+//                 break;
+//         }
+//     });
 
-}
+// }
 
 function _genVewRelations(schema: any, code: string[], model: any): void {
     schema.relations && Object.keys(schema.relations).forEach(relationName => {
@@ -255,11 +255,11 @@ function _genVewRelations(schema: any, code: string[], model: any): void {
         const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
         switch (relation.type) {
             case RELATION_TYPE.hasOne:
-                code.push(_tab(1) + util.format('public get %s(): %s {', relationName, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.getSyncValue();', relationName));
+                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
                 code.push(_tab(1) + '}');
-                code.push(_tab(1) + util.format('public set %s(value: %s) {', relationName, refClass));
-                code.push(_tab(2) + util.format('this._children.%s.setSyncValue(value);', relationName));
+                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
                 code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.belongsTo:

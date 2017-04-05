@@ -1,6 +1,6 @@
 import { ObservableObject, ObjectStatus, FindOptions } from '../interfaces';
 import { Role } from './role';
-import { schemaUtils, DEFAULT_PARENT_NAME } from 'histria-utils';
+import { schemaUtils, DEFAULT_PARENT_NAME, AGGREGATION_KIND } from 'histria-utils';
 
 
 
@@ -10,7 +10,7 @@ export class HasOne<T extends ObservableObject> extends Role<T> {
         super(parent, propertyName, relation);
     }
     protected async _getValue(): Promise<T> {
-        let that = this;
+        const that = this;
         if (that._value !== undefined)
             return that._value;
         await that._lazyLoad();
@@ -29,8 +29,8 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         super(parent, propertyName, relation);
     }
     protected async _lazyLoad(): Promise<void> {
-        let that = this;
-        let query: any = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
+        const that = this;
+        const query: any = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
         if (query) {
             let opts: FindOptions = { onlyInCache: false };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts) || null;
@@ -39,7 +39,7 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     }
 
     protected async _setValue(value: T): Promise<T> {
-        let that = this;
+        const that = this;
         value = value || null;
         let oldValue = await that._getValue();
         if (that._value === value)
@@ -57,12 +57,12 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
 
 export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected async _setValue(value: T): Promise<T> {
-        let that = this;
+        const that = this;
         value = value || null;
         let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
-        let newValue = value;
+        const newValue = value;
         await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
             that._value = value;
             if (that._relation.invRel) {
@@ -82,11 +82,11 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     }
 
     protected async _lazyLoad(): Promise<void> {
-        let that = this;
-        let query: any = schemaUtils.roleToQuery(that._relation, that._parent.model());
+        const that = this;
+        const query: any = schemaUtils.roleToQuery(that._relation, that._parent.model());
         if (query) {
             that._value = null;
-            let opts: FindOptions = { onlyInCache: false };
+            const opts: FindOptions = { onlyInCache: false };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts);
             await that._updateInvSideAfterLazyLoading(that._value);
         } else
@@ -105,11 +105,11 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
-        let that = this;
-        let isRestore = that._parent.status === ObjectStatus.restoring;
+        const that = this;
+        const isRestore = that._parent.status === ObjectStatus.restoring;
 
-        let pmodel = that._parent.model();
-        let childModel = pmodel[propertyName];
+        const pmodel = that._parent.model();
+        const childModel = pmodel[propertyName];
         if (childModel === null)
             that._value = null;
         else if (childModel) {
@@ -120,14 +120,14 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         }
     }
     public enumChildren(cb: (value: ObservableObject) => void) {
-        let that = this;
+        const that = this;
         if (that._value) {
             that._value.enumChildren(cb);
             cb(that._value);
         }
     }
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
-        let that = this;
+        const that = this;
         if (newValue) {
             await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
             that._parent.model()[that._propertyName] = newValue.model();
@@ -140,12 +140,12 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         }
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
-        let that = this;
+        const that = this;
         if (newValue)
             await newValue.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, false);
     }
     public destroy() {
-        let that = this;
+        const that = this;
         if (that._value) {
             that._value.destroy();
             that._value = null;
@@ -161,23 +161,23 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
     }
 
     protected async _afterSetValue(newValue: T, oldValue: T): Promise<void> {
-        let that = this;
+        const that = this;
         that._value = newValue;
         if (oldValue) {
-            let r = oldValue.getRoleByName(that._relation.invRel, );
+            const r = oldValue.getRoleByName(that._relation.invRel, );
             if (r) await r.internalSetValueAndNotify(null, oldValue);
         }
         if (newValue) {
-            let r = newValue.getRoleByName(that._relation.invRel);
+            const r = newValue.getRoleByName(that._relation.invRel);
             if (r) await r.internalSetValueAndNotify(that._parent, newValue);
         }
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         // After lazy loading
-        let that = this;
+        const that = this;
         if (newValue) {
             // roleInv is AggregationBelongsTo
-            let roleInv = newValue.getRoleByName(that._relation.invRel);
+            const roleInv = newValue.getRoleByName(that._relation.invRel);
             if (roleInv) roleInv.internalSetValue(that._parent);
 
         }
@@ -191,4 +191,70 @@ export class HasOneRefObject<T extends ObservableObject> extends Role<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
     }
+    private _subscribe(): void {
+        const that = this;
+        if (that._relation.aggregationKind === AGGREGATION_KIND.composite) {
+            that._value.addListener(that, that._parent, that._propertyName);
+        }
+
+    }
+    // Called by that._value on destroy
+    public unsubscribe(): void {
+        const that = this;
+        if (that._relation.aggregationKind === AGGREGATION_KIND.composite) {
+            that._value = undefined;
+        }
+
+    }
+    public enumChildren(cb: (value: ObservableObject) => void) {
+        const that = this;
+        if (that._relation.aggregationKind === AGGREGATION_KIND.composite && that._value) {
+            that._value.enumChildren(cb);
+            cb(that._value);
+        }
+    }
+
+    public get syncValue(): T {
+        return this._value;
+    }
+
+    public destroy() {
+        const that = this;
+        if (that._value && that._relation.aggregationKind === AGGREGATION_KIND.composite) {
+            that._value.rmvListener(that);
+            that._value = null;
+        }
+        super.destroy();
+    }
+
+    protected async _setValue(value: T): Promise<T> {
+        const that = this;
+        value = value || null;
+        let oldValue = await that._getValue();
+        if (that._value === value)
+            return that._value;
+        await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
+            if (oldValue && that._relation.aggregationKind === AGGREGATION_KIND.composite)
+                oldValue.rmvListener(that);
+            that._value = value;
+            that._subscribe();
+            let lmodel = that._parent.model();
+            let fmodel = that._value ? that._value.model() : null;
+            schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
+        });
+        return that._value;
+    }
+
+
+    protected async _lazyLoad(): Promise<void> {
+        const that = this;
+        const query: any = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
+        if (query) {
+            const opts: FindOptions = { onlyInCache: false };
+            that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts) || null;
+            that._subscribe()
+        } else
+            that._value = null;
+    }
+
 }

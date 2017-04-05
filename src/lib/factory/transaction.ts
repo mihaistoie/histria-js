@@ -91,31 +91,36 @@ export class Transaction implements TransactionContainer {
 
 
     }
+    private async _propagateEvent(list: any[], eventInfo: EventInfo, instance: ObservableObject, nInstances: ObservableObject[], args: any[], argIndex: number) {
+        let that = this;
+        for (let item of list)
+            await item(eventInfo, instance.constructor, nInstances, args);
+        const listeners = instance.getListeners();
+        for (let listener of listeners) {
+            let children = nInstances.slice();
+            let newArgs = args.slice();
+            newArgs[argIndex] = listener.propertyName + '.' + newArgs[argIndex];
+            children.unshift(listener.instance);
+            await that._propagateEvent(list, eventInfo, listener.instance, children, newArgs, argIndex);
 
+        }
+
+    }
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
         let that = this;
-        let ci = instance;
         args = args || [];
-        let nIstances = [ci];
         let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems].indexOf(eventType) >= 0;
-        let pi = propagate && args && args.length ? 0 : -1;
-
-        let list = that._subscribers.get(eventType);
-
-        if (list) {
-            while (ci) {
-                for (let item of list)
-                    await item(eventInfo, ci.constructor, nIstances, args)
-                if (!propagate)
-                    break;
-                // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                // TODO code review
-                args[pi] = ci.propertyName + '.' + args[pi];
-                ci = ci.parent;
-                // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                nIstances.unshift(ci)
-            }
+        const pi = propagate && args && args.length ? 0 : -1;
+        const list = that._subscribers.get(eventType);
+        if (!list) return;
+        if (propagate)
+            await that._propagateEvent(list, eventInfo, instance, [instance], args, pi);
+        else {
+            for (let item of list)
+                await item(eventInfo, instance.constructor, [instance], args)
+            return;
         }
+
     }
     public subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>) {
         let that = this;

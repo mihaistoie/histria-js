@@ -14,29 +14,11 @@ class UserDetail extends index_1.View {
     get userId() {
         return this._children.userId.value;
     }
-    get age() {
-        return this.user.age;
-    }
-    setAge(value) {
-        return this._children.user.setAge(value);
-    }
-    get firstName() {
-        return this.user.firstName;
-    }
-    setFirstName(value) {
-        return this.user.setFirstName(value);
-    }
-    get lastName() {
-        return this.user.lastName;
-    }
-    setLastName(value) {
-        return this.user.setLastName(value);
-    }
-    get user() {
+    user() {
         return this._children.user.getValue();
     }
-    set user(value) {
-        this._children.user.setValue(value);
+    setUser(value) {
+        return this._children.user.setValue(value);
     }
     get $states() {
         return this._states;

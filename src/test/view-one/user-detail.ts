@@ -21,29 +21,11 @@ export class UserDetail extends View {
     public get userId(): any {
         return this._children.userId.value;
     }
-    public get age(): number {
-        return this.user.age;
+    public user(): Promise<User> {
+        return this._children.user.getValue();
     }
-    public setAge(value: number): Promise<number> {
-        return this._children.user.setAge(value);
-    }
-    public get firstName(): string {
-        return this.user.firstName;
-    }
-    public setFirstName(value: string): Promise<string> {
-        return this.user.setFirstName(value);
-    }
-    public get lastName(): string {
-        return this.user.lastName;
-    }
-    public setLastName(value: string): Promise<string> {
-        return this.user.setLastName(value);
-    }
-    public get user(): User {
-        return this._children.user.getSyncValue();
-    }
-    public set user(value: User) {
-        this._children.user.setSyncValue(value);
+    public setUser(value: User): Promise<User> {
+        return this._children.user.setValue(value);
     }
     public get $states(): UserDetailState {
         return <UserDetailState>this._states;

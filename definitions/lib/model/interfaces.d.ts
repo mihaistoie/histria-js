@@ -22,6 +22,7 @@ export interface EventInfo {
     pop(): void;
     destroy(): void;
     isTriggeredBy(peopertyName: string, target: any): boolean;
+    isLazyLoading: boolean;
 }
 export interface UserContext {
     lang: string;
@@ -29,6 +30,9 @@ export interface UserContext {
     locale: any;
     formatNumber(value: number, decimals: number): string;
 }
+export declare type ChangePropertyOptions = {
+    isLazyLoading: boolean;
+};
 export declare type FindOptions = {
     onlyInCache?: boolean;
 };
@@ -44,7 +48,7 @@ export interface TransactionContainer {
 }
 export interface ObservableObject {
     changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
-    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
+    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     model(propName?: string): any;
     modelState(propName: string): any;
@@ -65,7 +69,7 @@ export interface ObservableObject {
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;
     addListener(listener: any, parent: ObservableObject, propertyName: string): void;
-    getListeners(): {
+    getListeners(noParent: boolean): {
         instance: ObservableObject;
         propertyName: string;
         isOwner: boolean;

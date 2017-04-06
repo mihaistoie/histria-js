@@ -95,7 +95,7 @@ export class Transaction implements TransactionContainer {
         let that = this;
         for (let item of list)
             await item(eventInfo, instance.constructor, nInstances, args);
-        const listeners = instance.getListeners();
+        const listeners = instance.getListeners(eventInfo.isLazyLoading);
         for (let listener of listeners) {
             let children = nInstances.slice();
             let newArgs = args.slice();

@@ -44,12 +44,12 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
-        await that._parent.changeProperty(that._propertyName, oldValue, value, function () {
+        await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             that._value = value;
             let lmodel = that._parent.model();
             let fmodel = that._value ? that._value.model() : null;
             schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
-        });
+        }, { isLazyLoading: false });
         return that._value;
     }
 
@@ -63,7 +63,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         if (that._value === value)
             return that._value;
         const newValue = value;
-        await that._parent.changeProperty(that._propertyName, oldValue, value, function () {
+        await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             that._value = value;
             if (that._relation.invRel) {
                 let fmodel = that._parent.model(), lmodel;
@@ -76,7 +76,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
                     schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, true);
                 }
             }
-        });
+        }, { isLazyLoading: false });
         await that._afterSetValue(newValue, oldValue);
         return that._value;
     }
@@ -233,7 +233,7 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
         let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
-        await that._parent.changeProperty(that._propertyName, oldValue, value, function () {
+        await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             if (oldValue && that._relation.aggregationKind === AGGREGATION_KIND.composite)
                 oldValue.rmvListener(that);
             that._value = value;
@@ -241,7 +241,7 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
             let lmodel = that._parent.model();
             let fmodel = that._value ? that._value.model() : null;
             schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
-        });
+        }, { isLazyLoading: false });
         return that._value;
     }
 
@@ -252,6 +252,8 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
         if (query) {
             const opts: FindOptions = { onlyInCache: false };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts) || null;
+            if (that._relation.aggregationKind === AGGREGATION_KIND.composite)
+                await that._parent.changeProperty(that._propertyName, undefined, that._value, () => {}, { isLazyLoading: true });
             that._subscribe()
         } else
             that._value = null;

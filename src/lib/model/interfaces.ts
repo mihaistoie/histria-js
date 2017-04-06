@@ -25,6 +25,7 @@ export interface EventInfo {
     pop(): void;
     destroy(): void;
     isTriggeredBy(peopertyName: string, target: any): boolean;
+    isLazyLoading: boolean;
 }
 
 
@@ -34,6 +35,10 @@ export interface UserContext {
     country: string;
     locale: any;
     formatNumber(value: number, decimals: number): string
+}
+
+export type ChangePropertyOptions = {
+    isLazyLoading: boolean
 }
 
 export type FindOptions = { onlyInCache?: boolean };
@@ -51,7 +56,7 @@ export interface TransactionContainer {
 
 export interface ObservableObject {
     changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
-    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
+    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     model(propName?: string): any;
     modelState(propName: string): any;
@@ -69,7 +74,7 @@ export interface ObservableObject {
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;
     addListener(listener: any, parent: ObservableObject, propertyName: string): void;
-    getListeners(): {instance: ObservableObject, propertyName: string, isOwner: boolean}[];
+    getListeners(noParent: boolean): { instance: ObservableObject, propertyName: string, isOwner: boolean }[];
     rmvListener(listener: any): void;
     readonly parent: ObservableObject;
     readonly propertyName: string;

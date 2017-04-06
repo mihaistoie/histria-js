@@ -6,7 +6,7 @@ export class EventInfoStack implements EventInfo {
         let that = this;
         that._stack = [];
     }
-
+    public isLazyLoading: boolean;
     public push(info: any): void {
         let that = this;
         that._stack.push(info);

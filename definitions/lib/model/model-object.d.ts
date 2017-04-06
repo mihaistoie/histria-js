@@ -1,4 +1,4 @@
-import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions } from './interfaces';
 import { InstanceErrors } from './states/instance-errors';
 import { InstanceState } from './states/instance-state';
 import { BaseInstance } from './base-instance';
@@ -22,7 +22,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     protected _propertyName: string;
     addListener(listener: any, parent: ObservableObject, propertyName: string): void;
     rmvListener(listener: any): void;
-    getListeners(): {
+    getListeners(noParent: boolean): {
         instance: ObservableObject;
         propertyName: string;
         isOwner: boolean;
@@ -58,7 +58,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     model(propName?: string): any;
     private beforePropertyChanged(propName, oldValue, newValue);
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
-    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void>;
+    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     getOrSetProperty(propName: string, value?: any): Promise<any>;
     getPropertyByName(propName: string): any;
     setPropertyByName(propName: string, value: any): Promise<any>;

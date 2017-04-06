@@ -32,7 +32,7 @@ async function viewOfUserTest(): Promise<void> {
     user = await det.user();
     assert.notEqual(user, null, 'Lazy loading (1)');
     assert.equal(user.firstName, 'John', 'Lazy loading (2)');
-    assert.equal(det.fullName, 'John Smith', 'Rule called after lazy loading');
+    assert.equal(det.fullName, 'John SMITH', 'Rule called after lazy loading');
 }
 
 

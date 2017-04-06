@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions } from './interfaces';
 import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from './relations/role-has-one';
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
 import { HasManyComposition, HasManyAggregation } from './relations/role-has-many';
@@ -50,10 +50,10 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             if (index >= 0) that._listeners.splice(index, 1);
         }
     }
-    public getListeners(): { instance: ObservableObject; propertyName: string; isOwner: boolean; }[] {
+    public getListeners(noParent: boolean): { instance: ObservableObject; propertyName: string; isOwner: boolean; }[] {
         const that = this;
         const res: { instance: ObservableObject; propertyName: string; isOwner: boolean; }[] = [];
-        if (that._parent)
+        if (!noParent && that._parent)
             res.push({ instance: that._parent, propertyName: that.propertyName, isOwner: true });
         that._listeners && that._listeners.forEach(item => res.push({ instance: item.parent, propertyName: item.propertyName, isOwner: false }))
         return res;
@@ -97,9 +97,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that._rootCache = null;
 
         if (notify && localPropName) {
-            await that.changeProperty(localPropName, that._parent, newParent, function () {
+            await that.changeProperty(localPropName, that._parent, newParent, () => {
                 that._parent = newParent;
-            });
+            }, { isLazyLoading: false });
         } else {
             that._parent = newParent;
         }
@@ -313,27 +313,32 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     }
 
-    public async changeProperty(propName: string, oldValue: any, newValue: any, hnd: any): Promise<void> {
+    public async changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void> {
         let that = this;
         let eventInfo = that.transaction.eventInfo;
         eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
         try {
-            const error = that._errorByName(propName);
-            if (error) error.error = '';
-            try {
-                // Clear errors for propName
-                await that.beforePropertyChanged(propName, oldValue, newValue);
-                // Change property
-                hnd();
-                if (that.status === ObjectStatus.idle) {
-                    // Validation rules
-                    await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that, propName, newValue);
-                    // Propagation rules
-                    await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that, propName, newValue, oldValue);
+            eventInfo.isLazyLoading = options.isLazyLoading;
+            if (options.isLazyLoading) {
+                await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that, propName, newValue, oldValue);
+            } else {
+                const error = that._errorByName(propName);
+                if (error) error.error = '';
+                try {
+                    // Clear errors for propName
+                    await that.beforePropertyChanged(propName, oldValue, newValue);
+                    // Change property
+                    hnd();
+                    if (that.status === ObjectStatus.idle) {
+                        // Validation rules
+                        await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that, propName, newValue);
+                        // Propagation rules
+                        await that._transaction.emitInstanceEvent(EventType.propChanged, eventInfo, that, propName, newValue, oldValue);
+                    }
+                } catch (ex) {
+                    if (error)
+                        error.addException(ex);
                 }
-            } catch (ex) {
-                if (error)
-                    error.addException(ex);
             }
         } finally {
             eventInfo.pop()
@@ -355,9 +360,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             // Set
             if (that._model[propName] !== value) {
                 let oldValue = that._model[propName];
-                await that.changeProperty(propName, oldValue, value, function () {
+                await that.changeProperty(propName, oldValue, value, () => {
                     that._model[propName] = value;
-                });
+                }, { isLazyLoading: false });
             }
         }
         return that._model[propName];
@@ -383,9 +388,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             // Set
             if (that._model[propName] !== value) {
                 let oldValue = that._model[propName];
-                await that.changeProperty(propName, oldValue, value, function () {
+                await that.changeProperty(propName, oldValue, value, () => {
                     that._model[propName] = value;
-                });
+                }, { isLazyLoading: false });
             }
         }
         return that._model[propName];
@@ -413,7 +418,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     public enumChildren(cb: (value: ObservableObject) => void) {
         let that = this;
-        schemaUtils.enumCompositions(that._schema.relations, function (relationName, relation) {
+        schemaUtils.enumCompositions(that._schema.relations, (relationName, relation) => {
             let role = that._children[relationName];
             if (role) role.enumChildren(cb);
         });

@@ -37,7 +37,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
             that.internalSetValue(newValue);
             schemaUtils.updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
-        });
+        }, { isLazyLoading: false });
     }
 
     protected async _setValue(value: T): Promise<T> {

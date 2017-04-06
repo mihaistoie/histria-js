@@ -121,6 +121,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     public get isDirty(): boolean {
         return this._model._isDirty;
     }
+    public set isDirty(value: boolean) {
+        this._model._isDirty = value;
+    }
 
     public getPath(propName?: string): string {
         let that = this;
@@ -306,6 +309,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         let eventInfo = that.transaction.eventInfo;
         eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
         try {
+            that.isDirty = true;
             await that._transaction.emitInstanceEvent(op, eventInfo, that, propName, param);
         } finally {
             eventInfo.pop()
@@ -329,6 +333,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                     await that.beforePropertyChanged(propName, oldValue, newValue);
                     // Change property
                     hnd();
+                    that.isDirty = true;
                     if (that.status === ObjectStatus.idle) {
                         // Validation rules
                         await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that, propName, newValue);

@@ -44,7 +44,7 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
         let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
-        await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
+        await that._parent.changeProperty(that._propertyName, oldValue, value, function () {
             that._value = value;
             let lmodel = that._parent.model();
             let fmodel = that._value ? that._value.model() : null;
@@ -63,7 +63,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         if (that._value === value)
             return that._value;
         const newValue = value;
-        await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
+        await that._parent.changeProperty(that._propertyName, oldValue, value, function () {
             that._value = value;
             if (that._relation.invRel) {
                 let fmodel = that._parent.model(), lmodel;
@@ -186,14 +186,14 @@ export class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
 }
 
 
-export class HasOneRefObject<T extends ObservableObject> extends Role<T> {
+export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
     }
     private _subscribe(): void {
         const that = this;
-        if (that._relation.aggregationKind === AGGREGATION_KIND.composite) {
+        if (that._value && that._relation.aggregationKind === AGGREGATION_KIND.composite) {
             that._value.addListener(that, that._parent, that._propertyName);
         }
 
@@ -233,7 +233,7 @@ export class HasOneRefObject<T extends ObservableObject> extends Role<T> {
         let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
-        await that._parent.changeProperty(that._propertyName, oldValue, that._value, function () {
+        await that._parent.changeProperty(that._propertyName, oldValue, value, function () {
             if (oldValue && that._relation.aggregationKind === AGGREGATION_KIND.composite)
                 oldValue.rmvListener(that);
             that._value = value;

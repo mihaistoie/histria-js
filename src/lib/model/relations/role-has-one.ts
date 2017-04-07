@@ -217,6 +217,15 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
     public get syncValue(): T {
         return this._value;
     }
+    public restoreFromCache() {
+        const that = this;
+        const query: any = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
+        let value: any = that._parent.transaction.findOneInCache<T>(that._refClass, query) || null;
+        if (value) {
+            that._value = value;
+            that._subscribe();
+        }
+    }
 
     public destroy() {
         const that = this;
@@ -253,7 +262,7 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
             const opts: FindOptions = { onlyInCache: false };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts) || null;
             if (that._relation.aggregationKind === AGGREGATION_KIND.composite)
-                await that._parent.changeProperty(that._propertyName, undefined, that._value, () => {}, { isLazyLoading: true });
+                await that._parent.changeProperty(that._propertyName, undefined, that._value, () => { }, { isLazyLoading: true });
             that._subscribe()
         } else
             that._value = null;

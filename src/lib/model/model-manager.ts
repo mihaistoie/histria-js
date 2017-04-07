@@ -120,10 +120,10 @@ export class ModelManager {
             allParents[parent.name] = parent;
         }
         let pa: any = {};
-        let addItem = function (name: string) {
+        let addItem = (name: string) => {
             if (pa[name]) return;
             let item: { name: string, mapRefs: any, children: string[] } = allParents[name];
-            Object.keys(item.mapRefs).sort().forEach(function (refName) {
+            Object.keys(item.mapRefs).sort().forEach((refName) => {
                 if (pa[refName]) return;
                 addItem(refName);
             })
@@ -138,23 +138,33 @@ export class ModelManager {
         });
 
         that._sortedClasses = [];
+        let views: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }[] = [];
         parents.forEach(parent => {
             let pc = that._classes.get(parent.name);
-            that._sortedClasses.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name });
+            if (pc.isPersistent)
+                that._sortedClasses.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name });
+            else
+                views.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name });
             parent.children.forEach(cn => {
-                let cc = that._classes.get(cn)
-                that._sortedClasses.push({ classOfInstance: cc, isChild: true, isView: false, className: cn });
+                let cc = that._classes.get(cn);
+                if (cc.isPersistent)
+                    that._sortedClasses.push({ classOfInstance: cc, isChild: true, isView: false, className: cn });
+                else
+                    views.push({ classOfInstance: cc, isChild: true, isView: false, className: cn });
             })
 
         });
         that._dirty = false;
+        if (views.length)
+            that._sortedClasses = that._sortedClasses.concat(views);
+
     }
 
 
     public rulesForInit(classOfInstance: any): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.initRules) {
             return _activeRules(ci.initRules);
@@ -162,9 +172,9 @@ export class ModelManager {
         return res;
     }
     public rulesObjValidate(classOfInstance: any): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.objValidateRules) {
             return _activeRules(ci.objValidateRules);
@@ -172,9 +182,9 @@ export class ModelManager {
         return res;
     }
     public rulesForPropChange(classOfInstance: any, propertyName: string): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.propChangeRules[propertyName]) {
             return _activeRules(ci.propChangeRules[propertyName]);
@@ -182,9 +192,9 @@ export class ModelManager {
         return res;
     }
     public rulesForPropValidate(classOfInstance: any, propertyName: string): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.propValidateRules[propertyName]) {
             return _activeRules(ci.propValidateRules[propertyName]);
@@ -193,9 +203,9 @@ export class ModelManager {
     }
 
     public rulesForAddItem(classOfInstance: any, propertyName: string): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.addItemRules[propertyName]) {
             return _activeRules(ci.addItemRules[propertyName]);
@@ -204,9 +214,9 @@ export class ModelManager {
     }
 
     public rulesForRmvItem(classOfInstance: any, propertyName: string): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.rmvItemRules[propertyName]) {
             return _activeRules(ci.rmvItemRules[propertyName]);
@@ -214,9 +224,9 @@ export class ModelManager {
         return res;
     }
     public rulesForSetItems(classOfInstance: any, propertyName: string): any[] {
-        let that = this;
-        let res: any[] = [];
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const res: any[] = [];
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.setItemsRules[propertyName]) {
             return _activeRules(ci.setItemsRules[propertyName]);
@@ -226,7 +236,7 @@ export class ModelManager {
 
 
     public setTitle(classOfInstance: any, method: any, title: string, description?: string) {
-        let that = this;
+        const that = this;
         that._mapRules = that._mapRules || new Map();
         let ri = that._mapRules.get(method);
         if (!ri) {
@@ -244,8 +254,8 @@ export class ModelManager {
 
 
     public addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any) {
-        let that = this;
-        let ci = that._mapByClass.get(classOfInstance);
+        const that = this;
+        const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return;
         that._mapRules = that._mapRules || new Map();
         let ri = that._mapRules.get(rule);

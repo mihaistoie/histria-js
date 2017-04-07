@@ -9,6 +9,13 @@ import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 async function viewOfUserTest(): Promise<void> {
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let user1 = await transaction.findOne<User>(User, { id: 101 });
+    let user2 = await transaction.findOne<User>(User, { id: 101 });
+    let user3 = await transaction.findOne<User>(User, { id: 101 }, { onlyInCache: true });
+    assert.equal(user1, user2, 'Same User (1)');
+    assert.equal(user1, user3, 'Same User (2)');
+
+
     let user = await transaction.create<User>(User);
     await userDetail.setUser(user);
     await user.setFirstName('John');
@@ -37,7 +44,7 @@ async function viewOfUserTest(): Promise<void> {
     transaction.clear();
     await transaction.loadFromJson(transactionData, false);
     let data2 = transaction.saveToJson();
-
+    
     assert.deepEqual(transactionData, data2, 'Restore Test');
     // Test that det.user is loaded
     let cuser = await transaction.findOne<User>(User, { id: userId })
@@ -45,8 +52,9 @@ async function viewOfUserTest(): Promise<void> {
 
     assert.equal(!!cuser, true, 'User found');
     assert.equal(!!duser, true, 'User Detail found');
+    user1 = await transaction.findOne<User>(User, { id: 101 });
 
-    await cuser.setLastName('Doe');
+    await user1.setLastName('Doe');
     assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
 
 

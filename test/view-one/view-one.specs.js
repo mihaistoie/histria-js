@@ -8,6 +8,11 @@ const histria_utils_1 = require("histria-utils");
 async function viewOfUserTest() {
     let transaction = new index_1.Transaction();
     let userDetail = await transaction.create(view_one_model_1.UserDetail);
+    let user1 = await transaction.findOne(view_one_model_1.User, { id: 101 });
+    let user2 = await transaction.findOne(view_one_model_1.User, { id: 101 });
+    let user3 = await transaction.findOne(view_one_model_1.User, { id: 101 }, { onlyInCache: true });
+    assert.equal(user1, user2, 'Same User (1)');
+    assert.equal(user1, user3, 'Same User (2)');
     let user = await transaction.create(view_one_model_1.User);
     await userDetail.setUser(user);
     await user.setFirstName('John');
@@ -35,7 +40,8 @@ async function viewOfUserTest() {
     let duser = await transaction.findOne(view_one_model_1.UserDetail, { id: userDetId });
     assert.equal(!!cuser, true, 'User found');
     assert.equal(!!duser, true, 'User Detail found');
-    await cuser.setLastName('Doe');
+    user1 = await transaction.findOne(view_one_model_1.User, { id: 101 });
+    await user1.setLastName('Doe');
     assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
     transaction.destroy();
 }

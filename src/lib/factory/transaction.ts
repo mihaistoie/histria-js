@@ -87,7 +87,11 @@ export class Transaction implements TransactionContainer {
                 throw util.format('Class not found "%s".', item.className);
             restoreList.push(that.restore(factory, item.data, reload));
         });
-        await Promise.all(restoreList);
+        let instances = await Promise.all(restoreList);
+        instances.forEach(instance => {
+            instance.restored();
+        });
+
 
 
     }
@@ -244,9 +248,13 @@ export class Transaction implements TransactionContainer {
         }
         return res || [];
     }
+    public findOneInCache<T extends ObservableObject>(classOfInstance: any, filter: any): T {
+        return this._findOne<T>(filter, classOfInstance);
+    }
+
     public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T> {
         let that = this;
-        let res = await that._findOne<T>(filter, classOfInstance);
+        let res = that._findOne<T>(filter, classOfInstance);
         if (res) return res;
         if (!classOfInstance.isPersistent)
             return res;

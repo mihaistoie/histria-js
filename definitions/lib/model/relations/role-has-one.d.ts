@@ -36,6 +36,7 @@ export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<
     unsubscribe(): void;
     enumChildren(cb: (value: ObservableObject) => void): void;
     readonly syncValue: T;
+    restoreFromCache(): void;
     destroy(): void;
     protected _setValue(value: T): Promise<T>;
     protected _lazyLoad(): Promise<void>;

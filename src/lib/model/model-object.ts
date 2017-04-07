@@ -114,9 +114,14 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         return this._model._uuid;
     }
 
+    public get isPersistent(): boolean {
+        return true;
+    }
+
     public get isNew(): boolean {
         return this._model._isNew === true;
     }
+
 
     public get isDirty(): boolean {
         return this._model._isDirty;
@@ -166,6 +171,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     }
     protected createErrors() { }
     protected createStates() { }
+    public restored(): void { }
 
     public get status(): ObjectStatus {
         return this._status;

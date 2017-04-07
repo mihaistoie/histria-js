@@ -46,6 +46,7 @@ export interface TransactionContainer {
     context: UserContext;
     remove(instance: ObservableObject): void;
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T>;
+    findOneInCache<T extends ObservableObject>(filter: any, classOfInstance: any): T;
     find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
@@ -76,6 +77,7 @@ export interface ObservableObject {
     addListener(listener: any, parent: ObservableObject, propertyName: string): void;
     getListeners(noParent: boolean): { instance: ObservableObject, propertyName: string, isOwner: boolean }[];
     rmvListener(listener: any): void;
+    restored(): void;
     readonly parent: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;
@@ -84,6 +86,7 @@ export interface ObservableObject {
     readonly status: ObjectStatus;
     readonly isNew: boolean;
     readonly isDirty: boolean;
+    readonly isPersistent: boolean;
 }
 
 export interface ObservableArray {

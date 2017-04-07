@@ -33,6 +33,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
     readonly parent: ObservableObject;
     readonly uuid: string;
+    readonly isPersistent: boolean;
     readonly isNew: boolean;
     isDirty: boolean;
     getPath(propName?: string): string;
@@ -44,6 +45,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     protected _setModel(value: any): void;
     protected createErrors(): void;
     protected createStates(): void;
+    restored(): void;
     status: ObjectStatus;
     getSchema(propName?: string): any;
     private _createRelations();

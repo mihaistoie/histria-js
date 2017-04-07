@@ -32,7 +32,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         let ns = codeByNameSpace[schema.nameSpace];
         if (!ns) {
             ns = { code: [], import: [], fileName: _extractFileName(schema.nameSpace) + '-model' };
-            ns.import.push('import {modelManager} from \'' + pathToLib + '\';');
+            ns.import.push('import { modelManager } from \'' + pathToLib + '\';');
             ns.import.push('');
             codeByNameSpace[schema.nameSpace] = ns;
         }
@@ -47,8 +47,8 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         imports.push('} from \'' + pathToLib + '\';');
 
         // Generate Class
-        ns.import.push(util.format('import {%s, %s_SCHEMA} from \'./%s\';', className, className.toUpperCase(), _extractFileName(schema.name)));
-        ns.import.push(util.format('export {%s} from \'./%s\';', className, _extractFileName(schema.name)));
+        ns.import.push(util.format('import { %s, %s_SCHEMA } from \'./%s\';', className, className.toUpperCase(), _extractFileName(schema.name)));
+        ns.import.push(util.format('export { %s } from \'./%s\';', className, _extractFileName(schema.name)));
 
         code.push('');
         code.push(util.format('export class %s extends %s {', className, isView ? baseViewClass : baseClass));
@@ -101,7 +101,8 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
         schema.relations && Object.keys(schema.relations).forEach(relName => {
             let relation = schema.relations[relName];
-            imports.push(util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), _extractFileName(relation.model)));
+            if (relation.model !== schema.name) 
+                imports.push(util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), _extractFileName(relation.model)));
         });
         imports.push('');
 

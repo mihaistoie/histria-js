@@ -4,8 +4,6 @@ import {
     ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
     NumberValue
 } from '../../../index';
-import { Tree } from './tree';
-import { Tree } from './tree';
 
 
 export class Tree extends Instance {

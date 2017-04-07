@@ -78,7 +78,7 @@ export interface ObservableObject {
     getListeners(noParent: boolean): { instance: ObservableObject, propertyName: string, isOwner: boolean }[];
     rmvListener(listener: any): void;
     restored(): void;
-    readonly parent: ObservableObject;
+    readonly owner: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;
     readonly transaction: TransactionContainer;

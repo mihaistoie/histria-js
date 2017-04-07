@@ -66,7 +66,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
 export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {
     protected async _getValue(): Promise<T> {
         let that = this;
-        let res: any = that._parent.parent;
+        let res: any = that._parent.owner;
         if (res === undefined) {
             res = await that._lazyLoad() || null;
             let p: any = that._parent;
@@ -102,7 +102,7 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
             // parent of p is newParent
             await p.changeParent(newParent, that._relation.invRel, that._propertyName || DEFAULT_PARENT_NAME, true);
         }
-        let res: any = that._parent.parent;
+        let res: any = that._parent.owner;
         return res;
     }
 

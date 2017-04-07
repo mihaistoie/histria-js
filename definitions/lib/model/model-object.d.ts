@@ -31,7 +31,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
     changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
-    readonly parent: ObservableObject;
+    readonly owner: ObservableObject;
     readonly uuid: string;
     readonly isPersistent: boolean;
     readonly isNew: boolean;

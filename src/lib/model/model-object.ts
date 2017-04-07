@@ -107,7 +107,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
 
 
-    public get parent(): ObservableObject {
+    public get owner(): ObservableObject {
         return this._parent;
     }
     public get uuid(): string {

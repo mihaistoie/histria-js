@@ -1,0 +1,24 @@
+{
+    "type": "object",
+    "name": "tree",
+    "nameSpace": "compositions",
+    "properties": {
+        "title": {
+            "type": "string"
+        }
+    },
+    "relations": {
+        "leafs": {
+            "type": "hasMany",
+            "model": "tree",
+            "aggregationKind": "composite",
+            "invRel": "parent"
+        },
+        "parent": {
+            "type": "belongsTo",
+            "model": "tree",
+            "aggregationKind": "composite",
+            "invRel": "leafs"
+        }
+    }
+}

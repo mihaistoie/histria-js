@@ -11,22 +11,33 @@ async function viewOfUserTest() {
     let user = await transaction.create(view_one_model_1.User);
     await userDetail.setUser(user);
     await user.setFirstName('John');
-    let fullName = userDetail.fullName;
-    assert.equal(fullName, 'John', 'After user name changed');
+    assert.equal(userDetail.fullName, 'John', 'After user name changed');
     await user.setLastName('Doe');
-    fullName = userDetail.fullName;
-    assert.equal(fullName, 'John DOE', 'After  name and lastName changed');
+    assert.equal(userDetail.fullName, 'John DOE', 'After  name and lastName changed');
     await userDetail.setUser(null);
-    fullName = userDetail.fullName;
-    assert.equal(fullName, '', 'User is null');
+    assert.equal(userDetail.fullName, '', 'User is null');
     await userDetail.setUser(user);
-    fullName = userDetail.fullName;
-    assert.equal(fullName, 'John DOE', 'User is not null');
+    assert.equal(userDetail.fullName, 'John DOE', 'User is not null');
     let det = await transaction.load(view_one_model_1.UserDetail, { id: 10, userId: 101 });
     user = await det.user();
     assert.notEqual(user, null, 'Lazy loading (1)');
     assert.equal(user.firstName, 'John', 'Lazy loading (2)');
     assert.equal(det.fullName, 'John SMITH', 'Rule called after lazy loading');
+    let userDetId = det.id;
+    let userId = det.userId;
+    let transactionData = transaction.saveToJson();
+    transaction.clear();
+    await transaction.loadFromJson(transactionData, false);
+    let data2 = transaction.saveToJson();
+    assert.deepEqual(transactionData, data2, 'Restore Test');
+    // Test that det.user is loaded
+    let cuser = await transaction.findOne(view_one_model_1.User, { id: userId });
+    let duser = await transaction.findOne(view_one_model_1.UserDetail, { id: userDetId });
+    assert.equal(!!cuser, true, 'User found');
+    assert.equal(!!duser, true, 'User Detail found');
+    await cuser.setLastName('Doe');
+    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
+    transaction.destroy();
 }
 describe('ViewOne Model Test', () => {
     before(function (done) {

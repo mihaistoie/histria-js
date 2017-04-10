@@ -1,46 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("assert");
+const index_1 = require("../../index");
+const compositions_model_1 = require("./model/compositions-model");
 async function testCreate() {
-    /*
-    let transaction = new Transaction();
-    let order = await transaction.create<Order>(Order);
-    let item1 = await transaction.create<OrderItem>(OrderItem);
-    let item2 = await transaction.create<OrderItem>(OrderItem);
-    await order.items.add(item1);
-    let parent = await item1.order();
-    assert.equal(order, parent, '(1) Owner of orderItem1 is order');
-    assert.equal(item1.orderId, order.uuid, '(2) Owner of orderItem1 is order');
-    let children = await order.items.toArray();
-    assert.deepEqual(children.map(ii => { return ii.uuid }), [item1.uuid], '(3) Owner of orderItem1 is order');
-
-    await item2.setOrder(order);
-    children = await order.items.toArray();
-
-    assert.equal(children.length, 2, '(1) Order has 2 items');
-    assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid, item2.uuid], '(2) Order has 2 items');
-
-    await item1.setOrder(null);
-    children = await order.items.toArray();
-    assert.deepEqual(children.map(ii => ii.uuid), [item2.uuid], '(1) Order has 1 items');
-
-    await order.items.add(item1, 0);
-    children = await order.items.toArray();
-    assert.equal(children.length, 2, '(1) Order has 2 items');
-    assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid, item2.uuid], '(2) Order has 2 items');
-
-    await order.items.remove(item2)
-    children = await order.items.toArray();
-    assert.equal(children.length, 1, '(4) Order has 1 items');
-    assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid], '(5) Order has 1 items');
-    assert.equal(await item2.order(), null, '(6) Parent is null');
-
+    let transaction = new index_1.Transaction();
+    let child01 = await transaction.create(compositions_model_1.Tree);
+    let child02 = await transaction.create(compositions_model_1.Tree);
+    let root01 = await transaction.create(compositions_model_1.Tree);
+    await root01.leafs.add(child01);
+    await root01.leafs.add(child02);
+    let children = await root01.leafs.toArray();
+    assert.equal(children.length, 2, 'Root has 2 children');
     let data1 = transaction.saveToJson();
-    transaction.clear();
-    await transaction.loadFromJson(data1, false);
-    let data2 = transaction.saveToJson();
-    assert.deepEqual(data1, data2, 'Restore test in create');
-    transaction.destroy();
-    */
+    console.log(JSON.stringify(data1));
+    /*
+        await item2.setOrder(order);
+        children = await order.items.toArray();
+    
+        assert.equal(children.length, 2, '(1) Order has 2 items');
+        assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid, item2.uuid], '(2) Order has 2 items');
+    
+        await item1.setOrder(null);
+        children = await order.items.toArray();
+        assert.deepEqual(children.map(ii => ii.uuid), [item2.uuid], '(1) Order has 1 items');
+    
+        await order.items.add(item1, 0);
+        children = await order.items.toArray();
+        assert.equal(children.length, 2, '(1) Order has 2 items');
+        assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid, item2.uuid], '(2) Order has 2 items');
+    
+        await order.items.remove(item2)
+        children = await order.items.toArray();
+        assert.equal(children.length, 1, '(4) Order has 1 items');
+        assert.deepEqual(children.map(ii => ii.uuid), [item1.uuid], '(5) Order has 1 items');
+        assert.equal(await item2.order(), null, '(6) Parent is null');
+    
+        let data1 = transaction.saveToJson();
+        transaction.clear();
+        await transaction.loadFromJson(data1, false);
+        let data2 = transaction.saveToJson();
+        assert.deepEqual(data1, data2, 'Restore test in create');
+        transaction.destroy();
+        */
 }
 async function testLoad() {
     /*

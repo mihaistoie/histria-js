@@ -536,8 +536,8 @@ gulp-sourcemaps@1.6.0:
     vinyl "^1.0.0"
 
 gulp-tslint@latest:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/gulp-tslint/-/gulp-tslint-7.1.0.tgz#9bd3ff4fbc16d4cbd9abb08ff786db89b563e93d"
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/gulp-tslint/-/gulp-tslint-8.0.0.tgz#6a3087721e20d7b3d9d5a3e4fe5ad84f5ca66787"
   dependencies:
     gulp-util "~3.0.8"
     map-stream "~0.1.0"
@@ -623,7 +623,7 @@ has-gulplog@^0.1.0:
 
 "histria-utils@https://github.com/mihaistoie/histria-utils.git#master":
   version "1.0.0"
-  resolved "https://github.com/mihaistoie/histria-utils.git#e7d5fec4541c557e583b875e27d57621d8152dc4"
+  resolved "https://github.com/mihaistoie/histria-utils.git#b5e85241fea0135d924ba8adc0b8524188374ad1"
 
 homedir-polyfill@^1.0.0:
   version "1.0.1"
@@ -1437,8 +1437,8 @@ tsconfig@^6.0.0:
     strip-json-comments "^2.0.0"
 
 tslint@latest:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.0.0.tgz#ad3b7952f8a9b21079248bee01c2eaf92167e185"
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.1.0.tgz#51a47baeeb58956fcd617bd2cf00e2ef0eea2ed9"
   dependencies:
     babel-code-frame "^6.22.0"
     colors "^1.1.2"
@@ -1455,8 +1455,8 @@ tsutils@^1.4.0:
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-1.6.0.tgz#1fd7fac2a61369ed99cd3997f0fbb437128850f2"
 
 typescript@2.x.x:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.3.0.tgz#2e63e09284392bc8158a2444c33e2093795c0418"
 
 unc-path-regex@^0.1.0:
   version "0.1.2"

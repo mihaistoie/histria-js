@@ -55,22 +55,19 @@ export class Transaction implements TransactionContainer {
         if (that._instances) {
             let mm = modelManager();
             mm.enumClasses(item => {
-                if (item.isView) {
+                let instances = that._instances.get(item.classOfInstance);
+                if (instances) {
+                    for (let ii of instances) {
+                        const instance: ObservableObject = ii[1];
+                        if (item.isTree) {
 
-                } else {
-                    let instances = that._instances.get(item.classOfInstance);
-                    if (instances) {
-                        for (let ii of instances) {
-                            const instance: ObservableObject = ii[1];
-                            if (!item.isChild || instance.standalone())
+                        } else {
+                            if (!item.isChild || item.isView || instance.standalone())
                                 res.instances.push({ className: item.className, data: instance.model() });
-
                         }
-
-
                     }
-
                 }
+
             });
         }
         return res;

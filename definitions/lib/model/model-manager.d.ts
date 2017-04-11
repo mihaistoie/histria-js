@@ -17,12 +17,14 @@ export declare class ModelManager {
         isChild: boolean;
         isView: boolean;
         className: string;
+        isTree: boolean;
     }) => void): void;
     enumRoots(cb: (item: {
         classOfInstance: any;
         isChild: boolean;
         isView: boolean;
         className: string;
+        isTree: boolean;
     }) => void): void;
     sortedClasses(): string[];
     registerClass(constructor: any, schema: any): void;

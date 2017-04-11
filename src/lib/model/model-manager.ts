@@ -11,7 +11,7 @@ function _activeRules(rulesInfo: { rule: any, isDisabled: boolean }[]): any[] {
 
 export class ModelManager {
     private _dirty: boolean;
-    private _sortedClasses: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }[];
+    private _sortedClasses: { classOfInstance: any, isChild: boolean, isView: boolean, className: string, isTree: boolean }[];
     private _roots: Map<any, number>;
     private _mapByClass: Map<any, any>;
     private _classes: Map<string, any>;
@@ -35,12 +35,12 @@ export class ModelManager {
         return null;
 
     }
-    public enumClasses(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }) => void) {
+    public enumClasses(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string, isTree: boolean }) => void) {
         let that = this;
         that._loaded()
         that._sortedClasses.forEach(item => cb(item));
     }
-    public enumRoots(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }) => void) {
+    public enumRoots(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string, isTree: boolean }) => void) {
         let that = this;
         that._loaded()
         that._sortedClasses.forEach(item => {
@@ -100,7 +100,7 @@ export class ModelManager {
         let that = this;
         if (!that._dirty && that._sortedClasses) return;
         let allChildren = new Map<string, boolean>();
-        let parents: { name: string, mapRefs: any, children: string[] }[] = [];
+        let parents: { name: string, mapRefs: any, children: string[], isTree: boolean }[] = [];
         let allParents: any = {};
         let sm = schemaManager();
         for (let item of that._classes) {
@@ -110,7 +110,7 @@ export class ModelManager {
                 continue;
             const deps = sm.childrenAndRefsOfClass(fullClassName);
             let mapRefs: any = {};
-            let parent = { name: fullClassName, mapRefs: mapRefs, children: deps.children };
+            let parent = { name: fullClassName, mapRefs: mapRefs, children: deps.children, isTree: sm.isTree(fullClassName) };
             deps.children.forEach(cn => {
                 allChildren.set(cn, true);
             });
@@ -122,7 +122,7 @@ export class ModelManager {
         let pa: any = {};
         let addItem = (name: string) => {
             if (pa[name]) return;
-            let item: { name: string, mapRefs: any, children: string[] } = allParents[name];
+            let item: { name: string, mapRefs: any, children: string[], isTree: boolean } = allParents[name];
             Object.keys(item.mapRefs).sort().forEach((refName) => {
                 if (pa[refName]) return;
                 addItem(refName);
@@ -138,19 +138,19 @@ export class ModelManager {
         });
 
         that._sortedClasses = [];
-        let views: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }[] = [];
+        let views: { classOfInstance: any, isChild: boolean, isView: boolean, className: string, isTree: boolean }[] = [];
         parents.forEach(parent => {
             let pc = that._classes.get(parent.name);
             if (pc.isPersistent)
-                that._sortedClasses.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name });
+                that._sortedClasses.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name, isTree: parent.isTree });
             else
-                views.push({ classOfInstance: pc, isChild: false, isView: false, className: parent.name });
+                views.push({ classOfInstance: pc, isChild: false, isView: true, className: parent.name, isTree: parent.isTree });
             parent.children.forEach(cn => {
                 let cc = that._classes.get(cn);
                 if (cc.isPersistent)
-                    that._sortedClasses.push({ classOfInstance: cc, isChild: true, isView: false, className: cn });
+                    that._sortedClasses.push({ classOfInstance: cc, isChild: true, isView: false, className: cn, isTree: sm.isTree(cn) });
                 else
-                    views.push({ classOfInstance: cc, isChild: true, isView: false, className: cn });
+                    views.push({ classOfInstance: cc, isChild: true, isView: true, className: cn, isTree: sm.isTree(cn) });
             })
 
         });

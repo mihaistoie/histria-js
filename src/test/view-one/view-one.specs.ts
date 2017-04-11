@@ -44,7 +44,7 @@ async function viewOfUserTest(): Promise<void> {
     transaction.clear();
     await transaction.loadFromJson(transactionData, false);
     let data2 = transaction.saveToJson();
-    
+
     assert.deepEqual(transactionData, data2, 'Restore Test');
     // Test that det.user is loaded
     let cuser = await transaction.findOne<User>(User, { id: userId })

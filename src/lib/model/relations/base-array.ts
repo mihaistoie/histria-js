@@ -135,7 +135,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
             that._model.splice(index, 0, imodel);
         } else {
             that._items.push(item);
-            that._model.push(that._model);
+            that._model.push(imodel);
         }
         await that._afterAddItem(item);
         return item;

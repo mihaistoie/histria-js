@@ -112,6 +112,8 @@ export class ModelManager {
             let mapRefs: any = {};
             let parent = { name: fullClassName, mapRefs: mapRefs, children: deps.children, isTree: sm.isTree(fullClassName) };
             deps.children.forEach(cn => {
+                if (cn === fullClassName)
+                    return
                 allChildren.set(cn, true);
             });
             deps.refs.forEach(cn => {
@@ -146,6 +148,7 @@ export class ModelManager {
             else
                 views.push({ classOfInstance: pc, isChild: false, isView: true, className: parent.name, isTree: parent.isTree });
             parent.children.forEach(cn => {
+                if (cn === parent.name) return;
                 let cc = that._classes.get(cn);
                 if (cc.isPersistent)
                     that._sortedClasses.push({ classOfInstance: cc, isChild: true, isView: false, className: cn, isTree: sm.isTree(cn) });

@@ -59,8 +59,7 @@ export class Transaction implements TransactionContainer {
                 if (instances) {
                     for (let ii of instances) {
                         const instance: ObservableObject = ii[1];
-                        if (item.isTree) {
-
+                        if (item.isTree && instance.owner) {
                         } else {
                             if (!item.isChild || item.isView || instance.standalone())
                                 res.instances.push({ className: item.className, data: instance.model() });

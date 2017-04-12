@@ -146,11 +146,16 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             that._rootCache = that._parent ? that._parent.getRoot() : that;
         return that._rootCache;
     }
-    public standalone(): boolean {
+    public get hasOwner(): boolean {
         let that = this;
-        if (!that._schema.meta || !that._schema.meta.parent) return true;
-        return !!!that._parent;
+        if (!that._schema.meta || !that._schema.meta.parent) return false;
+        if (that._parent === undefined) {
+            // TODO : check if fields for that._schema.relations[that._schema.meta.parent] are nulls
+            return false;
+        } else
+            return !!!that._parent;
     }
+
     public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
     }
     protected init() {

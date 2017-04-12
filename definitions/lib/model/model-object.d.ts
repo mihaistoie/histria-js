@@ -39,7 +39,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     getPath(propName?: string): string;
     readonly propertyName: string;
     getRoot(): ObservableObject;
-    standalone(): boolean;
+    readonly hasOwner: boolean;
     changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     protected init(): void;
     protected _setModel(value: any): void;

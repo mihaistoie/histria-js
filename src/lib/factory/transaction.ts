@@ -59,11 +59,8 @@ export class Transaction implements TransactionContainer {
                 if (instances) {
                     for (let ii of instances) {
                         const instance: ObservableObject = ii[1];
-                        if (item.isTree && instance.owner) {
-                        } else {
-                            if (!item.isChild || item.isView || instance.standalone())
-                                res.instances.push({ className: item.className, data: instance.model() });
-                        }
+                        if (!instance.owner || item.isView)
+                            res.instances.push({ className: item.className, data: instance.model() });
                     }
                 }
 
@@ -173,14 +170,17 @@ export class Transaction implements TransactionContainer {
         let that = this;
         if (that._instances) {
             let mm = modelManager();
-            mm.enumRoots(item => {
+            mm.enumClasses(item => {
                 let instances = that._instances.get(item.classOfInstance);
                 if (instances) {
                     let toDestroy: ObservableObject[] = [];
                     for (let ii of instances) {
                         toDestroy.push(ii[1]);
                     }
-                    toDestroy.forEach(instance => instance.destroy());
+                    toDestroy.forEach(instance => {
+                        if (!instance.owner)
+                            instance.destroy();
+                    });
                 }
             });
             for (let classOfInstance of that._instances) {
@@ -189,7 +189,10 @@ export class Transaction implements TransactionContainer {
                 for (let ii of map) {
                     toDestroy.push(ii[1]);
                 }
-                toDestroy.forEach(instance => instance.destroy());
+                toDestroy.forEach(instance => {
+                    if (!instance.owner)
+                        instance.destroy();
+                });
             }
             that._instances = null;
         }

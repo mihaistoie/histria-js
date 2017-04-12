@@ -60,7 +60,6 @@ export interface ObservableObject {
     getPath(propName?: string): string;
     getRoot(): ObservableObject;
     destroy(): void;
-    standalone(): boolean;
     getRoleByName(roleName: string): any;
     isArrayComposition(propertyName: string): boolean;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
@@ -77,6 +76,7 @@ export interface ObservableObject {
     }[];
     rmvListener(listener: any): void;
     restored(): void;
+    readonly hasOwner: boolean;
     readonly owner: ObservableObject;
     readonly propertyName: string;
     readonly context: UserContext;

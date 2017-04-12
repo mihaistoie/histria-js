@@ -11,7 +11,7 @@ async function testCreate(): Promise<void> {
     let child01 = await transaction.create<Tree>(Tree);
     let child02 = await transaction.create<Tree>(Tree);
     let root01 = await transaction.create<Tree>(Tree);
-
+    let rootId = root01.id;
 
     await root01.leafs.add(child01);
     await root01.leafs.add(child02);
@@ -21,11 +21,15 @@ async function testCreate(): Promise<void> {
     let data1 = transaction.saveToJson();
 
     transaction.clear();
-    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
     await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test in restore');
+
+    let root = await transaction.findOne<Tree>(Tree, { id: rootId })
+    children = await root.leafs.toArray();
+
+    assert.equal(children.length, 2, 'Root has 2 children (2)');
     transaction.clear();
 }
 

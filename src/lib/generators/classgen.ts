@@ -101,8 +101,12 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
 
         schema.relations && Object.keys(schema.relations).forEach(relName => {
             let relation = schema.relations[relName];
-            if (relation.model !== schema.name)
-                imports.push(util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), _extractFileName(relation.model)));
+            if (relation.model !== schema.name) {
+                let s = util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), _extractFileName(relation.model));
+                if (imports.indexOf(s) < 0) {
+                    imports.push(s);
+                }
+            }
         });
         imports.push('');
 

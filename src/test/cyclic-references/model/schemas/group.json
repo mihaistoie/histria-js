@@ -1,0 +1,21 @@
+{
+    "type": "object",
+    "name": "group",
+    "nameSpace": "cyclicreferences",
+    "properties": {},
+    "relations": {
+        "items": {
+            "type": "hasMany",
+            "model": "item",
+            "aggregationKind": "composite",
+            "invRel": "group"
+        },
+        "item": {
+            "type": "belongsTo",
+            "model": "item",
+            "aggregationKind": "composite",
+            "invRel": "groups"
+        }
+        
+    }
+}

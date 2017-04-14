@@ -173,25 +173,27 @@ export class Transaction implements TransactionContainer {
             mm.enumClasses(item => {
                 let instances = that._instances.get(item.classOfInstance);
                 if (instances) {
-                    let toDestroy: ObservableObject[] = [];
-                    for (let ii of instances) {
-                        toDestroy.push(ii[1]);
+                    const toDestroy: ObservableObject[] = [];
+                    for (const ii of instances) {
+                        if (!ii[1].owner)
+                            toDestroy.push(ii[1]);
                     }
                     toDestroy.forEach(instance => {
-                        if (!instance.owner)
-                            instance.destroy();
+                        instance.destroy();
                     });
+
                 }
             });
             for (let classOfInstance of that._instances) {
                 let map = classOfInstance[1];
                 let toDestroy: ObservableObject[] = [];
-                for (let ii of map) {
-                    toDestroy.push(ii[1]);
+                for (const ii of map) {
+                    if (!ii[1].owner)
+                        toDestroy.push(ii[1]);
                 }
+
                 toDestroy.forEach(instance => {
-                    if (!instance.owner)
-                        instance.destroy();
+                    instance.destroy();
                 });
             }
             that._instances = null;

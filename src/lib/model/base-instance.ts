@@ -14,7 +14,7 @@ export class BaseInstance {
         return this._transaction;
     }
     public destroy() {
-        let that = this;
+        const that = this;
         that._transaction = null;
         that._destroyCount = that._destroyCount || 0;
         that._destroyCount++;

@@ -163,7 +163,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     // Called only on create or on load
     protected _setModel(value: any) {
-        let that = this;
+        const that = this;
         if (!value) throw 'Invalid model (null).'
         that._model = value;
         if (that._children)

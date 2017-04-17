@@ -32,6 +32,8 @@ export class Role<T extends ObservableObject> {
     protected async _setValue(value: T): Promise<T> {
         return Promise.resolve(null);
     }
+    protected _checkValueBeforeSet(value: T) {
+    }
 
     public destroy() {
         let that = this;

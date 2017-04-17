@@ -7,6 +7,7 @@ export declare class BaseObjectArray<T extends ObservableObject> {
     protected _refClass: any;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     destroy(): void;
+    protected _checkValueBeforeAdd(value: T): void;
     protected lazyLoad(): Promise<void>;
     toArray(): Promise<T[]>;
     indexOf(item: T): Promise<number>;

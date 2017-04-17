@@ -122,7 +122,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         return this._model._isNew === true;
     }
 
-
+    public get isDeleted(): boolean {
+        return this._model._isDeleted === true;
+    }
     public get isDirty(): boolean {
         return this._model._isDirty;
     }
@@ -313,6 +315,8 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
         // Check can modify ?
+    }
+    public async remove(): Promise<void> {
     }
 
     public async notifyOperation(propName: string, op: EventType, param: any): Promise<void> {

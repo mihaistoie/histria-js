@@ -7,8 +7,8 @@ import { DEFAULT_PARENT_NAME } from 'histria-utils';
 export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
         super(parent, propertyName, relation, model);
-        let that = this;
-        let isRestore = that._parent.status === ObjectStatus.restoring;
+        const that = this;
+        const isRestore = that._parent.status === ObjectStatus.restoring;
         if (!that._isNull && !that._isUndefined) {
             let pmodel = that._parent.model();
             that._items = new Array(model.length);
@@ -28,8 +28,8 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         });
     }
     private async _removed(item: T, notifyRemove: boolean): Promise<void> {
-        let that = this;
-        let lmodel = item.model();
+        const that = this;
+        const lmodel = item.model();
         schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
         await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyRemove)
@@ -37,9 +37,9 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
 
     }
     private async _added(item: T, notifyAdd: boolean): Promise<void> {
-        let that = this;
-        let lmodel = item.model();
-        let rmodel = that._parent.model();
+        const that = this;
+        const lmodel = item.model();
+        const rmodel = that._parent.model();
         schemaUtils.updateRoleRefs(that._relation, lmodel, rmodel, true);
         await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyAdd)
@@ -47,7 +47,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
 
     }
     protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
-        let that = this;
+        const that = this;
         that._model.splice(ii, 1);
         if (!that._model.length) {
             that._model = null;
@@ -58,14 +58,14 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
         that._isNull = (that._model === null);
     }
     protected async _afterAddItem(item: T): Promise<void> {
-        let that = this;
+        const that = this;
         await that._added(item, true);
 
     }
     public async set(items: T[]): Promise<void> {
-        let that = this;
+        const that = this;
         await that.lazyLoad();
-        for (let item of that._items) {
+        for (const item of that._items) {
             await that._removed(item, false);
         }
         that._items = [];
@@ -87,14 +87,14 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
     }
 
     protected async lazyLoad(): Promise<void> {
-        let that = this;
+        const that = this;
         if (!that._parent) return;
         if (that._isUndefined) {
             const lmodel = that._parent.model();
             const query = schemaUtils.roleToQuery(that._relation, lmodel)
             if (query) {
-                let opts: FindOptions = { onlyInCache: that._parent.isNew };
-                let items = await that._parent.transaction.find<T>(that._refClass, query, opts);
+                const opts: FindOptions = { onlyInCache: that._parent.isNew };
+                const items = await that._parent.transaction.find<T>(that._refClass, query, opts);
                 if (items.length) {
                     that._model = new Array(items.length);
                     that._items = new Array(items.length);
@@ -116,7 +116,7 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
 
     }
     public destroy() {
-        let that = this;
+        const that = this;
         that._items && that._items.forEach(item => {
             item.destroy();
         });
@@ -131,7 +131,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
     private _loaded: boolean;
 
     protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
-        let that = this;
+        const that = this;
         if (item) {
             const lmodel = item.model();
             schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
@@ -151,14 +151,14 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
     }
 
     protected async lazyLoad(): Promise<void> {
-        let that = this;
+        const that = this;
         if (!that._parent) return;
         if (!that._loaded) {
             that._loaded = true;
-            let query = schemaUtils.roleToQuery(that._relation, that._parent.model());
+            const query = schemaUtils.roleToQuery(that._relation, that._parent.model());
             if (query) {
-                let opts: FindOptions = { onlyInCache: false };
-                let items = await that._parent.transaction.find<T>(that._refClass, query);
+                const opts: FindOptions = { onlyInCache: false };
+                const items = await that._parent.transaction.find<T>(that._refClass, query);
                 if (items.length) {
                     that._items = new Array(items.length);
                     for (let index = 0; index < items.length; index++) {
@@ -173,10 +173,10 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
     }
     private async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         // After lazy loading
-        let that = this;
+        const that = this;
         if (newValue) {
             // roleInv is AggregationBelongsTo
-            let roleInv = newValue.getRoleByName(that._relation.invRel);
+            const roleInv = newValue.getRoleByName(that._relation.invRel);
             if (roleInv) roleInv.internalSetValue(that._parent);
         }
     }

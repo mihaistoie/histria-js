@@ -76,6 +76,7 @@ export interface ObservableObject {
     }[];
     rmvListener(listener: any): void;
     restored(): void;
+    remove(): Promise<void>;
     readonly hasOwner: boolean;
     readonly owner: ObservableObject;
     readonly propertyName: string;
@@ -85,6 +86,7 @@ export interface ObservableObject {
     readonly status: ObjectStatus;
     readonly isNew: boolean;
     readonly isDirty: boolean;
+    readonly isDeleted: boolean;
     readonly isPersistent: boolean;
 }
 export interface ObservableArray {

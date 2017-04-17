@@ -6,8 +6,8 @@ import { schemaUtils } from 'histria-utils';
 
 export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
     protected async _lazyLoad(): Promise<T> {
-        let that = this;
-        let query = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
+        const that = this;
+        const query = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
         if (query) {
             let opts: FindOptions = { onlyInCache: false };
             return await that._parent.transaction.findOne<T>(that._refClass, query, opts);
@@ -18,7 +18,7 @@ export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
 
 export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {
     protected async _getValue(): Promise<T> {
-        let that = this;
+        const that = this;
         let res: any = that._value;
         if (res === undefined) {
             res = await that._lazyLoad() || null;
@@ -33,7 +33,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
     }
 
     public async internalSetValueAndNotify(newValue: any, oldValue: any): Promise<void> {
-        let that = this;
+        const that = this;
         await that._parent.changeProperty(that._propertyName, oldValue, newValue, () => {
             that.internalSetValue(newValue);
             schemaUtils.updateRoleRefs(that._relation, that._parent.model(), newValue ? newValue.model() : null, false);
@@ -41,9 +41,10 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
     }
 
     protected async _setValue(value: T): Promise<T> {
-        let that = this;
-        let oldValue = that._value;
-        let newValue = value;
+        const that = this;
+        that._checkValueBeforeSet(value);
+        const oldValue = that._value;
+        const newValue = value;
         if (oldValue === newValue)
             return oldValue;
         let notified = false;
@@ -65,7 +66,7 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
 
 export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {
     protected async _getValue(): Promise<T> {
-        let that = this;
+        const that = this;
         let res: any = that._parent.owner;
         if (res === undefined) {
             res = await that._lazyLoad() || null;
@@ -80,9 +81,9 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
     }
 
     protected async _setValue(value: T): Promise<T> {
-        let that = this;
-        let oldParent = await that._getValue();
-        let newParent = value;
+        const that = this;
+        const oldParent = await that._getValue();
+        const newParent = value;
         if (oldParent === newParent)
             return oldParent;
         let changeParentCalled = false;

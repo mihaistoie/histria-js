@@ -11,5 +11,6 @@ export declare class Role<T extends ObservableObject> {
     setValue(value: T): Promise<T>;
     protected _getValue(): Promise<T>;
     protected _setValue(value: T): Promise<T>;
+    protected _checkValueBeforeSet(value: T): void;
     destroy(): void;
 }

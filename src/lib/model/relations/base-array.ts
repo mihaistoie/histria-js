@@ -22,6 +22,8 @@ export class BaseObjectArray<T extends ObservableObject> {
         that._parent = null;
         that._refClass = null;
     }
+    protected _checkValueBeforeAdd(value: T) {
+    }
     protected async lazyLoad(): Promise<void> {
         return Promise.resolve();
     }
@@ -118,6 +120,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
 
     public async add(item: T, index?: number): Promise<T> {
         let that = this;
+        that._checkValueBeforeAdd(item);
         if (!item) return null;
         await that.lazyLoad();
         if (that._items.indexOf(item) >= 0)

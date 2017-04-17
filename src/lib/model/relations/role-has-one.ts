@@ -59,6 +59,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected async _setValue(value: T): Promise<T> {
         const that = this;
         value = value || null;
+        that._checkValueBeforeSet(value);
         let oldValue = await that._getValue();
         if (that._value === value)
             return that._value;
@@ -238,6 +239,7 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
 
     protected async _setValue(value: T): Promise<T> {
         const that = this;
+        that._checkValueBeforeSet(value);
         value = value || null;
         let oldValue = await that._getValue();
         if (that._value === value)

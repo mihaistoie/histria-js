@@ -35,6 +35,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     readonly uuid: string;
     readonly isPersistent: boolean;
     readonly isNew: boolean;
+    readonly isDeleted: boolean;
     isDirty: boolean;
     getPath(propName?: string): string;
     readonly propertyName: string;
@@ -59,6 +60,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     modelState(propName: string): any;
     model(propName?: string): any;
     private beforePropertyChanged(propName, oldValue, newValue);
+    remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     getOrSetProperty(propName: string, value?: any): Promise<any>;

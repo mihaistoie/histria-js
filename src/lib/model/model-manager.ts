@@ -81,6 +81,12 @@ export class ModelManager {
             propValidateRules: {},
             objValidateRules: [],
             initRules: [],
+            editingRules: [],
+            editedRules: [],
+            savingRules: [],
+            savedRules: [],
+            removingRules: [],
+            removedRules: [],
         };
         that._mapByClass.set(constructor, ci);
         schemaManager().registerSchema(schema);
@@ -196,13 +202,13 @@ export class ModelManager {
     }
 
 
-    public rulesForInit(classOfInstance: any): any[] {
+    public rulesForByName(ruleName: string, classOfInstance: any): any[] {
         const that = this;
         const res: any[] = [];
         const ci = that._mapByClass.get(classOfInstance);
         if (!ci) return res;
         if (ci.initRules) {
-            return _activeRules(ci.initRules);
+            return _activeRules(ci[ruleName + 'Rules']);
         }
         return res;
     }
@@ -325,15 +331,26 @@ export class ModelManager {
             let propName = ruleParams[0];
             ci.setItemsRules[propName] = ci.setItemsRules[propName] || [];
             ci.setItemsRules[propName].push(ri);
+        } else if (ruleType === EventType.saving) {
+             ci.savingRules.push(ri);
+        } else if (ruleType === EventType.saved) {
+             ci.savedRulesRules.push(ri);
+        } else if (ruleType === EventType.editing) {
+             ci.editingRules.push(ri);
+        } else if (ruleType === EventType.edited) {
+             ci.editedRulesRules.push(ri);
+        } else if (ruleType === EventType.removing) {
+             ci.savingRules.push(ri);
+        } else if (ruleType === EventType.removed) {
+             ci.removedRules.push(ri);
         }
     }
 }
 
 
-
-export async function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+async function instanceRuleByName(name: string, eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
     let mm = modelManager();
-    let rules = mm.rulesForInit(classOfInstance);
+    let rules = mm.rulesForByName(name, classOfInstance);
     if (rules.length) {
         let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
@@ -342,6 +359,35 @@ export async function initRules(eventInfo: EventInfo, classOfInstance: any, inst
         }
     }
 }
+
+export async function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('init', eventInfo, classOfInstance, instances, args);
+}
+
+export async function editingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('editing', eventInfo, classOfInstance, instances, args);
+}
+
+export async function removingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('removing', eventInfo, classOfInstance, instances, args);
+}
+
+export async function savingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('saving', eventInfo, classOfInstance, instances, args);
+}
+
+export async function editedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('edited', eventInfo, classOfInstance, instances, args);
+}
+
+export async function removedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('removed', eventInfo, classOfInstance, instances, args);
+}
+
+export async function savedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+    return instanceRuleByName('saved', eventInfo, classOfInstance, instances, args);
+}
+
 
 
 export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {

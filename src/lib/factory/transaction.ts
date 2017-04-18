@@ -1,6 +1,9 @@
 import * as util from 'util';
 import * as uuid from 'uuid';
-import { modelManager, propagationRules, initRules, propValidateRules, objValidateRules, addItemRules, rmvItemRules, setItemsRules } from '../model/model-manager';
+import {
+    modelManager, propagationRules, propValidateRules, objValidateRules, addItemRules,
+    rmvItemRules, setItemsRules, initRules, editedRules, editingRules, savedRules, savingRules, removedRules, removingRules
+} from '../model/model-manager';
 import { validateAfterPropChanged } from './validation';
 import { findInMap, IStore, dbManager } from 'histria-utils';
 
@@ -29,6 +32,12 @@ export class Transaction implements TransactionContainer {
         that.subscribe(EventType.propValidate, propValidateRules);
         that.subscribe(EventType.objValidate, objValidateRules);
         that.subscribe(EventType.init, initRules);
+        that.subscribe(EventType.saving, savingRules);
+        that.subscribe(EventType.saved, savedRules);
+        that.subscribe(EventType.editing, editingRules);
+        that.subscribe(EventType.edited, editedRules);
+        that.subscribe(EventType.removing, removingRules);
+        that.subscribe(EventType.removed, removedRules);
     }
     public get context(): UserContext {
         return this._ctx;
@@ -126,6 +135,13 @@ export class Transaction implements TransactionContainer {
             that._subscribers.set(eventType, list);
         }
         list.push(handler);
+    }
+    public async save(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    public async cancel(): Promise<void> {
+        return Promise.resolve();
     }
 
     public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {

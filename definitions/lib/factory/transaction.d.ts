@@ -14,6 +14,8 @@ export declare class Transaction implements TransactionContainer {
     private _propagateEvent(list, eventInfo, instance, nInstances, args, argIndex);
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<void>;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>): void;
+    save(): Promise<void>;
+    cancel(): Promise<void>;
     create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
     load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;

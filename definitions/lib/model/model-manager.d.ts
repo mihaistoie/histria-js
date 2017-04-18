@@ -21,7 +21,7 @@ export declare class ModelManager {
     sortedClasses(): string[];
     registerClass(constructor: any, schema: any): void;
     private _loaded();
-    rulesForInit(classOfInstance: any): any[];
+    rulesForByName(ruleName: string, classOfInstance: any): any[];
     rulesObjValidate(classOfInstance: any): any[];
     rulesForPropChange(classOfInstance: any, propertyName: string): any[];
     rulesForPropValidate(classOfInstance: any, propertyName: string): any[];
@@ -33,6 +33,12 @@ export declare class ModelManager {
     addRule(classOfInstance: any, ruleType: EventType, rule: any, ruleParams?: any): void;
 }
 export declare function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function editingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function removingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function savingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function editedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function removedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
+export declare function savedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 export declare function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 export declare function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;
 export declare function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<void>;

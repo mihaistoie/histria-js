@@ -11,7 +11,13 @@ export enum EventType {
     objValidate = 3,
     addItem = 4,
     removeItem = 5,
-    setItems = 6
+    setItems = 6,
+    removing = 7,
+    removed = 8,
+    editing = 9,
+    edited = 10,
+    saving = 11,
+    saved = 12
 }
 
 export enum MessageServerity {
@@ -51,6 +57,8 @@ export interface TransactionContainer {
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     removeInstance(classOfInstance: any, instance: ObservableObject): void;
+    save(): Promise<void>;
+    cancel(): Promise<void>;
     readonly eventInfo: EventInfo;
 }
 

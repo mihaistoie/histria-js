@@ -65,6 +65,57 @@ export function init(targetClass: any) {
     }
 }
 
+// Decorator for saving
+export function saving(targetClass: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = modelManager();
+        mm.addRule(targetClass, EventType.saving, target[propertyKey]);
+    }
+}
+
+// Decorator for saved
+export function saved(targetClass: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = modelManager();
+        mm.addRule(targetClass, EventType.saved, target[propertyKey]);
+    }
+}
+
+
+// Decorator for editing
+export function editing(targetClass: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = modelManager();
+        mm.addRule(targetClass, EventType.editing, target[propertyKey]);
+    }
+}
+
+// Decorator for edited
+export function edited(targetClass: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = modelManager();
+        mm.addRule(targetClass, EventType.edited, target[propertyKey]);
+    }
+}
+
+
+// Decorator for removing
+export function removing(targetClass: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = modelManager();
+        mm.addRule(targetClass, EventType.removing, target[propertyKey]);
+    }
+}
+
+// Decorator for edited
+export function removed(targetClass: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let mm = modelManager();
+        mm.addRule(targetClass, EventType.removed, target[propertyKey]);
+    }
+}
+
+
 const module_holder = {};
 // Load rules from folder
 export async function loadRules(folder: string): Promise<void> {

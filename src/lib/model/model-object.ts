@@ -129,7 +129,17 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         return this._model._isDirty;
     }
     public async markDirty(): Promise<void> {
-        return Promise.resolve();
+        const that = this;
+        if (that.isDirty) return;
+        if (that._parent) {
+            const owner: ModelObject = <ModelObject>that._parent;
+            await owner.markDirty();
+        } else {
+            await that._lock();
+        }
+        await that._emitInstanceEvent(EventType.editing);
+        that._model._isDirty = true;
+        await that._emitInstanceEvent(EventType.edited);
     }
     public getPath(propName?: string): string {
         let that = this;
@@ -160,6 +170,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
     }
     protected init() {
+    }
+    private async _lock(): Promise<void> {
+        return Promise.resolve();
     }
 
     // Called only on create or on load
@@ -330,10 +343,25 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         }
 
     }
+    private async _addException(ex: Error): Promise<void> {
+        // TODO error $ must go in parent
+        const that = this;
+        that._errorByName('$').addException(ex);
+    }
 
+    private async _emitInstanceEvent(event: EventType): Promise<void> {
+        const that = this;
+        const eventInfo = that.transaction.eventInfo;
+        try {
+            if (that.status === ObjectStatus.idle)
+                await that._transaction.emitInstanceEvent(event, eventInfo, that);
+        } catch (ex) {
+            that._addException(ex);
+        }
+    }
     public async changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void> {
-        let that = this;
-        let eventInfo = that.transaction.eventInfo;
+        const that = this;
+        const eventInfo = that.transaction.eventInfo;
         eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
         try {
             eventInfo.isLazyLoading = options.isLazyLoading;

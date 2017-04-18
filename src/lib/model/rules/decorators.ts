@@ -107,7 +107,7 @@ export function removing(targetClass: any) {
     }
 }
 
-// Decorator for edited
+// Decorator for removed
 export function removed(targetClass: any) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let mm = modelManager();

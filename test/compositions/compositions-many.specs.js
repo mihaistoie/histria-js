@@ -56,7 +56,7 @@ async function testLoad() {
     let i = 0;
     order2.enumChildren(children => {
         i++;
-    });
+    }, true);
     assert.equal(i, 3, 'Order has 3 children');
     assert.equal(children2[0].loaded, true, '(1)Init rule called');
     assert.equal(children2[1].loaded, true, '(2) Init rule called');

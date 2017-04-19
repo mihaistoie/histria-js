@@ -120,10 +120,10 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
 
         }
     }
-    public enumChildren(cb: (value: ObservableObject) => void) {
+    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
         const that = this;
         if (that._value) {
-            that._value.enumChildren(cb);
+            if (recursive) that._value.enumChildren(cb, true);
             cb(that._value);
         }
     }
@@ -207,11 +207,15 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
         }
 
     }
-    public enumChildren(cb: (value: ObservableObject) => void) {
+    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
         const that = this;
+        const parentIsPersistent = that._parent.isPersistent;
         if (that._relation.aggregationKind === AGGREGATION_KIND.composite && that._value) {
-            that._value.enumChildren(cb);
-            cb(that._value);
+            if (parentIsPersistent && !that._value.isPersistent) {
+                if (recursive)
+                    that._value.enumChildren(cb, true);
+                cb(that._value);
+            }
         }
     }
 

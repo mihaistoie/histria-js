@@ -19,7 +19,7 @@ export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
 }
 export declare class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
-    enumChildren(cb: (value: ObservableObject) => void): void;
+    enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
     destroy(): void;
@@ -34,7 +34,7 @@ export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     private _subscribe();
     unsubscribe(): void;
-    enumChildren(cb: (value: ObservableObject) => void): void;
+    enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
     readonly syncValue: T;
     restoreFromCache(): void;
     destroy(): void;

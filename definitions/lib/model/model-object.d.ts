@@ -44,7 +44,6 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     readonly hasOwner: boolean;
     changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     protected init(): void;
-    private _lock();
     protected _setModel(value: any): void;
     protected createErrors(): void;
     protected createStates(): void;
@@ -62,6 +61,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     modelState(propName: string): any;
     model(propName?: string): any;
     private beforePropertyChanged(propName, oldValue, newValue);
+    private _remove(ownerInRemoving);
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     private _addException(ex);
@@ -72,7 +72,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     setPropertyByName(propName: string, value: any): Promise<any>;
     afterCreated(): Promise<void>;
     afterRestore(): void;
-    enumChildren(cb: (value: ObservableObject) => void): void;
+    enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
     validate(options?: {
         full: boolean;
     }): Promise<void>;

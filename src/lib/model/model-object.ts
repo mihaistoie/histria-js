@@ -134,8 +134,6 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         if (that._parent) {
             const owner: ModelObject = <ModelObject>that._parent;
             await owner.markDirty();
-        } else {
-            await that._lock();
         }
         await that._emitInstanceEvent(EventType.editing);
         that._model._isDirty = true;
@@ -170,9 +168,6 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
     }
     protected init() {
-    }
-    private async _lock(): Promise<void> {
-        return Promise.resolve();
     }
 
     // Called only on create or on load
@@ -328,7 +323,34 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
         // Check can modify ?
     }
+    private async _remove(ownerInRemoving: boolean): Promise<void> {
+        const that = this;
+        if (that.isDeleted) return;
+        // Mark dirty
+        await that.markDirty();
+        // Remove children removed
+        let promises: Promise<void>[] = [];
+        that.enumChildren((child) => {
+            let modelChild = <ModelObject>child;
+            promises.push(modelChild._remove(true));
+        }, false);
+        await Promise.all(promises);
+        // Before remove rules
+        await that._emitInstanceEvent(EventType.removing);
+        that._model._isDeleted = true;
+        // Transaction  move to removed
+        // TODO
+        if (!ownerInRemoving) {
+            if (that._parent) {
+                // TODO: remove from relation
+            }
+        }
+        // After remove rules
+        await that._emitInstanceEvent(EventType.removed);
+    }
+
     public async remove(): Promise<void> {
+        return this._remove(false);
     }
 
     public async notifyOperation(propName: string, op: EventType, param: any): Promise<void> {
@@ -463,11 +485,11 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that.status = ObjectStatus.idle;
     }
 
-    public enumChildren(cb: (value: ObservableObject) => void) {
-        let that = this;
+    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
+        const that = this;
         schemaUtils.enumCompositions(that._schema.relations, (relationName, relation) => {
             let role = that._children[relationName];
-            if (role) role.enumChildren(cb);
+            if (role) role.enumChildren(cb, recursive);
         });
 
     }

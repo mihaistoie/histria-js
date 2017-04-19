@@ -63,7 +63,7 @@ async function testLoad() {
     let i = 0;
     car3.enumChildren(children => {
         i++;
-    });
+    }, true);
     assert.equal(i, 1, 'Car a child');
     // DB test
     let scar = await transaction.findOne(compositions_model_1.Car, { id: 1001 });

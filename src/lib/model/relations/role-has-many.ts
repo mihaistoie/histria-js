@@ -20,10 +20,10 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
             })
         }
     }
-    public enumChildren(cb: (value: ObservableObject) => void) {
+    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
         let that = this;
         that._items && that._items.forEach(item => {
-            item.enumChildren(cb)
+            if (recursive) item.enumChildren(cb, true);
             cb(item)
         });
     }

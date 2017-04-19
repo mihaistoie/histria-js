@@ -152,7 +152,7 @@ export class Transaction implements TransactionContainer {
         let instances: any[] = []
         instance.enumChildren((child: any) => {
             instances.push(child);
-        });
+        }, true);
         instances.push(instance);
         for (let inst of instances) {
             await inst.afterCreated();
@@ -168,7 +168,7 @@ export class Transaction implements TransactionContainer {
         let instances: any[] = []
         instance.enumChildren((child: any) => {
             instances.push(child);
-        });
+        }, true);
         instances.push(instance);
         for (let inst of instances) {
             await inst.afterCreated();
@@ -323,7 +323,7 @@ export class Transaction implements TransactionContainer {
         let instances: any[] = []
         instance.enumChildren((child: any) => {
             instances.push(child);
-        });
+        }, true);
         instances.push(instance);
         for (let inst of instances)
             inst.afterRestore();

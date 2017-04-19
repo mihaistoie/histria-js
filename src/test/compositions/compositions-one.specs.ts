@@ -83,7 +83,7 @@ async function testLoad(): Promise<void> {
     let i = 0
     car3.enumChildren(children => {
         i++;
-    });
+    }, true);
     assert.equal(i, 1, 'Car a child');
 
     // DB test

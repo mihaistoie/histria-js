@@ -3,8 +3,11 @@
 * Before remove rules
 * After remove rules
 * Mark all children removed
-* Remove object from parent
+* Remove object from parent && set owner null
 * New objects destroy
+* set owner null ???
+
+* restore removed 
 
 
 ## Mark dirty (async)

@@ -1,26 +1,18 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from '../interfaces';
 import { modelManager } from '../model-manager';
+import { RoleBase } from './role';
 
-export class BaseObjectArray<T extends ObservableObject> {
-    protected _parent: ObservableObject;
+export class BaseObjectArray<T extends ObservableObject> extends RoleBase<T> {
     protected _items: T[];
-    protected _propertyName: string;
-    protected _relation: any;
-    protected _refClass: any;
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
-        let that = this;
-        that._parent = parent;
-        that._propertyName = propertyName;
-        that._relation = relation;
+        super(parent, propertyName, relation)
+        const that = this;
         that._items = [];
-        that._refClass = modelManager().classByName(that._relation.model, that._relation.nameSpace);
     }
     public destroy() {
-        let that = this;
+        const that = this;
         that._items = null;
-        that._relation = null;
-        that._parent = null;
-        that._refClass = null;
+        super.destroy();
     }
     protected _checkValueBeforeAdd(value: T) {
     }

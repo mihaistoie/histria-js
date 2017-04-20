@@ -1,10 +1,7 @@
 import { ObservableObject, ObservableArray } from '../interfaces';
-export declare class BaseObjectArray<T extends ObservableObject> {
-    protected _parent: ObservableObject;
+import { RoleBase } from './role';
+export declare class BaseObjectArray<T extends ObservableObject> extends RoleBase<T> {
     protected _items: T[];
-    protected _propertyName: string;
-    protected _relation: any;
-    protected _refClass: any;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     destroy(): void;
     protected _checkValueBeforeAdd(value: T): void;

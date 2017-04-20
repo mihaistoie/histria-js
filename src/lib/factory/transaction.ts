@@ -49,10 +49,10 @@ export class Transaction implements TransactionContainer {
         return this._eventInfo;
     }
     public saveToJson(): any {
-        let that = this;
-        let res: any = { instances: [] };
+        const that = this;
+        const res: any = { instances: [], removed: [] };
+        const mm = modelManager();
         if (that._removedInstances) {
-
             // Classname must be saved
             res.removed = [];
             for (let item of that._removedInstances) {
@@ -183,9 +183,9 @@ export class Transaction implements TransactionContainer {
         return instance;
     }
     public clear() {
-        let that = this;
+        const that = this;
+        const mm = modelManager();
         if (that._instances) {
-            let mm = modelManager();
             mm.enumClasses(item => {
                 let instances = that._instances.get(item.classOfInstance);
                 if (instances) {
@@ -207,12 +207,26 @@ export class Transaction implements TransactionContainer {
                     if (!ii[1].owner)
                         toDestroy.push(ii[1]);
                 }
-
                 toDestroy.forEach(instance => {
                     instance.destroy();
                 });
             }
             that._instances = null;
+        }
+
+        if (that._removedInstances) {
+           for (let classOfInstance of that._removedInstances) {
+                let map = classOfInstance[1];
+                let toDestroy: ObservableObject[] = [];
+                for (const ii of map) {
+                    if (!ii[1].owner)
+                        toDestroy.push(ii[1]);
+                }
+                toDestroy.forEach(instance => {
+                    instance.destroy();
+                });
+            }
+            that._removedInstances = null;
         }
 
     }

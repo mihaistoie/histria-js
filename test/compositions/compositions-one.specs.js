@@ -84,6 +84,13 @@ async function testLoad() {
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 2');
     transaction.destroy();
+    transaction = new index_1.Transaction();
+    scar = await transaction.findOne(compositions_model_1.Car, { id: 1001 });
+    engine = await transaction.findOne(compositions_model_1.Engine, { id: 2001 });
+    assert.notEqual(engine, null, 'Engine found befor remove');
+    await scar.remove();
+    engine = await transaction.findOne(compositions_model_1.Engine, { id: 2001 });
+    assert.equal(engine, null, 'Engine not found after remove');
 }
 async function testRules() {
     let transaction = new index_1.Transaction();
@@ -110,6 +117,20 @@ async function testRules() {
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 3');
     transaction.destroy();
+}
+async function testRemove() {
+    let transaction = new index_1.Transaction();
+    let car = await transaction.create(compositions_model_1.Car);
+    let engine = await transaction.create(compositions_model_1.Engine);
+    await car.setEngine(engine);
+    let engineId = engine.id;
+    let fe = await transaction.findOne(compositions_model_1.Engine, { id: engineId });
+    assert.equal(fe, engine, 'Engine found');
+    await engine.remove();
+    fe = await transaction.findOne(compositions_model_1.Engine, { id: engineId });
+    assert.equal(fe, null, 'Engine removed (1)');
+    const ce = await car.engine();
+    assert.equal(ce, null, 'Engine removed (2)');
 }
 describe('Relation One to One, Composition', () => {
     before(function (done) {
@@ -164,6 +185,13 @@ describe('Relation One to One, Composition', () => {
     });
     it('One to one composition - rules', (done) => {
         testRules().then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
+    });
+    it('One to one composition - remove', (done) => {
+        testRemove().then(() => {
             done();
         }).catch((ex) => {
             done(ex);

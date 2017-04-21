@@ -1,4 +1,5 @@
 import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions } from './interfaces';
+import { RoleBase } from './relations/role';
 import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from './relations/role-has-one';
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
 import { HasManyComposition, HasManyAggregation } from './relations/role-has-many';
@@ -339,14 +340,24 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         await that._emitInstanceEvent(EventType.removing);
         that._model._isDeleted = true;
         // Transaction  move to removed
-        // TODO
-        if (!ownerInRemoving) {
-            if (that._parent) {
-                // TODO: remove from relation
+        if (that._parent) {
+            // remove from parent
+            let parentRel = schemaUtils.parentRelation(that._schema);
+            if (parentRel) {
+                const relProp: CompositionBelongsTo<ModelObject> = <CompositionBelongsTo<ModelObject>>that._children[parentRel.relationName];
+                if (relProp)
+                    await relProp.setValue(null);
             }
+            // remove from aggregations
+
+            // remove from views
         }
+        that._transaction.removeInstance(that);
+        that._transaction.remove(that);
         // After remove rules
         await that._emitInstanceEvent(EventType.removed);
+        if (that.isNew)
+            that.destroy();
     }
 
     public async remove(): Promise<void> {
@@ -547,7 +558,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
         }
         if (that._transaction) {
-            that._transaction.removeInstance(modelManager().classByName(that._schema.name, that._schema.nameSpace), that);
+            that._transaction.removeInstance(that);
         }
         if (that._listeners) {
             let list = that._listeners;

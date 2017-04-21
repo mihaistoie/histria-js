@@ -215,7 +215,7 @@ export class Transaction implements TransactionContainer {
         }
 
         if (that._removedInstances) {
-           for (let classOfInstance of that._removedInstances) {
+            for (let classOfInstance of that._removedInstances) {
                 let map = classOfInstance[1];
                 let toDestroy: ObservableObject[] = [];
                 for (const ii of map) {
@@ -300,10 +300,10 @@ export class Transaction implements TransactionContainer {
         }
         return null;
     }
-    public removeInstance(classOfInstance: any, instance: ObservableObject) {
+    public removeInstance(instance: ObservableObject) {
         let that = this;
         if (that._instances) {
-            let byClass = that._instances.get(classOfInstance);
+            let byClass = that._instances.get(instance.constructor);
             if (byClass)
                 byClass.delete(instance.uuid)
         }

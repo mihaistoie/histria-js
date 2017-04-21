@@ -111,6 +111,15 @@ async function testLoad(): Promise<void> {
 
 
     transaction.destroy();
+    transaction = new Transaction();
+
+    scar = await transaction.findOne<Car>(Car, { id: 1001 });
+    engine = await transaction.findOne<Engine>(Engine, { id: 2001 })
+    assert.notEqual(engine, null, 'Engine found befor remove');
+    await scar.remove();
+    engine = await transaction.findOne<Engine>(Engine, { id: 2001 })
+    assert.equal(engine, null, 'Engine not found after remove');
+
 }
 
 
@@ -146,6 +155,28 @@ async function testRules(): Promise<void> {
 
 
 }
+
+
+
+async function testRemove(): Promise<void> {
+    let transaction = new Transaction();
+    let car = await transaction.create<Car>(Car);
+    let engine = await transaction.create<Engine>(Engine);
+    await car.setEngine(engine);
+    let engineId = engine.id;
+    let fe = await transaction.findOne<Engine>(Engine, { id: engineId });
+    assert.equal(fe, engine, 'Engine found');
+
+    await engine.remove();
+
+    fe = await transaction.findOne<Engine>(Engine, { id: engineId });
+    assert.equal(fe, null, 'Engine removed (1)');
+
+    const ce = await car.engine();
+    assert.equal(ce, null, 'Engine removed (2)');
+}
+
+
 
 
 describe('Relation One to One, Composition', () => {
@@ -207,6 +238,15 @@ describe('Relation One to One, Composition', () => {
     });
     it('One to one composition - rules', (done) => {
         testRules().then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
+
+    });
+
+    it('One to one composition - remove', (done) => {
+        testRemove().then(() => {
             done();
         }).catch((ex) => {
             done(ex);

@@ -149,6 +149,20 @@ async function testRules(): Promise<void> {
 }
 
 
+async function testRemove(): Promise<void> {
+    let transaction = new Transaction();
+    let order = await transaction.create<Order>(Order);
+    let item1 = await transaction.create<OrderItem>(OrderItem);
+    let item2 = await transaction.create<OrderItem>(OrderItem);
+    await order.items.add(item1);
+    await order.items.add(item2);
+    await item2.remove();
+    let items = await order.items.toArray();
+    assert.equal(items.length, 1, 'Order has 1 item');
+}
+
+
+
 describe('Relation One to many, Composition', () => {
     before(function (done) {
         let dm: DbManager = dbManager();
@@ -242,8 +256,12 @@ describe('Relation One to many, Composition', () => {
     });
 
 
-    it('One to one Many composition - states errors', function (done) {
-        done();
+    it('One to one Many composition - remove', function (done) {
+        testRemove().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
 
     });
 

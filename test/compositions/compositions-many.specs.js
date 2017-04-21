@@ -118,6 +118,17 @@ async function testRules() {
     assert.deepEqual(data1, data2, 'Restore test in rules');
     transaction.destroy();
 }
+async function testRemove() {
+    let transaction = new index_1.Transaction();
+    let order = await transaction.create(compositions_model_1.Order);
+    let item1 = await transaction.create(compositions_model_1.OrderItem);
+    let item2 = await transaction.create(compositions_model_1.OrderItem);
+    await order.items.add(item1);
+    await order.items.add(item2);
+    await item2.remove();
+    let items = await order.items.toArray();
+    assert.equal(items.length, 1, 'Order has 1 item');
+}
 describe('Relation One to many, Composition', () => {
     before(function (done) {
         let dm = histria_utils_1.dbManager();
@@ -195,7 +206,11 @@ describe('Relation One to many, Composition', () => {
             done(ex);
         });
     });
-    it('One to one Many composition - states errors', function (done) {
-        done();
+    it('One to one Many composition - remove', function (done) {
+        testRemove().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        });
     });
 });

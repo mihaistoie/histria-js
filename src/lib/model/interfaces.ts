@@ -50,13 +50,13 @@ export type ChangePropertyOptions = {
 export type FindOptions = { onlyInCache?: boolean };
 export interface TransactionContainer {
     context: UserContext;
-    remove(instance: ObservableObject): void;
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T>;
     findOneInCache<T extends ObservableObject>(filter: any, classOfInstance: any): T;
     find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
-    removeInstance(classOfInstance: any, instance: ObservableObject): void;
+    removeInstance(instance: ObservableObject): void;
+    remove(instance: ObservableObject): void;
     save(): Promise<void>;
     cancel(): Promise<void>;
     readonly eventInfo: EventInfo;

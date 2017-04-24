@@ -40,13 +40,13 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         }, { isLazyLoading: false });
     }
 
-    protected async _setValue(value: T): Promise<T> {
+    protected async _setValue(value: T): Promise<void> {
         const that = this;
         that._checkValueBeforeSet(value);
         const oldValue = that._value;
         const newValue = value;
         if (oldValue === newValue)
-            return oldValue;
+            return ;
         let notified = false;
         if (oldValue) {
             notified = true;
@@ -59,7 +59,6 @@ export class AggregationBelongsTo<T extends ObservableObject> extends BaseBelong
         if (!notified) {
             await that.internalSetValueAndNotify(newValue, oldValue);
         }
-        return that._value;
     }
 
 }
@@ -80,12 +79,12 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
     public internalSetValue(value: any) {
     }
 
-    protected async _setValue(value: T): Promise<T> {
+    protected async _setValue(value: T): Promise<void> {
         const that = this;
         const oldParent = await that._getValue();
         const newParent = value;
         if (oldParent === newParent)
-            return oldParent;
+            return;
         let changeParentCalled = false;
         if (that._relation.invRel) {
             if (oldParent) {
@@ -103,8 +102,6 @@ export class CompositionBelongsTo<T extends ObservableObject> extends BaseBelong
             // parent of p is newParent
             await p.changeParent(newParent, that._relation.invRel, that._propertyName || DEFAULT_PARENT_NAME, true);
         }
-        let res: any = that._parent.owner;
-        return res;
     }
 
 }

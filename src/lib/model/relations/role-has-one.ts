@@ -38,31 +38,30 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
             that._value = null;
     }
 
-    protected async _setValue(value: T): Promise<T> {
+    protected async _setValue(value: T): Promise<void> {
         const that = this;
         value = value || null;
         let oldValue = await that._getValue();
         if (that._value === value)
-            return that._value;
+            return;
         await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             that._value = value;
             let lmodel = that._parent.model();
             let fmodel = that._value ? that._value.model() : null;
             schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
         }, { isLazyLoading: false });
-        return that._value;
     }
 
 }
 
 export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
-    protected async _setValue(value: T): Promise<T> {
+    protected async _setValue(value: T): Promise<void> {
         const that = this;
         value = value || null;
         that._checkValueBeforeSet(value);
         let oldValue = await that._getValue();
         if (that._value === value)
-            return that._value;
+            return;
         const newValue = value;
         await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             that._value = value;
@@ -79,7 +78,6 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
             }
         }, { isLazyLoading: false });
         await that._afterSetValue(newValue, oldValue);
-        return that._value;
     }
 
     protected async _lazyLoad(): Promise<void> {
@@ -241,13 +239,13 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
         super.destroy();
     }
 
-    protected async _setValue(value: T): Promise<T> {
+    protected async _setValue(value: T): Promise<void> {
         const that = this;
         that._checkValueBeforeSet(value);
         value = value || null;
         let oldValue = await that._getValue();
         if (that._value === value)
-            return that._value;
+            return;
         await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             if (oldValue && that._relation.aggregationKind === AGGREGATION_KIND.composite)
                 oldValue.rmvListener(that);
@@ -257,7 +255,6 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
             let fmodel = that._value ? that._value.model() : null;
             schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
         }, { isLazyLoading: false });
-        return that._value;
     }
 
 

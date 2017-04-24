@@ -31,15 +31,15 @@ export class Role<T extends ObservableObject> extends RoleBase<T> {
     public getValue(): Promise<T> {
         return this._getValue();
     }
-    public setValue(value: T): Promise<T> {
+    public setValue(value: T): Promise<void> {
         return this._setValue(value);
     }
     protected async _getValue(): Promise<T> {
         let that = this;
         return Promise.resolve(that._value);
     }
-    protected async _setValue(value: T): Promise<T> {
-        return Promise.resolve(null);
+    protected async _setValue(value: T): Promise<void> {
+        return Promise.resolve();
     }
     protected _checkValueBeforeSet(value: T) {
     }

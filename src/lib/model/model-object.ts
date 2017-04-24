@@ -348,10 +348,18 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                 if (relProp)
                     await relProp.setValue(null);
             }
-            // remove from aggregations
-
-            // remove from views
         }
+        // remove from aggregations
+        promises = []
+        schemaUtils.enumBelongsToAggregations(that._schema.relations, (relationName, relation) => {
+            const relProp: AggregationBelongsTo<ModelObject> = <AggregationBelongsTo<ModelObject>>that._children[relationName];
+            if (relProp) {
+                promises.push(relProp.setValue(null));
+            }
+
+        });
+        await Promise.all(promises);
+        // remove from views
         that._transaction.removeInstance(that);
         that._transaction.remove(that);
         // After remove rules

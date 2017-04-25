@@ -46,6 +46,9 @@ async function testCreate(): Promise<void> {
     let data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
+
+
+
 }
 
 
@@ -99,6 +102,16 @@ async function testRules(): Promise<void> {
 
 }
 
+async function testRemove(): Promise<void> {
+    let transaction = new Transaction();
+    let driver = await transaction.create<Driver>(Driver);
+    let car = await transaction.create<Car>(Car);
+    await car.setDrivenBy(driver);
+    await driver.remove();
+    assert.equal(await car.drivenBy(), null, 'Car without driver');
+    transaction.destroy();
+}
+
 
 describe('Relation One to One, Aggregation', () => {
     before(function (done) {
@@ -128,6 +141,14 @@ describe('Relation One to One, Aggregation', () => {
     });
     it('One to one aggregation - rules', function (done) {
         testRules().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+
+    });
+    it('One to one aggregation - remove', function (done) {
+        testRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

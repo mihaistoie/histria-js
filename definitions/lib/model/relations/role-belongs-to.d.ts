@@ -7,10 +7,10 @@ export declare class AggregationBelongsTo<T extends ObservableObject> extends Ba
     protected _getValue(): Promise<T>;
     internalSetValue(value: any): void;
     internalSetValueAndNotify(newValue: any, oldValue: any): Promise<void>;
-    protected _setValue(value: T): Promise<T>;
+    protected _setValue(value: T): Promise<void>;
 }
 export declare class CompositionBelongsTo<T extends ObservableObject> extends BaseBelongsTo<T> {
     protected _getValue(): Promise<T>;
     internalSetValue(value: any): void;
-    protected _setValue(value: T): Promise<T>;
+    protected _setValue(value: T): Promise<void>;
 }

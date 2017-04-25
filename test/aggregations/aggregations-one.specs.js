@@ -81,6 +81,15 @@ async function testRules() {
     let classes = index_1.modelManager().sortedClasses();
     assert.equal(classes.indexOf('aggregations.car') < classes.indexOf('aggregations.driver'), true, 'Song depends on Cd');
 }
+async function testRemove() {
+    let transaction = new index_1.Transaction();
+    let driver = await transaction.create(aggregations_model_1.Driver);
+    let car = await transaction.create(aggregations_model_1.Car);
+    await car.setDrivenBy(driver);
+    await driver.remove();
+    assert.equal(await car.drivenBy(), null, 'Car without driver');
+    transaction.destroy();
+}
 describe('Relation One to One, Aggregation', () => {
     before(function (done) {
         index_1.loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
@@ -105,6 +114,13 @@ describe('Relation One to One, Aggregation', () => {
     });
     it('One to one aggregation - rules', function (done) {
         testRules().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        });
+    });
+    it('One to one aggregation - remove', function (done) {
+        testRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

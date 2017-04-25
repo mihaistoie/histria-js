@@ -9,10 +9,10 @@ export declare class HasOne<T extends ObservableObject> extends Role<T> {
 export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _lazyLoad(): Promise<void>;
-    protected _setValue(value: T): Promise<T>;
+    protected _setValue(value: T): Promise<void>;
 }
 export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
-    protected _setValue(value: T): Promise<T>;
+    protected _setValue(value: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
@@ -38,6 +38,6 @@ export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<
     readonly syncValue: T;
     restoreFromCache(): void;
     destroy(): void;
-    protected _setValue(value: T): Promise<T>;
+    protected _setValue(value: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
 }

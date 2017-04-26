@@ -86,6 +86,32 @@ async function testRules() {
     assert.deepEqual(data1, data2, 'Test transaction save/restore');
     transaction.destroy();
 }
+async function testRemove() {
+    let transaction = new index_1.Transaction();
+    let cd = await transaction.create(aggregations_model_1.Cd);
+    let song1 = await transaction.load(aggregations_model_1.Song, { cdId: cd.uuid });
+    let song2 = await transaction.load(aggregations_model_1.Song, { cdId: cd.uuid });
+    let children = await cd.songs.toArray();
+    assert.equal(children.length, 2, '(1) Cd has 2 songs');
+    await song2.remove();
+    children = await cd.songs.toArray();
+    assert.equal(children.length, 1, '(2) Cd has 1 songs');
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    cd = await transaction.create(aggregations_model_1.Cd);
+    song1 = await transaction.create(aggregations_model_1.Song);
+    song2 = await transaction.create(aggregations_model_1.Song);
+    let uuid = song2.id;
+    await cd.songs.add(song1);
+    await cd.songs.add(song2);
+    assert.equal(await song1.cd(), cd, 'Song on cd');
+    await cd.remove();
+    assert.equal(await song1.cd(), null, '(1) Song without cd');
+    let song = await transaction.findOne(aggregations_model_1.Song, { id: uuid });
+    assert.equal(song, song2, 'Song found');
+    assert.equal(await song.cd(), null, '(2) Song without cd');
+    transaction.destroy();
+}
 describe('Relation One to many, Aggregation', () => {
     before(function (done) {
         index_1.loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
@@ -103,6 +129,13 @@ describe('Relation One to many, Aggregation', () => {
     });
     it('One to many aggregation - load', function (done) {
         testLoad().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        });
+    });
+    it('One to many aggregation - remove', function (done) {
+        testRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

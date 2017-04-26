@@ -53,7 +53,7 @@ async function testCreate(): Promise<void> {
 
 
 
-async function testRemove(): Promise<void> {
+async function testLoad(): Promise<void> {
     let transaction = new Transaction();
 
     let cd = await transaction.create<Cd>(Cd);
@@ -110,6 +110,39 @@ async function testRules(): Promise<void> {
 }
 
 
+async function testRemove(): Promise<void> {
+    let transaction = new Transaction();
+
+    let cd = await transaction.create<Cd>(Cd);
+    let song1 = await transaction.load<Song>(Song, { cdId: cd.uuid });
+    let song2 = await transaction.load<Song>(Song, { cdId: cd.uuid });
+    let children = await cd.songs.toArray();
+    assert.equal(children.length, 2, '(1) Cd has 2 songs');
+    await song2.remove();
+    children = await cd.songs.toArray();
+    assert.equal(children.length, 1, '(2) Cd has 1 songs');
+    transaction.destroy();
+
+    transaction = new Transaction();
+    cd = await transaction.create<Cd>(Cd);
+    song1 = await transaction.create<Song>(Song);
+    song2 = await transaction.create<Song>(Song);
+    let uuid = song2.id;
+    await cd.songs.add(song1);
+    await cd.songs.add(song2);
+    assert.equal(await song1.cd(), cd, 'Song on cd');
+    await cd.remove();
+    assert.equal(await song1.cd(), null, '(1) Song without cd');
+
+    let song = await transaction.findOne<Song>(Song, { id: uuid });
+    assert.equal(song, song2, 'Song found');
+
+    assert.equal(await song.cd(), null, '(2) Song without cd');
+
+    transaction.destroy();
+
+}
+
 
 describe('Relation One to many, Aggregation', () => {
     before(function (done) {
@@ -138,14 +171,19 @@ describe('Relation One to many, Aggregation', () => {
 
 
     });
+    it('One to many aggregation - remove', function (done) {
+        testRemove().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+    });
     it('One to many aggregation - rules', function (done) {
         testRules().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);
         })
-
-
     });
 
     it('One to one Many aggregation- states errors', function (done) {

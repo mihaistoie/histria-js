@@ -136,7 +136,7 @@ async function testRemove() {
     let uuid = item1.id;
     await order.items.add(item1);
     await order.items.add(item2);
-    order.remove();
+    await order.remove();
     let oi = await transaction.findOne(compositions_model_1.OrderItem, { id: uuid });
     assert.equal(oi, null, 'Order item removed');
     transaction.destroy();

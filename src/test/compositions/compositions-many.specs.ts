@@ -168,7 +168,7 @@ async function testRemove(): Promise<void> {
     let uuid = item1.id;
     await order.items.add(item1);
     await order.items.add(item2);
-    order.remove();
+    await order.remove();
 
     let oi = await transaction.findOne<OrderItem>(OrderItem, { id: uuid });
     assert.equal(oi, null, 'Order item removed');

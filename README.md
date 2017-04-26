@@ -13,7 +13,7 @@ Node.js rule engine
 - A view can't have aggregation relationships. 
 - A view have own properties and compositions or references to other entities
 
-### Exaample
+### Example
 
 
 

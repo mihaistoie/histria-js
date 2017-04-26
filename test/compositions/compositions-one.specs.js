@@ -131,6 +131,16 @@ async function testRemove() {
     assert.equal(fe, null, 'Engine removed (1)');
     const ce = await car.engine();
     assert.equal(ce, null, 'Engine removed (2)');
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    car = await transaction.create(compositions_model_1.Car);
+    engine = await transaction.create(compositions_model_1.Engine);
+    await car.setEngine(engine);
+    engineId = engine.id;
+    await car.remove();
+    fe = await transaction.findOne(compositions_model_1.Engine, { id: engineId });
+    assert.equal(fe, null, 'Engine removed (3)');
+    transaction.destroy();
 }
 describe('Relation One to One, Composition', () => {
     before(function (done) {

@@ -128,6 +128,18 @@ async function testRemove() {
     await item2.remove();
     let items = await order.items.toArray();
     assert.equal(items.length, 1, 'Order has 1 item');
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    order = await transaction.create(compositions_model_1.Order);
+    item1 = await transaction.create(compositions_model_1.OrderItem);
+    item2 = await transaction.create(compositions_model_1.OrderItem);
+    let uuid = item1.id;
+    await order.items.add(item1);
+    await order.items.add(item2);
+    order.remove();
+    let oi = await transaction.findOne(compositions_model_1.OrderItem, { id: uuid });
+    assert.equal(oi, null, 'Order item removed');
+    transaction.destroy();
 }
 describe('Relation One to many, Composition', () => {
     before(function (done) {

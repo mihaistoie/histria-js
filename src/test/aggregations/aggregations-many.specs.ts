@@ -136,11 +136,9 @@ async function testRemove(): Promise<void> {
 
     let song = await transaction.findOne<Song>(Song, { id: uuid });
     assert.equal(song, song2, 'Song found');
-
     assert.equal(await song.cd(), null, '(2) Song without cd');
 
     transaction.destroy();
-
 }
 
 

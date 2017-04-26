@@ -301,9 +301,14 @@ export class Transaction implements TransactionContainer {
         return null;
     }
     public removeInstance(instance: ObservableObject) {
-        let that = this;
+        const that = this;
         if (that._instances) {
-            let byClass = that._instances.get(instance.constructor);
+            const byClass = that._instances.get(instance.constructor);
+            if (byClass)
+                byClass.delete(instance.uuid)
+        }
+        if (that._removedInstances) {
+            const byClass = that._removedInstances.get(instance.constructor);
             if (byClass)
                 byClass.delete(instance.uuid)
         }

@@ -1,13 +1,11 @@
+
 ## Remove (async)
 
-* Before remove rules
-* After remove rules
-* Mark all children removed
-* Remove object from parent && set owner null
-* New objects destroy
-* set owner null ???
-
+* remove view
+* notify views 
+* notify master view
 * restore removed 
+* block remove rule 
 
 
 ## Mark dirty (async)
@@ -15,6 +13,7 @@
 * Mark parent is dirty 
 * Before modify rules
 * After  modify rules
+* block modify rule
 
 ## FindOne / FindMany
 

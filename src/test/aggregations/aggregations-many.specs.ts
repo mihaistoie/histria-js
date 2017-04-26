@@ -53,7 +53,7 @@ async function testCreate(): Promise<void> {
 
 
 
-async function testLoad(): Promise<void> {
+async function testRemove(): Promise<void> {
     let transaction = new Transaction();
 
     let cd = await transaction.create<Cd>(Cd);

@@ -89,16 +89,13 @@ async function testRemove() {
     await driver.remove();
     assert.equal(await car.drivenBy(), null, 'Car without driver');
     transaction.destroy();
-    /*
-    transaction = new Transaction();
-    car = await transaction.create<Car>(Car);
-    driver = await transaction.create<Driver>(Driver);
+    transaction = new index_1.Transaction();
+    car = await transaction.create(aggregations_model_1.Car);
+    driver = await transaction.create(aggregations_model_1.Driver);
     let id = driver.id;
-
     await car.setDrivenBy(driver);
-    await driver.remove();
-    */
-    // assert.equal(await car.drivenBy(), null, 'Car without driver');
+    await car.remove();
+    assert.equal(await driver.drives(), null, 'Driver without car');
 }
 describe('Relation One to One, Aggregation', () => {
     before(function (done) {

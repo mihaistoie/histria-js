@@ -15,6 +15,7 @@ export declare class HasManyAggregation<T extends ObservableObject> extends Base
     private _loaded;
     protected _afterRemoveItem(item: T, ii: number): Promise<void>;
     protected _afterAddItem(item: T): Promise<void>;
+    set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
     private _updateInvSideAfterLazyLoading(newValue);
 }

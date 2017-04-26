@@ -330,7 +330,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         // Mark dirty
         await that.markDirty();
         // Remove children removed
-        let promises: Promise<void>[] = [];
+        let promises: Promise<void | ModelObject>[] = [];
         that.enumChildren((child) => {
             let modelChild = <ModelObject>child;
             promises.push(modelChild._remove(true));
@@ -355,6 +355,17 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             const relProp: AggregationBelongsTo<ModelObject> = <AggregationBelongsTo<ModelObject>>that._children[relationName];
             if (relProp) {
                 promises.push(relProp.setValue(null));
+            }
+
+        });
+
+        schemaUtils.enumHasAggregations(that._schema.relations, (relationName, relation) => {
+            if (relation.type === RELATION_TYPE.hasOne) {
+                const relProp: HasOneAggregation<ModelObject> = <HasOneAggregation<ModelObject>>that._children[relationName];
+                promises.push(relProp.setValue(null));
+            } else if (relation.type === RELATION_TYPE.hasMany) {
+                const relProp: HasManyAggregation<ModelObject> = <HasManyAggregation<ModelObject>>that._children[relationName];
+                promises.push(relProp.set([]));
             }
 
         });

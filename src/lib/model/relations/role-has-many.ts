@@ -150,6 +150,17 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
 
     }
 
+    public async set(items: T[]): Promise<void> {
+        const that = this;
+        await that.lazyLoad();
+        while (that._items && that._items.length)
+            await that.remove(0);
+        if (items) {
+            for (let item of items)
+                await that.add(item);
+        }
+    }
+
     protected async lazyLoad(): Promise<void> {
         const that = this;
         if (!that._parent) return;

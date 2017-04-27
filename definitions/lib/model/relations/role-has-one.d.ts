@@ -13,6 +13,7 @@ export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
 }
 export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected _setValue(value: T): Promise<void>;
+    remove(instance: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
@@ -40,4 +41,5 @@ export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<
     destroy(): void;
     protected _setValue(value: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
+    remove(instance: T): Promise<void>;
 }

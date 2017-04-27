@@ -62,6 +62,7 @@ async function viewOfUserTestRemove() {
     await user.remove();
     assert.equal(await userDetail.user(), null, '(2) User is null');
     transaction.destroy();
+    // remove view
 }
 describe('ViewOne Model Test', () => {
     before(function (done) {

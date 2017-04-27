@@ -84,6 +84,8 @@ async function viewOfUserTestRemove(): Promise<void> {
     assert.equal(await userDetail.user(), null, '(2) User is null');
     transaction.destroy();
 
+    // remove view
+
 }
 
 

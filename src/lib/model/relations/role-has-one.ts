@@ -79,6 +79,13 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         }, { isLazyLoading: false });
         await that._afterSetValue(newValue, oldValue);
     }
+    public async remove(instance: T): Promise<void> {
+        const that = this;
+        const oldValue = await that.getValue();
+        if (oldValue === instance)
+            await that.setValue(null);
+    }
+
 
     protected async _lazyLoad(): Promise<void> {
         const that = this;
@@ -270,5 +277,12 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
         } else
             that._value = null;
     }
+    public async remove(instance: T): Promise<void> {
+        const that = this;
+        const oldValue = await that.getValue();
+        if (oldValue === instance)
+            await that.setValue(null);
+    }
+
 
 }

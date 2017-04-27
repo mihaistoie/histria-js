@@ -339,7 +339,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         // Before remove rules
         await that._emitInstanceEvent(EventType.removing);
         that._model._isDeleted = true;
-        // Transaction  move to removed
+
         if (that._parent) {
             // remove from parent
             let parentRel = schemaUtils.parentRelation(that._schema);
@@ -370,7 +370,18 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
         });
         await Promise.all(promises);
-        // remove from views
+        // Remove from views
+
+        if (that._listeners) {
+            promises = [];
+            const toNotify: { listener: any, parent: ObservableObject, propertyName: string }[] = that._listeners.splice(0);
+            toNotify.forEach(listener => {
+                let instance: ModelObject = <ModelObject>listener.parent;
+                promises.push(instance._children[listener.propertyName].remove(that));
+            })
+        }
+        await Promise.all(promises);
+        // Transaction:  move instance to removed instances
         that._transaction.removeInstance(that);
         that._transaction.remove(that);
         // After remove rules

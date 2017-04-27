@@ -45,6 +45,24 @@ async function viewOfUserTest() {
     assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
     transaction.destroy();
 }
+async function viewOfUserTestRemove() {
+    let transaction = new index_1.Transaction();
+    let userDetail = await transaction.create(view_one_model_1.UserDetail);
+    let user = await transaction.create(view_one_model_1.User);
+    await userDetail.setUser(user);
+    assert.notEqual(await userDetail.user(), null, '(1) User is not null');
+    await user.remove();
+    assert.equal(await userDetail.user(), null, '(1) User is null');
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    userDetail = await transaction.create(view_one_model_1.UserDetail);
+    user = await transaction.findOne(view_one_model_1.User, { id: 100 });
+    await userDetail.setUser(user);
+    assert.notEqual(await userDetail.user(), null, '(2) User is not null');
+    await user.remove();
+    assert.equal(await userDetail.user(), null, '(2) User is null');
+    transaction.destroy();
+}
 describe('ViewOne Model Test', () => {
     before(function (done) {
         let dm = histria_utils_1.dbManager();
@@ -72,6 +90,13 @@ describe('ViewOne Model Test', () => {
     });
     it('View of User test', function (done) {
         viewOfUserTest().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        });
+    });
+    it('View of User test remove', function (done) {
+        viewOfUserTestRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

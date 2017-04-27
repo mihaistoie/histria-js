@@ -63,6 +63,31 @@ async function viewOfUserTest(): Promise<void> {
 }
 
 
+async function viewOfUserTestRemove(): Promise<void> {
+    let transaction = new Transaction();
+    let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let user = await transaction.create<User>(User);
+    await userDetail.setUser(user);
+    assert.notEqual(await userDetail.user(), null, '(1) User is not null');
+
+    await user.remove();
+    assert.equal(await userDetail.user(), null, '(1) User is null');
+    transaction.destroy();
+
+    transaction = new Transaction();
+    userDetail = await transaction.create<UserDetail>(UserDetail);
+    user = await transaction.findOne<User>(User, { id: 100 })
+    await userDetail.setUser(user);
+    assert.notEqual(await userDetail.user(), null, '(2) User is not null');
+
+    await user.remove();
+    assert.equal(await userDetail.user(), null, '(2) User is null');
+    transaction.destroy();
+
+}
+
+
+
 
 describe('ViewOne Model Test', () => {
     before(function (done) {
@@ -105,5 +130,14 @@ describe('ViewOne Model Test', () => {
         })
 
     });
+    it('View of User test remove', function (done) {
+        viewOfUserTestRemove().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
+
+    });
+
 
 });

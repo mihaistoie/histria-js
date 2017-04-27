@@ -194,10 +194,12 @@ function _genVewRelations(schema: any, code: string[], model: any): void {
                 code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.belongsTo:
+                code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.hasMany:
                 break;
-
         }
     });
 }

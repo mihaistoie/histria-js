@@ -100,7 +100,7 @@ export const
             user: {
                 type: 'hasOne',
                 model: 'user',
-                master: true,
+                embedded: true,
                 aggregationKind: 'composite',
                 nameSpace: 'view-one',
                 title: 'user',

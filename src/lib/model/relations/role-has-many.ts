@@ -192,3 +192,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
         }
     }
 }
+
+
+export class HasManyRefObject<T extends ObservableObject> extends ObjectArray<T> {
+}

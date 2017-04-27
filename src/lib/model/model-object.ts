@@ -2,7 +2,7 @@ import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServ
 import { RoleBase } from './relations/role';
 import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from './relations/role-has-one';
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
-import { HasManyComposition, HasManyAggregation } from './relations/role-has-many';
+import { HasManyComposition, HasManyAggregation, HasManyRefObject } from './relations/role-has-many';
 
 import { ApplicationError, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
 import { modelManager } from './model-manager';
@@ -248,14 +248,15 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     private _createViewRelations() {
         const that = this;
         that._schema && that._schema.relations && Object.keys(that._schema.relations).forEach(relName => {
+            // That works  only when remote model is persistent
             const relation = that._schema.relations[relName];
             switch (relation.type) {
                 case RELATION_TYPE.hasOne:
                     that._children[relName] = new HasOneRefObject(that, relName, relation);
                     break;
                 case RELATION_TYPE.hasMany:
+                    that._children[relName] = new HasManyRefObject(that, relName, relation,  that._model[relName]);
                     break
-
             }
         });
     }

@@ -15,6 +15,13 @@ async function testCreate(): Promise<void> {
     await userList.users.add(user2);
     let users = await userList.users.toArray();
     assert.equal(users.length, 2, 'Two users');
+    assert.equal(userList.userCount, 2, '(1) Rules');
+
+    await userList.users.remove(user2);
+    users = await userList.users.toArray();
+    assert.equal(users.length, 1, 'One user');
+    assert.equal(userList.userCount, 1, '(2) Rules');
+    transaction.destroy();
 
     /*
     let transaction = new Transaction();
@@ -73,6 +80,22 @@ async function testCreate(): Promise<void> {
 
 }
 
+async function testRestore(): Promise<void> {
+    let transaction = new Transaction();
+    let userList = await transaction.create<UserList>(UserList);
+    let user1 = await transaction.create<User>(User);
+    let user2 = await transaction.create<User>(User);
+    await userList.users.add(user1);
+    await userList.users.add(user2);
+    let users = await userList.users.toArray();
+    assert.equal(users.length, 2, '(1) Two users');
+    let data = transaction.saveToJson();
+    transaction.destroy();
+    transaction = new Transaction();
+    await transaction.loadFromJson(data, false);
+    users = await userList.users.toArray();
+    assert.equal(users.length, 2, '(2) Two users');
+}
 
 async function testRemove(): Promise<void> {
     /*
@@ -151,7 +174,13 @@ describe('View Many Model Test', () => {
         }).catch(function (ex) {
             done(ex);
         })
-
+    });
+    it('View of users test restore', function (done) {
+        testRestore().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        })
     });
 
 

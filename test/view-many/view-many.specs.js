@@ -14,6 +14,12 @@ async function testCreate() {
     await userList.users.add(user2);
     let users = await userList.users.toArray();
     assert.equal(users.length, 2, 'Two users');
+    assert.equal(userList.userCount, 2, '(1) Rules');
+    await userList.users.remove(user2);
+    users = await userList.users.toArray();
+    assert.equal(users.length, 1, 'One user');
+    assert.equal(userList.userCount, 1, '(2) Rules');
+    transaction.destroy();
     /*
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
@@ -68,6 +74,22 @@ async function testCreate() {
 
     transaction.destroy();
     */
+}
+async function testRestore() {
+    let transaction = new index_1.Transaction();
+    let userList = await transaction.create(view_many_model_1.UserList);
+    let user1 = await transaction.create(view_many_model_1.User);
+    let user2 = await transaction.create(view_many_model_1.User);
+    await userList.users.add(user1);
+    await userList.users.add(user2);
+    let users = await userList.users.toArray();
+    assert.equal(users.length, 2, '(1) Two users');
+    let data = transaction.saveToJson();
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    await transaction.loadFromJson(data, false);
+    users = await userList.users.toArray();
+    assert.equal(users.length, 2, '(2) Two users');
 }
 async function testRemove() {
     /*
@@ -128,6 +150,13 @@ describe('View Many Model Test', () => {
     });
     it('View of users test remove', function (done) {
         testRemove().then(function () {
+            done();
+        }).catch(function (ex) {
+            done(ex);
+        });
+    });
+    it('View of users test restore', function (done) {
+        testRestore().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

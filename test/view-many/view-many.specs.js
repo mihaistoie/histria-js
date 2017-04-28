@@ -1,9 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("assert");
 const path = require("path");
 const index_1 = require("../../index");
+const view_many_model_1 = require("./view-many-model");
 const histria_utils_1 = require("histria-utils");
-async function viewOfUsersTest() {
+async function testCreate() {
+    let transaction = new index_1.Transaction();
+    let userList = await transaction.create(view_many_model_1.UserList);
+    let user1 = await transaction.create(view_many_model_1.User);
+    let user2 = await transaction.create(view_many_model_1.User);
+    await userList.users.add(user1);
+    await userList.users.add(user2);
+    let users = await userList.users.toArray();
+    assert.equal(users.length, 2, 'Two users');
     /*
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
@@ -59,7 +69,7 @@ async function viewOfUsersTest() {
     transaction.destroy();
     */
 }
-async function viewOfUsersTestTestRemove() {
+async function testRemove() {
     /*
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
@@ -109,15 +119,15 @@ describe('View Many Model Test', () => {
             done(ex);
         });
     });
-    it('View of User test', function (done) {
-        viewOfUsersTest().then(function () {
+    it('View of users test', function (done) {
+        testCreate().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);
         });
     });
-    it('View of User test remove', function (done) {
-        viewOfUsersTestTestRemove().then(function () {
+    it('View of users test remove', function (done) {
+        testRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

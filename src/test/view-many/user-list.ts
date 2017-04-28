@@ -1,7 +1,8 @@
 import {
     Instance, View, InstanceState, InstanceErrors, modelManager,
-    HasManyComposition, HasManyAggregation,
-    ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
+    HasManyComposition, HasManyAggregation, HasManyRefObject,
+    ErrorState, State, StringState, IdState, BooleanState, IntegerState,
+    EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
     NumberValue
 } from '../../index';
 import { User } from './user';
@@ -9,8 +10,17 @@ import { User } from './user';
 
 export class UserList extends View {
     public static isPersistent: boolean = false;
+    public get userCount(): number {
+        return this._children.userCount.value;
+    }
+    public setUserCount(value: number): Promise<number> {
+        return this._children.userCount.setValue(value);
+    }
     public get id(): any {
         return this._children.id.value;
+    }
+    get users(): HasManyRefObject<User> {
+        return this._children.users;
     }
     public get $states(): UserListState {
         return <UserListState>this._states;
@@ -37,6 +47,9 @@ export class UserListErrors extends InstanceErrors {
     public get $(): ErrorState {
         return this._messages.$;
     }
+    public get userCount(): ErrorState {
+        return this._messages.userCount;
+    }
     public get id(): ErrorState {
         return this._messages.id;
     }
@@ -46,6 +59,9 @@ export class UserListErrors extends InstanceErrors {
 }
 
 export class UserListState extends InstanceState {
+    public get userCount(): IntegerState {
+        return this._states.userCount;
+    }
     public get id(): IdState {
         return this._states.id;
     }
@@ -57,6 +73,9 @@ export const
         view: true,
         nameSpace: 'view-many',
         properties: {
+            userCount: {
+                type: 'integer'
+            },
             id: {
                 type: 'integer',
                 generated: true,

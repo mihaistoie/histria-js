@@ -17,6 +17,7 @@ exports.Transaction = transaction_1.Transaction;
 var role_has_many_1 = require("./lib/model/relations/role-has-many");
 exports.HasManyComposition = role_has_many_1.HasManyComposition;
 exports.HasManyAggregation = role_has_many_1.HasManyAggregation;
+exports.HasManyRefObject = role_has_many_1.HasManyRefObject;
 var decorators_1 = require("./lib/model/rules/decorators");
 exports.propChanged = decorators_1.propChanged;
 exports.addItem = decorators_1.addItem;

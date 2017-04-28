@@ -195,4 +195,9 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
 
 
 export class HasManyRefObject<T extends ObservableObject> extends ObjectArray<T> {
+    async length(): Promise<number> {
+        const that = this;
+        await that.lazyLoad();
+        return that._items ? that._items.length : 0;
+    }
 }

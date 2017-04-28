@@ -4,6 +4,9 @@
     "view": true,
     "nameSpace": "view-many",
     "properties": {
+        "userCount": {
+            "type": "integer"
+        }
     },
     "relations": {
         "users": {

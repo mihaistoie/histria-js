@@ -6,7 +6,16 @@ import { Transaction, loadRules } from '../../index';
 import { User, UserList } from './view-many-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
-async function viewOfUsersTest(): Promise<void> {
+async function testCreate(): Promise<void> {
+    let transaction = new Transaction();
+    let userList = await transaction.create<UserList>(UserList);
+    let user1 = await transaction.create<User>(User);
+    let user2 = await transaction.create<User>(User);
+    await userList.users.add(user1);
+    await userList.users.add(user2);
+    let users = await userList.users.toArray();
+    assert.equal(users.length, 2, 'Two users');
+
     /*
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
@@ -65,7 +74,7 @@ async function viewOfUsersTest(): Promise<void> {
 }
 
 
-async function viewOfUsersTestTestRemove(): Promise<void> {
+async function testRemove(): Promise<void> {
     /*
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
@@ -128,16 +137,16 @@ describe('View Many Model Test', () => {
 
 
 
-    it('View of User test', function (done) {
-        viewOfUsersTest().then(function () {
+    it('View of users test', function (done) {
+        testCreate().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);
         })
 
     });
-    it('View of User test remove', function (done) {
-        viewOfUsersTestTestRemove().then(function () {
+    it('View of users test remove', function (done) {
+        testRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

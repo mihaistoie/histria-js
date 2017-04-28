@@ -41,8 +41,9 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         pathToLib = pathToLib || 'histria--utils'
         imports.push('import {');
         imports.push(_tab(1) + 'Instance, View, InstanceState, InstanceErrors, modelManager,');
-        imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation,');
-        imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, BooleanState, IntegerState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
+        imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation, HasManyRefObject,');
+        imports.push(_tab(1) + 'ErrorState, State, StringState, IdState, BooleanState, IntegerState,');
+        imports.push(_tab(1) + 'EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,');
         imports.push(_tab(1) + 'NumberValue');
         imports.push('} from \'' + pathToLib + '\';');
 
@@ -194,11 +195,11 @@ function _genVewRelations(schema: any, code: string[], model: any): void {
                 code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.belongsTo:
+                break;
+            case RELATION_TYPE.hasMany:
                 code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));
                 code.push(_tab(2) + util.format('return this._children.%s;', relationName));
                 code.push(_tab(1) + '}');
-                break;
-            case RELATION_TYPE.hasMany:
                 break;
         }
     });

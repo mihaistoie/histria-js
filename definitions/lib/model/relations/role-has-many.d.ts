@@ -20,4 +20,5 @@ export declare class HasManyAggregation<T extends ObservableObject> extends Base
     private _updateInvSideAfterLazyLoading(newValue);
 }
 export declare class HasManyRefObject<T extends ObservableObject> extends ObjectArray<T> {
+    length(): Promise<number>;
 }

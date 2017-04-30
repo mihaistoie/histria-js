@@ -184,7 +184,6 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
                 }
             }
         }
-
     }
     private async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         // After lazy loading
@@ -203,5 +202,41 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
         const that = this;
         await that.lazyLoad();
         return that._items ? that._items.length : 0;
+    }
+    private _subscribe(value: ObservableObject): void {
+        const that = this;
+        if (value)
+            value.addListener(that, that._parent, that._propertyName);
+    }
+    public restoreFromCache() {
+        const that = this;
+        if (that._model && that._model.length) {
+            that._items = [];
+            that._model.forEach((idItem: any) => {
+                const item: any = that._parent.transaction.findOneInCache<T>(that._refClass, { id: idItem }) || null;
+                that._items.push(item);
+                that._subscribe(item);
+            })
+        }
+    }
+
+    // Called by ObservableObject (that._items) on destroy
+    public unsubscribe(instance: T): void {
+        const that = this;
+        if (that && that._items) {
+            let ii = that._items.indexOf(instance);
+            if (ii >= 0) {
+                that._items.splice(ii, 1);
+                that._model.splice(ii, 1)
+            }
+        }
+    }
+
+    public destroy() {
+        const that = this;
+        that._items && that._items.forEach(item => {
+            item.rmvListener(that);
+        })
+        super.destroy();
     }
 }

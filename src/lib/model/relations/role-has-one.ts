@@ -204,8 +204,8 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
         }
 
     }
-    // Called by that._value on destroy
-    public unsubscribe(): void {
+    // Called by ObservableObject (that._value) on destroy
+    public unsubscribe(instance: T): void {
         const that = this;
         if (that._relation.aggregationKind === AGGREGATION_KIND.composite) {
             that._value = undefined;

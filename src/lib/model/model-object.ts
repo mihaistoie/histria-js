@@ -594,7 +594,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         if (that._listeners) {
             let list = that._listeners;
             that._listeners = null;
-            list.forEach(item => item.listener.unsubscribe());
+            list.forEach(item => item.listener.unsubscribe(that));
         }
         that._schema = null;
         that._model = null;

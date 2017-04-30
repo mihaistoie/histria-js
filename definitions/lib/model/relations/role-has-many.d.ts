@@ -23,4 +23,8 @@ export declare class HasManyAggregation<T extends ObservableObject> extends Base
 }
 export declare class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T> {
     length(): Promise<number>;
+    private _subscribe(value);
+    restoreFromCache(): void;
+    unsubscribe(instance: T): void;
+    destroy(): void;
 }

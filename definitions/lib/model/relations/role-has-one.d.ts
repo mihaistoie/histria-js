@@ -34,7 +34,7 @@ export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     private _subscribe();
-    unsubscribe(): void;
+    unsubscribe(instance: T): void;
     enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
     readonly syncValue: T;
     restoreFromCache(): void;

@@ -4,7 +4,18 @@ import { schemaUtils } from 'histria-utils';
 import { DEFAULT_PARENT_NAME } from 'histria-utils';
 
 
-export class HasManyComposition<T extends ObservableObject> extends ObjectArray<T> {
+export class BaseHasMany<T extends ObservableObject> extends ObjectArray<T> {
+    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
+        let that = this;
+        that._items && that._items.forEach(item => {
+            if (recursive) item.enumChildren(cb, true);
+            cb(item)
+        });
+    }
+
+}
+
+export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
         super(parent, propertyName, relation, model);
         const that = this;
@@ -19,13 +30,6 @@ export class HasManyComposition<T extends ObservableObject> extends ObjectArray<
                     schemaUtils.updateRoleRefs(that._relation, itemModel, pmodel, true);
             })
         }
-    }
-    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
-        let that = this;
-        that._items && that._items.forEach(item => {
-            if (recursive) item.enumChildren(cb, true);
-            cb(item)
-        });
     }
     private async _removed(item: T, notifyRemove: boolean): Promise<void> {
         const that = this;
@@ -194,7 +198,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
 }
 
 
-export class HasManyRefObject<T extends ObservableObject> extends ObjectArray<T> {
+export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T> {
     async length(): Promise<number> {
         const that = this;
         await that.lazyLoad();

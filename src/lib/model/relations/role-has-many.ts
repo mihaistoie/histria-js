@@ -262,6 +262,11 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
             await that._removed(item, true);
         that._isNull = (that._model === null);
     }
+    protected async _afterAddItem(item: T): Promise<void> {
+        const that = this;
+        await that._added(item, true);
+
+    }
 
     protected async lazyLoad(): Promise<void> {
         const that = this;

@@ -67,7 +67,8 @@ exports.USERLIST_SCHEMA = {
     nameSpace: 'view-many',
     properties: {
         userCount: {
-            type: 'integer'
+            type: 'integer',
+            default: 0
         },
         id: {
             type: 'integer',

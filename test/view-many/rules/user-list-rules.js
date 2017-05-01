@@ -13,10 +13,10 @@ class UserListRules {
     static async afterAddIUser(users, eventInfo, user) {
         await users.setUserCount(users.userCount + 1);
     }
-    static async afterRmvUser(users, eventInfo, song) {
+    static async afterRmvUser(users, eventInfo, user) {
         await users.setUserCount(users.userCount - 1);
     }
-    static async afterSetUsers(users, eventInfo, song) {
+    static async afterSetUsers(users, eventInfo, user) {
         await users.setUserCount(await users.users.length());
     }
 }

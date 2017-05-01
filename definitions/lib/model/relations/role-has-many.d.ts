@@ -31,6 +31,7 @@ export declare class HasManyRefObject<T extends ObservableObject> extends BaseHa
     protected _afterRemoveItem(item: T, ii: number): Promise<void>;
     protected _afterAddItem(item: T): Promise<void>;
     protected lazyLoad(): Promise<void>;
+    protected _itemModel(item: T): any;
     set(items: T[]): Promise<void>;
     destroy(): void;
 }

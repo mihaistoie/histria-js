@@ -76,7 +76,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
         if (items && items.length) {
             that._model = [];
             for (let item of items) {
-                let imodel = item.model();
+                let imodel = that._itemModel(item);
                 that._model.push(imodel);
                 that._items.push(item);
                 await that._added(item, false);
@@ -292,6 +292,9 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
         }
 
     }
+    protected _itemModel(item: T): any {
+        return item.uuid;
+    }
     public async set(items: T[]): Promise<void> {
         const that = this;
         await that.lazyLoad();
@@ -302,7 +305,7 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
         if (items && items.length) {
             that._model = [];
             for (let item of items) {
-                let imodel = item.model();
+                const imodel = that._itemModel(item);
                 that._model.push(imodel);
                 that._items.push(item);
                 await that._added(item, false);

@@ -26,6 +26,8 @@ async function testCreate() {
     users = await userList.users.toArray();
     assert.equal(users.length, 1, 'One user');
     assert.equal(userList.userCount, 1, '(2) Rules');
+    let data = transaction.saveToJson();
+    assert.equal(data.instances[2].data.users[0], user1.id, 'Model of view');
     transaction.destroy();
     /*
     let transaction = new Transaction();
@@ -92,6 +94,7 @@ async function testRestore() {
     let users = await userList.users.toArray();
     assert.equal(users.length, 2, '(1) Two users');
     let data = transaction.saveToJson();
+    console.log(data);
     transaction.destroy();
     transaction = new index_1.Transaction();
     await transaction.loadFromJson(data, false);

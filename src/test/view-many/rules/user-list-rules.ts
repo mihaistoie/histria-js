@@ -12,11 +12,11 @@ export class UserListRules {
         await users.setUserCount(users.userCount + 1);
     }
     @rmvItem(UserList, 'users')
-    static async afterRmvUser(users: UserList, eventInfo: any, song: User): Promise<void> {
+    static async afterRmvUser(users: UserList, eventInfo: any, user: User): Promise<void> {
         await users.setUserCount(users.userCount - 1);
     }
     @setItems(UserList, 'users')
-    static async afterSetUsers(users: UserList, eventInfo: any, song: User): Promise<void> {
+    static async afterSetUsers(users: UserList, eventInfo: any, user: User): Promise<void> {
         await users.setUserCount(await users.users.length());
     }
 

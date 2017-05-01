@@ -10,6 +10,13 @@ async function testCreate() {
     let userList = await transaction.create(view_many_model_1.UserList);
     let user1 = await transaction.create(view_many_model_1.User);
     let user2 = await transaction.create(view_many_model_1.User);
+    await userList.users.set([user1, user2]);
+    assert.equal(userList.userCount, 2, '(0) Rules');
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    userList = await transaction.create(view_many_model_1.UserList);
+    user1 = await transaction.create(view_many_model_1.User);
+    user2 = await transaction.create(view_many_model_1.User);
     await userList.users.add(user1);
     await userList.users.add(user2);
     let users = await userList.users.toArray();

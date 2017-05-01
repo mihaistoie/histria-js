@@ -210,7 +210,8 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
     }
     public restoreFromCache() {
         const that = this;
-        if (that._model && that._model.length) {
+        that._items = that._items || [];
+        if (that._model && that._model.length && !that._items.length) {
             that._items = [];
             that._model.forEach((idItem: any) => {
                 const item: any = that._parent.transaction.findOneInCache<T>(that._refClass, { id: idItem }) || null;
@@ -218,8 +219,12 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
                 that._subscribe(item);
             })
         }
-    }
+        if (that._model && !that._model.length) {
+            that._model = null;
+            that._isNull = (that._model === null);
+        }
 
+    }
     // Called by ObservableObject (that._items) on destroy
     public unsubscribe(instance: T): void {
         const that = this;
@@ -230,6 +235,80 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
                 that._model.splice(ii, 1)
             }
         }
+    }
+
+    private async _removed(item: T, notifyRemove: boolean): Promise<void> {
+        const that = this;
+        item.rmvListener(that);
+        if (notifyRemove)
+            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
+    }
+
+    private async _added(item: T, notifyAdd: boolean): Promise<void> {
+        const that = this;
+        that._subscribe(item);
+        if (notifyAdd)
+            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
+    }
+
+    protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
+        const that = this;
+        that._model.splice(ii, 1);
+        if (!that._model.length) {
+            that._model = null;
+            that._parent.model()[that._propertyName] = that._model;
+        }
+        if (item)
+            await that._removed(item, true);
+        that._isNull = (that._model === null);
+    }
+
+    protected async lazyLoad(): Promise<void> {
+        const that = this;
+        that._items = that._items || [];
+
+        if (that._model && that._model.length && !that._items.length) {
+            let promises: Promise<T>[] = [];
+            that._model.forEach((idItem: any) => {
+                promises.push(that._parent.transaction.findOne<T>(that._refClass, { id: idItem }))
+            });
+            const res = await Promise.all(promises);
+            let model: any[] = [];
+            res.forEach((item, index) => {
+                if (item) {
+                    model.push(that._model[index]);
+                    that._items.push(item);
+                    that._subscribe(item);
+                }
+            });
+            if (!model.length) model = null;
+            that._model = model;
+            that._parent.model()[that._propertyName] = that._model;
+        }
+
+    }
+    public async set(items: T[]): Promise<void> {
+        const that = this;
+        await that.lazyLoad();
+        for (const item of that._items) {
+            await that._removed(item, false);
+        }
+        that._items = [];
+        if (items && items.length) {
+            that._model = [];
+            for (let item of items) {
+                let imodel = item.model();
+                that._model.push(imodel);
+                that._items.push(item);
+                await that._added(item, false);
+            }
+
+        } else {
+            that._model = null
+        }
+        that._isNull = (that._model === null);
+        that._parent.model()[that._propertyName] = that._model;
+        await that._parent.notifyOperation(that._propertyName, EventType.setItems, null);
     }
 
     public destroy() {

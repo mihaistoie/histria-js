@@ -26,5 +26,10 @@ export declare class HasManyRefObject<T extends ObservableObject> extends BaseHa
     private _subscribe(value);
     restoreFromCache(): void;
     unsubscribe(instance: T): void;
+    private _removed(item, notifyRemove);
+    private _added(item, notifyAdd);
+    protected _afterRemoveItem(item: T, ii: number): Promise<void>;
+    protected lazyLoad(): Promise<void>;
+    set(items: T[]): Promise<void>;
     destroy(): void;
 }

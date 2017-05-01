@@ -11,6 +11,14 @@ async function testCreate(): Promise<void> {
     let userList = await transaction.create<UserList>(UserList);
     let user1 = await transaction.create<User>(User);
     let user2 = await transaction.create<User>(User);
+    await userList.users.set([user1, user2]);
+    assert.equal(userList.userCount, 2, '(0) Rules')
+    transaction.destroy();
+    transaction = new Transaction();
+
+    userList = await transaction.create<UserList>(UserList);
+    user1 = await transaction.create<User>(User);
+    user2 = await transaction.create<User>(User);
     await userList.users.add(user1);
     await userList.users.add(user2);
     let users = await userList.users.toArray();

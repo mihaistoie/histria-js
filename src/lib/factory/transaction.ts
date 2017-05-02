@@ -284,7 +284,8 @@ export class Transaction implements TransactionContainer {
     }
 
     public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T> {
-        let that = this;
+        const that = this;
+        options = options || {};
         let res = that._findOne<T>(filter, classOfInstance);
         if (res) return res;
         if (!classOfInstance.isPersistent)

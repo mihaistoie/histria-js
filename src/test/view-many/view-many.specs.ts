@@ -120,17 +120,13 @@ describe('View Many Model Test', () => {
             ]
         });
 
-
         loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
 
-
     });
-
-
 
     it('View of users test', function (done) {
         testCreate().then(function () {

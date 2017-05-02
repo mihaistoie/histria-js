@@ -77,7 +77,6 @@ async function testRemove() {
     user = await transaction.findOne(view_many_model_1.User, { id: 100 });
     assert.notEqual(user, null, 'User found');
     transaction.destroy();
-    // remove view
 }
 describe('View Many Model Test', () => {
     before(function (done) {

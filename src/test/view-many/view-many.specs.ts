@@ -140,7 +140,6 @@ describe('View Many Model Test', () => {
         }).catch(function (ex) {
             done(ex);
         })
-        done();
     });
 
 

@@ -79,17 +79,24 @@ export class Transaction implements TransactionContainer {
     }
 
     public async loadFromJson(data: any, reload: boolean): Promise<void> {
-        let that = this;
-        let mm = modelManager();
-        let restoreList: Promise<ObservableObject>[] = [];
+        const that = this;
+        const mm = modelManager();
+        const restoreList: Promise<ObservableObject>[] = [];
+        const npList: { factory: any, data: any }[] = [];
         data && data.instances.forEach((item: { className: string, data: any }) => {
-            let cn = item.className.split('.');
-            let factory = mm.classByName(cn[1], cn[0]);
+            const cn = item.className.split('.');
+            const factory = mm.classByName(cn[1], cn[0]);
             if (!factory)
                 throw util.format('Class not found "%s".', item.className);
-            restoreList.push(that.restore(factory, item.data, reload));
+            if (factory.isPersistent)
+                restoreList.push(that.restore(factory, item.data, reload))
+            else
+                npList.push({ factory: factory, data: item.data });
         });
-        let instances = await Promise.all(restoreList);
+        const instances = await Promise.all(restoreList);
+        for (const view of npList)
+            instances.push(await that.restore(view.factory, view.data, reload));
+
         instances.forEach(instance => {
             instance.restored();
         });

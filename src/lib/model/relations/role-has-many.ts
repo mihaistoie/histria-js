@@ -232,7 +232,8 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
             let ii = that._items.indexOf(instance);
             if (ii >= 0) {
                 that._items.splice(ii, 1);
-                that._model.splice(ii, 1)
+                // do not :
+                // that._model.splice(ii, 1)
             }
         }
     }

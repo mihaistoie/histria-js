@@ -57,29 +57,42 @@ async function testRestore(): Promise<void> {
 }
 
 async function testRemove(): Promise<void> {
-    /*
     let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let userList = await transaction.create<UserList>(UserList);
     let user = await transaction.create<User>(User);
-    await userDetail.setUser(user);
-    assert.notEqual(await userDetail.user(), null, '(1) User is not null');
+    await userList.users.add(user);
+    let users = await userList.users.toArray();
+    assert.equal(users.length, 1, '(1) One users');
 
     await user.remove();
-    assert.equal(await userDetail.user(), null, '(1) User is null');
+    users = await userList.users.toArray();
+    assert.equal(users.length, 0, '(2) No users');
     transaction.destroy();
+
 
     transaction = new Transaction();
-    userDetail = await transaction.create<UserDetail>(UserDetail);
+    userList = await transaction.create<UserList>(UserList);
     user = await transaction.findOne<User>(User, { id: 100 })
-    await userDetail.setUser(user);
-    assert.notEqual(await userDetail.user(), null, '(2) User is not null');
+    await userList.users.add(user);
 
+    users = await userList.users.toArray();
+    assert.equal(users.length, 1, '(3) One users');
     await user.remove();
-    assert.equal(await userDetail.user(), null, '(2) User is null');
+    users = await userList.users.toArray();
+    assert.equal(users.length, 0, '(4) No users');
     transaction.destroy();
 
-    // remove view
-    */
+
+    transaction = new Transaction();
+    userList = await transaction.create<UserList>(UserList);
+    user = await transaction.findOne<User>(User, { id: 100 });
+    await userList.users.add(user);
+    await userList.remove();
+    user = await transaction.findOne<User>(User, { id: 100 });
+    assert.notEqual(user, null, 'User found');
+
+    transaction.destroy();
+
 
 }
 

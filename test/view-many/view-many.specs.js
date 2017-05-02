@@ -49,29 +49,35 @@ async function testRestore() {
     assert.equal(users.length, 2, '(2) Two users');
 }
 async function testRemove() {
-    /*
-    let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail);
-    let user = await transaction.create<User>(User);
-    await userDetail.setUser(user);
-    assert.notEqual(await userDetail.user(), null, '(1) User is not null');
-
+    let transaction = new index_1.Transaction();
+    let userList = await transaction.create(view_many_model_1.UserList);
+    let user = await transaction.create(view_many_model_1.User);
+    await userList.users.add(user);
+    let users = await userList.users.toArray();
+    assert.equal(users.length, 1, '(1) One users');
     await user.remove();
-    assert.equal(await userDetail.user(), null, '(1) User is null');
+    users = await userList.users.toArray();
+    assert.equal(users.length, 0, '(2) No users');
     transaction.destroy();
-
-    transaction = new Transaction();
-    userDetail = await transaction.create<UserDetail>(UserDetail);
-    user = await transaction.findOne<User>(User, { id: 100 })
-    await userDetail.setUser(user);
-    assert.notEqual(await userDetail.user(), null, '(2) User is not null');
-
+    transaction = new index_1.Transaction();
+    userList = await transaction.create(view_many_model_1.UserList);
+    user = await transaction.findOne(view_many_model_1.User, { id: 100 });
+    await userList.users.add(user);
+    users = await userList.users.toArray();
+    assert.equal(users.length, 1, '(3) One users');
     await user.remove();
-    assert.equal(await userDetail.user(), null, '(2) User is null');
+    users = await userList.users.toArray();
+    assert.equal(users.length, 0, '(4) No users');
     transaction.destroy();
-
+    transaction = new index_1.Transaction();
+    userList = await transaction.create(view_many_model_1.UserList);
+    user = await transaction.findOne(view_many_model_1.User, { id: 100 });
+    await userList.users.add(user);
+    await userList.remove();
+    user = await transaction.findOne(view_many_model_1.User, { id: 100 });
+    assert.notEqual(user, null, 'User found');
+    transaction.destroy();
     // remove view
-    */
 }
 describe('View Many Model Test', () => {
     before(function (done) {

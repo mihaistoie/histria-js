@@ -7,7 +7,27 @@ import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function testFindOne(): Promise<void> {
     let transaction = new Transaction();
-    let user1 = await transaction.create<User>(User);
+    let user = await transaction.findOne<User>(User, { id: 100 });
+    assert.notEqual(user, null, '(1) User Found');
+    user = await transaction.findOne<User>(User, { firstName: 'Joe' });
+    assert.notEqual(user, null, '(2) User Found');
+
+    await user.remove();
+    user = await transaction.findOne<User>(User, { id: 100 });
+    assert.equal(user, null, '(1) User not found');
+
+    user = await transaction.findOne<User>(User, { firstName: 'Joe' });
+    assert.equal(user, null, '(2) User not found');
+
+    user = await transaction.findOne<User>(User, { firstName: 'John' });
+    await user.setFirstName('Jack');
+
+    user = await transaction.findOne<User>(User, { firstName: 'John' });
+    assert.equal(user, null, '(3) User not found');
+
+    user = await transaction.findOne<User>(User, { firstName: 'Jack' });
+    assert.notEqual(user, null, '(4) User Found');
+
     transaction.destroy();
 }
 

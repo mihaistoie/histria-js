@@ -255,7 +255,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                     that._children[relName] = new HasOneRefObject(that, relName, relation);
                     break;
                 case RELATION_TYPE.hasMany:
-                    that._children[relName] = new HasManyRefObject(that, relName, relation,  that._model[relName]);
+                    that._children[relName] = new HasManyRefObject(that, relName, relation, that._model[relName]);
                     break
             }
         });
@@ -325,7 +325,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
         // Check can modify ?
     }
-    private async _remove(ownerInRemoving: boolean): Promise<void> {
+    private async _remove(rootIsPersistant: boolean): Promise<void> {
         const that = this;
         if (that.isDeleted) return;
         // Mark dirty
@@ -334,7 +334,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         let promises: Promise<void | ModelObject>[] = [];
         that.enumChildren((child) => {
             let modelChild = <ModelObject>child;
-            promises.push(modelChild._remove(true));
+            if (!rootIsPersistant && modelChild.isPersistent)
+                return;
+            promises.push(modelChild._remove(rootIsPersistant));
         }, false);
         await Promise.all(promises);
         // Before remove rules
@@ -392,7 +394,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     }
 
     public async remove(): Promise<void> {
-        return this._remove(false);
+        return this._remove(this.isPersistent);
     }
 
     public async notifyOperation(propName: string, op: EventType, param: any): Promise<void> {

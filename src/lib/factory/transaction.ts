@@ -280,6 +280,8 @@ export class Transaction implements TransactionContainer {
                         if (byClass && byClass.get(key))
                             return;
                         let o = instances ? <T>instances.get(key) : null;
+                        if (o && res.indexOf(o) < 0)
+                            return;
                         map[key] = true;
                         promises.push(o ? Promise.resolve(o) : that.load<T>(classOfInstance, item));
                     });
@@ -301,6 +303,7 @@ export class Transaction implements TransactionContainer {
     public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T> {
         const that = this;
         options = options || {};
+        const byId = !!filter.id;
         let res = that._findOne<T>(filter, classOfInstance);
         if (res) return res;
         if (!classOfInstance.isPersistent)
@@ -308,16 +311,20 @@ export class Transaction implements TransactionContainer {
         if (!options || !options.onlyInCache) {
             let store = that._store(classOfInstance);
             if (store) {
+                let instances = that._getInstances(classOfInstance);
                 let data = await store.findOne(classOfInstance.entityName, filter, { compositions: true });
                 if (data) {
+                    const key = data.id + ''
                     if (that._removedInstances) {
                         const byClass = that._removedInstances.get(classOfInstance);
                         if (byClass) {
-                            const inst = byClass.get(data.id + '');
+                            const inst = byClass.get(key);
                             if (inst)
                                 return null;
                         }
                     }
+                    let o = instances ? <T>instances.get(key) : null;
+                    if (o) return null;
                     return await that.load<T>(classOfInstance, data);
                 }
             }

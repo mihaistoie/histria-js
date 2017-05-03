@@ -37,7 +37,7 @@ async function testFindMany() {
     users = await transaction.find(persistence_query_model_1.User, { firstName: 'John' });
     await users[0].setFirstName('Jack');
     users = await transaction.find(persistence_query_model_1.User, { firstName: 'John' });
-    assert.equal(users.length, null, '(3) User not found');
+    assert.equal(users.length, 0, '(3) User not found');
     users = await transaction.find(persistence_query_model_1.User, { firstName: 'Jack' });
     assert.notEqual(users.length, 0, '(4) User Found');
     transaction.destroy();

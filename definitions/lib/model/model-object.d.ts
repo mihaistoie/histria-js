@@ -61,7 +61,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     modelState(propName: string): any;
     model(propName?: string): any;
     private beforePropertyChanged(propName, oldValue, newValue);
-    private _remove(ownerInRemoving);
+    private _remove(rootIsPersistant);
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     private _addException(ex);

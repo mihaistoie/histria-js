@@ -50,7 +50,7 @@ async function testFindMany(): Promise<void> {
     await users[0].setFirstName('Jack');
 
     users = await transaction.find<User>(User, { firstName: 'John' });
-    assert.equal(users.length, null, '(3) User not found');
+    assert.equal(users.length, 0, '(3) User not found');
 
     users = await transaction.find<User>(User, { firstName: 'Jack' });
     assert.notEqual(users.length, 0, '(4) User Found');

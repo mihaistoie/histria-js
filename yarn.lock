@@ -11,8 +11,8 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.41.tgz#e27cf0817153eb9f2713b2d3f6c68f1e1c3ca608"
 
 "@types/node@*", "@types/node@latest":
-  version "7.0.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.14.tgz#1470fa002a113316ac9d9ad163fc738c7a0de2a4"
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.15.tgz#628429289604c5f7e56c13f3a0422f3e59df1a17"
 
 "@types/power-assert-formatter@*":
   version "1.4.28"
@@ -602,7 +602,7 @@ has-gulplog@^0.1.0:
 
 "histria-db-memory@https://github.com/mihaistoie/histria-db-memory.git#master":
   version "1.0.0"
-  resolved "https://github.com/mihaistoie/histria-db-memory.git#b53cd1966f87e9fac384cad425d5b896f0c4e0c1"
+  resolved "https://github.com/mihaistoie/histria-db-memory.git#ae5a85d17cb76e8a48b5ae5e0aca8d703a3acd9c"
   dependencies:
     histria-utils "https://github.com/mihaistoie/histria-utils.git#master"
 

@@ -270,10 +270,18 @@ export class Transaction implements TransactionContainer {
                 if (list && list.length) {
                     let map: any = {};
                     let instances = that._getInstances(classOfInstance);
-                    let promises = list.map(item => {
-                        let o = instances ? <T>instances.get(item.id + '') : null;
-                        map[item.id + ''] = true;
-                        return o ? Promise.resolve(o) : that.load<T>(classOfInstance, item);
+                    let promises: Promise<T>[] = [];
+                    let byClass: Map<string, ObservableObject>;
+                    if (that._removedInstances) {
+                        byClass = that._removedInstances.get(classOfInstance);
+                    }
+                    list.forEach(item => {
+                        const key = item.id + '';
+                        if (byClass && byClass.get(key))
+                            return;
+                        let o = instances ? <T>instances.get(key) : null;
+                        map[key] = true;
+                        promises.push(o ? Promise.resolve(o) : that.load<T>(classOfInstance, item));
                     });
                     let dbList = await Promise.all(promises);
                     res && res.forEach(item => {
@@ -302,6 +310,14 @@ export class Transaction implements TransactionContainer {
             if (store) {
                 let data = await store.findOne(classOfInstance.entityName, filter, { compositions: true });
                 if (data) {
+                    if (that._removedInstances) {
+                        const byClass = that._removedInstances.get(classOfInstance);
+                        if (byClass) {
+                            const inst = byClass.get(data.id + '');
+                            if (inst)
+                                return null;
+                        }
+                    }
                     return await that.load<T>(classOfInstance, data);
                 }
             }

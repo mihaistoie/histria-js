@@ -124,7 +124,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     }
 
     public get isDeleted(): boolean {
-        return this._model._isDeleted === true;
+        return this._model._isDeleted;
     }
     public get isDirty(): boolean {
         return this._model._isDirty;

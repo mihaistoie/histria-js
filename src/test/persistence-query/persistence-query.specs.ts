@@ -33,7 +33,40 @@ async function testFindOne(): Promise<void> {
 
 async function testFindMany(): Promise<void> {
     let transaction = new Transaction();
-    let user1 = await transaction.create<User>(User);
+    let users = await transaction.find<User>(User, { id: 100 });
+
+    assert.notEqual(users.length, 0, '(1) User Found');
+    users = await transaction.find<User>(User, { firstName: 'Joe' });
+    assert.notEqual(users.length, 0, '(2) User Found');
+    await users[0].remove();
+
+    users = await transaction.find<User>(User, { id: 100 });
+    assert.equal(users.length, 0, '(1) User not found');
+
+    users = await transaction.find<User>(User, { firstName: 'Joe' });
+    assert.equal(users.length, 0, '(2) User not found');
+
+    users = await transaction.find<User>(User, { firstName: 'John' });
+    await users[0].setFirstName('Jack');
+
+    users = await transaction.find<User>(User, { firstName: 'John' });
+    assert.equal(users.length, null, '(3) User not found');
+
+    users = await transaction.find<User>(User, { firstName: 'Jack' });
+    assert.notEqual(users.length, 0, '(4) User Found');
+
+    transaction.destroy();
+
+
+    transaction = new Transaction();
+    users = await transaction.find<User>(User, { firstName: 'Joe' });
+    assert.equal(users.length, 1, '(5) User Found');
+    await users[0].setFirstName('John');
+
+    users = await transaction.find<User>(User, { firstName: 'John' });
+    assert.equal(users.length, 2, '(6) User Found');
+
+
     transaction.destroy();
 }
 

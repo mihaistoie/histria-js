@@ -20,12 +20,33 @@ async function testFindOne() {
     user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'John' });
     assert.equal(user, null, '(3) User not found');
     user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Jack' });
-    assert.notEqual(user, null, '(2) User Found');
+    assert.notEqual(user, null, '(4) User Found');
     transaction.destroy();
 }
 async function testFindMany() {
     let transaction = new index_1.Transaction();
-    let user1 = await transaction.create(persistence_query_model_1.User);
+    let users = await transaction.find(persistence_query_model_1.User, { id: 100 });
+    assert.notEqual(users.length, 0, '(1) User Found');
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'Joe' });
+    assert.notEqual(users.length, 0, '(2) User Found');
+    await users[0].remove();
+    users = await transaction.find(persistence_query_model_1.User, { id: 100 });
+    assert.equal(users.length, 0, '(1) User not found');
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'Joe' });
+    assert.equal(users.length, 0, '(2) User not found');
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'John' });
+    await users[0].setFirstName('Jack');
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'John' });
+    assert.equal(users.length, null, '(3) User not found');
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'Jack' });
+    assert.notEqual(users.length, 0, '(4) User Found');
+    transaction.destroy();
+    transaction = new index_1.Transaction();
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'Joe' });
+    assert.equal(users.length, 1, '(5) User Found');
+    await users[0].setFirstName('John');
+    users = await transaction.find(persistence_query_model_1.User, { firstName: 'John' });
+    assert.equal(users.length, 2, '(6) User Found');
     transaction.destroy();
 }
 describe('Persistence Test', () => {

@@ -1,4 +1,8 @@
 
+## View hasOne view
+
+## View hasMany view
+
 ## Remove (async)
 
 * remove view
@@ -15,6 +19,3 @@
 * After  modify rules
 * block modify rule
 
-## FindOne / FindMany
-
-* Merge result with deleted items 

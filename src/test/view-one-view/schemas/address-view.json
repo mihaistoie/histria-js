@@ -1,0 +1,19 @@
+{
+    "name": "AdressView",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-has-one-view",
+    "properties": {
+        "street": {
+            "title": "Street",
+            "type": "string"
+        }
+    },
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "UserDetail",
+            "invRel": "address"
+        }
+    }
+}

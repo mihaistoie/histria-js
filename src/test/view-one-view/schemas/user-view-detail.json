@@ -1,0 +1,30 @@
+{
+    "name": "UserDetail",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-has-one-view",
+    "properties": {
+        "fullName": {
+            "title": "FullName Name",
+            "type": "string"
+        }
+    },
+    "relations": {
+        "user": {
+            "type": "hasOne",
+            "model": "user",
+            "embedded": true,
+            "aggregationKind": "composite"
+        },
+        "street": {
+            "type": "hasOne",
+            "model": "AdressView",
+            "aggregationKind": "composite"
+        }
+    },
+    "states": {
+        "fullName": {
+            "isReadOnly": true
+        }
+    }
+}

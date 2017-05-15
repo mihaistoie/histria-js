@@ -1,0 +1,19 @@
+{
+    "name": "user",
+    "type": "object",
+    "nameSpace": "view-has-one-view",
+    "properties": {
+        "age": {
+            "title": "Age",
+            "type": "integer"
+        },
+        "firstName": {
+            "title": "First Name",
+            "type": "string"
+        },
+        "lastName": {
+            "title": "Last Name",
+            "type": "string"
+        }
+    }
+}

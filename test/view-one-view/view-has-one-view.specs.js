@@ -30,9 +30,10 @@ async function viewOfUserTestWithAddress() {
     assert.equal(ca, null, 'Lazy loading (1)');
     await userDetail.setAddress(address);
     ca = await userDetail.address();
-    assert.equal(det.userId, ca.id, 'Lazy loading (2)');
+    assert.equal(userDetail.addressId, ca.id, 'Lazy loading (2)');
     assert.equal(ca, address, 'Lazy loading (3)');
-    assert.equal(ca.owner, det, 'Lazy loading (4)');
+    // assert.equal(ca.userId, userId, 'Lazy loading (4)');
+    assert.equal(ca.owner, userDetail, 'Lazy loading (5)');
     /*
     let transactionData = transaction.saveToJson();
     transaction.clear();

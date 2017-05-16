@@ -75,9 +75,9 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
                 if (that._value) {
                     lmodel = that._value.model();
                     if (useInv)
-                        schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, true);
+                        schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, useInv);
                     else
-                        schemaUtils.updateRoleRefs(that._relation, fmodel, lmodel, true);
+                        schemaUtils.updateRoleRefs(that._relation, fmodel, lmodel, useInv);
                 }
             }
 
@@ -129,8 +129,10 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
                 const useInv = (that.refIsPersistent || that._parent.isPersistent);
                 if (useInv)
                     schemaUtils.updateRoleRefs(that._relation, childModel, pmodel, true);
-                else
-                    schemaUtils.updateRoleRefs(that._relation, pmodel, childModel, true);
+                else {
+                    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                    schemaUtils.updateRoleRefs(that._relation, pmodel, childModel, false);
+                }
             }
 
         }

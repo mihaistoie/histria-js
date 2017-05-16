@@ -67,15 +67,20 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
             that._value = value;
             if (that._relation.invRel) {
                 let fmodel = that._parent.model(), lmodel;
-                if (oldValue) {
+                const useInv = (that.refIsPersistent || that._parent.isPersistent);
+                if (oldValue && useInv) {
                     lmodel = oldValue.model();
                     schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
                 }
                 if (that._value) {
                     lmodel = that._value.model();
-                    schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, true);
+                    if (useInv)
+                        schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, true);
+                    else
+                        schemaUtils.updateRoleRefs(that._relation, fmodel, lmodel, true);
                 }
             }
+
         }, { isLazyLoading: false });
         await that._afterSetValue(newValue, oldValue);
     }
@@ -120,8 +125,13 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
             that._value = null;
         else if (childModel) {
             that._value = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, childModel, isRestore);
-            if (!isRestore)
-                schemaUtils.updateRoleRefs(that._relation, childModel, pmodel, true);
+            if (!isRestore) {
+                const useInv = (that.refIsPersistent || that._parent.isPersistent);
+                if (useInv)
+                    schemaUtils.updateRoleRefs(that._relation, childModel, pmodel, true);
+                else
+                    schemaUtils.updateRoleRefs(that._relation, pmodel, childModel, true);
+            }
 
         }
     }

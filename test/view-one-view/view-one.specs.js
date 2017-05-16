@@ -64,12 +64,12 @@ async function viewOfUserTestRemove() {
     transaction.destroy();
     // remove view
 }
-describe('ViewOne Model Test', () => {
+describe('ViewHasOne<View> Model Test', () => {
     before(function (done) {
         let dm = histria_utils_1.dbManager();
-        dm.registerNameSpace('view-one', 'memory', { compositionsInParent: true });
-        let store = dm.store('view-one');
-        store.initNameSpace('view-one', {
+        dm.registerNameSpace('view-has-one-view', 'memory', { compositionsInParent: true });
+        let store = dm.store('view-has-one-view');
+        store.initNameSpace('view-has-one-view', {
             user: [
                 {
                     id: 100,

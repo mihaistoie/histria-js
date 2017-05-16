@@ -19,7 +19,8 @@
         "address": {
             "type": "hasOne",
             "model": "AdressView",
-            "aggregationKind": "composite"
+            "aggregationKind": "composite",
+            "invRel": "user"
         }
     },
     "states": {

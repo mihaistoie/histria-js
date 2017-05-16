@@ -3,17 +3,14 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
-import { User, UserDetail } from './view-has-one-view-model';
+import { User, UserDetail, AdressView } from './view-has-one-view-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
-async function viewOfUserTest(): Promise<void> {
+async function viewOfUserTestWithAddress(): Promise<void> {
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
-    let user1 = await transaction.findOne<User>(User, { id: 101 });
-    let user2 = await transaction.findOne<User>(User, { id: 101 });
-    let user3 = await transaction.findOne<User>(User, { id: 101 }, { onlyInCache: true });
-    assert.equal(user1, user2, 'Same User (1)');
-    assert.equal(user1, user3, 'Same User (2)');
+    let address = await transaction.create<AdressView>(AdressView);
+
 
 
     let user = await transaction.create<User>(User);
@@ -40,6 +37,15 @@ async function viewOfUserTest(): Promise<void> {
 
     let userDetId = det.id;
     let userId = det.userId;
+    let ca = await userDetail.address();
+    assert.equal(ca, null, 'Lazy loading (1)');
+
+    userDetail.setAddress(address);
+    ca = await userDetail.address();
+    console.log(ca);
+    assert.equal(ca, address, 'Lazy loading (2)');
+
+    /*
     let transactionData = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(transactionData, false);
@@ -52,12 +58,12 @@ async function viewOfUserTest(): Promise<void> {
 
     assert.equal(!!cuser, true, 'User found');
     assert.equal(!!duser, true, 'User Detail found');
-    user1 = await transaction.findOne<User>(User, { id: 101 });
+    let user1 = await transaction.findOne<User>(User, { id: 101 });
 
     await user1.setLastName('Doe');
     assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
 
-
+    */
     transaction.destroy();
 
 }
@@ -125,7 +131,7 @@ describe('ViewHasOne<View> Model Test', () => {
 
 
     it('View of User test', function (done) {
-        viewOfUserTest().then(function () {
+        viewOfUserTestWithAddress().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);

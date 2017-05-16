@@ -81,7 +81,7 @@ exports.UserState = UserState;
 exports.USER_SCHEMA = {
     name: 'user',
     type: 'object',
-    nameSpace: 'view-one',
+    nameSpace: 'view-has-one-view',
     properties: {
         age: {
             title: 'Age',

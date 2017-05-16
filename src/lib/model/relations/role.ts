@@ -20,6 +20,10 @@ export class RoleBase<T extends ObservableObject> {
         that._parent = null;
         that._refClass = null;
     }
+    public get refIsPersistent(): boolean {
+        const that = this;
+        return that._refClass.isPersistent;
+    }
 }
 
 export class Role<T extends ObservableObject> extends RoleBase<T> {

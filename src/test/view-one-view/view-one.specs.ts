@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
-import { User, UserDetail } from './view-one-model';
+import { User, UserDetail } from './view-has-one-view-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function viewOfUserTest(): Promise<void> {

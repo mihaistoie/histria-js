@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const view_one_model_1 = require("../view-one-model");
+const view_has_one_view_model_1 = require("../view-has-one-view-model");
 const index_1 = require("../../../index");
 const VAT_TAX = 0.193;
 class UserDetailRules {
@@ -33,12 +33,12 @@ class UserDetailRules {
     }
 }
 __decorate([
-    index_1.propChanged(view_one_model_1.UserDetail, 'user.firstName', 'user.lastName')
+    index_1.propChanged(view_has_one_view_model_1.UserDetail, 'user.firstName', 'user.lastName')
 ], UserDetailRules, "userNameChanged", null);
 __decorate([
-    index_1.propChanged(view_one_model_1.UserDetail, 'user')
+    index_1.propChanged(view_has_one_view_model_1.UserDetail, 'user')
 ], UserDetailRules, "userChanged", null);
 __decorate([
-    index_1.title(view_one_model_1.UserDetail, 'Calculate:  FullName = FirstName + LastName')
+    index_1.title(view_has_one_view_model_1.UserDetail, 'Calculate:  FullName = FirstName + LastName')
 ], UserDetailRules, "updateFullName", null);
 exports.UserDetailRules = UserDetailRules;

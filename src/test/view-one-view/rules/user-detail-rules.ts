@@ -1,4 +1,4 @@
-import { UserDetail, User } from '../view-one-model';
+import { UserDetail, User } from '../view-has-one-view-model';
 import { propChanged, init, title } from '../../../index';
 
 

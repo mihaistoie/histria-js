@@ -6,6 +6,7 @@ export declare class RoleBase<T extends ObservableObject> {
     protected _refClass: any;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
     destroy(): void;
+    readonly refIsPersistent: boolean;
 }
 export declare class Role<T extends ObservableObject> extends RoleBase<T> {
     protected _value: T;

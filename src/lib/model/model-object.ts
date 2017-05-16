@@ -250,12 +250,22 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that._schema && that._schema.relations && Object.keys(that._schema.relations).forEach(relName => {
             // That works  only when remote model is persistent
             const relation = that._schema.relations[relName];
+            const refClass = modelManager().classByName(relation.model, relation.nameSpace);
             switch (relation.type) {
                 case RELATION_TYPE.hasOne:
-                    that._children[relName] = new HasOneRefObject(that, relName, relation);
+                    if (refClass.isPersistent)
+                        that._children[relName] = new HasOneRefObject(that, relName, relation);
+                    else
+                        that._children[relName] = new HasOneComposition(that, relName, relation);
+                    break;
+                case RELATION_TYPE.belongsTo:
+                    that._children[relName] = new CompositionBelongsTo(that, relName, relation);
                     break;
                 case RELATION_TYPE.hasMany:
-                    that._children[relName] = new HasManyRefObject(that, relName, relation, that._model[relName]);
+                    if (refClass.isPersistent)
+                        that._children[relName] = new HasManyRefObject(that, relName, relation, that._model[relName]);
+                    else
+                        that._children[relName] = new HasManyComposition(that, relName, relation, that._model[relName]);
                     break
             }
         });

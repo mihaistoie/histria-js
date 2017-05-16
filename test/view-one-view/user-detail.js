@@ -14,11 +14,20 @@ class UserDetail extends index_1.View {
     get userId() {
         return this._children.userId.value;
     }
+    get addressId() {
+        return this._children.addressId.value;
+    }
     user() {
         return this._children.user.getValue();
     }
     setUser(value) {
         return this._children.user.setValue(value);
+    }
+    address() {
+        return this._children.address.getValue();
+    }
+    setAddress(value) {
+        return this._children.address.setValue(value);
     }
     get $states() {
         return this._states;
@@ -55,6 +64,9 @@ class UserDetailErrors extends index_1.InstanceErrors {
     get userId() {
         return this._messages.userId;
     }
+    get addressId() {
+        return this._messages.addressId;
+    }
 }
 exports.UserDetailErrors = UserDetailErrors;
 class UserDetailState extends index_1.InstanceState {
@@ -67,13 +79,16 @@ class UserDetailState extends index_1.InstanceState {
     get userId() {
         return this._states.userId;
     }
+    get addressId() {
+        return this._states.addressId;
+    }
 }
 exports.UserDetailState = UserDetailState;
 exports.USERDETAIL_SCHEMA = {
     name: 'UserDetail',
     type: 'object',
     view: true,
-    nameSpace: 'view-one',
+    nameSpace: 'view-has-one-view',
     properties: {
         fullName: {
             title: 'FullName Name',
@@ -88,6 +103,11 @@ exports.USERDETAIL_SCHEMA = {
             type: 'integer',
             isReadOnly: true,
             format: 'id'
+        },
+        addressId: {
+            type: 'integer',
+            isReadOnly: true,
+            format: 'id'
         }
     },
     relations: {
@@ -96,10 +116,23 @@ exports.USERDETAIL_SCHEMA = {
             model: 'user',
             embedded: true,
             aggregationKind: 'composite',
-            nameSpace: 'view-one',
+            nameSpace: 'view-has-one-view',
             title: 'user',
             localFields: [
                 'userId'
+            ],
+            foreignFields: [
+                'id'
+            ]
+        },
+        address: {
+            type: 'hasOne',
+            model: 'AdressView',
+            aggregationKind: 'composite',
+            nameSpace: 'view-has-one-view',
+            title: 'address',
+            localFields: [
+                'addressId'
             ],
             foreignFields: [
                 'id'

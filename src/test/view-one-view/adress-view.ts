@@ -19,6 +19,12 @@ export class AdressView extends View {
     public get id(): any {
         return this._children.id.value;
     }
+    public user(): Promise<UserDetail> {
+        return this._children.user.getValue();
+    }
+    public setUser(value: UserDetail): Promise<UserDetail> {
+        return this._children.user.setValue(value);
+    }
     public get $states(): AdressViewState {
         return <AdressViewState>this._states;
     }

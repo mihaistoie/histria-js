@@ -97,7 +97,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         const query: any = schemaUtils.roleToQuery(that._relation, that._parent.model());
         if (query) {
             that._value = null;
-            const opts: FindOptions = { onlyInCache: false };
+            const opts: FindOptions = { onlyInCache: that.refIsPersistent };
             that._value = await that._parent.transaction.findOne<T>(that._refClass, query, opts);
             await that._updateInvSideAfterLazyLoading(that._value);
         } else
@@ -128,15 +128,15 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
             if (!isRestore) {
                 const useInv = (that.refIsPersistent || that._parent.isPersistent);
                 if (useInv)
-                    schemaUtils.updateRoleRefs(that._relation, childModel, pmodel, true);
-                else {
-                    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-                    schemaUtils.updateRoleRefs(that._relation, pmodel, childModel, false);
-                }
+                    schemaUtils.updateRoleRefs(that._relation, childModel, pmodel, useInv);
+                else
+                    schemaUtils.updateRoleRefs(that._relation, pmodel, childModel, useInv);
             }
 
         }
     }
+
+
     public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
         const that = this;
         if (that._value) {

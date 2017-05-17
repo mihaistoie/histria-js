@@ -11,6 +11,12 @@ class AdressView extends index_1.View {
     get id() {
         return this._children.id.value;
     }
+    user() {
+        return this._children.user.getValue();
+    }
+    setUser(value) {
+        return this._children.user.setValue(value);
+    }
     get $states() {
         return this._states;
     }

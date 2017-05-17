@@ -195,6 +195,12 @@ function _genVewRelations(schema: any, code: string[], model: any): void {
                 code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.belongsTo:
+                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
+                code.push(_tab(1) + '}');
+                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
+                code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.hasMany:
                 code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));

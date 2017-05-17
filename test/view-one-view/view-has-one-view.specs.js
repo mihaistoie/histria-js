@@ -32,11 +32,21 @@ async function viewOfUserTestWithAddress() {
     ca = await userDetail.address();
     assert.equal(userDetail.addressId, ca.id, 'Lazy loading (2)');
     assert.equal(ca, address, 'Lazy loading (3)');
-    // assert.equal(ca.userId, userId, 'Lazy loading (4)');
-    assert.equal(ca.owner, userDetail, 'Lazy loading (5)');
-    /*
+    assert.equal(ca.owner, userDetail, 'Lazy loading (4)');
+    await userDetail.setAddress(null);
+    assert.equal(userDetail.addressId, undefined, 'Owner of address is null (1)');
+    assert.equal(ca.owner, null, 'Owner of address is null (2)');
+    await address.setUser(userDetail);
+    await address.setUser(det);
+    assert.equal(await userDetail.address(), null, 'User1 hasn\'t address');
+    assert.equal(await det.address(), address, 'User2 has address');
+    let address2 = await await transaction.create(view_has_one_view_model_1.AdressView);
+    await det.setAddress(address2);
+    assert.equal(await address.user(), null, 'Address owner is null');
+    assert.equal(await det.address(), address2, 'User2 has address2');
     let transactionData = transaction.saveToJson();
     transaction.clear();
+    /*
     await transaction.loadFromJson(transactionData, false);
     let data2 = transaction.saveToJson();
 

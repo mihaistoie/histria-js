@@ -608,7 +608,7 @@ has-gulplog@^0.1.0:
 
 "histria-utils@https://github.com/mihaistoie/histria-utils.git#master":
   version "1.0.0"
-  resolved "https://github.com/mihaistoie/histria-utils.git#13034ba47cbf969b85b3f728b7c550fcffe9c05a"
+  resolved "https://github.com/mihaistoie/histria-utils.git#ad1ec9ae61b5c3dfc2a05c9c4c22e315fd969127"
 
 homedir-polyfill@^1.0.0:
   version "1.0.1"
@@ -779,8 +779,8 @@ jsonify@~0.0.0:
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
 
 kind-of@^3.0.2:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.0.tgz#b58abe4d5c044ad33726a8c1525b48cf891bff07"
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
   dependencies:
     is-buffer "^1.1.5"
 

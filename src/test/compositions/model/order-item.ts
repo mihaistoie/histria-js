@@ -127,6 +127,7 @@ export const
             }
         },
         meta: {
-            parent: 'order'
+            parent: 'order',
+            parentRelation: 'order'
         }
     };

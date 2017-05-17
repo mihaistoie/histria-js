@@ -6,7 +6,7 @@ import {
     NumberValue
 } from '../../index';
 import { User } from './user';
-import { AdressView } from './adress-view';
+import { AddressView } from './address-view';
 
 
 export class UserDetail extends View {
@@ -32,10 +32,10 @@ export class UserDetail extends View {
     public setUser(value: User): Promise<User> {
         return this._children.user.setValue(value);
     }
-    public address(): Promise<AdressView> {
+    public address(): Promise<AddressView> {
         return this._children.address.getValue();
     }
-    public setAddress(value: AdressView): Promise<AdressView> {
+    public setAddress(value: AddressView): Promise<AddressView> {
         return this._children.address.setValue(value);
     }
     public get $states(): UserDetailState {
@@ -135,7 +135,7 @@ export const
             },
             address: {
                 type: 'hasOne',
-                model: 'AdressView',
+                model: 'AddressView',
                 aggregationKind: 'composite',
                 invRel: 'user',
                 nameSpace: 'view-has-one-view',

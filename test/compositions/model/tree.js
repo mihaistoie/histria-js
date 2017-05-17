@@ -127,6 +127,7 @@ exports.TREE_SCHEMA = {
         }
     },
     meta: {
-        parent: 'tree'
+        parent: 'tree',
+        parentRelation: 'parent'
     }
 };

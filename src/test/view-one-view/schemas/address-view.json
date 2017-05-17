@@ -1,5 +1,5 @@
 {
-    "name": "AdressView",
+    "name": "AddressView",
     "type": "object",
     "view": true,
     "nameSpace": "view-has-one-view",

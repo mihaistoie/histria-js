@@ -112,6 +112,7 @@ exports.GROUP_SCHEMA = {
         }
     },
     meta: {
-        parent: 'item'
+        parent: 'item',
+        parentRelation: 'item'
     }
 };

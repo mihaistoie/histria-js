@@ -3,13 +3,15 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
-import { User, UserDetail, AdressView } from './view-has-one-view-model';
+import { User, UserDetail, AddressView } from './view-has-one-view-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function viewOfUserTestWithAddress(): Promise<void> {
     let transaction = new Transaction();
     let userDetail = await transaction.create<UserDetail>(UserDetail);
-    let address = await transaction.create<AdressView>(AdressView);
+    let address = await transaction.create<AddressView>(AddressView);
+    await address.setStreet('Paris');
+    let addressId = address.id;
 
 
 
@@ -54,17 +56,19 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     assert.equal(await userDetail.address(), null, 'User1 hasn\'t address');
     assert.equal(await det.address(), address, 'User2 has address');
 
-    let address2 = await await transaction.create<AdressView>(AdressView);
+    let address2 = await await transaction.create<AddressView>(AddressView);
+    await address2.setStreet('London');
     await det.setAddress(address2);
     assert.equal(await address.user(), null, 'Address owner is null');
     assert.equal(await det.address(), address2, 'User2 has address2');
     let transactionData = transaction.saveToJson();
+    await userDetail.setAddress(address);
+
     transaction.clear();
-    /*
     await transaction.loadFromJson(transactionData, false);
     let data2 = transaction.saveToJson();
-
     assert.deepEqual(transactionData, data2, 'Restore Test');
+
     // Test that det.user is loaded
     let cuser = await transaction.findOne<User>(User, { id: userId })
     let duser = await transaction.findOne<UserDetail>(UserDetail, { id: userDetId })
@@ -76,7 +80,13 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     await user1.setLastName('Doe');
     assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
 
-    */
+    let address1 = await duser.address();
+    let address3 = await transaction.findOne<AddressView>(AddressView, { id: addressId })
+    assert.equal(!!address1, true, 'Address found');
+    assert.equal(!!address3, true, 'Address found (2)');
+    assert.equal(address3.street, 'Paris', 'Address found (2)');
+    let cu = await address3.user();
+    assert.equal(!!cu, true, 'User Detail found (2)');
     transaction.destroy();
 
 }
@@ -87,23 +97,31 @@ async function viewOfUserTestRemove(): Promise<void> {
     let userDetail = await transaction.create<UserDetail>(UserDetail);
     let user = await transaction.create<User>(User);
     await userDetail.setUser(user);
-    assert.notEqual(await userDetail.user(), null, '(1) User is not null');
+    let address = await transaction.create<AddressView>(AddressView);
+    await address.setStreet('Paris');
+    let addressId = address.id;
+    await address.setUser(userDetail)
+    assert.notEqual(await userDetail.address(), null, '(1) Address is not null');
 
-    await user.remove();
-    assert.equal(await userDetail.user(), null, '(1) User is null');
+    await userDetail.remove();
+
+    let address3 = await transaction.findOne<AddressView>(AddressView, { id: addressId })
+    assert.equal(address3, null, '(1) Address not found');
+
     transaction.destroy();
+
 
     transaction = new Transaction();
+
     userDetail = await transaction.create<UserDetail>(UserDetail);
-    user = await transaction.findOne<User>(User, { id: 100 })
+    user = await transaction.create<User>(User);
     await userDetail.setUser(user);
-    assert.notEqual(await userDetail.user(), null, '(2) User is not null');
+    address = await transaction.create<AddressView>(AddressView);
+    await address.setUser(userDetail)
+    await address.remove();
 
-    await user.remove();
-    assert.equal(await userDetail.user(), null, '(2) User is null');
+    assert.equal(await userDetail.address(), null, '(3) Address is  null');
     transaction.destroy();
-
-    // remove view
 
 }
 
@@ -143,7 +161,7 @@ describe('ViewHasOne<View> Model Test', () => {
 
 
 
-    it('View of User test', function (done) {
+    it('View of User with Address view test', function (done) {
         viewOfUserTestWithAddress().then(function () {
             done();
         }).catch(function (ex) {
@@ -151,7 +169,7 @@ describe('ViewHasOne<View> Model Test', () => {
         })
 
     });
-    it('View of User test remove', function (done) {
+    it('View of User with Address view test remove', function (done) {
         viewOfUserTestRemove().then(function () {
             done();
         }).catch(function (ex) {

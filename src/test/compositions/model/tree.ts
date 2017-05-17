@@ -133,6 +133,7 @@ export const
             }
         },
         meta: {
-            parent: 'tree'
+            parent: 'tree',
+            parentRelation: 'parent'
         }
     };

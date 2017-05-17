@@ -120,6 +120,7 @@ exports.ORDERITEM_SCHEMA = {
         }
     },
     meta: {
-        parent: 'order'
+        parent: 'order',
+        parentRelation: 'order'
     }
 };

@@ -127,7 +127,7 @@ exports.USERDETAIL_SCHEMA = {
         },
         address: {
             type: 'hasOne',
-            model: 'AdressView',
+            model: 'AddressView',
             aggregationKind: 'composite',
             invRel: 'user',
             nameSpace: 'view-has-one-view',

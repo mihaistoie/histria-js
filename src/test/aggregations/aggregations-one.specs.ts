@@ -58,12 +58,12 @@ async function testLoad(): Promise<void> {
     let driver1 = await transaction.load<Driver>(Driver, { drivesId: car1.uuid });
 
     assert.equal(await car1.drivenBy(), driver1, '(1) Driver 1 drivers car 1 ');
-    assert.equal(await driver1.drives(), car1, '(1) Driver 1 drivers car 1 ');
+    assert.equal(await driver1.drives(), car1, '(2) Driver 1 drivers car 1 ');
 
     let car2 = await transaction.create<Car>(Car);
     let driver2 = await transaction.load<Driver>(Driver, { drivesId: car2.uuid });
     assert.equal(await driver2.drives(), car2, '(1) Driver 2 drivers car 2 ');
-    assert.equal(await car2.drivenBy(), driver2, '(1) Driver 2 drivers car 2 ');
+    assert.equal(await car2.drivenBy(), driver2, '(2) Driver 2 drivers car 2 ');
 
     let data1 = transaction.saveToJson();
     transaction.clear();

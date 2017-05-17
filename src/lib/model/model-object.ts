@@ -384,9 +384,8 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         });
         await Promise.all(promises);
         // Remove from views
-
+        promises = [];
         if (that._listeners) {
-            promises = [];
             const toNotify: { listener: any, parent: ObservableObject, propertyName: string }[] = that._listeners.splice(0);
             toNotify.forEach(listener => {
                 let instance: ModelObject = <ModelObject>listener.parent;

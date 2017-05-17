@@ -119,6 +119,7 @@ export const
             }
         },
         meta: {
-            parent: 'group'
+            parent: 'group',
+            parentRelation: 'group'
         }
     };

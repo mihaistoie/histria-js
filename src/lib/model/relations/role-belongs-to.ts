@@ -9,7 +9,7 @@ export class BaseBelongsTo<T extends ObservableObject> extends Role<T> {
         const that = this;
         const query = schemaUtils.roleToQueryInv(that._relation, that._parent.model());
         if (query) {
-            let opts: FindOptions = { onlyInCache: false };
+            let opts: FindOptions = { onlyInCache: !that.refIsPersistent };
             return await that._parent.transaction.findOne<T>(that._refClass, query, opts);
         }
         return null;

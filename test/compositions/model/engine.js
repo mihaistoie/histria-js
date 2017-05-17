@@ -122,6 +122,7 @@ exports.ENGINE_SCHEMA = {
         }
     },
     meta: {
-        parent: 'car'
+        parent: 'car',
+        parentRelation: 'car'
     }
 };

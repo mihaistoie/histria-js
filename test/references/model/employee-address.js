@@ -171,6 +171,7 @@ exports.EMPLOYEEADDRESS_SCHEMA = {
         }
     },
     meta: {
-        parent: 'employee'
+        parent: 'employee',
+        parentRelation: 'employee'
     }
 };

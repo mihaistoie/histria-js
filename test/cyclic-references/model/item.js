@@ -112,6 +112,7 @@ exports.ITEM_SCHEMA = {
         }
     },
     meta: {
-        parent: 'group'
+        parent: 'group',
+        parentRelation: 'group'
     }
 };

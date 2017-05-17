@@ -178,6 +178,7 @@ export const
             }
         },
         meta: {
-            parent: 'employee'
+            parent: 'employee',
+            parentRelation: 'employee'
         }
     };

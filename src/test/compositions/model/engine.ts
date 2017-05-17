@@ -129,6 +129,7 @@ export const
             }
         },
         meta: {
-            parent: 'car'
+            parent: 'car',
+            parentRelation: 'car'
         }
     };

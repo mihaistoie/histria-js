@@ -8,7 +8,7 @@ export class View extends ModelObject {
         const that = this;
         schemaUtils.enumCompositions(that._schema.relations, (relationName, relation) => {
             let role = that._children[relationName];
-            if (role) role.restoreFromCache();
+            if (role && role.refIsPersistent) role.restoreFromCache();
         });
     }
 }

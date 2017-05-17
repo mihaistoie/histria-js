@@ -119,6 +119,7 @@ export const
             }
         },
         meta: {
-            parent: 'item'
+            parent: 'item',
+            parentRelation: 'item'
         }
     };

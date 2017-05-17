@@ -11,7 +11,7 @@ async function userAndSalesorder() {
     await classGenerator(pathToModel, path.join(__dirname), '../../index');
 }
 
-describe('Generators', () => {
+describe('View.hasOne<View>', () => {
     it('View hasOne<View> class code', function (done) {
         userAndSalesorder().then(() => {
             done();

@@ -66,8 +66,8 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
         await that._parent.changeProperty(that._propertyName, oldValue, value, () => {
             that._value = value;
             if (that._relation.invRel) {
-                let fmodel = that._parent.model(), lmodel;
                 const useInv = (that.refIsPersistent || that._parent.isPersistent);
+                let fmodel = that._parent.model(), lmodel;
                 if (oldValue && useInv) {
                     lmodel = oldValue.model();
                     schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
@@ -78,7 +78,13 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
                         schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, useInv);
                     else
                         schemaUtils.updateRoleRefs(that._relation, fmodel, lmodel, useInv);
+                }  else {
+                    if (!useInv) {
+                        schemaUtils.updateRoleRefs(that._relation, fmodel, null, useInv);
+                    }
+
                 }
+
             }
 
         }, { isLazyLoading: false });

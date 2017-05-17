@@ -46,9 +46,8 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     assert.equal(ca.owner, userDetail, 'Lazy loading (4)');
 
     await userDetail.setAddress(null);
-    assert.equal(userDetail.addressId, undefined, 'Owner of address is null (1)');
     assert.equal(ca.owner, null, 'Owner of address is null (2)');
-
+    assert.equal(userDetail.addressId, undefined, 'Owner of address is null (1)');
 
     await address.setUser(userDetail);
     await address.setUser(det);

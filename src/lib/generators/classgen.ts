@@ -184,6 +184,8 @@ function _genSchemaProperties(schema: any, code: string[], model: any): void {
 function _genVewRelations(schema: any, code: string[], model: any): void {
     schema.relations && Object.keys(schema.relations).forEach(relationName => {
         const relation = schema.relations[relationName];
+
+        const refFullName = (relation.nameSpace || schema.nameSpace) + '.' + relation.model;
         const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
         switch (relation.type) {
             case RELATION_TYPE.hasOne:
@@ -203,9 +205,16 @@ function _genVewRelations(schema: any, code: string[], model: any): void {
                 code.push(_tab(1) + '}');
                 break;
             case RELATION_TYPE.hasMany:
-                code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s;', relationName));
-                code.push(_tab(1) + '}');
+                const refModel = model[refFullName];
+                if (refModel.view) {
+                    code.push(_tab(1) + util.format('get %s(): HasManyComposition<%s> {', relationName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                    code.push(_tab(1) + '}');
+                } else {
+                    code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                    code.push(_tab(1) + '}');
+                }
                 break;
         }
     });

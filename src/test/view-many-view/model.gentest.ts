@@ -6,14 +6,14 @@ import * as mochaUtils from 'mocha';
 import { classGenerator } from '../../index';
 
 
-async function userAndSalesorder() {
+async function generateClasses() {
     let pathToModel = path.join(__dirname, 'schemas');
     await classGenerator(pathToModel, path.join(__dirname), '../../index');
 }
 
-describe('View Has One <View>', () => {
-    it('View hasOne<View> class code', function (done) {
-        userAndSalesorder().then(() => {
+describe('View Has Many <View>', () => {
+    it('Generate class code', function (done) {
+        generateClasses().then(() => {
             done();
         }).catch((ex) => {
             done(ex);

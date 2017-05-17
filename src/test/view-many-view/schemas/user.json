@@ -1,0 +1,28 @@
+{
+    "name": "user",
+    "view": true,
+    "type": "object",
+    "nameSpace": "view-many-view",
+    "properties": {
+        "age": {
+            "title": "Age",
+            "type": "integer"
+        },
+        "firstName": {
+            "title": "First Name",
+            "type": "string"
+        },
+        "lastName": {
+            "title": "Last Name",
+            "type": "string"
+        }
+    },
+    "relations": {
+        "list": {
+            "type": "belongsTo",
+            "model": "UserList",
+            "aggregationKind": "composite",
+            "invRel": "users"
+        }
+    }
+}

@@ -31,6 +31,11 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
             })
         }
     }
+    async length(): Promise<number> {
+        const that = this;
+        await that.lazyLoad();
+        return that._items ? that._items.length : 0;
+    }
     private async _removed(item: T, notifyRemove: boolean): Promise<void> {
         const that = this;
         const lmodel = item.model();

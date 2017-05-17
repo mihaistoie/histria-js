@@ -6,7 +6,7 @@ async function userAndSalesorder() {
     let pathToModel = path.join(__dirname, 'schemas');
     await index_1.classGenerator(pathToModel, path.join(__dirname), '../../index');
 }
-describe('View.hasOne<View>', () => {
+describe('View Has One <View>', () => {
     it('View hasOne<View> class code', function (done) {
         userAndSalesorder().then(() => {
             done();

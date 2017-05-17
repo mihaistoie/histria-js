@@ -1,0 +1,20 @@
+{
+    "name": "UserList",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-many-view",
+    "properties": {
+        "userCount": {
+            "type": "integer",
+            "default": 0
+        }
+    },
+    "relations": {
+        "users": {
+            "type": "hasMany",
+            "model": "user",
+            "aggregationKind": "composite",
+            "invRel": "list"
+        }
+    }
+}

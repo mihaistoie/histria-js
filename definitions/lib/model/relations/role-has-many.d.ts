@@ -5,6 +5,7 @@ export declare class BaseHasMany<T extends ObservableObject> extends ObjectArray
 }
 export declare class HasManyComposition<T extends ObservableObject> extends BaseHasMany<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
+    length(): Promise<number>;
     private _removed(item, notifyRemove);
     private _added(item, notifyAdd);
     protected _afterRemoveItem(item: T, ii: number): Promise<void>;

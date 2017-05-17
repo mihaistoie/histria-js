@@ -608,7 +608,7 @@ has-gulplog@^0.1.0:
 
 "histria-utils@https://github.com/mihaistoie/histria-utils.git#master":
   version "1.0.0"
-  resolved "https://github.com/mihaistoie/histria-utils.git#ad1ec9ae61b5c3dfc2a05c9c4c22e315fd969127"
+  resolved "https://github.com/mihaistoie/histria-utils.git#66972d220bb5a48521fd942209e5d4737824ffac"
 
 homedir-polyfill@^1.0.0:
   version "1.0.1"

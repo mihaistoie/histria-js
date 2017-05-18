@@ -60,7 +60,7 @@ async function testRemove() {
     assert.equal(users.length, 0, '(2) No users');
     transaction.destroy();
 }
-describe('View Many Model Test', () => {
+describe('View Many <View> Model Test', () => {
     before(function (done) {
         let dm = histria_utils_1.dbManager();
         dm.registerNameSpace('view-many-view', 'memory', { compositionsInParent: true });
@@ -72,21 +72,21 @@ describe('View Many Model Test', () => {
             done(ex);
         });
     });
-    it('View of users test', function (done) {
+    it('View of users (view) test', function (done) {
         testCreate().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);
         });
     });
-    it('View of users test remove', function (done) {
+    it('View of users (view) test remove', function (done) {
         testRemove().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);
         });
     });
-    it('View of users test restore', function (done) {
+    it('View of users (view) test restore', function (done) {
         testRestore().then(function () {
             done();
         }).catch(function (ex) {

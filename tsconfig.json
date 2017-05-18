@@ -4,6 +4,8 @@
         "target": "es2017",
         "declaration": true,
         "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
         "experimentalDecorators": true
     }
 }

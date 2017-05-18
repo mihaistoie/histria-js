@@ -415,7 +415,7 @@ export class Transaction implements TransactionContainer {
     }
     private _store(classOfInstance: any): IStore {
         let nameSpace = classOfInstance.nameSpace;
-        if (!nameSpace) return;
+        if (!nameSpace) return null;
         return dbManager().store(nameSpace);
     }
 }

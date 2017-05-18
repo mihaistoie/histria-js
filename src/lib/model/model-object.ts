@@ -301,6 +301,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             let rel = that._schema.relations[propName];
             return rel.type === RELATION_TYPE.hasMany && rel.aggregationKind === AGGREGATION_KIND.composite;
         }
+        return false;
     }
 
     public modelErrors(propName: string): { message: string, severity: MessageServerity }[] {

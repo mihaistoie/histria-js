@@ -332,17 +332,17 @@ export class ModelManager {
             ci.setItemsRules[propName] = ci.setItemsRules[propName] || [];
             ci.setItemsRules[propName].push(ri);
         } else if (ruleType === EventType.saving) {
-             ci.savingRules.push(ri);
+            ci.savingRules.push(ri);
         } else if (ruleType === EventType.saved) {
-             ci.savedRulesRules.push(ri);
+            ci.savedRulesRules.push(ri);
         } else if (ruleType === EventType.editing) {
-             ci.editingRules.push(ri);
+            ci.editingRules.push(ri);
         } else if (ruleType === EventType.edited) {
-             ci.editedRulesRules.push(ri);
+            ci.editedRulesRules.push(ri);
         } else if (ruleType === EventType.removing) {
-             ci.savingRules.push(ri);
+            ci.savingRules.push(ri);
         } else if (ruleType === EventType.removed) {
-             ci.removedRules.push(ri);
+            ci.removedRules.push(ri);
         }
     }
 }

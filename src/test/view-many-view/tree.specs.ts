@@ -82,7 +82,7 @@ async function testRestore(): Promise<void> {
 }
 
 
-describe('Tree, Composition', () => {
+describe('Tree (of Views) , Composition', () => {
     it('Tree - create', function (done) {
         testCreate().then(function () {
             done();
@@ -92,7 +92,7 @@ describe('Tree, Composition', () => {
 
 
     });
-    it('Tree - load', function (done) {
+    it('Tree (of Views) - load', function (done) {
         testLoad().then(function () {
             done();
         }).catch(function (ex) {
@@ -101,7 +101,7 @@ describe('Tree, Composition', () => {
 
 
     });
-    it('Tree - restore', function (done) {
+    it('Tree (of Views) - restore', function (done) {
         testRestore().then(function () {
             done();
         }).catch(function (ex) {

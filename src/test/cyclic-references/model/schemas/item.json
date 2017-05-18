@@ -1,7 +1,6 @@
 {
     "type": "object",
     "name": "item",
-    "view": true,
     "nameSpace": "cyclicreferences",
     "properties": {},
     "relations": {

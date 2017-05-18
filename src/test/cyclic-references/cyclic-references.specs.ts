@@ -28,6 +28,7 @@ async function testCreate(): Promise<void> {
 
     await transaction.loadFromJson(data1, false);
     let data2 = transaction.saveToJson();
+
     assert.deepEqual(data1, data2, 'Restore test in restore');
 
     let root = await transaction.findOne<Group>(Group, { id: rootId })

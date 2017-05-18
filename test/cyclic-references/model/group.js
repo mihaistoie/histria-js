@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
-class Group extends index_1.View {
+class Group extends index_1.Instance {
     get id() {
         return this._children.id.value;
     }
@@ -37,7 +37,7 @@ class Group extends index_1.View {
         that._errors = new GroupErrors(that, that._schema);
     }
 }
-Group.isPersistent = false;
+Group.isPersistent = true;
 exports.Group = Group;
 class GroupErrors extends index_1.InstanceErrors {
     get $() {
@@ -66,7 +66,6 @@ exports.GroupState = GroupState;
 exports.GROUP_SCHEMA = {
     type: 'object',
     name: 'group',
-    view: true,
     nameSpace: 'cyclicreferences',
     properties: {
         id: {
@@ -88,6 +87,7 @@ exports.GROUP_SCHEMA = {
             invRel: 'group',
             nameSpace: 'cyclicreferences',
             title: 'items',
+            invType: 'belongsTo',
             localFields: [
                 'id'
             ],
@@ -102,6 +102,7 @@ exports.GROUP_SCHEMA = {
             invRel: 'groups',
             nameSpace: 'cyclicreferences',
             title: 'item',
+            invType: 'hasMany',
             localFields: [
                 'itemId'
             ],

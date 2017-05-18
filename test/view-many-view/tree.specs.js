@@ -55,7 +55,7 @@ async function testRestore() {
     assert.equal(children.length, 2, 'Root has 2 children (2)');
     transaction.clear();
 }
-describe('Tree, Composition', () => {
+describe('Tree (of Views) , Composition', () => {
     it('Tree - create', function (done) {
         testCreate().then(function () {
             done();
@@ -63,14 +63,14 @@ describe('Tree, Composition', () => {
             done(ex);
         });
     });
-    it('Tree - load', function (done) {
+    it('Tree (of Views) - load', function (done) {
         testLoad().then(function () {
             done();
         }).catch(function (ex) {
             done(ex);
         });
     });
-    it('Tree - restore', function (done) {
+    it('Tree (of Views) - restore', function (done) {
         testRestore().then(function () {
             done();
         }).catch(function (ex) {

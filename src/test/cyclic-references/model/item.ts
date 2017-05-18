@@ -8,8 +8,8 @@ import {
 import { Group } from './group';
 
 
-export class Item extends View {
-    public static isPersistent: boolean = false;
+export class Item extends Instance {
+    public static isPersistent: boolean = true;
     public get id(): any {
         return this._children.id.value;
     }
@@ -73,7 +73,6 @@ export const
     ITEM_SCHEMA = {
         type: 'object',
         name: 'item',
-        view: true,
         nameSpace: 'cyclicreferences',
         properties: {
             id: {
@@ -95,6 +94,7 @@ export const
                 invRel: 'item',
                 nameSpace: 'cyclicreferences',
                 title: 'groups',
+                invType: 'belongsTo',
                 localFields: [
                     'id'
                 ],
@@ -109,6 +109,7 @@ export const
                 invRel: 'items',
                 nameSpace: 'cyclicreferences',
                 title: 'group',
+                invType: 'hasMany',
                 localFields: [
                     'groupId'
                 ],

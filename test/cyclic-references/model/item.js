@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
-class Item extends index_1.View {
+class Item extends index_1.Instance {
     get id() {
         return this._children.id.value;
     }
@@ -37,7 +37,7 @@ class Item extends index_1.View {
         that._errors = new ItemErrors(that, that._schema);
     }
 }
-Item.isPersistent = false;
+Item.isPersistent = true;
 exports.Item = Item;
 class ItemErrors extends index_1.InstanceErrors {
     get $() {
@@ -66,7 +66,6 @@ exports.ItemState = ItemState;
 exports.ITEM_SCHEMA = {
     type: 'object',
     name: 'item',
-    view: true,
     nameSpace: 'cyclicreferences',
     properties: {
         id: {
@@ -88,6 +87,7 @@ exports.ITEM_SCHEMA = {
             invRel: 'item',
             nameSpace: 'cyclicreferences',
             title: 'groups',
+            invType: 'belongsTo',
             localFields: [
                 'id'
             ],
@@ -102,6 +102,7 @@ exports.ITEM_SCHEMA = {
             invRel: 'items',
             nameSpace: 'cyclicreferences',
             title: 'group',
+            invType: 'hasMany',
             localFields: [
                 'groupId'
             ],

@@ -12,7 +12,7 @@
                 "spec",
                 "--timeout",
                 "0",
-                "--debug",
+                "--inspect",
                 "--require",
                 "source-map-support/register",
                 "./test/**/*.specs.js"

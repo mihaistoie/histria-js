@@ -102,7 +102,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
             const lmodel = that._parent.model();
             const query = schemaUtils.roleToQuery(that._relation, lmodel)
             if (query) {
-                const opts: FindOptions = { onlyInCache: that._parent.isNew };
+                const opts: FindOptions = { onlyInCache: that._parent.isNew || that.refIsPersistent };
                 const items = await that._parent.transaction.find<T>(that._refClass, query, opts);
                 if (items.length) {
                     that._model = new Array(items.length);

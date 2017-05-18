@@ -31,6 +31,9 @@ export class User extends View {
     public get id(): any {
         return this._children.id.value;
     }
+    public get listId(): any {
+        return this._children.listId.value;
+    }
     public list(): Promise<UserList> {
         return this._children.list.getValue();
     }
@@ -74,6 +77,9 @@ export class UserErrors extends InstanceErrors {
     public get id(): ErrorState {
         return this._messages.id;
     }
+    public get listId(): ErrorState {
+        return this._messages.listId;
+    }
 }
 
 export class UserState extends InstanceState {
@@ -88,6 +94,9 @@ export class UserState extends InstanceState {
     }
     public get id(): IdState {
         return this._states.id;
+    }
+    public get listId(): IdState {
+        return this._states.listId;
     }
 }
 export const
@@ -113,6 +122,11 @@ export const
                 type: 'integer',
                 generated: true,
                 format: 'id'
+            },
+            listId: {
+                type: 'integer',
+                isReadOnly: true,
+                format: 'id'
             }
         },
         relations: {
@@ -124,10 +138,10 @@ export const
                 nameSpace: 'view-many-view',
                 title: 'list',
                 localFields: [
-                    'id'
+                    'listId'
                 ],
                 foreignFields: [
-                    'usersId'
+                    'id'
                 ]
             }
         },

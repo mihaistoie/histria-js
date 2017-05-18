@@ -23,6 +23,9 @@ class User extends index_1.View {
     get id() {
         return this._children.id.value;
     }
+    get listId() {
+        return this._children.listId.value;
+    }
     list() {
         return this._children.list.getValue();
     }
@@ -67,6 +70,9 @@ class UserErrors extends index_1.InstanceErrors {
     get id() {
         return this._messages.id;
     }
+    get listId() {
+        return this._messages.listId;
+    }
 }
 exports.UserErrors = UserErrors;
 class UserState extends index_1.InstanceState {
@@ -81,6 +87,9 @@ class UserState extends index_1.InstanceState {
     }
     get id() {
         return this._states.id;
+    }
+    get listId() {
+        return this._states.listId;
     }
 }
 exports.UserState = UserState;
@@ -106,6 +115,11 @@ exports.USER_SCHEMA = {
             type: 'integer',
             generated: true,
             format: 'id'
+        },
+        listId: {
+            type: 'integer',
+            isReadOnly: true,
+            format: 'id'
         }
     },
     relations: {
@@ -117,10 +131,10 @@ exports.USER_SCHEMA = {
             nameSpace: 'view-many-view',
             title: 'list',
             localFields: [
-                'id'
+                'listId'
             ],
             foreignFields: [
-                'usersId'
+                'id'
             ]
         }
     },

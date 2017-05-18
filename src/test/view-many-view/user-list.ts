@@ -81,14 +81,6 @@ export const
                 type: 'integer',
                 generated: true,
                 format: 'id'
-            },
-            usersId: {
-                type: 'array',
-                items: {
-                    type: 'integer',
-                    isReadOnly: true,
-                    format: 'id'
-                }
             }
         },
         relations: {
@@ -100,10 +92,10 @@ export const
                 nameSpace: 'view-many-view',
                 title: 'users',
                 localFields: [
-                    'usersId'
+                    'id'
                 ],
                 foreignFields: [
-                    'id'
+                    'listId'
                 ]
             }
         },

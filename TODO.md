@@ -1,13 +1,12 @@
 
-## View hasOne view
-
 ## View hasMany view
+* sort views
+* cyclic references 
+* tree
 
 ## Remove (async)
 
-* remove view
-* notify views 
-* notify master view
+* notify master view remove child
 * restore removed 
 * block remove rule 
 

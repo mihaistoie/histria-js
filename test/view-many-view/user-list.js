@@ -74,14 +74,6 @@ exports.USERLIST_SCHEMA = {
             type: 'integer',
             generated: true,
             format: 'id'
-        },
-        usersId: {
-            type: 'array',
-            items: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
-            }
         }
     },
     relations: {
@@ -93,10 +85,10 @@ exports.USERLIST_SCHEMA = {
             nameSpace: 'view-many-view',
             title: 'users',
             localFields: [
-                'usersId'
+                'id'
             ],
             foreignFields: [
-                'id'
+                'listId'
             ]
         }
     },

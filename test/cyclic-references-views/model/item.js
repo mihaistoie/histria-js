@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../../../index");
-class Group extends index_1.View {
+class Item extends index_1.View {
     get id() {
         return this._children.id.value;
     }
-    get itemId() {
-        return this._children.itemId.value;
+    get groupId() {
+        return this._children.groupId.value;
     }
-    get items() {
-        return this._children.items;
+    get groups() {
+        return this._children.groups;
     }
-    item() {
-        return this._children.item.getValue();
+    group() {
+        return this._children.group.getValue();
     }
-    setItem(value) {
-        return this._children.item.setValue(value);
+    setGroup(value) {
+        return this._children.group.setValue(value);
     }
     get $states() {
         return this._states;
@@ -26,92 +26,92 @@ class Group extends index_1.View {
     init() {
         super.init();
         let that = this;
-        that._schema = exports.GROUP_SCHEMA;
+        that._schema = exports.ITEM_SCHEMA;
     }
     createStates() {
         let that = this;
-        that._states = new GroupState(that, that._schema);
+        that._states = new ItemState(that, that._schema);
     }
     createErrors() {
         let that = this;
-        that._errors = new GroupErrors(that, that._schema);
+        that._errors = new ItemErrors(that, that._schema);
     }
 }
-Group.isPersistent = false;
-exports.Group = Group;
-class GroupErrors extends index_1.InstanceErrors {
+Item.isPersistent = false;
+exports.Item = Item;
+class ItemErrors extends index_1.InstanceErrors {
     get $() {
         return this._messages.$;
     }
     get id() {
         return this._messages.id;
     }
-    get itemId() {
-        return this._messages.itemId;
+    get groupId() {
+        return this._messages.groupId;
     }
-    get items() {
-        return this._messages.items;
+    get groups() {
+        return this._messages.groups;
     }
 }
-exports.GroupErrors = GroupErrors;
-class GroupState extends index_1.InstanceState {
+exports.ItemErrors = ItemErrors;
+class ItemState extends index_1.InstanceState {
     get id() {
         return this._states.id;
     }
-    get itemId() {
-        return this._states.itemId;
+    get groupId() {
+        return this._states.groupId;
     }
 }
-exports.GroupState = GroupState;
-exports.GROUP_SCHEMA = {
+exports.ItemState = ItemState;
+exports.ITEM_SCHEMA = {
     type: 'object',
-    name: 'group',
     view: true,
-    nameSpace: 'cyclicreferences',
+    nameSpace: 'cyclicreferencesviews',
     properties: {
         id: {
             type: 'integer',
             generated: true,
             format: 'id'
         },
-        itemId: {
+        groupId: {
             type: 'integer',
             isReadOnly: true,
             format: 'id'
         }
     },
     relations: {
-        items: {
+        groups: {
             type: 'hasMany',
-            model: 'item',
+            model: 'group',
             aggregationKind: 'composite',
-            invRel: 'group',
-            nameSpace: 'cyclicreferences',
-            title: 'items',
+            invRel: 'item',
+            nameSpace: 'cyclicreferencesviews',
+            title: 'groups',
             localFields: [
                 'id'
             ],
             foreignFields: [
-                'groupId'
+                'itemId'
             ]
         },
-        item: {
+        group: {
             type: 'belongsTo',
-            model: 'item',
+            model: 'group',
             aggregationKind: 'composite',
-            invRel: 'groups',
-            nameSpace: 'cyclicreferences',
-            title: 'item',
+            invRel: 'items',
+            nameSpace: 'cyclicreferencesviews',
+            title: 'group',
             localFields: [
-                'itemId'
+                'groupId'
             ],
             foreignFields: [
                 'id'
             ]
         }
     },
+    name: 'item',
     meta: {
-        parent: 'item',
-        parentRelation: 'item'
+        parent: 'group',
+        parentRelation: 'group'
     }
 };

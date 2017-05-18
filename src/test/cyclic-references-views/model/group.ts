@@ -5,112 +5,112 @@ import {
     EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState,
     NumberValue
 } from '../../../index';
-import { Group } from './group';
+import { Item } from './item';
 
 
-export class Item extends View {
+export class Group extends View {
     public static isPersistent: boolean = false;
     public get id(): any {
         return this._children.id.value;
     }
-    public get groupId(): any {
-        return this._children.groupId.value;
+    public get itemId(): any {
+        return this._children.itemId.value;
     }
-    get groups(): HasManyComposition<Group> {
-        return this._children.groups;
+    get items(): HasManyComposition<Item> {
+        return this._children.items;
     }
-    public group(): Promise<Group> {
-        return this._children.group.getValue();
+    public item(): Promise<Item> {
+        return this._children.item.getValue();
     }
-    public setGroup(value: Group): Promise<Group> {
-        return this._children.group.setValue(value);
+    public setItem(value: Item): Promise<Item> {
+        return this._children.item.setValue(value);
     }
-    public get $states(): ItemState {
-        return <ItemState>this._states;
+    public get $states(): GroupState {
+        return <GroupState>this._states;
     }
-    public get $errors(): ItemErrors {
-        return <ItemErrors>this._errors;
+    public get $errors(): GroupErrors {
+        return <GroupErrors>this._errors;
     }
     protected init() {
         super.init();
         let that = this;
-        that._schema = ITEM_SCHEMA;
+        that._schema = GROUP_SCHEMA;
     }
     protected createStates() {
         let that = this;
-        that._states = new ItemState(that, that._schema);
+        that._states = new GroupState(that, that._schema);
     }
     protected createErrors() {
         let that = this;
-        that._errors = new ItemErrors(that, that._schema);
+        that._errors = new GroupErrors(that, that._schema);
     }
 }
 
-export class ItemErrors extends InstanceErrors {
+export class GroupErrors extends InstanceErrors {
     public get $(): ErrorState {
         return this._messages.$;
     }
     public get id(): ErrorState {
         return this._messages.id;
     }
-    public get groupId(): ErrorState {
-        return this._messages.groupId;
+    public get itemId(): ErrorState {
+        return this._messages.itemId;
     }
-    public get groups(): ErrorState {
-        return this._messages.groups;
+    public get items(): ErrorState {
+        return this._messages.items;
     }
 }
 
-export class ItemState extends InstanceState {
+export class GroupState extends InstanceState {
     public get id(): IdState {
         return this._states.id;
     }
-    public get groupId(): IdState {
-        return this._states.groupId;
+    public get itemId(): IdState {
+        return this._states.itemId;
     }
 }
 export const
-    ITEM_SCHEMA = {
+    GROUP_SCHEMA = {
         type: 'object',
-        name: 'item',
+        name: 'group',
         view: true,
-        nameSpace: 'cyclicreferences',
+        nameSpace: 'cyclicreferencesviews',
         properties: {
             id: {
                 type: 'integer',
                 generated: true,
                 format: 'id'
             },
-            groupId: {
+            itemId: {
                 type: 'integer',
                 isReadOnly: true,
                 format: 'id'
             }
         },
         relations: {
-            groups: {
+            items: {
                 type: 'hasMany',
-                model: 'group',
+                model: 'item',
                 aggregationKind: 'composite',
-                invRel: 'item',
-                nameSpace: 'cyclicreferences',
-                title: 'groups',
+                invRel: 'group',
+                nameSpace: 'cyclicreferencesviews',
+                title: 'items',
                 localFields: [
                     'id'
                 ],
                 foreignFields: [
-                    'itemId'
+                    'groupId'
                 ]
             },
-            group: {
+            item: {
                 type: 'belongsTo',
-                model: 'group',
+                model: 'item',
                 aggregationKind: 'composite',
-                invRel: 'items',
-                nameSpace: 'cyclicreferences',
-                title: 'group',
+                invRel: 'groups',
+                nameSpace: 'cyclicreferencesviews',
+                title: 'item',
                 localFields: [
-                    'groupId'
+                    'itemId'
                 ],
                 foreignFields: [
                     'id'
@@ -118,7 +118,7 @@ export const
             }
         },
         meta: {
-            parent: 'group',
-            parentRelation: 'group'
+            parent: 'item',
+            parentRelation: 'item'
         }
     };

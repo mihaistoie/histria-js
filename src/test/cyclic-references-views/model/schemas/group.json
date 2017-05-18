@@ -1,21 +1,22 @@
 {
     "type": "object",
-    "name": "item",
+    "name": "group",
     "view": true,
-    "nameSpace": "cyclicreferences",
+    "nameSpace": "cyclicreferencesviews",
     "properties": {},
     "relations": {
-        "groups": {
+        "items": {
             "type": "hasMany",
-            "model": "group",
+            "model": "item",
             "aggregationKind": "composite",
-            "invRel": "item"
+            "invRel": "group"
         },
-        "group": {
+        "item": {
             "type": "belongsTo",
-            "model": "group",
+            "model": "item",
             "aggregationKind": "composite",
-            "invRel": "items"
+            "invRel": "groups"
         }
+        
     }
 }

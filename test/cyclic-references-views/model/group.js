@@ -67,7 +67,7 @@ exports.GROUP_SCHEMA = {
     type: 'object',
     name: 'group',
     view: true,
-    nameSpace: 'cyclicreferences',
+    nameSpace: 'cyclicreferencesviews',
     properties: {
         id: {
             type: 'integer',
@@ -86,7 +86,7 @@ exports.GROUP_SCHEMA = {
             model: 'item',
             aggregationKind: 'composite',
             invRel: 'group',
-            nameSpace: 'cyclicreferences',
+            nameSpace: 'cyclicreferencesviews',
             title: 'items',
             localFields: [
                 'id'
@@ -100,7 +100,7 @@ exports.GROUP_SCHEMA = {
             model: 'item',
             aggregationKind: 'composite',
             invRel: 'groups',
-            nameSpace: 'cyclicreferences',
+            nameSpace: 'cyclicreferencesviews',
             title: 'item',
             localFields: [
                 'itemId'

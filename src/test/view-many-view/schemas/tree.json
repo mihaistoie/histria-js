@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "name": "tree",
+	"view": true,
+    "nameSpace": "view-many-view",
+    "properties": {
+        "title": {
+            "type": "string"
+        }
+    },
+    "relations": {
+        "leafs": {
+            "type": "hasMany",
+            "model": "tree",
+            "aggregationKind": "composite",
+            "invRel": "parent"
+        },
+        "parent": {
+            "type": "belongsTo",
+            "model": "tree",
+            "aggregationKind": "composite",
+            "invRel": "leafs"
+        }
+    }
+}

@@ -72,9 +72,8 @@ export class ItemState extends InstanceState {
 export const
     ITEM_SCHEMA = {
         type: 'object',
-        name: 'item',
         view: true,
-        nameSpace: 'cyclicreferences',
+        nameSpace: 'cyclicreferencesviews',
         properties: {
             id: {
                 type: 'integer',
@@ -93,7 +92,7 @@ export const
                 model: 'group',
                 aggregationKind: 'composite',
                 invRel: 'item',
-                nameSpace: 'cyclicreferences',
+                nameSpace: 'cyclicreferencesviews',
                 title: 'groups',
                 localFields: [
                     'id'
@@ -107,7 +106,7 @@ export const
                 model: 'group',
                 aggregationKind: 'composite',
                 invRel: 'items',
-                nameSpace: 'cyclicreferences',
+                nameSpace: 'cyclicreferencesviews',
                 title: 'group',
                 localFields: [
                     'groupId'
@@ -117,6 +116,7 @@ export const
                 ]
             }
         },
+        name: 'item',
         meta: {
             parent: 'group',
             parentRelation: 'group'

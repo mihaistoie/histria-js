@@ -1,5 +1,5 @@
 import { User } from '../persistence-query-model';
-import { removing } from '../../../index';
+import { removing, editing } from '../../../index';
 
 
 
@@ -10,6 +10,14 @@ export class UserRules {
             return false;
         return true;
     }
+
+    @editing(User)
+    static async canModifyUser(user: User, eventInfo: any): Promise<boolean> {
+        if (user.firstName === 'Albert')
+            return false;
+        return true;
+    }
+
 
 }
 

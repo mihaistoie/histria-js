@@ -1,11 +1,8 @@
-## Remove (async)
-* block remove rule 
 
+## Removing 
+//: notify parent ?
 
 ## Mark dirty (async)
 
-* Mark parent is dirty 
-* Before modify rules
-* After  modify rules
 * block modify rule
 

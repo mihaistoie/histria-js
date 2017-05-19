@@ -25,6 +25,10 @@ async function testFindOne() {
     await user.remove();
     user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Jack' });
     assert.notEqual(user, null, 'Rule removing called : can\'t remove Jack');
+    user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Albert' });
+    assert.notEqual(user, null, '(5) User Found');
+    await user.setFirstName('Jack');
+    assert.equal(user.firstName, 'Jack', 'Rule editing called : can\'t modify Albert');
     transaction.destroy();
 }
 async function testFindMany() {
@@ -69,6 +73,11 @@ describe('Persistence Test', () => {
                     id: 101,
                     firstName: 'John',
                     lastName: 'Smith',
+                },
+                {
+                    id: 103,
+                    firstName: 'Albert',
+                    lastName: 'Camus',
                 }
             ]
         });

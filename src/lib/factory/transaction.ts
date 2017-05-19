@@ -126,7 +126,7 @@ export class Transaction implements TransactionContainer {
     public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<boolean> {
         let that = this;
         args = args || [];
-        let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems].indexOf(eventType) >= 0;
+        let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems, EventType.editing, EventType.removing].indexOf(eventType) >= 0;
         const pi = propagate && args && args.length ? 0 : -1;
         const list = that._subscribers.get(eventType);
         if (!list) return true;

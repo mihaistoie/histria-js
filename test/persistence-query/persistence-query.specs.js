@@ -28,7 +28,7 @@ async function testFindOne() {
     user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Albert' });
     assert.notEqual(user, null, '(5) User Found');
     await user.setFirstName('Jack');
-    assert.equal(user.firstName, 'Jack', 'Rule editing called : can\'t modify Albert');
+    assert.equal(user.firstName, 'Albert', 'Rule editing called : can\'t modify Albert');
     transaction.destroy();
 }
 async function testFindMany() {

@@ -129,16 +129,19 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     public get isDirty(): boolean {
         return this._model._isDirty;
     }
-    public async markDirty(): Promise<void> {
+    public async markDirty(): Promise<boolean> {
         const that = this;
-        if (that.isDirty) return;
+        if (that.isDirty) return true;
         if (that._parent) {
             const owner: ModelObject = <ModelObject>that._parent;
-            await owner.markDirty();
+            if (!await owner.markDirty())
+                return false;
         }
-        await that._emitInstanceEvent(EventType.editing);
+        if (!await that._emitInstanceEvent(EventType.editing))
+            return false;
         that._model._isDirty = true;
         await that._emitInstanceEvent(EventType.edited);
+        return true;
     }
     public getPath(propName?: string): string {
         let that = this;
@@ -340,7 +343,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         const that = this;
         if (that.isDeleted) return;
         // Mark dirty
-        await that.markDirty();
+        if (!await that.markDirty()) return;
+        // Before remove rules
+        if (!await that._emitInstanceEvent(EventType.removing)) return;
         // Remove children removed
         let promises: Promise<void | ModelObject>[] = [];
         that.enumChildren((child) => {
@@ -350,8 +355,6 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             promises.push(modelChild._remove(rootIsPersistant));
         }, false);
         await Promise.all(promises);
-        // Before remove rules
-        await that._emitInstanceEvent(EventType.removing);
         that._model._isDeleted = true;
 
         if (that._parent) {
@@ -412,7 +415,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         let eventInfo = that.transaction.eventInfo;
         eventInfo.push({ path: that.getPath(propName), eventType: EventType.propChanged });
         try {
-            await that.markDirty();
+            if (!await that.markDirty()) return;
             await that._transaction.emitInstanceEvent(op, eventInfo, that, propName, param);
         } finally {
             eventInfo.pop()
@@ -425,14 +428,16 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that._errorByName('$').addException(ex);
     }
 
-    private async _emitInstanceEvent(event: EventType): Promise<void> {
+    private async _emitInstanceEvent(event: EventType): Promise<boolean> {
         const that = this;
         const eventInfo = that.transaction.eventInfo;
         try {
             if (that.status === ObjectStatus.idle)
-                await that._transaction.emitInstanceEvent(event, eventInfo, that);
+                return await that._transaction.emitInstanceEvent(event, eventInfo, that);
+            return true;
         } catch (ex) {
             that._addException(ex);
+            return false;
         }
     }
     public async changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void> {
@@ -448,10 +453,10 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                 if (error) error.error = '';
                 try {
                     // Clear errors for propName
+                    if (!await that.markDirty()) return
                     await that.beforePropertyChanged(propName, oldValue, newValue);
                     // Change property
                     hnd();
-                    await that.markDirty();
                     if (that.status === ObjectStatus.idle) {
                         // Validation rules
                         await that._transaction.emitInstanceEvent(EventType.propValidate, eventInfo, that, propName, newValue);

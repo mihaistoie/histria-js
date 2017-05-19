@@ -124,11 +124,12 @@ function validateProp(value: any, propName: string, propSchema: any, ctx: UserCo
     }
 }
 
-export async function validateAfterPropChanged(eventInfo: EventInfo, classOfInstance: any, instances: any, args?: any[]) {
+export async function validateAfterPropChanged(eventInfo: EventInfo, classOfInstance: any, instances: any, args?: any[]): Promise<boolean> {
     let propName = args[0];
     let instance = instances[0];
     let propSchema = instance.getSchema(propName);
-    if (!propSchema) return;
-    validateProp(args[1], propName, propSchema, <UserContext>instance.context, <ErrorState>instance.$errors[propName], <State>instance.$states[propName])
+    if (!propSchema) return true;
+    validateProp(args[1], propName, propSchema, <UserContext>instance.context, <ErrorState>instance.$errors[propName], <State>instance.$states[propName]);
+    return true;
 }
 

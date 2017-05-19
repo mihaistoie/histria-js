@@ -53,7 +53,7 @@ export interface TransactionContainer {
     findOne<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T>;
     findOneInCache<T extends ObservableObject>(filter: any, classOfInstance: any): T;
     find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
-    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): void;
+    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): Promise<boolean>;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     removeInstance(instance: ObservableObject): void;
     remove(instance: ObservableObject): void;

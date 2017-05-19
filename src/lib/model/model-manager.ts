@@ -348,49 +348,55 @@ export class ModelManager {
 }
 
 
-async function instanceRuleByName(name: string, eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+async function instanceRuleByName(name: string, eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
+    let res = true;
+    const returnRes = (name === 'editing') || (name === 'removing');
     let mm = modelManager();
     let rules = mm.rulesForByName(name, classOfInstance);
     if (rules.length) {
         let rArgs = instances.concat(eventInfo);
         for (let i = 0, len = rules.length; i < len; i++) {
             let rule = rules[i];
-            await rule.apply(null, rArgs);
+            if (!await rule.apply(null, rArgs))
+                res = false;
         }
     }
+    if (returnRes)
+        return res;
+    return true;
 }
 
-export async function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function initRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('init', eventInfo, classOfInstance, instances, args);
 }
 
-export async function editingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function editingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('editing', eventInfo, classOfInstance, instances, args);
 }
 
-export async function removingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function removingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('removing', eventInfo, classOfInstance, instances, args);
 }
 
-export async function savingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function savingRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('saving', eventInfo, classOfInstance, instances, args);
 }
 
-export async function editedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function editedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('edited', eventInfo, classOfInstance, instances, args);
 }
 
-export async function removedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function removedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('removed', eventInfo, classOfInstance, instances, args);
 }
 
-export async function savedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function savedRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     return instanceRuleByName('saved', eventInfo, classOfInstance, instances, args);
 }
 
 
 
-export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function propagationRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForPropChange(classOfInstance, propName);
@@ -403,10 +409,11 @@ export async function propagationRules(eventInfo: EventInfo, classOfInstance: an
             await rule.apply(null, rArgs);
         }
     }
+    return true;
 }
 
 
-export async function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function propValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForPropValidate(classOfInstance, propName);
@@ -417,12 +424,13 @@ export async function propValidateRules(eventInfo: EventInfo, classOfInstance: a
             await rule.apply(null, rArgs);
         }
     }
+    return true;
 
 }
 
 
 
-export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function objValidateRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     let mm = modelManager();
     let rules = mm.rulesObjValidate(classOfInstance);
 
@@ -433,10 +441,11 @@ export async function objValidateRules(eventInfo: EventInfo, classOfInstance: an
             await rule.apply(null, rArgs);
         }
     }
+    return true;
 }
 
 
-export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForAddItem(classOfInstance, propName);
@@ -449,9 +458,10 @@ export async function addItemRules(eventInfo: EventInfo, classOfInstance: any, i
             await rule.apply(null, rArgs);
         }
     }
+    return true;
 }
 
-export async function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForRmvItem(classOfInstance, propName);
@@ -464,10 +474,11 @@ export async function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, i
             await rule.apply(null, rArgs);
         }
     }
+    return true;
 }
 
 
-export async function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]) {
+export async function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean> {
     let mm = modelManager();
     let propName = args[0];
     let rules = mm.rulesForSetItems(classOfInstance, propName);
@@ -480,6 +491,7 @@ export async function setItemsRules(eventInfo: EventInfo, classOfInstance: any, 
             await rule.apply(null, rArgs);
         }
     }
+    return true;
 }
 
 export function modelManager(): ModelManager {

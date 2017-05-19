@@ -104,37 +104,44 @@ export class Transaction implements TransactionContainer {
 
 
     }
-    private async _propagateEvent(list: any[], eventInfo: EventInfo, instance: ObservableObject, nInstances: ObservableObject[], args: any[], argIndex: number) {
-        let that = this;
-        for (let item of list)
-            await item(eventInfo, instance.constructor, nInstances, args);
+    private async _propagateEvent(list: any[], eventInfo: EventInfo, instance: ObservableObject, nInstances: ObservableObject[], args: any[], argIndex: number): Promise<boolean> {
+        const that = this;
+        let res = true;
+
+        for (let item of list) {
+            if (!await item(eventInfo, instance.constructor, nInstances, args))
+                res = false;
+        }
         const listeners = instance.getListeners(eventInfo.isLazyLoading);
         for (let listener of listeners) {
             let children = nInstances.slice();
             let newArgs = args.slice();
             newArgs[argIndex] = listener.propertyName + '.' + newArgs[argIndex];
             children.unshift(listener.instance);
-            await that._propagateEvent(list, eventInfo, listener.instance, children, newArgs, argIndex);
-
+            if (!await that._propagateEvent(list, eventInfo, listener.instance, children, newArgs, argIndex))
+                res = false;
         }
-
+        return res;
     }
-    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]) {
+    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<boolean> {
         let that = this;
         args = args || [];
         let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems].indexOf(eventType) >= 0;
         const pi = propagate && args && args.length ? 0 : -1;
         const list = that._subscribers.get(eventType);
-        if (!list) return;
+        if (!list) return true;
+        let res = true;
         if (propagate)
-            await that._propagateEvent(list, eventInfo, instance, [instance], args, pi);
+            res = await that._propagateEvent(list, eventInfo, instance, [instance], args, pi);
         else {
             for (let item of list)
-                await item(eventInfo, instance.constructor, [instance], args)
-        }
+                if (!await item(eventInfo, instance.constructor, [instance], args))
+                    res = false;
 
+        }
+        return res;
     }
-    public subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<void>) {
+    public subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>) {
         let that = this;
         let list = that._subscribers.get(eventType);
         if (!list) {

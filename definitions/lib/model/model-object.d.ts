@@ -37,7 +37,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     readonly isNew: boolean;
     readonly isDeleted: boolean;
     readonly isDirty: boolean;
-    markDirty(): Promise<void>;
+    markDirty(): Promise<boolean>;
     getPath(propName?: string): string;
     readonly propertyName: string;
     getRoot(): ObservableObject;

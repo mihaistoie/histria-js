@@ -28,6 +28,10 @@ async function testFindOne(): Promise<void> {
     user = await transaction.findOne<User>(User, { firstName: 'Jack' });
     assert.notEqual(user, null, '(4) User Found');
 
+    await user.remove();
+    user = await transaction.findOne<User>(User, { firstName: 'Jack' });
+    assert.notEqual(user, null, 'Rule removing called : can\'t remove Jack');
+
     transaction.destroy();
 }
 

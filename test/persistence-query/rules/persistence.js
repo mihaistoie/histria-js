@@ -10,7 +10,9 @@ const persistence_query_model_1 = require("../persistence-query-model");
 const index_1 = require("../../../index");
 class UserRules {
     static async canRemoveUser(user, eventInfo) {
-        return false;
+        if (user.firstName === 'Jack')
+            return false;
+        return true;
     }
 }
 __decorate([

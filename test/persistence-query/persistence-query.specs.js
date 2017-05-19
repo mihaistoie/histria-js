@@ -22,6 +22,9 @@ async function testFindOne() {
     assert.equal(user, null, '(3) User not found');
     user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Jack' });
     assert.notEqual(user, null, '(4) User Found');
+    await user.remove();
+    user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Jack' });
+    assert.notEqual(user, null, 'Rule removing called : can\'t remove Jack');
     transaction.destroy();
 }
 async function testFindMany() {

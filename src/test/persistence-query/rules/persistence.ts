@@ -6,8 +6,9 @@ import { removing } from '../../../index';
 export class UserRules {
     @removing(User)
     static async canRemoveUser(user: User, eventInfo: any): Promise<boolean> {
-        return false;
-
+        if (user.firstName === 'Jack')
+            return false;
+        return true;
     }
 
 }

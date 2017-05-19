@@ -340,7 +340,7 @@ export class ModelManager {
         } else if (ruleType === EventType.edited) {
             ci.editedRulesRules.push(ri);
         } else if (ruleType === EventType.removing) {
-            ci.savingRules.push(ri);
+            ci.removingRules.push(ri);
         } else if (ruleType === EventType.removed) {
             ci.removedRules.push(ri);
         }

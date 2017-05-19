@@ -15,7 +15,7 @@
                 "--inspect",
                 "--require",
                 "source-map-support/register",
-                "./test/persistence-query/*.specs.js"
+                "./test/**/*.specs.js"
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": null,

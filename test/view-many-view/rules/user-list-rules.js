@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 const view_many_view_model_1 = require("../view-many-view-model");
 const index_1 = require("../../../index");
-const VAT_TAX = 0.193;
 class UserListRules {
     static async afterAddIUser(users, eventInfo, user) {
         await users.setUserCount(users.userCount + 1);

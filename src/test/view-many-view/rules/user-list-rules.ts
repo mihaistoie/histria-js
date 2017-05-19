@@ -2,9 +2,6 @@ import { UserList, User } from '../view-many-view-model';
 import { propChanged, setItems, addItem, init, rmvItem, title } from '../../../index';
 
 
-const
-    VAT_TAX = 0.193;
-
 
 export class UserListRules {
     @addItem(UserList, 'users')

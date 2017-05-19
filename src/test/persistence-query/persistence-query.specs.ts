@@ -1,7 +1,7 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import { Transaction } from '../../index';
+import { Transaction, loadRules } from '../../index';
 import { User } from './persistence-query-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
@@ -91,7 +91,11 @@ describe('Persistence Test', () => {
 
             ]
         });
-        done();
+        loadRules(path.join(__dirname, 'rules')).then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
     });
 
     it('Persistence Find One', function (done) {

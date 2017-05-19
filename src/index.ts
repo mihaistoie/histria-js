@@ -6,7 +6,7 @@ export { ErrorState } from './lib/model/states/error-state';
 export { modelManager } from './lib/model/model-manager';
 export { Transaction } from './lib/factory/transaction';
 export { HasManyComposition, HasManyAggregation, HasManyRefObject } from './lib/model/relations/role-has-many';
-export { propChanged, addItem, rmvItem, setItems, init, title, loadRules, validate } from './lib/model/rules/decorators';
+export { propChanged, addItem, rmvItem, setItems, init, title, loadRules, validate, editing, edited, removing, removed, saving, saved } from './lib/model/rules/decorators';
 export { State, StringState, IdState, IntegerState, BooleanState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from './lib/model/states/state';
 export { IntegerValue, NumberValue } from './lib/model/types/number';
 export { IdValue } from './lib/model/types/id';

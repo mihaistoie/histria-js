@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
+const path = require("path");
 const index_1 = require("../../index");
 const persistence_query_model_1 = require("./persistence-query-model");
 const histria_utils_1 = require("histria-utils");
@@ -68,7 +69,11 @@ describe('Persistence Test', () => {
                 }
             ]
         });
-        done();
+        index_1.loadRules(path.join(__dirname, 'rules')).then(() => {
+            done();
+        }).catch((ex) => {
+            done(ex);
+        });
     });
     it('Persistence Find One', function (done) {
         testFindOne().then(function () {

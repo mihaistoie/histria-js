@@ -1,8 +1,7 @@
 
-## Removing 
-//: notify parent ?
+# Save (commit) 
+# Cancel (rollback) 
 
-## Mark dirty (async)
-
-* block modify rule
-
+1/ Transaction : master object (view)
+2/ cancel: transaction.clear + recreate master object
+3/ save 

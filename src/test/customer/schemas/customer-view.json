@@ -1,0 +1,24 @@
+{
+    "name": "customerView",
+    "type": "object",
+    "view": true,
+    "nameSpace": "customer-view-sample",
+    "properties": {
+        "fullName": {
+            "title": "FullName Name",
+            "type": "string"
+        }
+    },
+    "relations": {
+        "customer": {
+            "type": "hasOne",
+            "model": "customer",
+            "aggregationKind": "composite"
+        }
+    },
+    "states": {
+        "fullName": {
+            "isReadOnly": true
+        }
+    }
+}

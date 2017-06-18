@@ -1,0 +1,15 @@
+{
+    "name": "customer",
+    "type": "object",
+    "nameSpace": "customer-view-sample",
+    "properties": {
+        "firstName": {
+            "title": "First Name",
+            "type": "string"
+        },
+        "lastName": {
+            "title": "Last Name",
+            "type": "string"
+        }
+    }
+}

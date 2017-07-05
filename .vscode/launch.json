@@ -1,7 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-	{
+        {
             "name": "Test debug",
             "type": "node",
             "request": "launch",
@@ -12,7 +12,7 @@
                 "spec",
                 "--timeout",
                 "0",
-                "--inspect",
+                "--inspect-brk",
                 "--require",
                 "source-map-support/register",
                 "./test/**/*.specs.js"

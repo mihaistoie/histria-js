@@ -111,10 +111,6 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         });
         imports.push('');
 
-
-
-
-
         _genSchema(schema, className, code)
 
         ns.code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));

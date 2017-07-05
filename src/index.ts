@@ -11,4 +11,6 @@ export { State, StringState, IdState, IntegerState, BooleanState, EnumState, Num
 export { IntegerValue, NumberValue } from './lib/model/types/number';
 export { IdValue } from './lib/model/types/id';
 export { classGenerator } from './lib/generators/classgen';
+export { serializeInstance } from './lib/serialization/serialization';
+
 

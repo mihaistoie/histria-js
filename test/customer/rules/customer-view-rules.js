@@ -9,10 +9,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const customer_view_sample_model_1 = require("../customer-view-sample-model");
 const index_1 = require("../../../index");
 class CustomerViewRules {
-    static async userNameChanged(viewOfCustomer, user, eventInfo) {
+    static async customerNameChanged(viewOfCustomer, user, eventInfo) {
         await CustomerViewRules.updateFullName(viewOfCustomer, user);
     }
-    static async userChanged(viewOfCustomer, eventInfo, newValue, oldValue) {
+    static async customerChanged(viewOfCustomer, eventInfo, newValue, oldValue) {
         await CustomerViewRules.updateFullName(viewOfCustomer, newValue);
     }
     static async updateFullName(viewOfCustomer, customer) {
@@ -33,10 +33,10 @@ class CustomerViewRules {
 }
 __decorate([
     index_1.propChanged(customer_view_sample_model_1.CustomerView, 'customer.firstName', 'customer.lastName')
-], CustomerViewRules, "userNameChanged", null);
+], CustomerViewRules, "customerNameChanged", null);
 __decorate([
     index_1.propChanged(customer_view_sample_model_1.CustomerView, 'customer')
-], CustomerViewRules, "userChanged", null);
+], CustomerViewRules, "customerChanged", null);
 __decorate([
     index_1.title(customer_view_sample_model_1.CustomerView, 'Calculate:  FullName = FirstName + LastName')
 ], CustomerViewRules, "updateFullName", null);

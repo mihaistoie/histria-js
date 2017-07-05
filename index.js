@@ -52,3 +52,5 @@ var id_1 = require("./lib/model/types/id");
 exports.IdValue = id_1.IdValue;
 var classgen_1 = require("./lib/generators/classgen");
 exports.classGenerator = classgen_1.classGenerator;
+var serialization_1 = require("./lib/serialization/serialization");
+exports.serializeInstance = serialization_1.serializeInstance;

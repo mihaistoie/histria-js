@@ -5,11 +5,45 @@ const path = require("path");
 const index_1 = require("../../index");
 const histria_utils_1 = require("histria-utils");
 const compositions_model_1 = require("./model/compositions-model");
+const pattern1 = {
+    properties: [
+        'id',
+        { 'engineId': 'engine.id' },
+        { 'engineCode': 'engine.name' }
+    ]
+};
+const pattern2 = {
+    properties: [
+        'id',
+        {
+            engine: 'engine',
+            properties: [
+                'id',
+                'name'
+            ]
+        }
+    ]
+};
 async function testCreate() {
     let transaction = new index_1.Transaction();
     let car = await transaction.create(compositions_model_1.Car);
     let engine = await transaction.create(compositions_model_1.Engine);
+    await engine.setName('FA321');
     await car.setEngine(engine);
+    let o = await index_1.serializeInstance(car, pattern1);
+    assert.deepEqual(o, {
+        id: car.id,
+        engineId: engine.id,
+        engineCode: 'FA321'
+    }, 'Serialization 1');
+    o = await index_1.serializeInstance(car, pattern2);
+    assert.deepEqual(o, {
+        id: car.id,
+        engine: {
+            id: engine.id,
+            name: 'FA321'
+        }
+    }, 'Serialization 2');
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
     assert.equal(engine.carId, car.uuid, 'Owner of engine is car');
@@ -143,7 +177,9 @@ async function testRemove() {
     transaction.destroy();
 }
 describe('Relation One to One, Composition', () => {
-    before(function (done) {
+    before(() => {
+        histria_utils_1.serialization.check(pattern1);
+        histria_utils_1.serialization.check(pattern2);
         let dm = histria_utils_1.dbManager();
         dm.registerNameSpace('compositions', 'memory', { compositionsInParent: true });
         let store = dm.store('compositions');
@@ -173,41 +209,18 @@ describe('Relation One to One, Composition', () => {
                 }
             ]
         });
-        index_1.loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
+        return index_1.loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('One to one composition - create', (done) => {
-        testCreate().then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
+    it('One to one composition - create', () => {
+        return testCreate();
     });
-    it('One to one composition - load', (done) => {
-        testLoad().then(() => {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        });
+    it('One to one composition - load', () => {
+        return testLoad();
     });
-    it('One to one composition - rules', (done) => {
-        testRules().then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
+    it('One to one composition - rules', () => {
+        return testRules();
     });
-    it('One to one composition - remove', (done) => {
-        testRemove().then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
-    });
-    it('One to one composition - states errors', (done) => {
-        done();
+    it('One to one composition - remove', () => {
+        return testRemove();
     });
 });

@@ -18,12 +18,12 @@
     "source-map-support": "latest",
     "ts-node": "latest",
     "tslint": "latest",
-    "typescript": "2.x.x"
+    "typescript": "^2.4.1"
   },
   "dependencies": {
-    "histria-db-memory": "https://github.com/mihaistoie/histria-db-memory.git#master",
-    "histria-utils": "https://github.com/mihaistoie/histria-utils.git#master",
-    "uuid": "latest"
+    "histria-db-memory": "git+https://github.com/mihaistoie/histria-db-memory.git#master",
+    "histria-utils": "git+https://github.com/mihaistoie/histria-utils.git#master",
+    "uuid": "^3.1.0"
   },
   "repository": {
     "type": "git",

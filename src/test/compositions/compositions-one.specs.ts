@@ -1,20 +1,58 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import { Transaction, loadRules } from '../../index';
-import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
+import { Transaction, loadRules, serializeInstance } from '../../index';
+import { DbDriver, dbManager, DbManager, IStore, serialization } from 'histria-utils';
 import * as dbMemory from 'histria-db-memory';
 import { Car, Engine } from './model/compositions-model';
 
 
-async function testCreate(): Promise<void> {
+const
+    pattern1 = {
+        properties: [
+            'id',
+            { 'engineId': 'engine.id' },
+            { 'engineCode': 'engine.name' }
+        ]
+    };
+const
+    pattern2 = {
+        properties: [
+            'id',
+            {
+                engine: 'engine',
+                properties: [
+                    'id',
+                    'name'
+                ]
+            }
+        ]
+    };
 
+
+
+async function testCreate(): Promise<void> {
     let transaction = new Transaction();
 
     let car = await transaction.create<Car>(Car);
     let engine = await transaction.create<Engine>(Engine);
-
+    await engine.setName('FA321');
     await car.setEngine(engine);
+    let o = await serializeInstance(car, pattern1);
+    assert.deepEqual(o, {
+        id: car.id,
+        engineId: engine.id,
+        engineCode: 'FA321'
+    }, 'Serialization 1')
+    o = await serializeInstance(car, pattern2);
+    assert.deepEqual(o, {
+        id: car.id,
+        engine: {
+            id: engine.id,
+            name: 'FA321'
+        }
+    }, 'Serialization 2')
+
 
     let parent = await engine.car();
     assert.equal(car, parent, 'Owner of engine is car');
@@ -191,7 +229,10 @@ async function testRemove(): Promise<void> {
 
 
 describe('Relation One to One, Composition', () => {
-    before(function (done) {
+    before(() => {
+        serialization.check(pattern1);
+        serialization.check(pattern2);
+
         let dm: DbManager = dbManager();
         dm.registerNameSpace('compositions', 'memory', { compositionsInParent: true });
         let store = dm.store('compositions');
@@ -224,51 +265,21 @@ describe('Relation One to One, Composition', () => {
 
             ]
         });
-
-        loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
+        return loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('One to one composition - create', (done) => {
-        testCreate().then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        })
-
-
+    it('One to one composition - create', () => {
+        return testCreate()
     });
-    it('One to one composition - load', (done) => {
-        testLoad().then(() => {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        });
+    it('One to one composition - load', () => {
+        return testLoad();
     });
-    it('One to one composition - rules', (done) => {
-        testRules().then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
-
+    it('One to one composition - rules', () => {
+        return testRules();
+    });
+    it('One to one composition - remove', () => {
+        return testRemove();
     });
 
-    it('One to one composition - remove', (done) => {
-        testRemove().then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
-
-    });
-
-    it('One to one composition - states errors', (done) => {
-        done();
-
-    });
 
 
 });

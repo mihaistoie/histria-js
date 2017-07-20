@@ -131,6 +131,23 @@ async function testLoad(): Promise<void> {
     let engine = await scar.engine();
     assert.notEqual(engine, null, 'Car has engine ');
     assert.equal(engine.id, 2001, 'Engine id is 2001');
+
+    let o = await serializeInstance(scar, pattern1);
+    assert.deepEqual(o, {
+        id: scar.id,
+        engineId: engine.id,
+        engineCode: 'v1'
+    }, 'Serialization load 1')
+    o = await serializeInstance(scar, pattern2);
+    assert.deepEqual(o, {
+        id: scar.id,
+        engine: {
+            id: engine.id,
+            name: 'v1'
+        }
+    }, 'Serialization load 2')
+
+
     await engine.setName('v3')
 
     let cars = await transaction.find<Car>(Car, {});

@@ -1,8 +1,8 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import { Transaction, loadRules } from '../../index';
-import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
+import { Transaction, loadRules, serializeInstance } from '../../index';
+import { DbDriver, dbManager, DbManager, IStore, serialization } from 'histria-utils';
 
 import { Order, OrderItem } from './model/compositions-model';
 
@@ -139,6 +139,18 @@ async function testRules(): Promise<void> {
     await order.items.set([item1, item2]);
     assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
 
+    let o = await serializeInstance(order, pattern1);
+    let excepted = {
+        id: order.id,
+        totalAmount: 15,
+        items: [
+            { amount: 5, id: item1.id },
+            { amount: 10, id: item2.id }
+        ]
+
+    };
+    assert.deepEqual(o, excepted, 'Serialization rules 1');
+
     let data1 = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(data1, false);
@@ -176,10 +188,27 @@ async function testRemove(): Promise<void> {
     transaction.destroy();
 }
 
-
+const pattern1 = {
+    properties: [
+        'totalAmount',
+        {
+            items: 'items',
+            $ref: '#/definitions/orderitem'
+        },
+    ],
+    definitions: {
+        orderitem: {
+            properties: [
+                'amount'
+            ]
+        }
+    }
+};
 
 describe('Relation One to many, Composition', () => {
-    before(function (done) {
+    before(() => {
+        serialization.check(pattern1);
+
         let dm: DbManager = dbManager();
         dm.registerNameSpace('compositions', 'memory', { compositionsInParent: true });
         let store = dm.store('compositions');
@@ -225,60 +254,22 @@ describe('Relation One to many, Composition', () => {
 
             ]
         });
-
-        loadRules(path.join(__dirname, 'model', 'rules')).then(() => {
-            done();
-        }).catch((ex) => {
-            done(ex);
-        });
-
+        return loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('One to many composition - create', function (done) {
-        testCreate().then(function () {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        })
-
-
+    it('One to many composition - create', () => {
+        return testCreate();
     });
-    it('One to many composition - load', function (done) {
-        testLoad().then(function () {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        })
-
-
+    it('One to many composition - load', () => {
+        return testLoad();
     });
-    it('One to many composition - rules', function (done) {
-        testRules().then(function () {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        })
-
-
+    it('One to many composition - rules', () => {
+        return testRules();
     });
 
-    it('One to one Many composition - restore', function (done) {
-        testRestore().then(function () {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        })
-
+    it('One to one Many composition - restore', () => {
+        return testRestore()
     });
-
-
-    it('One to one Many composition - remove', function (done) {
-        testRemove().then(function () {
-            done();
-        }).catch(function (ex) {
-            done(ex);
-        })
-
+    it('One to one Many composition - remove', () => {
+        return testRemove();
     });
-
-
 });

@@ -51,7 +51,8 @@ async function _serialize(instance: ModelObject, pattern: any, root: any, output
             if (Array.isArray(currentInstance)) {
                 output[item.key] = output[item.key] || [];
                 for (const ci of currentInstance) {
-                    let oi = output[item.key].push({});
+                    let oi = {};
+                    output[item.key].push(oi);
                     await _serialize(ci, item, root, oi);
                 }
             } else {
@@ -59,6 +60,8 @@ async function _serialize(instance: ModelObject, pattern: any, root: any, output
                 await _serialize(currentInstance, item, root, output[item.key]);
             }
         } else {
+            if (value && typeof value === 'object')
+                value = value.value;
             if (value !== undefined || value !== null)
                 output[item.key] = value;
         }

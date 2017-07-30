@@ -18,7 +18,7 @@
     "source-map-support": "latest",
     "ts-node": "latest",
     "tslint": "latest",
-    "typescript": "^2.4.1"
+    "typescript": "latest"
   },
   "dependencies": {
     "histria-db-memory": "git+https://github.com/mihaistoie/histria-db-memory.git#master",

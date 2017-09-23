@@ -7,7 +7,6 @@
   "devDependencies": {
     "@types/mocha": "latest",
     "@types/node": "latest",
-    "@types/power-assert": "latest",
     "@types/uuid": "latest",
     "del": "latest",
     "gulp": "latest",

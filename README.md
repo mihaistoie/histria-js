@@ -3,7 +3,7 @@ Node.js rule engine
 
 ## How to write an application
 
-- Create Model  (json schema)
+- Define [the model](./wiki/Model-definition-JSON-file)  
 - Write business rules
 - Expose model through views 
 
@@ -17,7 +17,7 @@ Node.js rule engine
 
 
 
-```
+```json
 {
     "name": "UserDetail",
     "type": "object",

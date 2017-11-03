@@ -1,20 +1,20 @@
 import * as util from 'util';
 import * as path from 'path';
+import * as fs from 'fs';
 
 
-import { fs as fsPromises } from 'histria-utils';
 import { schemaUtils } from 'histria-utils';
 import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from 'histria-utils';
 
 
 async function saveCode(codeByClass: any, codeByNamespace: any, dstFolder: string) {
     let writersClasses = Object.keys(codeByClass).map(name => {
-        let item = codeByClass[name];
-        return fsPromises.writeFile(path.join(dstFolder, item.fileName + '.ts'), item.code.join('\n'));
+        const item = codeByClass[name];
+        return util.promisify(fs.writeFile)(path.join(dstFolder, item.fileName + '.ts'), item.code.join('\n'));
     });
     let writersNamespaces = Object.keys(codeByNamespace).map(name => {
-        let item = codeByNamespace[name];
-        return fsPromises.writeFile(path.join(dstFolder, item.fileName + '.ts'), item.import.concat(item.code).join('\n'));
+        const item = codeByNamespace[name];
+        return util.promisify(fs.writeFile)(path.join(dstFolder, item.fileName + '.ts'), item.import.concat(item.code).join('\n'));
     });
     await Promise.all(writersClasses.concat(writersNamespaces));
 }
@@ -380,9 +380,15 @@ function _upperFirstLetter(value: string): string {
 function _extractFileName(value: string): string {
     let lc = value.toLowerCase();
     let res = [lc.charAt(0)];
+    let isUpperCase = true;
     for (let i = 1; i < value.length; i++) {
-        if (value.charAt(i) !== lc.charAt(i))
-            res.push('-');
+        if (value.charAt(i) !== lc.charAt(i)) {
+            if (!isUpperCase)
+                res.push('-');
+            isUpperCase = true;
+        } else {
+            isUpperCase = false;
+        }
         res.push(lc.charAt(i));
 
     }

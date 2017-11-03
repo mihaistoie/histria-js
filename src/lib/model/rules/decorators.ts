@@ -1,7 +1,7 @@
 
 import * as fs from 'fs';
+import * as util from 'util';
 import * as path from 'path';
-import { fs as fsPromises } from 'histria-utils';
 import { modelManager } from '../model-manager';
 import { EventType } from '../interfaces';
 
@@ -119,16 +119,14 @@ export function removed(targetClass: any) {
 const module_holder = {};
 // Load rules from folder
 export async function loadRules(folder: string): Promise<void> {
-    let files = await fsPromises.readdir(folder);
-    let stats: fs.Stats[];
-    let folders: any[] = [];
-    stats = await Promise.all<fs.Stats>(files.map((fileName) => {
-        let fn = path.join(folder, fileName);
-        return fsPromises.lstat(fn);
+    const files = await util.promisify(fs.readdir)(folder);
+    const folders: any[] = [];
+    const stats: fs.Stats[] = await Promise.all<fs.Stats>(files.map((fileName) => {
+        return util.promisify(fs.lstat)(path.join(folder, fileName));
     }));
 
     stats.forEach((stat, index) => {
-        let fn = path.join(folder, files[index]);
+        const fn = path.join(folder, files[index]);
         if (stat.isDirectory()) {
             folders.push(loadRules(fn));
         } else if (path.extname(fn) === '.js') {

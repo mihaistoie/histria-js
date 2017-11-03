@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "name": "VAOrder",
+    "nameSpace": "view-avanced",
+    "properties": {
+        "totalAmount": {
+            "type": "number",
+            "default": 0
+        }
+    },
+    "relations": {
+        "items": {
+            "type": "hasMany",
+            "model": "VAOrderItem",
+            "aggregationKind": "composite",
+            "invRel": "order"
+        }
+    }
+}

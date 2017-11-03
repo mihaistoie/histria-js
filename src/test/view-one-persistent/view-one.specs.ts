@@ -92,7 +92,7 @@ async function viewOfUserTestRemove(): Promise<void> {
 
 
 describe('ViewOne Model Test', () => {
-    before(function (done) {
+    before((done) => {
         let dm: DbManager = dbManager();
         dm.registerNameSpace('view-one', 'memory', { compositionsInParent: true });
         let store = dm.store('view-one');

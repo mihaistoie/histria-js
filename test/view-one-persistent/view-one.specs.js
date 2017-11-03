@@ -65,7 +65,7 @@ async function viewOfUserTestRemove() {
     // remove view
 }
 describe('ViewOne Model Test', () => {
-    before(function (done) {
+    before((done) => {
         let dm = histria_utils_1.dbManager();
         dm.registerNameSpace('view-one', 'memory', { compositionsInParent: true });
         let store = dm.store('view-one');

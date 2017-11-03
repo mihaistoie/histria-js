@@ -1,0 +1,15 @@
+{
+    "name": "VAOrderItemView",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-avanced",
+    "properties": {
+    },
+    "relations": {
+        "orderitem": {
+            "type": "hasOne",
+            "model": "VAOrderItem",
+            "aggregationKind": "composite"
+        }
+    }
+}

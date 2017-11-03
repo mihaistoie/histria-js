@@ -76,6 +76,7 @@ exports.VAORDERITEMVIEW_SCHEMA = {
     },
     relations: {
         orderitem: {
+            default: true,
             type: 'hasOne',
             model: 'VAOrderItem',
             aggregationKind: 'composite',

@@ -69,9 +69,12 @@ describe('View Avanced', () => {
     it('One to many composition - create', async () => {
         const transaction = new index_1.Transaction();
         let order = await transaction.create(view_avanced_model_1.VAOrder);
-        const viewOfOrder = await transaction.create(view_avanced_model_1.VAOrder);
+        console.log('order id = ' + order.id);
+        let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
+        await viewOfOrder.setOrder(order);
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
         let item2 = await transaction.create(view_avanced_model_1.VAOrderItem);
+        console.log('order item id = ' + item1.id);
         await order.items.add(item1);
         transaction.destroy();
     });

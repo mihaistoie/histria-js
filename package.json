@@ -34,6 +34,7 @@
     "gen": "mocha --compilers ts:ts-node/register src/test/**/*.gentest.ts",
     "compositions": "mocha  test/compositions/*.specs.js",
     "aggregations": "mocha test/aggregations/*.specs.js",
+    "view": "mocha test/view-avanced/*.specs.js",
     "latest": "mocha test/persistence-query/*.specs.js"
   }
 }

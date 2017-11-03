@@ -83,6 +83,7 @@ export const
         },
         relations: {
             orderitem: {
+                default: true,
                 type: 'hasOne',
                 model: 'VAOrderItem',
                 aggregationKind: 'composite',

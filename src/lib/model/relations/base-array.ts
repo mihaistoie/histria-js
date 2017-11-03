@@ -50,7 +50,7 @@ export class BaseObjectArray<T extends ObservableObject> extends RoleBase<T> {
         }
         if (!item) return null;
         that._items.splice(ii, 1);
-        await that._afterRemoveItem(item, ii);
+        await that._afterItemRemoved(item, ii);
         return item;
     }
     public async add(item: T, index?: number): Promise<T> {
@@ -65,11 +65,11 @@ export class BaseObjectArray<T extends ObservableObject> extends RoleBase<T> {
             that._items.splice(index, 0, item);
         else
             that._items.push(item);
-        await that._afterAddItem(item);
+        await that._afterItemAdded(item);
         return item;
     }
-    protected async _afterRemoveItem(item: T, ii: number): Promise<void> { }
-    protected async _afterAddItem(item: T): Promise<void> { }
+    protected async _afterItemRemoved(item: T, ii: number): Promise<void> { }
+    protected async _afterItemAdded(item: T): Promise<void> { }
 
 
 }
@@ -135,7 +135,7 @@ export class ObjectArray<T extends ObservableObject> extends BaseObjectArray<T> 
             that._items.push(item);
             that._model.push(imodel);
         }
-        await that._afterAddItem(item);
+        await that._afterItemAdded(item);
         return item;
     }
 

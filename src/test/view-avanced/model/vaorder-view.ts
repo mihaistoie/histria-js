@@ -96,5 +96,12 @@ export const
                 ]
             }
         },
+        hooks: [
+            {
+                type: 'factory',
+                property: 'order.items',
+                view: 'VAOrderItem'
+            }
+        ],
         meta: {}
     };

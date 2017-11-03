@@ -3,13 +3,19 @@
     "type": "object",
     "view": true,
     "nameSpace": "view-avanced",
-    "properties": {
-    },
+    "properties": {},
     "relations": {
         "order": {
             "type": "hasOne",
             "model": "VAOrder",
             "aggregationKind": "composite"
         }
-    }
+    },
+    "hooks": [
+        {
+            "type": "factory",
+            "property": "order.items",
+            "view": "VAOrderItem"
+        }
+    ]
 }

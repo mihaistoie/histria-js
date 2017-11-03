@@ -79,9 +79,12 @@ describe('View Avanced', () => {
 
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
-        const viewOfOrder = await transaction.create<VAOrder>(VAOrder);
+        console.log('order id = ' + order.id)
+        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView);
+        await viewOfOrder.setOrder(order);
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
+        console.log('order item id = ' + item1.id)
         await order.items.add(item1);
         transaction.destroy();
 

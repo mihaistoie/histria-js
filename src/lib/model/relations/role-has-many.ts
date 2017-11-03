@@ -55,7 +55,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
 
     }
-    protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
+    protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
         const that = this;
         that._model.splice(ii, 1);
         if (!that._model.length) {
@@ -66,7 +66,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
             await that._removed(item, true);
         that._isNull = (that._model === null);
     }
-    protected async _afterAddItem(item: T): Promise<void> {
+    protected async _afterItemAdded(item: T): Promise<void> {
         const that = this;
         await that._added(item, true);
 
@@ -139,7 +139,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
 export class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {
     private _loaded: boolean;
 
-    protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
+    protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
         const that = this;
         if (item) {
             const lmodel = item.model();
@@ -149,7 +149,7 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
         }
     }
-    protected async _afterAddItem(item: T): Promise<void> {
+    protected async _afterItemAdded(item: T): Promise<void> {
         const that = this;
         const lmodel = item.model();
         const rmodel = that._parent.model();
@@ -257,7 +257,7 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
     }
 
-    protected async _afterRemoveItem(item: T, ii: number): Promise<void> {
+    protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
         const that = this;
         that._model.splice(ii, 1);
         if (!that._model.length) {
@@ -268,7 +268,7 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
             await that._removed(item, true);
         that._isNull = (that._model === null);
     }
-    protected async _afterAddItem(item: T): Promise<void> {
+    protected async _afterItemAdded(item: T): Promise<void> {
         const that = this;
         await that._added(item, true);
 

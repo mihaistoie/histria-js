@@ -89,5 +89,12 @@ exports.VAORDERVIEW_SCHEMA = {
             ]
         }
     },
+    hooks: [
+        {
+            type: 'factory',
+            property: 'order.items',
+            view: 'VAOrderItem'
+        }
+    ],
     meta: {}
 };

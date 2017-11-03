@@ -8,16 +8,16 @@ export declare class HasManyComposition<T extends ObservableObject> extends Base
     length(): Promise<number>;
     private _removed(item, notifyRemove);
     private _added(item, notifyAdd);
-    protected _afterRemoveItem(item: T, ii: number): Promise<void>;
-    protected _afterAddItem(item: T): Promise<void>;
+    protected _afterItemRemoved(item: T, ii: number): Promise<void>;
+    protected _afterItemAdded(item: T): Promise<void>;
     set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
     destroy(): void;
 }
 export declare class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {
     private _loaded;
-    protected _afterRemoveItem(item: T, ii: number): Promise<void>;
-    protected _afterAddItem(item: T): Promise<void>;
+    protected _afterItemRemoved(item: T, ii: number): Promise<void>;
+    protected _afterItemAdded(item: T): Promise<void>;
     set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
     private _updateInvSideAfterLazyLoading(newValue);
@@ -29,8 +29,8 @@ export declare class HasManyRefObject<T extends ObservableObject> extends BaseHa
     unsubscribe(instance: T): void;
     private _removed(item, notifyRemove);
     private _added(item, notifyAdd);
-    protected _afterRemoveItem(item: T, ii: number): Promise<void>;
-    protected _afterAddItem(item: T): Promise<void>;
+    protected _afterItemRemoved(item: T, ii: number): Promise<void>;
+    protected _afterItemAdded(item: T): Promise<void>;
     protected lazyLoad(): Promise<void>;
     protected _itemModel(item: T): any;
     set(items: T[]): Promise<void>;

@@ -2,6 +2,7 @@ import { VAOrder, VAOrderItem } from '../view-avanced-model';
 import { propChanged, addItem, rmvItem, setItems, init, title, validate } from '../../../../index';
 
 
+
 export class OrderRules {
     @propChanged(VAOrder, 'items.amount')
     static async itemAmountChanged(order: VAOrder, item: VAOrderItem, eventInfo: any, newValue: number, oldvalue: number): Promise<void> {

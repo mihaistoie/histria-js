@@ -5,3 +5,8 @@
 1/ Transaction : master object (view)
 2/ cancel: transaction.clear + recreate master object
 3/ save 
+
+
+
+Hooks
+When view.setRef() --> execute hooks

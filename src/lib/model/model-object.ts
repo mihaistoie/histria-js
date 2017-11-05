@@ -435,7 +435,13 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     }
     public async notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void> {
         const that = this;
-
+        return await that._transaction.notifyHooks(op, that, instance, propName);
+    }
+    public async execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void> {
+        if (this._schema.hooks) {
+            console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+            console.log(propName);
+        }
     }
 
     private async _addException(ex: Error): Promise<void> {

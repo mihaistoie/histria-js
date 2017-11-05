@@ -63,7 +63,6 @@ async function testRemove(): Promise<void> {
     await userList.users.add(user);
     let users = await userList.users.toArray();
     assert.equal(users.length, 1, '(1) One users');
-
     await user.remove();
     users = await userList.users.toArray();
     assert.equal(users.length, 0, '(2) No users');
@@ -76,6 +75,7 @@ async function testRemove(): Promise<void> {
     await userList.users.add(user);
 
     users = await userList.users.toArray();
+
     assert.equal(users.length, 1, '(3) One users');
     await user.remove();
     users = await userList.users.toArray();

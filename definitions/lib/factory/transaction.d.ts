@@ -13,6 +13,8 @@ export declare class Transaction implements TransactionContainer {
     loadFromJson(data: any, reload: boolean): Promise<void>;
     private _propagateEvent(list, eventInfo, instance, nInstances, args, argIndex);
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<boolean>;
+    notifyHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, propertyName: string): Promise<void>;
+    private _execHooks(eventType, instance, source, nInstances, propertyName);
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>): void;
     save(): Promise<void>;
     cancel(): Promise<void>;

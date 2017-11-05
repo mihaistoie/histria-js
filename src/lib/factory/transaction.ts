@@ -141,6 +141,24 @@ export class Transaction implements TransactionContainer {
         }
         return res;
     }
+    public async notifyHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, propertyName: string): Promise<void> {
+        const that = this;
+        await that._execHooks(eventType, instance, source, [instance], propertyName);
+    }
+
+    private async _execHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, nInstances: ObservableObject[], propertyName: string): Promise<void> {
+        const that = this;
+        instance.execHooks(propertyName, eventType, source);
+        const listeners = instance.getListeners(false);
+        for (let listener of listeners) {
+            let children = nInstances.slice();
+            const pn = listener.propertyName + '.' + propertyName;
+            children.unshift(listener.instance);
+            await that._execHooks(eventType, listener.instance, source, children, pn);
+        }
+
+    }
+
     public subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>) {
         let that = this;
         let list = that._subscribers.get(eventType);

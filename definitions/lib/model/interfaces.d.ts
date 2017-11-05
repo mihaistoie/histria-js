@@ -48,6 +48,7 @@ export interface TransactionContainer {
     findOneInCache<T extends ObservableObject>(filter: any, classOfInstance: any): T;
     find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): Promise<boolean>;
+    notifyHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, propertyName: string): Promise<void>;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     removeInstance(instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
@@ -60,6 +61,7 @@ export interface ObservableObject {
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
+    execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;
     model(propName?: string): any;
     modelState(propName: string): any;
     modelErrors(propName: string): {

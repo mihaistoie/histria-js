@@ -52,10 +52,10 @@ async function testRemove() {
     let user = await transaction.create(view_many_view_model_1.User);
     await userList.users.add(user);
     let users = await userList.users.toArray();
-    assert.equal(users.length, 1, '(1) One users');
+    assert.equal(users.length, 1, '(1-1) One users');
     await user.remove();
     users = await userList.users.toArray();
-    assert.equal(users.length, 0, '(2) No users');
+    assert.equal(users.length, 0, '(2-2) No users');
     transaction.destroy();
 }
 describe('View Many <View> Model Test', () => {

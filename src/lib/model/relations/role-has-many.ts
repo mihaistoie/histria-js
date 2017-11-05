@@ -277,6 +277,7 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
 
     private async _added(item: T, notifyAdd: boolean): Promise<void> {
         const that = this;
+        that._subscribe(item);
         if (notifyAdd)
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
         await that._notifyHooks(item, EventType.addItem);
@@ -316,11 +317,12 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
                     that._subscribe(item);
                 }
             });
-            for (let item of that._items)
-                await that._notifyHooks(item, EventType.addItem);
             if (!model.length) model = null;
             that._model = model;
             that._parent.model()[that._propertyName] = that._model;
+            for (let item of that._items)
+                await that._notifyHooks(item, EventType.addItem);
+
         }
 
     }

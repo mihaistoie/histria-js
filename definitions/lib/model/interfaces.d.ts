@@ -59,6 +59,7 @@ export interface ObservableObject {
     changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
+    notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
     model(propName?: string): any;
     modelState(propName: string): any;
     modelErrors(propName: string): {
@@ -84,6 +85,7 @@ export interface ObservableObject {
     }[];
     rmvListener(listener: any): void;
     restored(): void;
+    pushLoaded(cb: () => Promise<void>): void;
     remove(): Promise<void>;
     readonly hasOwner: boolean;
     readonly owner: ObservableObject;

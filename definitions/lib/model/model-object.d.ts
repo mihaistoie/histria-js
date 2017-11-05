@@ -12,6 +12,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
         parent: ObservableObject;
         propertyName: string;
     }[];
+    protected _loaded: any[];
     protected _children: any;
     protected _schema: any;
     protected _rootCache: ObservableObject;
@@ -27,6 +28,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
         propertyName: string;
         isOwner: boolean;
     }[];
+    pushLoaded(cb: () => Promise<void>): void;
     getRoleByName(roleName: string): any;
     rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
     addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
@@ -44,6 +46,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     readonly hasOwner: boolean;
     changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo): void;
     protected init(): void;
+    protected _childRelationsChanged(path: string): void;
     protected _setModel(value: any): void;
     protected createErrors(): void;
     protected createStates(): void;
@@ -64,6 +67,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     private _remove(rootIsPersistant);
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
+    notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
     private _addException(ex);
     private _emitInstanceEvent(event);
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;

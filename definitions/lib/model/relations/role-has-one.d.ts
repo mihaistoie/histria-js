@@ -1,4 +1,4 @@
-import { ObservableObject } from '../interfaces';
+import { ObservableObject, EventType } from '../interfaces';
 import { Role } from './role';
 export declare class HasOne<T extends ObservableObject> extends Role<T> {
     protected _value: T;
@@ -12,6 +12,7 @@ export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
     protected _setValue(value: T): Promise<void>;
 }
 export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
+    protected _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void>;
     protected _setValue(value: T): Promise<void>;
     remove(instance: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
@@ -33,6 +34,7 @@ export declare class HasOneAggregation<T extends ObservableObject> extends HasOn
 export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
+    private _notifyHooks(value, eventType);
     private _subscribe();
     unsubscribe(instance: T): void;
     enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;

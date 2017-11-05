@@ -28,21 +28,33 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
                 that._items[index] = item;
                 if (!isRestore)
                     schemaUtils.updateRoleRefs(that._relation, itemModel, pmodel, true);
-            })
+            });
+            if (!isRestore) {
+                for (const item of that._items) {
+                    parent.pushLoaded(() => that._notifyHooks(item, EventType.addItem));
+                }
+            }
         }
     }
+
     async length(): Promise<number> {
         const that = this;
         await that.lazyLoad();
         return that._items ? that._items.length : 0;
+    }
+    private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
+        const that = this;
+        await that._parent.notifyHooks(that._propertyName, eventType, value);
     }
     private async _removed(item: T, notifyRemove: boolean): Promise<void> {
         const that = this;
         const lmodel = item.model();
         schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
         await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
-        if (notifyRemove)
+        if (notifyRemove) {
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
+            await that._notifyHooks(item, EventType.addItem);
+        }
 
     }
     private async _added(item: T, notifyAdd: boolean): Promise<void> {
@@ -51,9 +63,10 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
         const rmodel = that._parent.model();
         schemaUtils.updateRoleRefs(that._relation, lmodel, rmodel, true);
         await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
-        if (notifyAdd)
+        if (notifyAdd) {
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-
+            await that._notifyHooks(item, EventType.removeItem);
+        }
     }
     protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
         const that = this;
@@ -76,6 +89,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
         await that.lazyLoad();
         for (const item of that._items) {
             await that._removed(item, false);
+            await that._notifyHooks(item, EventType.removeItem);
         }
         that._items = [];
         if (items && items.length) {
@@ -93,6 +107,9 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
         that._isNull = (that._model === null);
         that._parent.model()[that._propertyName] = that._model;
         await that._parent.notifyOperation(that._propertyName, EventType.setItems, null);
+        for (let item of items) {
+            await that._notifyHooks(item, EventType.addItem);
+        }
     }
 
     protected async lazyLoad(): Promise<void> {
@@ -121,6 +138,9 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
             that._isUndefined = false;
             that._isNull = that._model === null;
             lmodel[that._propertyName] = that._model;
+            for (let item of that._items) {
+                await that._notifyHooks(item, EventType.addItem);
+            }
         }
 
     }
@@ -213,6 +233,10 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
         if (value)
             value.addListener(that, that._parent, that._propertyName);
     }
+    private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
+        const that = this;
+        await that._parent.notifyHooks(that._propertyName, eventType, value);
+    }
     public restoreFromCache() {
         const that = this;
         that._items = that._items || [];
@@ -248,13 +272,14 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
         item.rmvListener(that);
         if (notifyRemove)
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
+        await that._notifyHooks(item, EventType.removeItem);
     }
 
     private async _added(item: T, notifyAdd: boolean): Promise<void> {
         const that = this;
-        that._subscribe(item);
         if (notifyAdd)
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
+        await that._notifyHooks(item, EventType.addItem);
     }
 
     protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
@@ -271,7 +296,6 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
     protected async _afterItemAdded(item: T): Promise<void> {
         const that = this;
         await that._added(item, true);
-
     }
 
     protected async lazyLoad(): Promise<void> {
@@ -292,6 +316,8 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
                     that._subscribe(item);
                 }
             });
+            for (let item of that._items)
+                await that._notifyHooks(item, EventType.addItem);
             if (!model.length) model = null;
             that._model = model;
             that._parent.model()[that._propertyName] = that._model;

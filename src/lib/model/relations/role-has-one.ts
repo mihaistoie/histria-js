@@ -1,4 +1,4 @@
-import { ObservableObject, ObjectStatus, FindOptions } from '../interfaces';
+import { ObservableObject, ObjectStatus, FindOptions, EventType } from '../interfaces';
 import { Role } from './role';
 import { schemaUtils, DEFAULT_PARENT_NAME, AGGREGATION_KIND } from 'histria-utils';
 
@@ -55,6 +55,10 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
 }
 
 export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
+    protected async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
+        const that = this;
+        await that._parent.notifyHooks(that._propertyName, eventType, value);
+    }
     protected async _setValue(value: T): Promise<void> {
         const that = this;
         value = value || null;
@@ -78,7 +82,7 @@ export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
                         schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, useInv);
                     else
                         schemaUtils.updateRoleRefs(that._relation, fmodel, lmodel, useInv);
-                }  else {
+                } else {
                     if (!useInv) {
                         schemaUtils.updateRoleRefs(that._relation, fmodel, null, useInv);
                     }
@@ -138,6 +142,9 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
                 else
                     schemaUtils.updateRoleRefs(that._relation, pmodel, childModel, useInv);
             }
+            if (!isRestore && that._value) {
+                parent.pushLoaded(() => that._notifyHooks(that._value, EventType.addItem));
+            }
 
         }
     }
@@ -162,6 +169,10 @@ export class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
         if (!newValue) {
             that._parent.model()[that._propertyName] = null;
         }
+        if (oldValue)
+            await that._notifyHooks(oldValue, EventType.removeItem);
+        if (newValue)
+            await that._notifyHooks(newValue, EventType.addItem);
     }
     protected async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         const that = this;
@@ -215,12 +226,15 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
     }
+    private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
+        const that = this;
+        await that._parent.notifyHooks(that._propertyName, eventType, value);
+    }
     private _subscribe(): void {
         const that = this;
         if (that._value && that._relation.aggregationKind === AGGREGATION_KIND.composite) {
             that._value.addListener(that, that._parent, that._propertyName);
         }
-
     }
     // Called by ObservableObject (that._value) on destroy
     public unsubscribe(instance: T): void {
@@ -280,6 +294,12 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
             let fmodel = that._value ? that._value.model() : null;
             schemaUtils.updateRoleRefs(that._relation, lmodel, fmodel, false);
         }, { isLazyLoading: false });
+        if (that._relation.aggregationKind === AGGREGATION_KIND.composite) {
+            if (oldValue)
+                await that._notifyHooks(oldValue, EventType.removeItem);
+            if (that._value)
+                await that._notifyHooks(that._value, EventType.addItem);
+        }
     }
 
 
@@ -294,6 +314,9 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
             that._subscribe()
         } else
             that._value = null;
+        if (that._value && that._relation.aggregationKind === AGGREGATION_KIND.composite) {
+            await that._notifyHooks(that._value, EventType.addItem);
+        }
     }
     public async remove(instance: T): Promise<void> {
         const that = this;

@@ -30,6 +30,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     // When set _parent reset _rootCache
     protected _parent: ObservableObject;
     protected _listeners: { listener: any, parent: ObservableObject, propertyName: string }[];
+    protected _loaded: any[];
     protected _children: any;
     protected _schema: any;
     protected _rootCache: ObservableObject;
@@ -58,6 +59,12 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             res.push({ instance: that._parent, propertyName: that.propertyName, isOwner: true });
         that._listeners && that._listeners.forEach(item => res.push({ instance: item.parent, propertyName: item.propertyName, isOwner: false }))
         return res;
+    }
+
+    public pushLoaded(cb: () => Promise<void>): void {
+        const that = this;
+        that._loaded = that._loaded || [];
+        that._loaded.push(cb);
     }
 
 
@@ -172,6 +179,10 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     public changeState(propName: string, value: any, oldValue: any, eventInfo: EventInfo) {
     }
     protected init() {
+    }
+
+    protected _childRelationsChanged(path: string) {
+
     }
 
     // Called only on create or on load
@@ -422,6 +433,11 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         }
 
     }
+    public async notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void> {
+        const that = this;
+
+    }
+
     private async _addException(ex: Error): Promise<void> {
         // TODO error $ must go in parent
         const that = this;
@@ -525,16 +541,21 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     }
 
     public async afterCreated() {
-        let that = this;
+        const that = this;
         if (that._afterCreateCalled) return;
         that._afterCreateCalled = true;
-        let eventInfo = that.transaction.eventInfo;
+        const eventInfo = that.transaction.eventInfo;
         try {
             if (that.status === ObjectStatus.creating) {
                 await that._transaction.emitInstanceEvent(EventType.init, eventInfo, that);
             }
         } finally {
             that.status = ObjectStatus.idle;
+        }
+        if (that._loaded) {
+            const promises = that._loaded.map(cb => { return cb() });
+            that._loaded = null;
+            await Promise.all(promises);
         }
     }
     public afterRestore() {
@@ -616,6 +637,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that._schema = null;
         that._model = null;
         that._rootCache = null;
+        that._loaded = null;
 
         that._parent = null;
         that._propertyName = null;

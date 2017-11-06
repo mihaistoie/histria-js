@@ -436,6 +436,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     public async viewOfMe<T extends ObservableObject>(classOfView: any): Promise<T> {
         const that = this;
+        debugger;
         let schema = schemaManager().schema(classOfView.nameSpace, classOfView.entity);
         let cr: any = null;
         schema.relations && Object.keys(schema.relations).forEach(relName => {
@@ -446,8 +447,9 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             }
         });
         if (cr) {
+            const query: any = schemaUtils.roleToQueryInv(cr, that.model());
             const viewClass = modelManager().classByName(cr.model, cr.nameSpace);
-            return  that.transaction.findOne<T>({}, viewClass);
+            return that.transaction.findOne<T>(query, viewClass, { onlyInCache: true });
         } else
             return null;
     }
@@ -467,6 +469,8 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                 await instance['set' + hook.relation.charAt(0).toUpperCase() + hook.relation.substr(1)](source);
             } else if (op === EventType.removeItem) {
                 that.transaction.log(LogModule.hooks, util.format('Destroy instance of "%s" for "%s".', hook.model, that._schema.name));
+                let ref = await that.viewOfMe(classConstructor);
+                ref.remove();
                 console.log(source.status)
             }
 

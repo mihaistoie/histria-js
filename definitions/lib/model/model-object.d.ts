@@ -67,6 +67,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     private _remove(rootIsPersistant);
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
+    viewOfMe<T extends ObservableObject>(classOfView: any): Promise<T>;
     notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
     private _viewFactory(hook, propName, op, source);
     execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;

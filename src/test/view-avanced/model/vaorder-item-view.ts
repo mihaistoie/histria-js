@@ -13,14 +13,14 @@ export class VAOrderItemView extends View {
     public get id(): any {
         return this._children.id.value;
     }
-    public get orderitemId(): any {
-        return this._children.orderitemId.value;
+    public get orderItemId(): any {
+        return this._children.orderItemId.value;
     }
-    public orderitem(): Promise<VAOrderItem> {
-        return this._children.orderitem.getValue();
+    public orderItem(): Promise<VAOrderItem> {
+        return this._children.orderItem.getValue();
     }
-    public setOrderitem(value: VAOrderItem): Promise<VAOrderItem> {
-        return this._children.orderitem.setValue(value);
+    public setOrderItem(value: VAOrderItem): Promise<VAOrderItem> {
+        return this._children.orderItem.setValue(value);
     }
     public get $states(): VAOrderItemViewState {
         return <VAOrderItemViewState>this._states;
@@ -50,8 +50,8 @@ export class VAOrderItemViewErrors extends InstanceErrors {
     public get id(): ErrorState {
         return this._messages.id;
     }
-    public get orderitemId(): ErrorState {
-        return this._messages.orderitemId;
+    public get orderItemId(): ErrorState {
+        return this._messages.orderItemId;
     }
 }
 
@@ -59,8 +59,8 @@ export class VAOrderItemViewState extends InstanceState {
     public get id(): IdState {
         return this._states.id;
     }
-    public get orderitemId(): IdState {
-        return this._states.orderitemId;
+    public get orderItemId(): IdState {
+        return this._states.orderItemId;
     }
 }
 export const
@@ -75,22 +75,22 @@ export const
                 generated: true,
                 format: 'id'
             },
-            orderitemId: {
+            orderItemId: {
                 type: 'integer',
                 isReadOnly: true,
                 format: 'id'
             }
         },
         relations: {
-            orderitem: {
+            orderItem: {
                 default: true,
                 type: 'hasOne',
                 model: 'VAOrderItem',
                 aggregationKind: 'composite',
                 nameSpace: 'view-avanced',
-                title: 'orderitem',
+                title: 'orderItem',
                 localFields: [
-                    'orderitemId'
+                    'orderItemId'
                 ],
                 foreignFields: [
                     'id'

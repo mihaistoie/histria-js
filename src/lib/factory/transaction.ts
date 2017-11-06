@@ -8,7 +8,7 @@ import { validateAfterPropChanged } from './validation';
 import { findInMap, IStore, dbManager } from 'histria-utils';
 
 import { TranContext } from './user-context';
-import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions, LogModule, DebugLevel } from '../model/interfaces';
 import { EventInfoStack } from './divers/event-stack'
 
 export class Transaction implements TransactionContainer {
@@ -41,6 +41,11 @@ export class Transaction implements TransactionContainer {
     }
     public get context(): UserContext {
         return this._ctx;
+    }
+    public log(module: LogModule, message: string, debugLevel?: DebugLevel) {
+        if (debugLevel === undefined)
+            debugLevel = DebugLevel.message;
+        // console.log(message);
     }
     public get eventInfo(): EventInfo {
         let that = this;
@@ -148,7 +153,7 @@ export class Transaction implements TransactionContainer {
 
     private async _execHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, nInstances: ObservableObject[], propertyName: string): Promise<void> {
         const that = this;
-        instance.execHooks(propertyName, eventType, source);
+        await instance.execHooks(propertyName, eventType, source);
         const listeners = instance.getListeners(false);
         for (let listener of listeners) {
             let children = nInstances.slice();

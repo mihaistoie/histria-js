@@ -4,6 +4,17 @@ export enum ObjectStatus {
     creating = 2
 }
 
+export enum LogModule {
+    hooks = 0
+}
+
+
+export enum DebugLevel {
+    message = 0,
+    error = 1,
+    debug = 2
+}
+
 export enum EventType {
     propChanged = 0,
     propValidate = 1,
@@ -58,6 +69,9 @@ export interface TransactionContainer {
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     removeInstance(instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
+    log(module: LogModule, message: string, debugLevel?: DebugLevel): void;
+    create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
+
     save(): Promise<void>;
     cancel(): Promise<void>;
     readonly eventInfo: EventInfo;

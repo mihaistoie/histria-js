@@ -68,6 +68,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
+    private _viewFactory(hook, propName, op, source);
     execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;
     private _addException(ex);
     private _emitInstanceEvent(event);

@@ -6,7 +6,7 @@
     "properties": {
     },
     "relations": {
-        "orderitem": {
+        "orderItem": {
             "default": true,
             "type": "hasOne",
             "model": "VAOrderItem",

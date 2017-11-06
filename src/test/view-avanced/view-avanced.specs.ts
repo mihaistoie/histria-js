@@ -75,7 +75,7 @@ describe('View Avanced', () => {
         });
         return loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('One to many composition - create', async () => {
+    it('View avanced - create', async () => {
 
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
@@ -84,6 +84,9 @@ describe('View Avanced', () => {
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
         await order.items.add(item1);
+        let item1Id = item1.id;
+        let viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
+        assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found')
         transaction.destroy();
 
     });

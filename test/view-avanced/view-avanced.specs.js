@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("assert");
 const path = require("path");
 const index_1 = require("../../index");
 const histria_utils_1 = require("histria-utils");
@@ -66,7 +67,7 @@ describe('View Avanced', () => {
         });
         return index_1.loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('One to many composition - create', async () => {
+    it('View avanced - create', async () => {
         const transaction = new index_1.Transaction();
         let order = await transaction.create(view_avanced_model_1.VAOrder);
         let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
@@ -74,6 +75,9 @@ describe('View Avanced', () => {
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
         let item2 = await transaction.create(view_avanced_model_1.VAOrderItem);
         await order.items.add(item1);
+        let item1Id = item1.id;
+        let viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
+        assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
         transaction.destroy();
     });
 });

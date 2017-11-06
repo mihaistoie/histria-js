@@ -93,7 +93,9 @@ exports.VAORDERVIEW_SCHEMA = {
         {
             type: 'factory',
             property: 'order.items',
-            view: 'VAOrderItem'
+            model: 'VAOrderItemView',
+            relation: 'orderItem',
+            nameSpace: 'view-avanced'
         }
     ],
     meta: {}

@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions } from './interfaces';
+import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions, LogModule } from './interfaces';
 import { RoleBase } from './relations/role';
 import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from './relations/role-has-one';
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
@@ -437,10 +437,25 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         const that = this;
         return await that._transaction.notifyHooks(op, that, instance, propName);
     }
+
+    private async _viewFactory(hook: any, propName: string, op: EventType, source: ObservableObject): Promise<void> {
+        const that = this;
+        const classConstructor = modelManager().classByName(hook.model, hook.nameSpace);
+        if (propName === hook.property) {
+            if (op === EventType.addItem) {
+                that.transaction.log(LogModule.hooks, util.format('Create instance of "%s" for "%s".', hook.model, that._schema.name));
+                const instance: any = await that.transaction.create(classConstructor);
+                await instance['set' + hook.relation.charAt(0).toUpperCase() + hook.relation.substr(1)](source);
+            }
+        }
+    }
     public async execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void> {
-        if (this._schema.hooks) {
-            console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-            console.log(propName);
+        let that = this;
+        if (that._schema.hooks) {
+            for (let hook of that._schema.hooks)
+                if (hook.type === 'factory') {
+                    await that._viewFactory(hook, propName, op, source);
+                }
         }
     }
 

@@ -5,14 +5,14 @@ class VAOrderItemView extends index_1.View {
     get id() {
         return this._children.id.value;
     }
-    get orderitemId() {
-        return this._children.orderitemId.value;
+    get orderItemId() {
+        return this._children.orderItemId.value;
     }
-    orderitem() {
-        return this._children.orderitem.getValue();
+    orderItem() {
+        return this._children.orderItem.getValue();
     }
-    setOrderitem(value) {
-        return this._children.orderitem.setValue(value);
+    setOrderItem(value) {
+        return this._children.orderItem.setValue(value);
     }
     get $states() {
         return this._states;
@@ -43,8 +43,8 @@ class VAOrderItemViewErrors extends index_1.InstanceErrors {
     get id() {
         return this._messages.id;
     }
-    get orderitemId() {
-        return this._messages.orderitemId;
+    get orderItemId() {
+        return this._messages.orderItemId;
     }
 }
 exports.VAOrderItemViewErrors = VAOrderItemViewErrors;
@@ -52,8 +52,8 @@ class VAOrderItemViewState extends index_1.InstanceState {
     get id() {
         return this._states.id;
     }
-    get orderitemId() {
-        return this._states.orderitemId;
+    get orderItemId() {
+        return this._states.orderItemId;
     }
 }
 exports.VAOrderItemViewState = VAOrderItemViewState;
@@ -68,22 +68,22 @@ exports.VAORDERITEMVIEW_SCHEMA = {
             generated: true,
             format: 'id'
         },
-        orderitemId: {
+        orderItemId: {
             type: 'integer',
             isReadOnly: true,
             format: 'id'
         }
     },
     relations: {
-        orderitem: {
+        orderItem: {
             default: true,
             type: 'hasOne',
             model: 'VAOrderItem',
             aggregationKind: 'composite',
             nameSpace: 'view-avanced',
-            title: 'orderitem',
+            title: 'orderItem',
             localFields: [
-                'orderitemId'
+                'orderItemId'
             ],
             foreignFields: [
                 'id'

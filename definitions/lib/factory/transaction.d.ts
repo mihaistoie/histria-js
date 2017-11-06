@@ -1,4 +1,4 @@
-import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions, LogModule, DebugLevel } from '../model/interfaces';
 export declare class Transaction implements TransactionContainer {
     private _id;
     private _eventInfo;
@@ -8,6 +8,7 @@ export declare class Transaction implements TransactionContainer {
     private _ctx;
     constructor(ctx?: UserContext);
     readonly context: UserContext;
+    log(module: LogModule, message: string, debugLevel?: DebugLevel): void;
     readonly eventInfo: EventInfo;
     saveToJson(): any;
     loadFromJson(data: any, reload: boolean): Promise<void>;

@@ -53,7 +53,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
         await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyRemove) {
             await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
-            await that._notifyHooks(item, EventType.addItem);
+            await that._notifyHooks(item, EventType.removeItem);
         }
 
     }
@@ -65,7 +65,7 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
         await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyAdd) {
             await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-            await that._notifyHooks(item, EventType.removeItem);
+            await that._notifyHooks(item, EventType.addItem);
         }
     }
     protected async _afterItemRemoved(item: T, ii: number): Promise<void> {

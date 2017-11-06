@@ -4,7 +4,7 @@ import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
 import { HasManyComposition, HasManyAggregation, HasManyRefObject } from './relations/role-has-many';
 
-import { ApplicationError, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
+import { ApplicationError, schemaManager, schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND, DEFAULT_PARENT_NAME, helper } from 'histria-utils';
 import { modelManager } from './model-manager';
 
 import { IntegerValue, NumberValue } from './types/number';
@@ -433,6 +433,25 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         }
 
     }
+
+    public async viewOfMe<T extends ObservableObject>(classOfView: any): Promise<T> {
+        const that = this;
+        let schema = schemaManager().schema(classOfView.nameSpace, classOfView.entity);
+        let cr: any = null;
+        schema.relations && Object.keys(schema.relations).forEach(relName => {
+            if (cr) return;
+            const relation = schema.relations[relName];
+            if (relation.model === schema.name && relation.nameSpace === schema.nameSpace) {
+                cr = relation;
+            }
+        });
+        if (cr) {
+            const viewClass = modelManager().classByName(cr.model, cr.nameSpace);
+            return  that.transaction.findOne<T>({}, viewClass);
+        } else
+            return null;
+    }
+
     public async notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void> {
         const that = this;
         return await that._transaction.notifyHooks(op, that, instance, propName);
@@ -446,7 +465,11 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                 that.transaction.log(LogModule.hooks, util.format('Create instance of "%s" for "%s".', hook.model, that._schema.name));
                 const instance: any = await that.transaction.create(classConstructor);
                 await instance['set' + hook.relation.charAt(0).toUpperCase() + hook.relation.substr(1)](source);
+            } else if (op === EventType.removeItem) {
+                that.transaction.log(LogModule.hooks, util.format('Destroy instance of "%s" for "%s".', hook.model, that._schema.name));
+                console.log(source.status)
             }
+
         }
     }
     public async execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void> {

@@ -70,6 +70,7 @@ describe('View Avanced', () => {
     it('View avanced - create', async () => {
         const transaction = new index_1.Transaction();
         let order = await transaction.create(view_avanced_model_1.VAOrder);
+        let orderId = order.id;
         let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
         await viewOfOrder.setOrder(order);
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
@@ -78,6 +79,29 @@ describe('View Avanced', () => {
         let item1Id = item1.id;
         let viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
         assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
+        // Restore transaction
+        let data1 = transaction.saveToJson();
+        transaction.clear();
+        await transaction.loadFromJson(data1, false);
+        let data2 = transaction.saveToJson();
+        assert.deepEqual(data1, data2, 'Restore test 1');
+        viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
+        assert.notEqual(viewOfOrderItem, null, '(2) View of OrderItem found');
+        // Remove orderItem
+        order = await transaction.findOne(view_avanced_model_1.VAOrder, { id: orderId });
+        let items = await order.items.toArray();
+        item1 = items[0];
+        await item1.remove();
+        viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
+        assert.equal(viewOfOrderItem, null, '(1) View of OrderItem not found');
+        item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
+        item1Id = item1.id;
+        await order.items.add(item1);
+        viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
+        assert.notEqual(viewOfOrderItem, null, '(3) View of OrderItem found');
+        await order.items.remove(item1);
+        viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
+        assert.equal(viewOfOrderItem, null, '(2) View of OrderItem not found');
         transaction.destroy();
     });
 });

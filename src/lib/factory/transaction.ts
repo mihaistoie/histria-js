@@ -45,7 +45,7 @@ export class Transaction implements TransactionContainer {
     public log(module: LogModule, message: string, debugLevel?: DebugLevel) {
         if (debugLevel === undefined)
             debugLevel = DebugLevel.message;
-        // console.log(message);
+        console.log(message);
     }
     public get eventInfo(): EventInfo {
         let that = this;

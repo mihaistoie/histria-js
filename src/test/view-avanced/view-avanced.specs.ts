@@ -75,7 +75,7 @@ describe('View Avanced', () => {
         });
         return loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('View avanced - create', async () => {
+    it('View avanced - autocreate - simple', async () => {
 
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
@@ -83,7 +83,6 @@ describe('View Avanced', () => {
         let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView);
         await viewOfOrder.setOrder(order);
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
-        let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
         await order.items.add(item1);
         let item1Id = item1.id;
         let viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
@@ -120,6 +119,25 @@ describe('View Avanced', () => {
         viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
         assert.equal(viewOfOrderItem, null, '(2) View of OrderItem not found');
 
+
+        transaction.destroy();
+
+    });
+
+    it('View avanced - autocreate - complex', async () => {
+
+        const transaction = new Transaction();
+        let order = await transaction.create<VAOrder>(VAOrder);
+        let orderId = order.id;
+        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView);
+        let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
+        let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
+        await order.items.add(item1);
+        let item1Id = item1.id;
+        await viewOfOrder.setOrder(order);
+
+        let viewOfOrderItem = await item1.viewOfMe<VAOrderItemView>(VAOrderItemView);
+        assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
 
         transaction.destroy();
 

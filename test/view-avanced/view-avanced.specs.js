@@ -67,14 +67,13 @@ describe('View Avanced', () => {
         });
         return index_1.loadRules(path.join(__dirname, 'model', 'rules'));
     });
-    it('View avanced - create', async () => {
+    it('View avanced - autocreate - simple', async () => {
         const transaction = new index_1.Transaction();
         let order = await transaction.create(view_avanced_model_1.VAOrder);
         let orderId = order.id;
         let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
         await viewOfOrder.setOrder(order);
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
-        let item2 = await transaction.create(view_avanced_model_1.VAOrderItem);
         await order.items.add(item1);
         let item1Id = item1.id;
         let viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
@@ -102,6 +101,20 @@ describe('View Avanced', () => {
         await order.items.remove(item1);
         viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
         assert.equal(viewOfOrderItem, null, '(2) View of OrderItem not found');
+        transaction.destroy();
+    });
+    it('View avanced - autocreate - complex', async () => {
+        const transaction = new index_1.Transaction();
+        let order = await transaction.create(view_avanced_model_1.VAOrder);
+        let orderId = order.id;
+        let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
+        let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
+        let item2 = await transaction.create(view_avanced_model_1.VAOrderItem);
+        await order.items.add(item1);
+        let item1Id = item1.id;
+        await viewOfOrder.setOrder(order);
+        let viewOfOrderItem = await item1.viewOfMe(view_avanced_model_1.VAOrderItemView);
+        assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
         transaction.destroy();
     });
 });

@@ -472,6 +472,11 @@ export class ModelObject extends BaseInstance implements ObservableObject {
                     ref.remove();
             }
 
+        } else if (hook.property.indexOf(propName + '.') === 0) {
+            const src = <ModelObject>source;
+            const path = hook.property.substr((propName + '.').length);
+            that.transaction.log(LogModule.hooks, util.format('Find instances by path "%s.%s".', src._schema.name, path));
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
         }
     }
     public async execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void> {

@@ -86,6 +86,8 @@ describe('View Avanced', () => {
         assert.deepEqual(data1, data2, 'Restore test 1');
         viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
         assert.notEqual(viewOfOrderItem, null, '(2) View of OrderItem found');
+        let list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 1, '(1) #VAOrderItemView === 1');
         // Remove orderItem
         order = await transaction.findOne(view_avanced_model_1.VAOrder, { id: orderId });
         let items = await order.items.toArray();
@@ -93,14 +95,20 @@ describe('View Avanced', () => {
         await item1.remove();
         viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
         assert.equal(viewOfOrderItem, null, '(1) View of OrderItem not found');
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 0, '(1) #VAOrderItemView === 0');
         item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
         item1Id = item1.id;
         await order.items.add(item1);
         viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
         assert.notEqual(viewOfOrderItem, null, '(3) View of OrderItem found');
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 1, '(2) #VAOrderItemView === 1');
         await order.items.remove(item1);
         viewOfOrderItem = await transaction.findOne(view_avanced_model_1.VAOrderItemView, { orderItemId: item1Id });
         assert.equal(viewOfOrderItem, null, '(2) View of OrderItem not found');
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 0, '(2) #VAOrderItemView === 0');
         transaction.destroy();
     });
     it('View avanced - autocreate - complex', async () => {
@@ -108,13 +116,38 @@ describe('View Avanced', () => {
         let order = await transaction.create(view_avanced_model_1.VAOrder);
         let orderId = order.id;
         let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
+        let viewOrderId = viewOfOrder.id;
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
         let item2 = await transaction.create(view_avanced_model_1.VAOrderItem);
         await order.items.add(item1);
+        await order.items.add(item2);
         let item1Id = item1.id;
         await viewOfOrder.setOrder(order);
         let viewOfOrderItem = await item1.viewOfMe(view_avanced_model_1.VAOrderItemView);
         assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
+        let list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 2, '(1) #VAOrderItemView === 2');
+        let data1 = transaction.saveToJson();
+        transaction.clear();
+        await transaction.loadFromJson(data1, false);
+        let data2 = transaction.saveToJson();
+        assert.deepEqual(data1, data2, 'Restore test 1');
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 2, '(2) #VAOrderItemView === 2');
+        viewOfOrder = await transaction.findOneInCache(view_avanced_model_1.VAOrderView, { id: viewOrderId });
+        await viewOfOrder.setOrder(null);
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 0, '(3) #VAOrderItemView === 0');
+        transaction.clear();
+        await transaction.loadFromJson(data1, false);
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 2, '(4) #VAOrderItemView === 2');
+        order = await transaction.findOneInCache(view_avanced_model_1.VAOrder, { id: orderId });
+        await order.remove();
+        list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
+        assert.equal(list.length, 0, '(5) #VAOrderItemView === 0');
         transaction.destroy();
     });
+    // TODO load from db view autocreate
+    // TODO serialize view
 });

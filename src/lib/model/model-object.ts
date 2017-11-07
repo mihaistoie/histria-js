@@ -447,7 +447,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         });
         if (cr) {
             const query: any = schemaUtils.roleToQueryInv({ foreignFields: cr.localFields, localFields: cr.foreignFields }, that.model());
-            return that.transaction.findOne<T>(classOfView, query, { onlyInCache: true });
+            return that.transaction.findOneInCache<T>(classOfView, query);
         } else
             return null;
     }
@@ -459,8 +459,8 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     private async _viewFactory(hook: any, propName: string, op: EventType, source: ObservableObject): Promise<void> {
         const that = this;
-        const classConstructor = modelManager().classByName(hook.model, hook.nameSpace);
         if (propName === hook.property) {
+            const classConstructor = modelManager().classByName(hook.model, hook.nameSpace);
             if (op === EventType.addItem) {
                 that.transaction.log(LogModule.hooks, util.format('Create instance of "%s" for "%s".', hook.model, that._schema.name));
                 const instance: any = await that.transaction.create(classConstructor);
@@ -476,7 +476,19 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             const src = <ModelObject>source;
             const path = hook.property.substr((propName + '.').length);
             that.transaction.log(LogModule.hooks, util.format('Find instances by path "%s.%s".', src._schema.name, path));
-            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+            let model = src.model();
+            let models: any[] = [];
+            helper.valuesByPath(path, model, models);
+            if (models.length) {
+                const classConstructor = modelManager().classByNameAndPath(that._schema.name, that._schema.nameSpace, hook.property);
+                for (let model of models) {
+                    debugger;
+                    let instance: any = await that.transaction.findOneInCache(classConstructor, { id: model.id });
+                    if (instance)
+                        await that._viewFactory(hook, hook.property, op, instance)
+                }
+            }
+
         }
     }
     public async execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void> {

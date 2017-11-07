@@ -12,6 +12,7 @@ export declare class ModelManager {
         isRestore: boolean;
     }): T;
     classByName(className: string, namespace: string): any;
+    classByNameAndPath(className: string, namespace: string, path: string): any;
     enumClasses(cb: (item: {
         classOfInstance: any;
         isChild: boolean;

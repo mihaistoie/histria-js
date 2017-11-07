@@ -98,6 +98,10 @@ describe('View Avanced', () => {
         viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
         assert.notEqual(viewOfOrderItem, null, '(2) View of OrderItem found');
 
+
+        let list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 1, '(1) #VAOrderItemView === 1');
+
         // Remove orderItem
         order = await transaction.findOne<VAOrder>(VAOrder, { id: orderId });
         let items = await order.items.toArray();
@@ -107,17 +111,26 @@ describe('View Avanced', () => {
         viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
         assert.equal(viewOfOrderItem, null, '(1) View of OrderItem not found');
 
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 0, '(1) #VAOrderItemView === 0');
+
 
         item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         item1Id = item1.id;
         await order.items.add(item1);
         viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
         assert.notEqual(viewOfOrderItem, null, '(3) View of OrderItem found');
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 1, '(2) #VAOrderItemView === 1');
 
         await order.items.remove(item1);
 
         viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
         assert.equal(viewOfOrderItem, null, '(2) View of OrderItem not found');
+
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 0, '(2) #VAOrderItemView === 0');
+
 
 
         transaction.destroy();
@@ -130,16 +143,50 @@ describe('View Avanced', () => {
         let order = await transaction.create<VAOrder>(VAOrder);
         let orderId = order.id;
         let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView);
+        let viewOrderId = viewOfOrder.id;
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
         await order.items.add(item1);
+        await order.items.add(item2);
         let item1Id = item1.id;
         await viewOfOrder.setOrder(order);
 
         let viewOfOrderItem = await item1.viewOfMe<VAOrderItemView>(VAOrderItemView);
         assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
 
+        let list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 2, '(1) #VAOrderItemView === 2');
+
+        let data1 = transaction.saveToJson();
+        transaction.clear();
+        await transaction.loadFromJson(data1, false);
+        let data2 = transaction.saveToJson();
+        assert.deepEqual(data1, data2, 'Restore test 1');
+
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 2, '(2) #VAOrderItemView === 2');
+
+        viewOfOrder = await transaction.findOneInCache<VAOrderView>(VAOrderView, { id: viewOrderId });
+        await viewOfOrder.setOrder(null);
+
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 0, '(3) #VAOrderItemView === 0');
+
+        transaction.clear();
+        await transaction.loadFromJson(data1, false);
+
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 2, '(4) #VAOrderItemView === 2');
+
+        order = await transaction.findOneInCache<VAOrder>(VAOrder, { id: orderId });
+        await order.remove();
+
+        list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
+        assert.equal(list.length, 0, '(5) #VAOrderItemView === 0');
+
         transaction.destroy();
 
     });
+    // TODO load from db view autocreate
+    // TODO serialize view
 });

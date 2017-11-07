@@ -35,6 +35,23 @@ export class ModelManager {
         return null;
 
     }
+
+    public classByNameAndPath(className: string, namespace: string, path: string) {
+        let that = this;
+        let segments = path.split('.');
+        let cs = schemaManager().schema(namespace, className);
+        if (!cs) return null;
+        for (let s of segments) {
+            let rel = cs && cs.relations ? cs.relations[s] : null;
+            if (!rel) return null;
+            cs =  schemaManager().schema(rel.nameSpace, rel.model);
+            if (!cs) return null;
+        }
+        if (cs && that._classes)
+            return that._classes.get(cs.nameSpace + '.' + cs.name);
+        return null;
+    }
+
     public enumClasses(cb: (item: { classOfInstance: any, isChild: boolean, isView: boolean, className: string }) => void) {
         let that = this;
         that._loaded()

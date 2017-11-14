@@ -181,6 +181,11 @@ describe('View Avanced', () => {
         order = await transaction.findOneInCache<VAOrder>(VAOrder, { id: orderId });
         await order.remove();
 
+        viewOfOrder = await transaction.findOneInCache<VAOrderView>(VAOrderView, { id: viewOrderId });
+        order = await viewOfOrder.order();
+
+        assert.equal(order, null, 'Order is null');
+
         list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
         assert.equal(list.length, 0, '(5) #VAOrderItemView === 0');
 

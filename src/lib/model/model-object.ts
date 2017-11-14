@@ -36,6 +36,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     protected _rootCache: ObservableObject;
     private _afterCreateCalled: boolean;
     protected _model: any;
+    protected _parentProperty: string;
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
     protected _propertyName: string;
@@ -464,12 +465,13 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             if (op === EventType.addItem) {
                 that.transaction.log(LogModule.hooks, util.format('Create instance of "%s" for "%s".', hook.model, that._schema.name));
                 const instance: any = await that.transaction.create(classConstructor);
+                instance._parentProperty = hook.relation;
                 await instance['set' + hook.relation.charAt(0).toUpperCase() + hook.relation.substr(1)](source);
             } else if (op === EventType.removeItem) {
                 that.transaction.log(LogModule.hooks, util.format('Destroy instance of "%s" for "%s".', hook.model, that._schema.name));
                 let ref = await source.viewOfMe(classConstructor);
                 if (ref)
-                    ref.remove();
+                    await ref.remove();
             }
 
         } else if (hook.property.indexOf(propName + '.') === 0) {
@@ -482,7 +484,6 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             if (models.length) {
                 const classConstructor = modelManager().classByNameAndPath(that._schema.name, that._schema.nameSpace, hook.property);
                 for (let model of models) {
-                    debugger;
                     let instance: any = await that.transaction.findOneInCache(classConstructor, { id: model.id });
                     if (instance)
                         await that._viewFactory(hook, hook.property, op, instance)

@@ -18,6 +18,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     protected _rootCache: ObservableObject;
     private _afterCreateCalled;
     protected _model: any;
+    protected _parentProperty: string;
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
     protected _propertyName: string;

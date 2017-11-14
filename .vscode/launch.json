@@ -27,7 +27,10 @@
                 "NODE_ENV": "development"
             },
             "console": "internalConsole",
-            "sourceMaps": true
+            "sourceMaps": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         },
         {
             "name": "Launch",
@@ -47,7 +50,10 @@
             },
             "console": "internalConsole",
             "sourceMaps": false,
-            "outFiles": []
+            "outFiles": [],
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         },
         {
             "name": "Attach",
@@ -59,7 +65,10 @@
             "sourceMaps": false,
             "outFiles": [],
             "localRoot": "${workspaceRoot}",
-            "remoteRoot": null
+            "remoteRoot": null,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ]
 }

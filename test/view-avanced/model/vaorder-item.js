@@ -78,49 +78,63 @@ class VAOrderItemState extends index_1.InstanceState {
     }
 }
 exports.VAOrderItemState = VAOrderItemState;
+/* tslint:disable:quotemark */
 exports.VAORDERITEM_SCHEMA = {
-    type: 'object',
-    name: 'VAOrderItem',
-    nameSpace: 'view-avanced',
-    properties: {
-        amount: {
-            type: 'number',
-            default: 0
+    "type": "object",
+    "name": "VAOrderItem",
+    "nameSpace": "view-avanced",
+    "properties": {
+        "amount": {
+            "type": "number",
+            "default": 0
         },
-        loaded: {
-            type: 'boolean',
-            default: false
+        "loaded": {
+            "type": "boolean",
+            "default": false
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        orderId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "orderId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        order: {
-            type: 'belongsTo',
-            model: 'VAOrder',
-            aggregationKind: 'composite',
-            invRel: 'items',
-            nameSpace: 'view-avanced',
-            title: 'order',
-            invType: 'hasMany',
-            localFields: [
-                'orderId'
+    "relations": {
+        "order": {
+            "type": "belongsTo",
+            "model": "VAOrder",
+            "aggregationKind": "composite",
+            "invRel": "items",
+            "nameSpace": "view-avanced",
+            "title": "order",
+            "invType": "hasMany",
+            "localFields": [
+                "orderId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {
-        parent: 'VAOrder',
-        parentRelation: 'order'
+    "meta": {
+        "parent": "VAOrder",
+        "parentRelation": "order"
+    },
+    "viewsOfMe": {
+        "view-avanced.VAOrderItem": {
+            "nameSpace": "view-avanced",
+            "model": "VAOrderItemView",
+            "relation": "orderItem",
+            "localFields": [
+                "orderItemId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
+        }
     }
 };

@@ -57,37 +57,38 @@ class OrderState extends index_1.InstanceState {
     }
 }
 exports.OrderState = OrderState;
+/* tslint:disable:quotemark */
 exports.ORDER_SCHEMA = {
-    type: 'object',
-    name: 'order',
-    nameSpace: 'compositions',
-    properties: {
-        totalAmount: {
-            type: 'number',
-            default: 0
+    "type": "object",
+    "name": "order",
+    "nameSpace": "compositions",
+    "properties": {
+        "totalAmount": {
+            "type": "number",
+            "default": 0
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    relations: {
-        items: {
-            type: 'hasMany',
-            model: 'orderItem',
-            aggregationKind: 'composite',
-            invRel: 'order',
-            nameSpace: 'compositions',
-            title: 'items',
-            invType: 'belongsTo',
-            localFields: [
-                'id'
+    "relations": {
+        "items": {
+            "type": "hasMany",
+            "model": "orderItem",
+            "aggregationKind": "composite",
+            "invRel": "order",
+            "nameSpace": "compositions",
+            "title": "items",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
             ],
-            foreignFields: [
-                'orderId'
+            "foreignFields": [
+                "orderId"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

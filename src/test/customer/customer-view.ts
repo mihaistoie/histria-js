@@ -75,47 +75,48 @@ export class CustomerViewState extends InstanceState {
         return this._states.customerId;
     }
 }
+/* tslint:disable:quotemark */
 export const
     CUSTOMERVIEW_SCHEMA = {
-        name: 'customerView',
-        type: 'object',
-        view: true,
-        nameSpace: 'customer-view-sample',
-        properties: {
-            fullName: {
-                title: 'FullName Name',
-                type: 'string'
+        "name": "customerView",
+        "type": "object",
+        "view": true,
+        "nameSpace": "customer-view-sample",
+        "properties": {
+            "fullName": {
+                "title": "FullName Name",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             },
-            customerId: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+            "customerId": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             }
         },
-        relations: {
-            customer: {
-                type: 'hasOne',
-                model: 'customer',
-                aggregationKind: 'composite',
-                nameSpace: 'customer-view-sample',
-                title: 'customer',
-                localFields: [
-                    'customerId'
+        "relations": {
+            "customer": {
+                "type": "hasOne",
+                "model": "customer",
+                "aggregationKind": "composite",
+                "nameSpace": "customer-view-sample",
+                "title": "customer",
+                "localFields": [
+                    "customerId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             }
         },
-        states: {
-            fullName: {
-                isReadOnly: true
+        "states": {
+            "fullName": {
+                "isReadOnly": true
             }
         },
-        meta: {}
+        "meta": {}
     };

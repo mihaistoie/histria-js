@@ -57,38 +57,39 @@ class VAOrderItemViewState extends index_1.InstanceState {
     }
 }
 exports.VAOrderItemViewState = VAOrderItemViewState;
+/* tslint:disable:quotemark */
 exports.VAORDERITEMVIEW_SCHEMA = {
-    name: 'VAOrderItemView',
-    type: 'object',
-    view: true,
-    nameSpace: 'view-avanced',
-    properties: {
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+    "name": "VAOrderItemView",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-avanced",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        orderItemId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "orderItemId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        orderItem: {
-            default: true,
-            type: 'hasOne',
-            model: 'VAOrderItem',
-            aggregationKind: 'composite',
-            nameSpace: 'view-avanced',
-            title: 'orderItem',
-            localFields: [
-                'orderItemId'
+    "relations": {
+        "orderItem": {
+            "default": true,
+            "type": "hasOne",
+            "model": "VAOrderItem",
+            "aggregationKind": "composite",
+            "nameSpace": "view-avanced",
+            "title": "orderItem",
+            "localFields": [
+                "orderItemId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

@@ -63,55 +63,56 @@ class GroupState extends index_1.InstanceState {
     }
 }
 exports.GroupState = GroupState;
+/* tslint:disable:quotemark */
 exports.GROUP_SCHEMA = {
-    type: 'object',
-    name: 'group',
-    view: true,
-    nameSpace: 'cyclicreferencesviews',
-    properties: {
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+    "type": "object",
+    "name": "group",
+    "view": true,
+    "nameSpace": "cyclicreferencesviews",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        itemId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "itemId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        items: {
-            type: 'hasMany',
-            model: 'item',
-            aggregationKind: 'composite',
-            invRel: 'group',
-            nameSpace: 'cyclicreferencesviews',
-            title: 'items',
-            localFields: [
-                'id'
+    "relations": {
+        "items": {
+            "type": "hasMany",
+            "model": "item",
+            "aggregationKind": "composite",
+            "invRel": "group",
+            "nameSpace": "cyclicreferencesviews",
+            "title": "items",
+            "localFields": [
+                "id"
             ],
-            foreignFields: [
-                'groupId'
+            "foreignFields": [
+                "groupId"
             ]
         },
-        item: {
-            type: 'belongsTo',
-            model: 'item',
-            aggregationKind: 'composite',
-            invRel: 'groups',
-            nameSpace: 'cyclicreferencesviews',
-            title: 'item',
-            localFields: [
-                'itemId'
+        "item": {
+            "type": "belongsTo",
+            "model": "item",
+            "aggregationKind": "composite",
+            "invRel": "groups",
+            "nameSpace": "cyclicreferencesviews",
+            "title": "item",
+            "localFields": [
+                "itemId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {
-        parent: 'item',
-        parentRelation: 'item'
+    "meta": {
+        "parent": "item",
+        "parentRelation": "item"
     }
 };

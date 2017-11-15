@@ -81,45 +81,46 @@ class DriverState extends index_1.InstanceState {
     }
 }
 exports.DriverState = DriverState;
+/* tslint:disable:quotemark */
 exports.DRIVER_SCHEMA = {
-    type: 'object',
-    name: 'driver',
-    properties: {
-        carChangedHits: {
-            type: 'integer',
-            default: 0
+    "type": "object",
+    "name": "driver",
+    "properties": {
+        "carChangedHits": {
+            "type": "integer",
+            "default": 0
         },
-        name: {
-            type: 'string'
+        "name": {
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        drivesId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "drivesId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    nameSpace: 'aggregations',
-    relations: {
-        drives: {
-            type: 'belongsTo',
-            model: 'car',
-            aggregationKind: 'shared',
-            invRel: 'drivenBy',
-            nameSpace: 'aggregations',
-            title: 'drives',
-            invType: 'hasOne',
-            localFields: [
-                'drivesId'
+    "nameSpace": "aggregations",
+    "relations": {
+        "drives": {
+            "type": "belongsTo",
+            "model": "car",
+            "aggregationKind": "shared",
+            "invRel": "drivenBy",
+            "nameSpace": "aggregations",
+            "title": "drives",
+            "invType": "hasOne",
+            "localFields": [
+                "drivesId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

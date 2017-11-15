@@ -95,41 +95,42 @@ export class UserState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     USER_SCHEMA = {
-        name: 'user',
-        type: 'object',
-        nameSpace: 'model',
-        properties: {
-            age: {
-                title: 'Age',
-                type: 'integer'
+        "name": "user",
+        "type": "object",
+        "nameSpace": "model",
+        "properties": {
+            "age": {
+                "title": "Age",
+                "type": "integer"
             },
-            firstName: {
-                title: 'First Name',
-                type: 'string'
+            "firstName": {
+                "title": "First Name",
+                "type": "string"
             },
-            lastName: {
-                title: 'Last Name',
-                type: 'string'
+            "lastName": {
+                "title": "Last Name",
+                "type": "string"
             },
-            fullName: {
-                title: 'Full Name',
-                type: 'string'
+            "fullName": {
+                "title": "Full Name",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             }
         },
-        states: {
-            firstName: {
-                isMandatory: true
+        "states": {
+            "firstName": {
+                "isMandatory": true
             },
-            fullName: {
-                isReadOnly: true
+            "fullName": {
+                "isReadOnly": true
             }
         },
-        meta: {}
+        "meta": {}
     };

@@ -78,28 +78,42 @@ class UserState extends index_1.InstanceState {
     }
 }
 exports.UserState = UserState;
+/* tslint:disable:quotemark */
 exports.USER_SCHEMA = {
-    name: 'user',
-    type: 'object',
-    nameSpace: 'view-has-one-view',
-    properties: {
-        age: {
-            title: 'Age',
-            type: 'integer'
+    "name": "user",
+    "type": "object",
+    "nameSpace": "view-has-one-view",
+    "properties": {
+        "age": {
+            "title": "Age",
+            "type": "integer"
         },
-        firstName: {
-            title: 'First Name',
-            type: 'string'
+        "firstName": {
+            "title": "First Name",
+            "type": "string"
         },
-        lastName: {
-            title: 'Last Name',
-            type: 'string'
+        "lastName": {
+            "title": "Last Name",
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    meta: {}
+    "meta": {},
+    "viewsOfMe": {
+        "view-has-one-view.user": {
+            "nameSpace": "view-has-one-view",
+            "model": "UserDetail",
+            "relation": "user",
+            "localFields": [
+                "userId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
+        }
+    }
 };

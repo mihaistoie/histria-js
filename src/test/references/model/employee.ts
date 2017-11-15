@@ -109,63 +109,64 @@ export class EmployeeState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     EMPLOYEE_SCHEMA = {
-        type: 'object',
-        nameSpace: 'references',
-        name: 'employee',
-        properties: {
-            firstName: {
-                title: 'FirstName',
-                type: 'string'
+        "type": "object",
+        "nameSpace": "references",
+        "name": "employee",
+        "properties": {
+            "firstName": {
+                "title": "FirstName",
+                "type": "string"
             },
-            lastName: {
-                title: 'LastName',
-                type: 'string'
+            "lastName": {
+                "title": "LastName",
+                "type": "string"
             },
-            salary: {
-                title: 'Salary',
-                type: 'number'
+            "salary": {
+                "title": "Salary",
+                "type": "number"
             },
-            departmentCode: {
-                title: 'Department Code',
-                type: 'string'
+            "departmentCode": {
+                "title": "Department Code",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             }
         },
-        relations: {
-            department: {
-                title: 'Department',
-                type: 'hasOne',
-                model: 'department',
-                localFields: [
-                    'departmentCode'
+        "relations": {
+            "department": {
+                "title": "Department",
+                "type": "hasOne",
+                "model": "department",
+                "localFields": [
+                    "departmentCode"
                 ],
-                foreignFields: [
-                    'code'
+                "foreignFields": [
+                    "code"
                 ],
-                nameSpace: 'references',
-                aggregationKind: 'none'
+                "nameSpace": "references",
+                "aggregationKind": "none"
             },
-            address: {
-                title: 'Address',
-                type: 'hasOne',
-                model: 'employeeAddress',
-                aggregationKind: 'composite',
-                invRel: 'employee',
-                nameSpace: 'references',
-                invType: 'belongsTo',
-                localFields: [
-                    'id'
+            "address": {
+                "title": "Address",
+                "type": "hasOne",
+                "model": "employeeAddress",
+                "aggregationKind": "composite",
+                "invRel": "employee",
+                "nameSpace": "references",
+                "invType": "belongsTo",
+                "localFields": [
+                    "id"
                 ],
-                foreignFields: [
-                    'employeeId'
+                "foreignFields": [
+                    "employeeId"
                 ]
             }
         },
-        meta: {}
+        "meta": {}
     };

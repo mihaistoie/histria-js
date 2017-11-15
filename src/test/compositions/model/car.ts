@@ -78,41 +78,42 @@ export class CarState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     CAR_SCHEMA = {
-        type: 'object',
-        name: 'car',
-        nameSpace: 'compositions',
-        properties: {
-            engineChangedHits: {
-                type: 'integer',
-                default: 0
+        "type": "object",
+        "name": "car",
+        "nameSpace": "compositions",
+        "properties": {
+            "engineChangedHits": {
+                "type": "integer",
+                "default": 0
             },
-            engineName: {
-                type: 'string'
+            "engineName": {
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             }
         },
-        relations: {
-            engine: {
-                type: 'hasOne',
-                model: 'engine',
-                aggregationKind: 'composite',
-                invRel: 'car',
-                nameSpace: 'compositions',
-                title: 'engine',
-                invType: 'belongsTo',
-                localFields: [
-                    'id'
+        "relations": {
+            "engine": {
+                "type": "hasOne",
+                "model": "engine",
+                "aggregationKind": "composite",
+                "invRel": "car",
+                "nameSpace": "compositions",
+                "title": "engine",
+                "invType": "belongsTo",
+                "localFields": [
+                    "id"
                 ],
-                foreignFields: [
-                    'carId'
+                "foreignFields": [
+                    "carId"
                 ]
             }
         },
-        meta: {}
+        "meta": {}
     };

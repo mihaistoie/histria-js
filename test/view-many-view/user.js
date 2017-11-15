@@ -93,53 +93,54 @@ class UserState extends index_1.InstanceState {
     }
 }
 exports.UserState = UserState;
+/* tslint:disable:quotemark */
 exports.USER_SCHEMA = {
-    name: 'user',
-    view: true,
-    type: 'object',
-    nameSpace: 'view-many-view',
-    properties: {
-        age: {
-            title: 'Age',
-            type: 'integer'
+    "name": "user",
+    "view": true,
+    "type": "object",
+    "nameSpace": "view-many-view",
+    "properties": {
+        "age": {
+            "title": "Age",
+            "type": "integer"
         },
-        firstName: {
-            title: 'First Name',
-            type: 'string'
+        "firstName": {
+            "title": "First Name",
+            "type": "string"
         },
-        lastName: {
-            title: 'Last Name',
-            type: 'string'
+        "lastName": {
+            "title": "Last Name",
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        listId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "listId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        list: {
-            type: 'belongsTo',
-            model: 'UserList',
-            aggregationKind: 'composite',
-            invRel: 'users',
-            nameSpace: 'view-many-view',
-            title: 'list',
-            localFields: [
-                'listId'
+    "relations": {
+        "list": {
+            "type": "belongsTo",
+            "model": "UserList",
+            "aggregationKind": "composite",
+            "invRel": "users",
+            "nameSpace": "view-many-view",
+            "title": "list",
+            "localFields": [
+                "listId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {
-        parent: 'UserList',
-        parentRelation: 'list'
+    "meta": {
+        "parent": "UserList",
+        "parentRelation": "list"
     }
 };

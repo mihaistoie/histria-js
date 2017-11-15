@@ -78,49 +78,50 @@ class OrderItemState extends index_1.InstanceState {
     }
 }
 exports.OrderItemState = OrderItemState;
+/* tslint:disable:quotemark */
 exports.ORDERITEM_SCHEMA = {
-    type: 'object',
-    name: 'orderItem',
-    nameSpace: 'compositions',
-    properties: {
-        amount: {
-            type: 'number',
-            default: 0
+    "type": "object",
+    "name": "orderItem",
+    "nameSpace": "compositions",
+    "properties": {
+        "amount": {
+            "type": "number",
+            "default": 0
         },
-        loaded: {
-            type: 'boolean',
-            default: false
+        "loaded": {
+            "type": "boolean",
+            "default": false
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        orderId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "orderId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        order: {
-            type: 'belongsTo',
-            model: 'order',
-            aggregationKind: 'composite',
-            invRel: 'items',
-            nameSpace: 'compositions',
-            title: 'order',
-            invType: 'hasMany',
-            localFields: [
-                'orderId'
+    "relations": {
+        "order": {
+            "type": "belongsTo",
+            "model": "order",
+            "aggregationKind": "composite",
+            "invRel": "items",
+            "nameSpace": "compositions",
+            "title": "order",
+            "invType": "hasMany",
+            "localFields": [
+                "orderId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {
-        parent: 'order',
-        parentRelation: 'order'
+    "meta": {
+        "parent": "order",
+        "parentRelation": "order"
     }
 };

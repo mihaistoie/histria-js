@@ -66,27 +66,28 @@ class DepartmentState extends index_1.InstanceState {
     }
 }
 exports.DepartmentState = DepartmentState;
+/* tslint:disable:quotemark */
 exports.DEPARTMENT_SCHEMA = {
-    type: 'object',
-    nameSpace: 'references',
-    name: 'department',
-    primaryKey: [
-        'code'
+    "type": "object",
+    "nameSpace": "references",
+    "name": "department",
+    "primaryKey": [
+        "code"
     ],
-    properties: {
-        code: {
-            type: 'string',
-            title: 'Code'
+    "properties": {
+        "code": {
+            "type": "string",
+            "title": "Code"
         },
-        title: {
-            type: 'string',
-            title: 'Title'
+        "title": {
+            "type": "string",
+            "title": "Title"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    meta: {}
+    "meta": {}
 };

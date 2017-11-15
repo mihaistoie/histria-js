@@ -69,47 +69,48 @@ class UserDetailState extends index_1.InstanceState {
     }
 }
 exports.UserDetailState = UserDetailState;
+/* tslint:disable:quotemark */
 exports.USERDETAIL_SCHEMA = {
-    name: 'UserDetail',
-    type: 'object',
-    view: true,
-    nameSpace: 'view-one',
-    properties: {
-        fullName: {
-            title: 'FullName Name',
-            type: 'string'
+    "name": "UserDetail",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-one",
+    "properties": {
+        "fullName": {
+            "title": "FullName Name",
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        userId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "userId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        user: {
-            type: 'hasOne',
-            model: 'user',
-            embedded: true,
-            aggregationKind: 'composite',
-            nameSpace: 'view-one',
-            title: 'user',
-            localFields: [
-                'userId'
+    "relations": {
+        "user": {
+            "type": "hasOne",
+            "model": "user",
+            "embedded": true,
+            "aggregationKind": "composite",
+            "nameSpace": "view-one",
+            "title": "user",
+            "localFields": [
+                "userId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    states: {
-        fullName: {
-            isReadOnly: true
+    "states": {
+        "fullName": {
+            "isReadOnly": true
         }
     },
-    meta: {}
+    "meta": {}
 };

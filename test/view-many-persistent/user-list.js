@@ -60,44 +60,45 @@ class UserListState extends index_1.InstanceState {
     }
 }
 exports.UserListState = UserListState;
+/* tslint:disable:quotemark */
 exports.USERLIST_SCHEMA = {
-    name: 'UserList',
-    type: 'object',
-    view: true,
-    nameSpace: 'view-many',
-    properties: {
-        userCount: {
-            type: 'integer',
-            default: 0
+    "name": "UserList",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-many",
+    "properties": {
+        "userCount": {
+            "type": "integer",
+            "default": 0
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        usersId: {
-            type: 'array',
-            items: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+        "usersId": {
+            "type": "array",
+            "items": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             }
         }
     },
-    relations: {
-        users: {
-            type: 'hasMany',
-            model: 'user',
-            aggregationKind: 'composite',
-            nameSpace: 'view-many',
-            title: 'users',
-            localFields: [
-                'usersId'
+    "relations": {
+        "users": {
+            "type": "hasMany",
+            "model": "user",
+            "aggregationKind": "composite",
+            "nameSpace": "view-many",
+            "title": "users",
+            "localFields": [
+                "usersId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

@@ -71,25 +71,39 @@ export class CustomerState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     CUSTOMER_SCHEMA = {
-        name: 'customer',
-        type: 'object',
-        nameSpace: 'customer-view-sample',
-        properties: {
-            firstName: {
-                title: 'First Name',
-                type: 'string'
+        "name": "customer",
+        "type": "object",
+        "nameSpace": "customer-view-sample",
+        "properties": {
+            "firstName": {
+                "title": "First Name",
+                "type": "string"
             },
-            lastName: {
-                title: 'Last Name',
-                type: 'string'
+            "lastName": {
+                "title": "Last Name",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             }
         },
-        meta: {}
+        "meta": {},
+        "viewsOfMe": {
+            "customer-view-sample.customer": {
+                "nameSpace": "customer-view-sample",
+                "model": "customerView",
+                "relation": "customer",
+                "localFields": [
+                    "customerId"
+                ],
+                "foreignFields": [
+                    "id"
+                ]
+            }
+        }
     };

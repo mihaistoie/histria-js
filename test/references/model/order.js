@@ -72,39 +72,40 @@ class OrderState extends index_1.InstanceState {
     }
 }
 exports.OrderState = OrderState;
+/* tslint:disable:quotemark */
 exports.ORDER_SCHEMA = {
-    type: 'object',
-    nameSpace: 'references',
-    name: 'order',
-    properties: {
-        customerStatus: {
-            type: 'string'
+    "type": "object",
+    "nameSpace": "references",
+    "name": "order",
+    "properties": {
+        "customerStatus": {
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        customerId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "customerId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        customer: {
-            type: 'hasOne',
-            model: 'customer',
-            nameSpace: 'references',
-            title: 'customer',
-            aggregationKind: 'none',
-            localFields: [
-                'customerId'
+    "relations": {
+        "customer": {
+            "type": "hasOne",
+            "model": "customer",
+            "nameSpace": "references",
+            "title": "customer",
+            "aggregationKind": "none",
+            "localFields": [
+                "customerId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

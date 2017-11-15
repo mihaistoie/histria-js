@@ -57,46 +57,47 @@ class VAOrderViewState extends index_1.InstanceState {
     }
 }
 exports.VAOrderViewState = VAOrderViewState;
+/* tslint:disable:quotemark */
 exports.VAORDERVIEW_SCHEMA = {
-    name: 'VAOrderView',
-    type: 'object',
-    view: true,
-    nameSpace: 'view-avanced',
-    properties: {
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+    "name": "VAOrderView",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-avanced",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        orderId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "orderId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        order: {
-            type: 'hasOne',
-            model: 'VAOrder',
-            aggregationKind: 'composite',
-            nameSpace: 'view-avanced',
-            title: 'order',
-            localFields: [
-                'orderId'
+    "relations": {
+        "order": {
+            "type": "hasOne",
+            "model": "VAOrder",
+            "aggregationKind": "composite",
+            "nameSpace": "view-avanced",
+            "title": "order",
+            "localFields": [
+                "orderId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    hooks: [
+    "hooks": [
         {
-            type: 'factory',
-            property: 'order.items',
-            model: 'VAOrderItemView',
-            relation: 'orderItem',
-            nameSpace: 'view-avanced'
+            "type": "factory",
+            "property": "order.items",
+            "model": "VAOrderItemView",
+            "relation": "orderItem",
+            "nameSpace": "view-avanced"
         }
     ],
-    meta: {}
+    "meta": {}
 };

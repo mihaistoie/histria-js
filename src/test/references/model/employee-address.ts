@@ -123,62 +123,63 @@ export class EmployeeAddressState extends InstanceState {
         return this._states.employeeId;
     }
 }
+/* tslint:disable:quotemark */
 export const
     EMPLOYEEADDRESS_SCHEMA = {
-        type: 'object',
-        name: 'employeeAddress',
-        nameSpace: 'references',
-        properties: {
-            street: {
-                title: 'Street',
-                type: 'string'
+        "type": "object",
+        "name": "employeeAddress",
+        "nameSpace": "references",
+        "properties": {
+            "street": {
+                "title": "Street",
+                "type": "string"
             },
-            city: {
-                title: 'City',
-                type: 'string'
+            "city": {
+                "title": "City",
+                "type": "string"
             },
-            province: {
-                title: 'Province',
-                type: 'string'
+            "province": {
+                "title": "Province",
+                "type": "string"
             },
-            postalCode: {
-                title: 'Postal Code',
-                type: 'string'
+            "postalCode": {
+                "title": "Postal Code",
+                "type": "string"
             },
-            country: {
-                title: 'Country',
-                type: 'string'
+            "country": {
+                "title": "Country",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             },
-            employeeId: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+            "employeeId": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             }
         },
-        relations: {
-            employee: {
-                title: 'Address',
-                type: 'belongsTo',
-                model: 'employee',
-                aggregationKind: 'composite',
-                invRel: 'address',
-                nameSpace: 'references',
-                invType: 'hasOne',
-                localFields: [
-                    'employeeId'
+        "relations": {
+            "employee": {
+                "title": "Address",
+                "type": "belongsTo",
+                "model": "employee",
+                "aggregationKind": "composite",
+                "invRel": "address",
+                "nameSpace": "references",
+                "invType": "hasOne",
+                "localFields": [
+                    "employeeId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             }
         },
-        meta: {
-            parent: 'employee',
-            parentRelation: 'employee'
+        "meta": {
+            "parent": "employee",
+            "parentRelation": "employee"
         }
     };

@@ -57,37 +57,38 @@ class CdState extends index_1.InstanceState {
     }
 }
 exports.CdState = CdState;
+/* tslint:disable:quotemark */
 exports.CD_SCHEMA = {
-    type: 'object',
-    name: 'cd',
-    nameSpace: 'aggregations',
-    properties: {
-        duration: {
-            type: 'integer',
-            default: 0
+    "type": "object",
+    "name": "cd",
+    "nameSpace": "aggregations",
+    "properties": {
+        "duration": {
+            "type": "integer",
+            "default": 0
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    relations: {
-        songs: {
-            type: 'hasMany',
-            model: 'song',
-            aggregationKind: 'shared',
-            invRel: 'cd',
-            nameSpace: 'aggregations',
-            title: 'songs',
-            invType: 'belongsTo',
-            localFields: [
-                'id'
+    "relations": {
+        "songs": {
+            "type": "hasMany",
+            "model": "song",
+            "aggregationKind": "shared",
+            "invRel": "cd",
+            "nameSpace": "aggregations",
+            "title": "songs",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
             ],
-            foreignFields: [
-                'cdId'
+            "foreignFields": [
+                "cdId"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

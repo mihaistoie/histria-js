@@ -81,48 +81,49 @@ class EngineState extends index_1.InstanceState {
     }
 }
 exports.EngineState = EngineState;
+/* tslint:disable:quotemark */
 exports.ENGINE_SCHEMA = {
-    type: 'object',
-    name: 'engine',
-    nameSpace: 'compositions',
-    properties: {
-        carChangedHits: {
-            type: 'integer',
-            default: 0
+    "type": "object",
+    "name": "engine",
+    "nameSpace": "compositions",
+    "properties": {
+        "carChangedHits": {
+            "type": "integer",
+            "default": 0
         },
-        name: {
-            type: 'string'
+        "name": {
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        carId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "carId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        car: {
-            type: 'belongsTo',
-            model: 'car',
-            aggregationKind: 'composite',
-            invRel: 'engine',
-            nameSpace: 'compositions',
-            title: 'car',
-            invType: 'hasOne',
-            localFields: [
-                'carId'
+    "relations": {
+        "car": {
+            "type": "belongsTo",
+            "model": "car",
+            "aggregationKind": "composite",
+            "invRel": "engine",
+            "nameSpace": "compositions",
+            "title": "car",
+            "invType": "hasOne",
+            "localFields": [
+                "carId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {
-        parent: 'car',
-        parentRelation: 'car'
+    "meta": {
+        "parent": "car",
+        "parentRelation": "car"
     }
 };

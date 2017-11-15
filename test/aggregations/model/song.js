@@ -81,46 +81,47 @@ class SongState extends index_1.InstanceState {
     }
 }
 exports.SongState = SongState;
+/* tslint:disable:quotemark */
 exports.SONG_SCHEMA = {
-    type: 'object',
-    name: 'song',
-    nameSpace: 'aggregations',
-    properties: {
-        duration: {
-            type: 'integer',
-            default: 0
+    "type": "object",
+    "name": "song",
+    "nameSpace": "aggregations",
+    "properties": {
+        "duration": {
+            "type": "integer",
+            "default": 0
         },
-        cdChangedHits: {
-            type: 'integer',
-            default: 0
+        "cdChangedHits": {
+            "type": "integer",
+            "default": 0
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         },
-        cdId: {
-            type: 'integer',
-            isReadOnly: true,
-            format: 'id'
+        "cdId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
-    relations: {
-        cd: {
-            type: 'belongsTo',
-            model: 'cd',
-            aggregationKind: 'shared',
-            invRel: 'songs',
-            nameSpace: 'aggregations',
-            title: 'cd',
-            invType: 'hasMany',
-            localFields: [
-                'cdId'
+    "relations": {
+        "cd": {
+            "type": "belongsTo",
+            "model": "cd",
+            "aggregationKind": "shared",
+            "invRel": "songs",
+            "nameSpace": "aggregations",
+            "title": "cd",
+            "invType": "hasMany",
+            "localFields": [
+                "cdId"
             ],
-            foreignFields: [
-                'id'
+            "foreignFields": [
+                "id"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

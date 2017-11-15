@@ -69,57 +69,58 @@ export class GroupState extends InstanceState {
         return this._states.itemId;
     }
 }
+/* tslint:disable:quotemark */
 export const
     GROUP_SCHEMA = {
-        type: 'object',
-        name: 'group',
-        nameSpace: 'cyclicreferences',
-        properties: {
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+        "type": "object",
+        "name": "group",
+        "nameSpace": "cyclicreferences",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             },
-            itemId: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+            "itemId": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             }
         },
-        relations: {
-            items: {
-                type: 'hasMany',
-                model: 'item',
-                aggregationKind: 'composite',
-                invRel: 'group',
-                nameSpace: 'cyclicreferences',
-                title: 'items',
-                invType: 'belongsTo',
-                localFields: [
-                    'id'
+        "relations": {
+            "items": {
+                "type": "hasMany",
+                "model": "item",
+                "aggregationKind": "composite",
+                "invRel": "group",
+                "nameSpace": "cyclicreferences",
+                "title": "items",
+                "invType": "belongsTo",
+                "localFields": [
+                    "id"
                 ],
-                foreignFields: [
-                    'groupId'
+                "foreignFields": [
+                    "groupId"
                 ]
             },
-            item: {
-                type: 'belongsTo',
-                model: 'item',
-                aggregationKind: 'composite',
-                invRel: 'groups',
-                nameSpace: 'cyclicreferences',
-                title: 'item',
-                invType: 'hasMany',
-                localFields: [
-                    'itemId'
+            "item": {
+                "type": "belongsTo",
+                "model": "item",
+                "aggregationKind": "composite",
+                "invRel": "groups",
+                "nameSpace": "cyclicreferences",
+                "title": "item",
+                "invType": "hasMany",
+                "localFields": [
+                    "itemId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             }
         },
-        meta: {
-            parent: 'item',
-            parentRelation: 'item'
+        "meta": {
+            "parent": "item",
+            "parentRelation": "item"
         }
     };

@@ -250,9 +250,12 @@ function _genSchemaRelations(schema: any, code: string[], model: any): void {
 }
 
 function _genSchema(schema: any, className: string, code: string[]): void {
-    code.push('export const');
-    const schemaStr = JSON.stringify(schema, null, _tab(1)).replace(/\"([^(\")"]+)\":/g, '$1:').replace(/\"/g, '\'').split('\n');
 
+    code.push('/* tslint:disable:quotemark */');
+    code.push('export const');
+    // const schemaStr = JSON.stringify(schema, null, _tab(1)).replace(/\"([^(\")"]+)\":/g, '$1:').replace(/\"/g, '\'').split('\n');
+
+    const schemaStr = JSON.stringify(schema, null, _tab(1)).split('\n');
     code.push(_tab(1) + util.format('%s_SCHEMA = %s', className.toUpperCase(), schemaStr[0]));
     const len = schemaStr.length - 1;
     for (let i = 1; i <= len; i++) {

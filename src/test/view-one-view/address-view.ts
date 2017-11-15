@@ -66,41 +66,42 @@ export class AddressViewState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     ADDRESSVIEW_SCHEMA = {
-        name: 'AddressView',
-        type: 'object',
-        view: true,
-        nameSpace: 'view-has-one-view',
-        properties: {
-            street: {
-                title: 'Street',
-                type: 'string'
+        "name": "AddressView",
+        "type": "object",
+        "view": true,
+        "nameSpace": "view-has-one-view",
+        "properties": {
+            "street": {
+                "title": "Street",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             }
         },
-        relations: {
-            user: {
-                type: 'belongsTo',
-                model: 'UserDetail',
-                invRel: 'address',
-                nameSpace: 'view-has-one-view',
-                title: 'user',
-                aggregationKind: 'composite',
-                localFields: [
-                    'id'
+        "relations": {
+            "user": {
+                "type": "belongsTo",
+                "model": "UserDetail",
+                "invRel": "address",
+                "nameSpace": "view-has-one-view",
+                "title": "user",
+                "aggregationKind": "composite",
+                "localFields": [
+                    "id"
                 ],
-                foreignFields: [
-                    'addressId'
+                "foreignFields": [
+                    "addressId"
                 ]
             }
         },
-        meta: {
-            parent: 'UserDetail',
-            parentRelation: 'user'
+        "meta": {
+            "parent": "UserDetail",
+            "parentRelation": "user"
         }
     };

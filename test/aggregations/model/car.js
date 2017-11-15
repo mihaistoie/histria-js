@@ -63,36 +63,37 @@ class CarState extends index_1.InstanceState {
     }
 }
 exports.CarState = CarState;
+/* tslint:disable:quotemark */
 exports.CAR_SCHEMA = {
-    type: 'object',
-    name: 'car',
-    nameSpace: 'aggregations',
-    properties: {
-        driverName: {
-            type: 'string'
+    "type": "object",
+    "name": "car",
+    "nameSpace": "aggregations",
+    "properties": {
+        "driverName": {
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    relations: {
-        drivenBy: {
-            type: 'hasOne',
-            model: 'driver',
-            aggregationKind: 'shared',
-            invRel: 'drives',
-            nameSpace: 'aggregations',
-            title: 'drivenBy',
-            invType: 'belongsTo',
-            localFields: [
-                'id'
+    "relations": {
+        "drivenBy": {
+            "type": "hasOne",
+            "model": "driver",
+            "aggregationKind": "shared",
+            "invRel": "drives",
+            "nameSpace": "aggregations",
+            "title": "drivenBy",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
             ],
-            foreignFields: [
-                'drivesId'
+            "foreignFields": [
+                "drivesId"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

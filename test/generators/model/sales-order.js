@@ -81,43 +81,44 @@ class SalesOrderState extends index_1.InstanceState {
     }
 }
 exports.SalesOrderState = SalesOrderState;
+/* tslint:disable:quotemark */
 exports.SALESORDER_SCHEMA = {
-    name: 'salesOrder',
-    type: 'object',
-    nameSpace: 'salesorder',
-    properties: {
-        ruleCount: {
-            title: 'Rule call count',
-            type: 'integer'
+    "name": "salesOrder",
+    "type": "object",
+    "nameSpace": "salesorder",
+    "properties": {
+        "ruleCount": {
+            "title": "Rule call count",
+            "type": "integer"
         },
-        netAmount: {
-            title: 'Net Amount (excluding VAT)',
-            type: 'number'
+        "netAmount": {
+            "title": "Net Amount (excluding VAT)",
+            "type": "number"
         },
-        vat: {
-            title: 'VAT',
-            type: 'number'
+        "vat": {
+            "title": "VAT",
+            "type": "number"
         },
-        grossAmount: {
-            title: 'Gross Amount (including VAT)',
-            type: 'number'
+        "grossAmount": {
+            "title": "Gross Amount (including VAT)",
+            "type": "number"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    states: {
-        netAmount: {
-            decimals: 2
+    "states": {
+        "netAmount": {
+            "decimals": 2
         },
-        vat: {
-            decimals: 2
+        "vat": {
+            "decimals": 2
         },
-        grossAmount: {
-            decimals: 2
+        "grossAmount": {
+            "decimals": 2
         }
     },
-    meta: {}
+    "meta": {}
 };

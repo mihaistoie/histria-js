@@ -60,37 +60,38 @@ class UserListState extends index_1.InstanceState {
     }
 }
 exports.UserListState = UserListState;
+/* tslint:disable:quotemark */
 exports.USERLIST_SCHEMA = {
-    name: 'UserList',
-    type: 'object',
-    view: true,
-    nameSpace: 'view-many-view',
-    properties: {
-        userCount: {
-            type: 'integer',
-            default: 0
+    "name": "UserList",
+    "type": "object",
+    "view": true,
+    "nameSpace": "view-many-view",
+    "properties": {
+        "userCount": {
+            "type": "integer",
+            "default": 0
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    relations: {
-        users: {
-            type: 'hasMany',
-            model: 'user',
-            aggregationKind: 'composite',
-            invRel: 'list',
-            nameSpace: 'view-many-view',
-            title: 'users',
-            localFields: [
-                'id'
+    "relations": {
+        "users": {
+            "type": "hasMany",
+            "model": "user",
+            "aggregationKind": "composite",
+            "invRel": "list",
+            "nameSpace": "view-many-view",
+            "title": "users",
+            "localFields": [
+                "id"
             ],
-            foreignFields: [
-                'listId'
+            "foreignFields": [
+                "listId"
             ]
         }
     },
-    meta: {}
+    "meta": {}
 };

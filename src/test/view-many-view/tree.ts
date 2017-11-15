@@ -80,59 +80,60 @@ export class TreeState extends InstanceState {
         return this._states.parentId;
     }
 }
+/* tslint:disable:quotemark */
 export const
     TREE_SCHEMA = {
-        type: 'object',
-        name: 'tree',
-        view: true,
-        nameSpace: 'view-many-view',
-        properties: {
-            title: {
-                type: 'string'
+        "type": "object",
+        "name": "tree",
+        "view": true,
+        "nameSpace": "view-many-view",
+        "properties": {
+            "title": {
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             },
-            parentId: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+            "parentId": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             }
         },
-        relations: {
-            leafs: {
-                type: 'hasMany',
-                model: 'tree',
-                aggregationKind: 'composite',
-                invRel: 'parent',
-                nameSpace: 'view-many-view',
-                title: 'leafs',
-                localFields: [
-                    'id'
+        "relations": {
+            "leafs": {
+                "type": "hasMany",
+                "model": "tree",
+                "aggregationKind": "composite",
+                "invRel": "parent",
+                "nameSpace": "view-many-view",
+                "title": "leafs",
+                "localFields": [
+                    "id"
                 ],
-                foreignFields: [
-                    'parentId'
+                "foreignFields": [
+                    "parentId"
                 ]
             },
-            parent: {
-                type: 'belongsTo',
-                model: 'tree',
-                aggregationKind: 'composite',
-                invRel: 'leafs',
-                nameSpace: 'view-many-view',
-                title: 'parent',
-                localFields: [
-                    'parentId'
+            "parent": {
+                "type": "belongsTo",
+                "model": "tree",
+                "aggregationKind": "composite",
+                "invRel": "leafs",
+                "nameSpace": "view-many-view",
+                "title": "parent",
+                "localFields": [
+                    "parentId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             }
         },
-        meta: {
-            parent: 'tree',
-            parentRelation: 'parent'
+        "meta": {
+            "parent": "tree",
+            "parentRelation": "parent"
         }
     };

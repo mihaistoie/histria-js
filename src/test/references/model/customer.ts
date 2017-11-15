@@ -59,21 +59,22 @@ export class CustomerState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     CUSTOMER_SCHEMA = {
-        type: 'object',
-        nameSpace: 'references',
-        name: 'customer',
-        properties: {
-            title: {
-                title: 'title',
-                type: 'string'
+        "type": "object",
+        "nameSpace": "references",
+        "name": "customer",
+        "properties": {
+            "title": {
+                "title": "title",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             }
         },
-        meta: {}
+        "meta": {}
     };

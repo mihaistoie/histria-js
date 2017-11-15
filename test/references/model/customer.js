@@ -54,20 +54,21 @@ class CustomerState extends index_1.InstanceState {
     }
 }
 exports.CustomerState = CustomerState;
+/* tslint:disable:quotemark */
 exports.CUSTOMER_SCHEMA = {
-    type: 'object',
-    nameSpace: 'references',
-    name: 'customer',
-    properties: {
-        title: {
-            title: 'title',
-            type: 'string'
+    "type": "object",
+    "nameSpace": "references",
+    "name": "customer",
+    "properties": {
+        "title": {
+            "title": "title",
+            "type": "string"
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    meta: {}
+    "meta": {}
 };

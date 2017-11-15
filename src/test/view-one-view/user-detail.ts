@@ -91,67 +91,67 @@ export class UserDetailState extends InstanceState {
         return this._states.addressId;
     }
 }
+/* tslint:disable:quotemark */
 export const
     USERDETAIL_SCHEMA = {
-        name: 'UserDetail',
-        type: 'object',
-        view: true,
-        nameSpace: 'view-has-one-view',
-        properties: {
-            fullName: {
-                title: 'FullName Name',
-                type: 'string'
+        "name": "UserDetail",
+        "type": "object",
+        "view": true,
+        "nameSpace": "view-has-one-view",
+        "properties": {
+            "fullName": {
+                "title": "FullName Name",
+                "type": "string"
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             },
-            userId: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+            "userId": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             },
-            addressId: {
-                type: 'integer',
-                isReadOnly: true,
-                format: 'id'
+            "addressId": {
+                "type": "integer",
+                "isReadOnly": true,
+                "format": "id"
             }
         },
-        relations: {
-            user: {
-                type: 'hasOne',
-                model: 'user',
-                embedded: true,
-                aggregationKind: 'composite',
-                nameSpace: 'view-has-one-view',
-                title: 'user',
-                localFields: [
-                    'userId'
+        "relations": {
+            "user": {
+                "type": "hasOne",
+                "model": "user",
+                "aggregationKind": "composite",
+                "nameSpace": "view-has-one-view",
+                "title": "user",
+                "localFields": [
+                    "userId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             },
-            address: {
-                type: 'hasOne',
-                model: 'AddressView',
-                aggregationKind: 'composite',
-                invRel: 'user',
-                nameSpace: 'view-has-one-view',
-                title: 'address',
-                localFields: [
-                    'addressId'
+            "address": {
+                "type": "hasOne",
+                "model": "AddressView",
+                "aggregationKind": "composite",
+                "invRel": "user",
+                "nameSpace": "view-has-one-view",
+                "title": "address",
+                "localFields": [
+                    "addressId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             }
         },
-        states: {
-            fullName: {
-                isReadOnly: true
+        "states": {
+            "fullName": {
+                "isReadOnly": true
             }
         },
-        meta: {}
+        "meta": {}
     };

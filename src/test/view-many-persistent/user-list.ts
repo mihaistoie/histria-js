@@ -66,45 +66,46 @@ export class UserListState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:quotemark */
 export const
     USERLIST_SCHEMA = {
-        name: 'UserList',
-        type: 'object',
-        view: true,
-        nameSpace: 'view-many',
-        properties: {
-            userCount: {
-                type: 'integer',
-                default: 0
+        "name": "UserList",
+        "type": "object",
+        "view": true,
+        "nameSpace": "view-many",
+        "properties": {
+            "userCount": {
+                "type": "integer",
+                "default": 0
             },
-            id: {
-                type: 'integer',
-                generated: true,
-                format: 'id'
+            "id": {
+                "type": "integer",
+                "generated": true,
+                "format": "id"
             },
-            usersId: {
-                type: 'array',
-                items: {
-                    type: 'integer',
-                    isReadOnly: true,
-                    format: 'id'
+            "usersId": {
+                "type": "array",
+                "items": {
+                    "type": "integer",
+                    "isReadOnly": true,
+                    "format": "id"
                 }
             }
         },
-        relations: {
-            users: {
-                type: 'hasMany',
-                model: 'user',
-                aggregationKind: 'composite',
-                nameSpace: 'view-many',
-                title: 'users',
-                localFields: [
-                    'usersId'
+        "relations": {
+            "users": {
+                "type": "hasMany",
+                "model": "user",
+                "aggregationKind": "composite",
+                "nameSpace": "view-many",
+                "title": "users",
+                "localFields": [
+                    "usersId"
                 ],
-                foreignFields: [
-                    'id'
+                "foreignFields": [
+                    "id"
                 ]
             }
         },
-        meta: {}
+        "meta": {}
     };

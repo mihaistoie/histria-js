@@ -57,37 +57,51 @@ class VAOrderState extends index_1.InstanceState {
     }
 }
 exports.VAOrderState = VAOrderState;
+/* tslint:disable:quotemark */
 exports.VAORDER_SCHEMA = {
-    type: 'object',
-    name: 'VAOrder',
-    nameSpace: 'view-avanced',
-    properties: {
-        totalAmount: {
-            type: 'number',
-            default: 0
+    "type": "object",
+    "name": "VAOrder",
+    "nameSpace": "view-avanced",
+    "properties": {
+        "totalAmount": {
+            "type": "number",
+            "default": 0
         },
-        id: {
-            type: 'integer',
-            generated: true,
-            format: 'id'
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
-    relations: {
-        items: {
-            type: 'hasMany',
-            model: 'VAOrderItem',
-            aggregationKind: 'composite',
-            invRel: 'order',
-            nameSpace: 'view-avanced',
-            title: 'items',
-            invType: 'belongsTo',
-            localFields: [
-                'id'
+    "relations": {
+        "items": {
+            "type": "hasMany",
+            "model": "VAOrderItem",
+            "aggregationKind": "composite",
+            "invRel": "order",
+            "nameSpace": "view-avanced",
+            "title": "items",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
             ],
-            foreignFields: [
-                'orderId'
+            "foreignFields": [
+                "orderId"
             ]
         }
     },
-    meta: {}
+    "meta": {},
+    "viewsOfMe": {
+        "view-avanced.VAOrder": {
+            "nameSpace": "view-avanced",
+            "model": "VAOrderView",
+            "relation": "order",
+            "localFields": [
+                "orderId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
+        }
+    }
 };

@@ -94,7 +94,7 @@ export const
         },
         "meta": {},
         "viewsOfMe": {
-            "customer-view-sample.customer": {
+            "customer-view-sample.customerView": {
                 "nameSpace": "customer-view-sample",
                 "model": "customerView",
                 "relation": "customer",

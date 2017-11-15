@@ -437,20 +437,11 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
     public async viewOfMe<T extends ObservableObject>(classOfView: any): Promise<T> {
         const that = this;
-        let schema = schemaManager().schema(classOfView.nameSpace, classOfView.entityName);
-        let cr: any = null;
-        schema.relations && Object.keys(schema.relations).forEach(relName => {
-            if (cr) return;
-            const relation = schema.relations[relName];
-            if (relation.model === that._schema.name && relation.nameSpace === that._schema.nameSpace) {
-                cr = relation;
-            }
-        });
-        if (cr) {
-            const query: any = schemaUtils.roleToQueryInv({ foreignFields: cr.localFields, localFields: cr.foreignFields }, that.model());
-            return that.transaction.findOneInCache<T>(classOfView, query);
-        } else
-            return null;
+        if (!that._schema.viewsOfMe) return null;
+        const cr = that._schema.viewsOfMe[classOfView.nameSpace + '.' + classOfView.entityName];
+        if (!cr) return null;
+        const query: any = schemaUtils.roleToQueryInv({ foreignFields: cr.localFields, localFields: cr.foreignFields }, that.model());
+        return that.transaction.findOneInCache<T>(classOfView, query);
     }
 
     public async notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void> {

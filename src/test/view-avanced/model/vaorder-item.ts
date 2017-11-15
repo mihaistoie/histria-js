@@ -132,7 +132,7 @@ export const
             "parentRelation": "order"
         },
         "viewsOfMe": {
-            "view-avanced.VAOrderItem": {
+            "view-avanced.VAOrderItemView": {
                 "nameSpace": "view-avanced",
                 "model": "VAOrderItemView",
                 "relation": "orderItem",

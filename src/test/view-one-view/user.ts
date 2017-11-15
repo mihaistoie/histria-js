@@ -110,7 +110,7 @@ export const
         },
         "meta": {},
         "viewsOfMe": {
-            "view-has-one-view.user": {
+            "view-has-one-view.UserDetail": {
                 "nameSpace": "view-has-one-view",
                 "model": "UserDetail",
                 "relation": "user",

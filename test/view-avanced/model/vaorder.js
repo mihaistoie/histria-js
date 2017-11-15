@@ -92,7 +92,7 @@ exports.VAORDER_SCHEMA = {
     },
     "meta": {},
     "viewsOfMe": {
-        "view-avanced.VAOrder": {
+        "view-avanced.VAOrderView": {
             "nameSpace": "view-avanced",
             "model": "VAOrderView",
             "relation": "order",

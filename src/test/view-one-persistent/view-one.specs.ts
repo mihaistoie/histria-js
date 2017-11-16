@@ -8,7 +8,7 @@ import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function viewOfUserTest(): Promise<void> {
     let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     let user1 = await transaction.findOne<User>(User, { id: 101 });
     let user2 = await transaction.findOne<User>(User, { id: 101 });
     let user3 = await transaction.findOne<User>(User, { id: 101 }, { onlyInCache: true });
@@ -31,7 +31,8 @@ async function viewOfUserTest(): Promise<void> {
     await userDetail.setUser(user);
     assert.equal(userDetail.fullName, 'John DOE', 'User is not null');
 
-    let det = await transaction.load<UserDetail>(UserDetail, { id: 10, userId: 101 });
+    let det = await transaction.load<UserDetail>(UserDetail, { id: 10, userId: 101 }, { external: true });
+
     user = await det.user();
 
     assert.notEqual(user, null, 'Lazy loading (1)');
@@ -55,7 +56,7 @@ async function viewOfUserTest(): Promise<void> {
     user1 = await transaction.findOne<User>(User, { id: 101 });
 
     await user1.setLastName('Doe');
-    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
+    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transaction restore');
 
 
     transaction.destroy();
@@ -65,7 +66,7 @@ async function viewOfUserTest(): Promise<void> {
 
 async function viewOfUserTestRemove(): Promise<void> {
     let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     let user = await transaction.create<User>(User);
     await userDetail.setUser(user);
     assert.notEqual(await userDetail.user(), null, '(1) User is not null');
@@ -75,7 +76,7 @@ async function viewOfUserTestRemove(): Promise<void> {
     transaction.destroy();
 
     transaction = new Transaction();
-    userDetail = await transaction.create<UserDetail>(UserDetail);
+    userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     user = await transaction.findOne<User>(User, { id: 100 })
     await userDetail.setUser(user);
     assert.notEqual(await userDetail.user(), null, '(2) User is not null');

@@ -8,7 +8,7 @@ import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function testCreate(): Promise<void> {
     let transaction = new Transaction();
-    let userList = await transaction.create<UserList>(UserList);
+    let userList = await transaction.create<UserList>(UserList, { external: true });
     let user1 = await transaction.create<User>(User);
     let user2 = await transaction.create<User>(User);
     await userList.users.set([user1, user2]);
@@ -16,7 +16,7 @@ async function testCreate(): Promise<void> {
     transaction.destroy();
     transaction = new Transaction();
 
-    userList = await transaction.create<UserList>(UserList);
+    userList = await transaction.create<UserList>(UserList, { external: true });
     user1 = await transaction.create<User>(User);
     user2 = await transaction.create<User>(User);
     await userList.users.add(user1);
@@ -38,7 +38,7 @@ async function testCreate(): Promise<void> {
 
 async function testRestore(): Promise<void> {
     let transaction = new Transaction();
-    let userList = await transaction.create<UserList>(UserList);
+    let userList = await transaction.create<UserList>(UserList, { external: true });
     let user1 = await transaction.create<User>(User);
     let user2 = await transaction.create<User>(User);
     await userList.users.add(user1);
@@ -70,7 +70,7 @@ async function testRemove(): Promise<void> {
 
 
     transaction = new Transaction();
-    userList = await transaction.create<UserList>(UserList);
+    userList = await transaction.create<UserList>(UserList, { external: true });
     user = await transaction.findOne<User>(User, { id: 100 })
     await userList.users.add(user);
 
@@ -84,7 +84,7 @@ async function testRemove(): Promise<void> {
 
 
     transaction = new Transaction();
-    userList = await transaction.create<UserList>(UserList);
+    userList = await transaction.create<UserList>(UserList, { external: true });
     user = await transaction.findOne<User>(User, { id: 100 });
     await userList.users.add(user);
     await userList.remove();

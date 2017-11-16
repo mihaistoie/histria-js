@@ -71,7 +71,7 @@ describe('View Avanced', () => {
         const transaction = new index_1.Transaction();
         let order = await transaction.create(view_avanced_model_1.VAOrder);
         let orderId = order.id;
-        let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
+        let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView, { external: true });
         await viewOfOrder.setOrder(order);
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
         await order.items.add(item1);
@@ -115,7 +115,7 @@ describe('View Avanced', () => {
         const transaction = new index_1.Transaction();
         let order = await transaction.create(view_avanced_model_1.VAOrder);
         let orderId = order.id;
-        let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView);
+        let viewOfOrder = await transaction.create(view_avanced_model_1.VAOrderView, { external: true });
         let viewOrderId = viewOfOrder.id;
         let item1 = await transaction.create(view_avanced_model_1.VAOrderItem);
         let item2 = await transaction.create(view_avanced_model_1.VAOrderItem);
@@ -139,7 +139,7 @@ describe('View Avanced', () => {
         list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
         assert.equal(list.length, 0, '(3) #VAOrderItemView === 0');
         transaction.clear();
-        await transaction.loadFromJson(data1, false);
+        await transaction.loadFromJson(data2, false);
         list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
         assert.equal(list.length, 2, '(4) #VAOrderItemView === 2');
         order = await transaction.findOneInCache(view_avanced_model_1.VAOrder, { id: orderId });

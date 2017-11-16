@@ -7,7 +7,7 @@ const view_has_one_view_model_1 = require("./view-has-one-view-model");
 const histria_utils_1 = require("histria-utils");
 async function viewOfUserTestWithAddress() {
     let transaction = new index_1.Transaction();
-    let userDetail = await transaction.create(view_has_one_view_model_1.UserDetail);
+    let userDetail = await transaction.create(view_has_one_view_model_1.UserDetail, { external: true });
     let address = await transaction.create(view_has_one_view_model_1.AddressView);
     await address.setStreet('Paris');
     let addressId = address.id;
@@ -21,7 +21,7 @@ async function viewOfUserTestWithAddress() {
     assert.equal(userDetail.fullName, '', 'User is null');
     await userDetail.setUser(user);
     assert.equal(userDetail.fullName, 'John DOE', 'User is not null');
-    let det = await transaction.load(view_has_one_view_model_1.UserDetail, { id: 10, userId: 101 });
+    let det = await transaction.load(view_has_one_view_model_1.UserDetail, { id: 10, userId: 101 }, { external: true });
     user = await det.user();
     assert.notEqual(user, null, 'Lazy loading (1)');
     assert.equal(user.firstName, 'John', 'Lazy loading (2)');
@@ -60,19 +60,19 @@ async function viewOfUserTestWithAddress() {
     assert.equal(!!duser, true, 'User Detail found');
     let user1 = await transaction.findOne(view_has_one_view_model_1.User, { id: 101 });
     await user1.setLastName('Doe');
-    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
+    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transaction restore');
     let address1 = await duser.address();
     let address3 = await transaction.findOne(view_has_one_view_model_1.AddressView, { id: addressId });
     assert.equal(!!address1, true, 'Address found');
     assert.equal(!!address3, true, 'Address found (2)');
     assert.equal(address3.street, 'Paris', 'Address found (2)');
     let cu = await address3.user();
-    assert.equal(!!cu, true, 'User Detail found (2)');
+    assert.equal(cu, null, 'User Detail found (2)');
     transaction.destroy();
 }
 async function viewOfUserTestRemove() {
     let transaction = new index_1.Transaction();
-    let userDetail = await transaction.create(view_has_one_view_model_1.UserDetail);
+    let userDetail = await transaction.create(view_has_one_view_model_1.UserDetail, { external: true });
     let user = await transaction.create(view_has_one_view_model_1.User);
     await userDetail.setUser(user);
     let address = await transaction.create(view_has_one_view_model_1.AddressView);
@@ -85,7 +85,7 @@ async function viewOfUserTestRemove() {
     assert.equal(address3, null, '(1) Address not found');
     transaction.destroy();
     transaction = new index_1.Transaction();
-    userDetail = await transaction.create(view_has_one_view_model_1.UserDetail);
+    userDetail = await transaction.create(view_has_one_view_model_1.UserDetail, { external: true });
     user = await transaction.create(view_has_one_view_model_1.User);
     await userDetail.setUser(user);
     address = await transaction.create(view_has_one_view_model_1.AddressView);

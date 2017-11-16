@@ -1,8 +1,8 @@
-import { ObservableObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions } from './interfaces';
+import { ObservableObject, FrameworkObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions } from './interfaces';
 import { InstanceErrors } from './states/instance-errors';
 import { InstanceState } from './states/instance-state';
 import { BaseInstance } from './base-instance';
-export declare class ModelObject extends BaseInstance implements ObservableObject {
+export declare class ModelObject extends BaseInstance implements ObservableObject, FrameworkObject {
     context: UserContext;
     transaction: TransactionContainer;
     protected _status: ObjectStatus;
@@ -18,7 +18,6 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     protected _rootCache: ObservableObject;
     private _afterCreateCalled;
     protected _model: any;
-    protected _parentProperty: string;
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
     protected _propertyName: string;
@@ -64,6 +63,9 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     }[];
     modelState(propName: string): any;
     model(propName?: string): any;
+    setInstanceOptions(options: {
+        external: boolean;
+    }): void;
     private beforePropertyChanged(propName, oldValue, newValue);
     private _remove(rootIsPersistant);
     remove(): Promise<void>;

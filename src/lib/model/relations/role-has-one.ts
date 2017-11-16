@@ -1,4 +1,4 @@
-import { ObservableObject, ObjectStatus, FindOptions, EventType } from '../interfaces';
+import { ObservableObject, FrameworkObject, ObjectStatus, FindOptions, EventType } from '../interfaces';
 import { Role } from './role';
 import { schemaUtils, DEFAULT_PARENT_NAME, AGGREGATION_KIND } from 'histria-utils';
 
@@ -57,7 +57,8 @@ export class HasOneRef<T extends ObservableObject> extends HasOne<T> {
 export class HasOneAC<T extends ObservableObject> extends HasOne<T> {
     protected async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
         const that = this;
-        await that._parent.notifyHooks(that._propertyName, eventType, value);
+        const inst: FrameworkObject = <any>that._parent;
+        await inst.notifyHooks(that._propertyName, eventType, value);
     }
     protected async _setValue(value: T): Promise<void> {
         const that = this;
@@ -228,7 +229,8 @@ export class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
     }
     private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
         const that = this;
-        await that._parent.notifyHooks(that._propertyName, eventType, value);
+        const inst: FrameworkObject = <any>that._parent;
+        await inst.notifyHooks(that._propertyName, eventType, value);
     }
     private _subscribe(): void {
         const that = this;

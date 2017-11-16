@@ -5,6 +5,7 @@ export declare enum ObjectStatus {
 }
 export declare enum LogModule {
     hooks = 0,
+    views = 1,
 }
 export declare enum DebugLevel {
     message = 0,
@@ -61,17 +62,24 @@ export interface TransactionContainer {
     removeInstance(instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
     log(module: LogModule, message: string, debugLevel?: DebugLevel): void;
-    create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
+    create<T extends ObservableObject>(classOfInstance: any, options?: {
+        external: boolean;
+    }): Promise<T>;
     save(): Promise<void>;
     cancel(): Promise<void>;
     readonly eventInfo: EventInfo;
+}
+export interface FrameworkObject {
+    notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
+    execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;
+    setInstanceOptions(options: {
+        external: boolean;
+    }): void;
 }
 export interface ObservableObject {
     changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
-    notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
-    execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;
     model(propName?: string): any;
     modelState(propName: string): any;
     modelErrors(propName: string): {

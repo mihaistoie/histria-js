@@ -8,7 +8,7 @@ import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function viewOfUserTestWithAddress(): Promise<void> {
     let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     let address = await transaction.create<AddressView>(AddressView);
     await address.setStreet('Paris');
     let addressId = address.id;
@@ -30,7 +30,7 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     await userDetail.setUser(user);
     assert.equal(userDetail.fullName, 'John DOE', 'User is not null');
 
-    let det = await transaction.load<UserDetail>(UserDetail, { id: 10, userId: 101 });
+    let det = await transaction.load<UserDetail>(UserDetail, { id: 10, userId: 101 }, { external: true });
     user = await det.user();
 
     assert.notEqual(user, null, 'Lazy loading (1)');
@@ -48,6 +48,8 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     assert.equal(ca.owner, userDetail, 'Lazy loading (4)');
 
     await userDetail.setAddress(null);
+
+
     assert.equal(ca.owner, null, 'Owner of address is null (2)');
     assert.equal(userDetail.addressId, undefined, 'Owner of address is null (1)');
 
@@ -67,6 +69,7 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     transaction.clear();
     await transaction.loadFromJson(transactionData, false);
     let data2 = transaction.saveToJson();
+
     assert.deepEqual(transactionData, data2, 'Restore Test');
 
     // Test that det.user is loaded
@@ -78,7 +81,7 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     let user1 = await transaction.findOne<User>(User, { id: 101 });
 
     await user1.setLastName('Doe');
-    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transection restore');
+    assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transaction restore');
 
     let address1 = await duser.address();
     let address3 = await transaction.findOne<AddressView>(AddressView, { id: addressId })
@@ -86,7 +89,7 @@ async function viewOfUserTestWithAddress(): Promise<void> {
     assert.equal(!!address3, true, 'Address found (2)');
     assert.equal(address3.street, 'Paris', 'Address found (2)');
     let cu = await address3.user();
-    assert.equal(!!cu, true, 'User Detail found (2)');
+    assert.equal(cu, null, 'User Detail found (2)');
     transaction.destroy();
 
 }
@@ -94,7 +97,7 @@ async function viewOfUserTestWithAddress(): Promise<void> {
 
 async function viewOfUserTestRemove(): Promise<void> {
     let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail);
+    let userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     let user = await transaction.create<User>(User);
     await userDetail.setUser(user);
     let address = await transaction.create<AddressView>(AddressView);
@@ -113,7 +116,7 @@ async function viewOfUserTestRemove(): Promise<void> {
 
     transaction = new Transaction();
 
-    userDetail = await transaction.create<UserDetail>(UserDetail);
+    userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     user = await transaction.create<User>(User);
     await userDetail.setUser(user);
     address = await transaction.create<AddressView>(AddressView);

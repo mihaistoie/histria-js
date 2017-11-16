@@ -5,10 +5,10 @@ import {
     rmvItemRules, setItemsRules, initRules, editedRules, editingRules, savedRules, savingRules, removedRules, removingRules
 } from '../model/model-manager';
 import { validateAfterPropChanged } from './validation';
-import { findInMap, IStore, dbManager } from 'histria-utils';
+import { findInMap, IStore, dbManager, helper } from 'histria-utils';
 
 import { TranContext } from './user-context';
-import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions, LogModule, DebugLevel } from '../model/interfaces';
+import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions, LogModule, DebugLevel, FrameworkObject } from '../model/interfaces';
 import { EventInfoStack } from './divers/event-stack'
 
 export class Transaction implements TransactionContainer {
@@ -62,7 +62,7 @@ export class Transaction implements TransactionContainer {
             res.removed = [];
             for (let item of that._removedInstances) {
                 for (let instance of item[1]) {
-                    res.removed.push(instance[1].model());
+                    res.removed.push(helper.clone(instance[1].model()));
                 }
             }
         }
@@ -74,7 +74,7 @@ export class Transaction implements TransactionContainer {
                     for (let ii of instances) {
                         const instance: ObservableObject = ii[1];
                         if (!instance.owner)
-                            res.instances.push({ className: item.className, data: instance.model() });
+                            res.instances.push({ className: item.className, data: helper.clone(instance.model()) });
                     }
                 }
 
@@ -153,7 +153,8 @@ export class Transaction implements TransactionContainer {
 
     private async _execHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, nInstances: ObservableObject[], propertyName: string): Promise<void> {
         const that = this;
-        await instance.execHooks(propertyName, eventType, source);
+        const inst: FrameworkObject = <any>instance;
+        await inst.execHooks(propertyName, eventType, source);
         const listeners = instance.getListeners(false);
         for (let listener of listeners) {
             let children = nInstances.slice();
@@ -181,7 +182,7 @@ export class Transaction implements TransactionContainer {
         return Promise.resolve();
     }
 
-    public async create<T extends ObservableObject>(classOfInstance: any): Promise<T> {
+    public async create<T extends ObservableObject>(classOfInstance: any, options?: { external: true }): Promise<T> {
         let that = this;
         let mm = modelManager();
         let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { _isNew: true }, { isRestore: false });
@@ -194,10 +195,15 @@ export class Transaction implements TransactionContainer {
         for (let inst of instances) {
             await inst.afterCreated();
         }
+        if (options) {
+            const inst: FrameworkObject = <any>instance;
+            inst.setInstanceOptions(options);
+
+        }
         return instance;
     }
 
-    public async load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T> {
+    public async load<T extends ObservableObject>(classOfInstance: any, data: any, options?: { external: true }): Promise<T> {
         let mm = modelManager();
         let that = this;
         let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
@@ -209,6 +215,11 @@ export class Transaction implements TransactionContainer {
         instances.push(instance);
         for (let inst of instances) {
             await inst.afterCreated();
+        }
+        if (options) {
+            const inst: FrameworkObject = <any>instance;
+            inst.setInstanceOptions(options);
+
         }
         return instance;
     }

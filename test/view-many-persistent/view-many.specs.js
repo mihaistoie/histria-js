@@ -7,14 +7,14 @@ const view_many_model_1 = require("./view-many-model");
 const histria_utils_1 = require("histria-utils");
 async function testCreate() {
     let transaction = new index_1.Transaction();
-    let userList = await transaction.create(view_many_model_1.UserList);
+    let userList = await transaction.create(view_many_model_1.UserList, { external: true });
     let user1 = await transaction.create(view_many_model_1.User);
     let user2 = await transaction.create(view_many_model_1.User);
     await userList.users.set([user1, user2]);
     assert.equal(userList.userCount, 2, '(0) Rules');
     transaction.destroy();
     transaction = new index_1.Transaction();
-    userList = await transaction.create(view_many_model_1.UserList);
+    userList = await transaction.create(view_many_model_1.UserList, { external: true });
     user1 = await transaction.create(view_many_model_1.User);
     user2 = await transaction.create(view_many_model_1.User);
     await userList.users.add(user1);
@@ -32,7 +32,7 @@ async function testCreate() {
 }
 async function testRestore() {
     let transaction = new index_1.Transaction();
-    let userList = await transaction.create(view_many_model_1.UserList);
+    let userList = await transaction.create(view_many_model_1.UserList, { external: true });
     let user1 = await transaction.create(view_many_model_1.User);
     let user2 = await transaction.create(view_many_model_1.User);
     await userList.users.add(user1);
@@ -60,7 +60,7 @@ async function testRemove() {
     assert.equal(users.length, 0, '(2) No users');
     transaction.destroy();
     transaction = new index_1.Transaction();
-    userList = await transaction.create(view_many_model_1.UserList);
+    userList = await transaction.create(view_many_model_1.UserList, { external: true });
     user = await transaction.findOne(view_many_model_1.User, { id: 100 });
     await userList.users.add(user);
     users = await userList.users.toArray();
@@ -70,7 +70,7 @@ async function testRemove() {
     assert.equal(users.length, 0, '(4) No users');
     transaction.destroy();
     transaction = new index_1.Transaction();
-    userList = await transaction.create(view_many_model_1.UserList);
+    userList = await transaction.create(view_many_model_1.UserList, { external: true });
     user = await transaction.findOne(view_many_model_1.User, { id: 100 });
     await userList.users.add(user);
     await userList.remove();

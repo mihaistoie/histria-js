@@ -19,8 +19,12 @@ export declare class Transaction implements TransactionContainer {
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>): void;
     save(): Promise<void>;
     cancel(): Promise<void>;
-    create<T extends ObservableObject>(classOfInstance: any): Promise<T>;
-    load<T extends ObservableObject>(classOfInstance: any, data: any): Promise<T>;
+    create<T extends ObservableObject>(classOfInstance: any, options?: {
+        external: true;
+    }): Promise<T>;
+    load<T extends ObservableObject>(classOfInstance: any, data: any, options?: {
+        external: true;
+    }): Promise<T>;
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     clear(): void;
     destroy(): void;

@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, FindOptions } from '../interfaces';
+import { ObservableObject, FrameworkObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, FindOptions } from '../interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
 import { schemaUtils } from 'histria-utils';
 import { DEFAULT_PARENT_NAME } from 'histria-utils';
@@ -44,7 +44,8 @@ export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<
     }
     private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
         const that = this;
-        await that._parent.notifyHooks(that._propertyName, eventType, value);
+        const inst: FrameworkObject = <any>that._parent;
+        await inst.notifyHooks(that._propertyName, eventType, value);
     }
     private async _removed(item: T, notifyRemove: boolean): Promise<void> {
         const that = this;
@@ -235,7 +236,8 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
     }
     private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
         const that = this;
-        await that._parent.notifyHooks(that._propertyName, eventType, value);
+        const inst: FrameworkObject = <any>that._parent;
+        await inst.notifyHooks(that._propertyName, eventType, value);
     }
     public restoreFromCache() {
         const that = this;

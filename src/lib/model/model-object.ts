@@ -1,4 +1,4 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions, LogModule } from './interfaces';
+import { ObservableObject, ObservableArray, FrameworkObject, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, ChangePropertyOptions, LogModule } from './interfaces';
 import { RoleBase } from './relations/role';
 import { HasOneRef, HasOneComposition, HasOneAggregation, HasOneRefObject } from './relations/role-has-one';
 import { CompositionBelongsTo, AggregationBelongsTo } from './relations/role-belongs-to';
@@ -20,8 +20,9 @@ import { BaseInstance } from './base-instance'
 
 import * as util from 'util';
 import * as uuid from 'uuid';
+import { View } from './base-view';
 
-export class ModelObject extends BaseInstance implements ObservableObject {
+export class ModelObject extends BaseInstance implements ObservableObject, FrameworkObject {
 
     context: UserContext;
     transaction: TransactionContainer;
@@ -36,7 +37,6 @@ export class ModelObject extends BaseInstance implements ObservableObject {
     protected _rootCache: ObservableObject;
     private _afterCreateCalled: boolean;
     protected _model: any;
-    protected _parentProperty: string;
     protected _states: InstanceState;
     protected _errors: InstanceErrors;
     protected _propertyName: string;
@@ -348,6 +348,13 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         return propName ? that._model[propName] : that._model;
     }
 
+    public setInstanceOptions(options: { external: boolean }): void {
+        let that = this;
+        // View refernced by trensaction
+        if (options.external && that._schema.view)
+            that._model._external = true;
+    }
+
     private async beforePropertyChanged(propName: string, oldValue: any, newValue: any): Promise<void> {
         // Check can modify ?
     }
@@ -399,6 +406,16 @@ export class ModelObject extends BaseInstance implements ObservableObject {
 
         });
         await Promise.all(promises);
+        // Remove views of me
+        if (!that._schema.view && that._schema.viewsOfMe) {
+            for (let viewName of Object.keys(that._schema.viewsOfMe)) {
+                const viewConfig = that._schema.viewsOfMe[viewName]
+                const viewClass = modelManager().classByName(viewConfig.model, viewConfig.nameSpace);
+                const inst: ModelObject = <any>await that.viewOfMe(viewClass);
+                if (inst && !inst._model._external)
+                    await inst.remove();
+            }
+        }
         // Remove from views
         promises = [];
         if (that._listeners) {
@@ -414,6 +431,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
         that._transaction.remove(that);
         // After remove rules
         await that._emitInstanceEvent(EventType.removed);
+
         if (that.isNew)
             that.destroy();
     }
@@ -456,7 +474,6 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             if (op === EventType.addItem) {
                 that.transaction.log(LogModule.hooks, util.format('Create instance of "%s" for "%s".', hook.model, that._schema.name));
                 const instance: any = await that.transaction.create(classConstructor);
-                instance._parentProperty = hook.relation;
                 await instance['set' + hook.relation.charAt(0).toUpperCase() + hook.relation.substr(1)](source);
             } else if (op === EventType.removeItem) {
                 that.transaction.log(LogModule.hooks, util.format('Destroy instance of "%s" for "%s".', hook.model, that._schema.name));
@@ -473,7 +490,7 @@ export class ModelObject extends BaseInstance implements ObservableObject {
             let models: any[] = [];
             helper.valuesByPath(path, model, models);
             if (models.length) {
-                const classConstructor = modelManager().classByNameAndPath(that._schema.name, that._schema.nameSpace, hook.property);
+                const classConstructor = modelManager().classByPath(that._schema.name, that._schema.nameSpace, hook.property);
                 for (let model of models) {
                     let instance: any = await that.transaction.findOneInCache(classConstructor, { id: model.id });
                     if (instance)

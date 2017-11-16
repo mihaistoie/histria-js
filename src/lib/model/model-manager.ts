@@ -36,7 +36,7 @@ export class ModelManager {
 
     }
 
-    public classByNameAndPath(className: string, namespace: string, path: string) {
+    public classByPath(className: string, namespace: string, path: string) {
         let that = this;
         let segments = path.split('.');
         let cs = schemaManager().schema(namespace, className);

@@ -80,7 +80,7 @@ describe('View Avanced', () => {
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
         let orderId = order.id;
-        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView);
+        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView, { external: true });
         await viewOfOrder.setOrder(order);
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         await order.items.add(item1);
@@ -137,12 +137,13 @@ describe('View Avanced', () => {
 
     });
 
+
     it('View avanced - autocreate - complex', async () => {
 
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
         let orderId = order.id;
-        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView);
+        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView, { external: true });
         let viewOrderId = viewOfOrder.id;
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
@@ -173,7 +174,7 @@ describe('View Avanced', () => {
         assert.equal(list.length, 0, '(3) #VAOrderItemView === 0');
 
         transaction.clear();
-        await transaction.loadFromJson(data1, false);
+        await transaction.loadFromJson(data2, false);
 
         list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
         assert.equal(list.length, 2, '(4) #VAOrderItemView === 2');

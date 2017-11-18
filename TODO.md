@@ -7,6 +7,3 @@
 3/ save 
 
 
-
-Hooks
-When view.setRef() --> execute hooks

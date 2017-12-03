@@ -15,6 +15,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     protected _loaded: any[];
     protected _children: any;
     protected _schema: any;
+    private _cacheViewsOfMe;
     protected _rootCache: ObservableObject;
     private _afterCreateCalled;
     protected _model: any;
@@ -70,7 +71,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     private _remove(rootIsPersistant);
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
-    viewOfMe<T extends ObservableObject>(classOfView: any): Promise<T>;
+    viewOfMe<T extends ObservableObject>(classOfView: any): T;
     notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
     private _viewFactory(hook, propName, op, source);
     execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;

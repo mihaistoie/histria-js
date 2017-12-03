@@ -123,7 +123,7 @@ describe('View Avanced', () => {
         await order.items.add(item2);
         let item1Id = item1.id;
         await viewOfOrder.setOrder(order);
-        let viewOfOrderItem = await item1.viewOfMe(view_avanced_model_1.VAOrderItemView);
+        let viewOfOrderItem = item1.viewOfMe(view_avanced_model_1.VAOrderItemView);
         assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
         let list = await transaction.find(view_avanced_model_1.VAOrderItemView, {});
         assert.equal(list.length, 2, '(1) #VAOrderItemView === 2');

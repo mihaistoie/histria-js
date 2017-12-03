@@ -34,6 +34,7 @@ export class ModelObject extends BaseInstance implements ObservableObject, Frame
     protected _loaded: any[];
     protected _children: any;
     protected _schema: any;
+    private _cacheViewsOfMe: Map<any, string>;
     protected _rootCache: ObservableObject;
     private _afterCreateCalled: boolean;
     protected _model: any;
@@ -411,7 +412,7 @@ export class ModelObject extends BaseInstance implements ObservableObject, Frame
             for (let viewName of Object.keys(that._schema.viewsOfMe)) {
                 const viewConfig = that._schema.viewsOfMe[viewName]
                 const viewClass = modelManager().classByName(viewConfig.model, viewConfig.nameSpace);
-                const inst: ModelObject = <any>await that.viewOfMe(viewClass);
+                const inst: ModelObject = <any>that.viewOfMe(viewClass);
                 if (inst && !inst._model._external)
                     await inst.remove();
             }
@@ -453,13 +454,26 @@ export class ModelObject extends BaseInstance implements ObservableObject, Frame
 
     }
 
-    public async viewOfMe<T extends ObservableObject>(classOfView: any): Promise<T> {
+    public viewOfMe<T extends ObservableObject>(classOfView: any): T {
         const that = this;
         if (!that._schema.viewsOfMe) return null;
+        if (that._cacheViewsOfMe) {
+            let uuid = that._cacheViewsOfMe.get(classOfView);
+            if (uuid) {
+                const res = that.transaction.findOneInCache<T>(classOfView, { id: uuid });
+                if (res) return res;
+                that._cacheViewsOfMe.delete(classOfView);
+            }
+        }
         const cr = that._schema.viewsOfMe[classOfView.nameSpace + '.' + classOfView.entityName];
         if (!cr) return null;
         const query: any = schemaUtils.roleToQueryInv({ foreignFields: cr.localFields, localFields: cr.foreignFields }, that.model());
-        return that.transaction.findOneInCache<T>(classOfView, query);
+        const res = that.transaction.findOneInCache<T>(classOfView, query);
+        if (res) {
+            that._cacheViewsOfMe = that._cacheViewsOfMe || new Map<any, string>();
+            that._cacheViewsOfMe.set(classOfView, res.uuid);
+        }
+        return res;
     }
 
     public async notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void> {
@@ -477,7 +491,7 @@ export class ModelObject extends BaseInstance implements ObservableObject, Frame
                 await instance['set' + hook.relation.charAt(0).toUpperCase() + hook.relation.substr(1)](source);
             } else if (op === EventType.removeItem) {
                 that.transaction.log(LogModule.hooks, util.format('Destroy instance of "%s" for "%s".', hook.model, that._schema.name));
-                let ref = await source.viewOfMe(classConstructor);
+                let ref = source.viewOfMe(classConstructor);
                 if (ref)
                     await ref.remove();
             }
@@ -713,6 +727,8 @@ export class ModelObject extends BaseInstance implements ObservableObject, Frame
 
         that._parent = null;
         that._propertyName = null;
+        if (that._cacheViewsOfMe)
+            that._cacheViewsOfMe = null;
         super.destroy();
 
     }

@@ -9,7 +9,7 @@
     "@types/node": "latest",
     "@types/uuid": "latest",
     "del": "latest",
-    "gulp": "latest",
+    "gulp": "^4.0.0",
     "gulp-tslint": "latest",
     "gulp-typescript": "latest",
     "merge2": "latest",
@@ -31,7 +31,7 @@
   "types": "./definitions/index.d.ts",
   "scripts": {
     "test": "mocha test/**/*.specs.js",
-    "gen": "mocha --compilers ts:ts-node/register src/test/**/*.gentest.ts",
+    "gen": "mocha --require ts-node/register src/test/**/*.gentest.ts",
     "compositions": "mocha  test/compositions/*.specs.js",
     "aggregations": "mocha test/aggregations/*.specs.js",
     "view": "mocha test/view-avanced/*.specs.js",

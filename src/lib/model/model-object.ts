@@ -8,6 +8,8 @@ import { ApplicationError, schemaManager, schemaUtils, JSONTYPES, RELATION_TYPE,
 import { modelManager } from './model-manager';
 
 import { IntegerValue, NumberValue } from './types/number';
+import { DateValue } from './types/date';
+import { DateTimeValue } from './types/date-time';
 import { IdValue } from './types/id';
 
 import { InstanceErrors } from './states/instance-errors'
@@ -297,6 +299,12 @@ export class ModelObject extends BaseInstance implements ObservableObject, Frame
             switch (propType) {
                 case JSONTYPES.integer:
                     that._children[propName] = new IntegerValue(that, propName);
+                    break;
+                case JSONTYPES.date:
+                    that._children[propName] = new DateValue(that, propName);
+                    break;
+                case JSONTYPES.datetime:
+                    that._children[propName] = new DateTimeValue(that, propName);
                     break;
                 case JSONTYPES.id:
                     that._children[propName] = new IdValue(that, propName);

@@ -9,6 +9,8 @@ export { HasManyComposition, HasManyAggregation, HasManyRefObject } from './lib/
 export { propChanged, addItem, rmvItem, setItems, init, title, loadRules, validate, editing, edited, removing, removed, saving, saved } from './lib/model/rules/decorators';
 export { State, StringState, IdState, IntegerState, BooleanState, EnumState, NumberState, DateState, DateTimeState, RefArrayState, RefObjectState } from './lib/model/states/state';
 export { IntegerValue, NumberValue } from './lib/model/types/number';
+export { DateValue } from './lib/model/types/date';
+export { DateTimeValue } from './lib/model/types/date-time';
 export { IdValue } from './lib/model/types/id';
 export { classGenerator } from './lib/generators/classgen';
 export { serializeInstance } from './lib/serialization/serialization';

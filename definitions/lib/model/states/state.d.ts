@@ -4,6 +4,7 @@ export declare class State {
     protected _propertyName: string;
     protected _stateModel: any;
     protected init(): void;
+    serialize(): any;
     constructor(parent: ObservableObject, propertyName: string);
     destroy(): void;
     isDisabled: boolean;

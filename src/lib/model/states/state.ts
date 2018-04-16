@@ -1,13 +1,21 @@
 import { ObservableObject } from '../interfaces';
+import { helper } from 'histria-utils';
+
 export class State {
     protected _parent: ObservableObject;
     protected _propertyName: string;
     protected _stateModel: any;
     protected init() {
     }
+    public serialize(): any {
+        const that = this;
+        if (!Object.keys(that._stateModel).length)
+            return null;
+        return helper.clone(that._stateModel);
+    }
 
     constructor(parent: ObservableObject, propertyName: string) {
-        let that = this;
+        const that = this;
         that._propertyName = propertyName;
         that._parent = parent;
         that._stateModel = that._parent.modelState(propertyName);

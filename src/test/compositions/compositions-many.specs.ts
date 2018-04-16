@@ -138,6 +138,7 @@ async function testRules(): Promise<void> {
     assert.equal(order.totalAmount.value, 0, 'Total amount  = 0');
     await order.items.set([item1, item2]);
     assert.equal(order.totalAmount.value, 15, 'Total amount  = 15');
+    order.$states.totalAmount.isDisabled = true;
 
     let o = await serializeInstance(order, pattern1);
     let excepted = {
@@ -146,7 +147,12 @@ async function testRules(): Promise<void> {
         items: [
             { amount: 5, id: item1.id },
             { amount: 10, id: item2.id }
-        ]
+        ],
+        $states: {
+            totalAmount: {
+                isDisabled: true
+            }
+        }
 
     };
     assert.deepEqual(o, excepted, 'Serialization rules 1');

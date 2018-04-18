@@ -26,9 +26,14 @@ export class DateValue {
         const that = this;
         return that._parent.getPropertyByName(that._propertyName);
     }
-    private _setValue(value: string): Promise<number> {
+    private _setValue(dateAsString: string): Promise<string> {
         let that = this;
-        return that._parent.setPropertyByName(that._propertyName, value);
+        return that._parent.setPropertyByName(that._propertyName, dateAsString);
+    }
+    public async today(): Promise<void> {
+        const that = this;
+        const today = new Date();
+        await that._setValue(today.toISOString().substr(0, 10));
     }
 
 }

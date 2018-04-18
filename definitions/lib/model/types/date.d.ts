@@ -6,5 +6,6 @@ export declare class DateValue {
     protected init(): void;
     destroy(): void;
     readonly value: string;
-    private _setValue(value);
+    private _setValue(dateAsString);
+    today(): Promise<void>;
 }

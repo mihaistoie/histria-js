@@ -12,10 +12,10 @@ export declare class Transaction implements TransactionContainer {
     readonly eventInfo: EventInfo;
     saveToJson(): any;
     loadFromJson(data: any, reload: boolean): Promise<void>;
-    private _propagateEvent(list, eventInfo, instance, nInstances, args, argIndex);
+    private _propagateEvent;
     emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<boolean>;
     notifyHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, propertyName: string): Promise<void>;
-    private _execHooks(eventType, instance, source, nInstances, propertyName);
+    private _execHooks;
     subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>): void;
     save(): Promise<void>;
     cancel(): Promise<void>;
@@ -28,17 +28,18 @@ export declare class Transaction implements TransactionContainer {
     createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
     clear(): void;
     destroy(): void;
-    private _addInstance(instance, classOfInstance);
+    private _addInstance;
     find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T[]>;
     findOneInCache<T extends ObservableObject>(classOfInstance: any, filter: any): T;
     findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T>;
     removeInstance(instance: ObservableObject): void;
     remove(instance: ObservableObject): void;
     restore<T extends ObservableObject>(classOfInstance: any, data: any, reload: boolean): Promise<T>;
-    private _getInstances(classOfInstance);
-    private _getRemovedInstances(classOfInstance);
-    private _findById<T>(id, classOfInstance);
-    private _findOne<T>(query, classOfInstance);
-    private _find<T>(filter, classOfInstance);
-    private _store(classOfInstance);
+    private _getInstances;
+    private _getRemovedInstances;
+    private _findById;
+    private _findOne;
+    private _find;
+    private _store;
 }
+//# sourceMappingURL=transaction.d.ts.map

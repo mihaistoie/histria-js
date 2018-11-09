@@ -21,7 +21,7 @@ export declare class ModelManager {
     }) => void): void;
     sortedClasses(): string[];
     registerClass(constructor: any, schema: any): void;
-    private _loaded();
+    private _loaded;
     rulesForByName(ruleName: string, classOfInstance: any): any[];
     rulesObjValidate(classOfInstance: any): any[];
     rulesForPropChange(classOfInstance: any, propertyName: string): any[];
@@ -47,3 +47,4 @@ export declare function addItemRules(eventInfo: EventInfo, classOfInstance: any,
 export declare function rmvItemRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean>;
 export declare function setItemsRules(eventInfo: EventInfo, classOfInstance: any, instances: any[], args?: any[]): Promise<boolean>;
 export declare function modelManager(): ModelManager;
+//# sourceMappingURL=model-manager.d.ts.map

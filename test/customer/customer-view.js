@@ -113,3 +113,5 @@ exports.CUSTOMERVIEW_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=customer-view.js.map

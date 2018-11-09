@@ -98,3 +98,5 @@ exports.ADDRESSVIEW_SCHEMA = {
         "parentRelation": "user"
     }
 };
+
+//# sourceMappingURL=address-view.js.map

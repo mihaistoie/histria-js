@@ -17,3 +17,5 @@ index_1.modelManager().registerClass(vaorder_1.VAOrder, vaorder_1.VAORDER_SCHEMA
 index_1.modelManager().registerClass(vaorder_item_1.VAOrderItem, vaorder_item_1.VAORDERITEM_SCHEMA);
 index_1.modelManager().registerClass(vaorder_view_1.VAOrderView, vaorder_view_1.VAORDERVIEW_SCHEMA);
 index_1.modelManager().registerClass(vaorder_item_view_1.VAOrderItemView, vaorder_item_view_1.VAORDERITEMVIEW_SCHEMA);
+
+//# sourceMappingURL=view-avanced-model.js.map

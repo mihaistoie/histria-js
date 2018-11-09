@@ -15,3 +15,5 @@ describe('View Has Many <View>', () => {
         });
     });
 });
+
+//# sourceMappingURL=model.gentest.js.map

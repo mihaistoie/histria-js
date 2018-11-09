@@ -101,3 +101,5 @@ exports.CUSTOMER_SCHEMA = {
         }
     }
 };
+
+//# sourceMappingURL=customer.js.map

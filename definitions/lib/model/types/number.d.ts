@@ -5,7 +5,7 @@ export declare class BaseNumberValue {
     protected _propertyName: string;
     constructor(parent: ModelObject, propertyName: string);
     protected _internalDecimals(): number;
-    private _round(value);
+    private _round;
     protected init(): void;
     destroy(): void;
     readonly value: number;
@@ -16,8 +16,9 @@ export declare class BaseNumberValue {
 export declare class IntegerValue extends BaseNumberValue {
 }
 export declare class NumberValue extends BaseNumberValue {
-    private _state();
+    private _state;
     readonly decimals: number;
     setDecimals(value: number): Promise<number>;
     protected _internalDecimals(): number;
 }
+//# sourceMappingURL=number.d.ts.map

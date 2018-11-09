@@ -26,3 +26,5 @@ __decorate([
     index_1.propChanged(aggregations_model_1.Driver, 'drives')
 ], CarEngineRules, "afterCarChanged", null);
 exports.CarEngineRules = CarEngineRules;
+
+//# sourceMappingURL=car-driver-rules.js.map

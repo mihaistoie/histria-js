@@ -25,3 +25,4 @@ export declare class ObjectArray<T extends ObservableObject> extends BaseObjectA
     protected _itemModel(item: T): any;
     add(item: T, index?: number): Promise<T>;
 }
+//# sourceMappingURL=base-array.d.ts.map

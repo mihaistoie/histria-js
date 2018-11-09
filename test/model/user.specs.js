@@ -50,3 +50,5 @@ describe('User Model Test', () => {
         });
     });
 });
+
+//# sourceMappingURL=user.specs.js.map

@@ -97,3 +97,5 @@ exports.CAR_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=car.js.map

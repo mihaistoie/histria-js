@@ -12,3 +12,4 @@ export declare function edited(targetClass: any): (target: any, propertyKey: str
 export declare function removing(targetClass: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
 export declare function removed(targetClass: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
 export declare function loadRules(folder: string): Promise<void>;
+//# sourceMappingURL=decorators.d.ts.map

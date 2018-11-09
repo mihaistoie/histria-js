@@ -117,3 +117,5 @@ exports.GROUP_SCHEMA = {
         "parentRelation": "item"
     }
 };
+
+//# sourceMappingURL=group.js.map

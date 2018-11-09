@@ -91,3 +91,5 @@ exports.DEPARTMENT_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=department.js.map

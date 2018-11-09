@@ -105,3 +105,5 @@ exports.VAORDER_SCHEMA = {
         }
     }
 };
+
+//# sourceMappingURL=vaorder.js.map

@@ -4,11 +4,12 @@ export declare class ErrorState {
     private _parent;
     private _propertyName;
     constructor(parent: ObservableObject, propertyName: string);
-    private _getLastMessage(severity);
-    private _hasMessages(severity);
-    private _setMessage(severity, value);
+    private _getLastMessage;
+    private _hasMessages;
+    private _setMessage;
     error: string;
     hasErrors(): boolean;
     addException(e: Error): void;
     destroy(): void;
 }
+//# sourceMappingURL=error-state.d.ts.map

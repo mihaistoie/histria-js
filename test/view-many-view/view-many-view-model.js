@@ -13,3 +13,5 @@ exports.User = user_2.User;
 index_1.modelManager().registerClass(tree_1.Tree, tree_1.TREE_SCHEMA);
 index_1.modelManager().registerClass(user_list_1.UserList, user_list_1.USERLIST_SCHEMA);
 index_1.modelManager().registerClass(user_1.User, user_1.USER_SCHEMA);
+
+//# sourceMappingURL=view-many-view-model.js.map

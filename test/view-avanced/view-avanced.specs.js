@@ -154,3 +154,5 @@ describe('View Avanced', () => {
     // TODO load from db view autocreate
     // TODO serialize view
 });
+
+//# sourceMappingURL=view-avanced.specs.js.map

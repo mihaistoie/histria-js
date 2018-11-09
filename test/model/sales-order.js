@@ -122,3 +122,5 @@ exports.SALESORDER_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=sales-order.js.map

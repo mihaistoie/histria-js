@@ -51,3 +51,5 @@ __decorate([
     index_1.validate(model_model_1.User, 'lastName')
 ], UserRules, "checkLastName", null);
 exports.UserRules = UserRules;
+
+//# sourceMappingURL=user-rules.js.map

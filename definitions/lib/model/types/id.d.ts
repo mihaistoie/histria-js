@@ -6,3 +6,4 @@ export declare class IdValue {
     destroy(): void;
     readonly value: any;
 }
+//# sourceMappingURL=id.d.ts.map

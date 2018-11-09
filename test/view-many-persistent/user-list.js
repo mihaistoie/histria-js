@@ -102,3 +102,5 @@ exports.USERLIST_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=user-list.js.map

@@ -9,3 +9,5 @@ var customer_2 = require("./customer");
 exports.Customer = customer_2.Customer;
 index_1.modelManager().registerClass(customer_view_1.CustomerView, customer_view_1.CUSTOMERVIEW_SCHEMA);
 index_1.modelManager().registerClass(customer_1.Customer, customer_1.CUSTOMER_SCHEMA);
+
+//# sourceMappingURL=customer-view-sample-model.js.map

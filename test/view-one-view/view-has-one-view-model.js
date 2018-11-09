@@ -13,3 +13,5 @@ exports.User = user_2.User;
 index_1.modelManager().registerClass(address_view_1.AddressView, address_view_1.ADDRESSVIEW_SCHEMA);
 index_1.modelManager().registerClass(user_detail_1.UserDetail, user_detail_1.USERDETAIL_SCHEMA);
 index_1.modelManager().registerClass(user_1.User, user_1.USER_SCHEMA);
+
+//# sourceMappingURL=view-has-one-view-model.js.map

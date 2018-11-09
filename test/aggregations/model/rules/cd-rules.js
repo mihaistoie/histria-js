@@ -37,3 +37,5 @@ __decorate([
     index_1.rmvItem(aggregations_model_1.Cd, 'songs')
 ], CdRules, "afterRmvItem", null);
 exports.CdRules = CdRules;
+
+//# sourceMappingURL=cd-rules.js.map

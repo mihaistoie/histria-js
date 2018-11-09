@@ -5,3 +5,5 @@ const user_1 = require("./user");
 var user_2 = require("./user");
 exports.User = user_2.User;
 index_1.modelManager().registerClass(user_1.User, user_1.USER_SCHEMA);
+
+//# sourceMappingURL=persistence-query-model.js.map

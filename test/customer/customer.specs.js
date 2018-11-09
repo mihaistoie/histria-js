@@ -33,3 +33,5 @@ describe('View of Customer Model Test', () => {
         });
     });
 });
+
+//# sourceMappingURL=customer.specs.js.map

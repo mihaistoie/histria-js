@@ -32,3 +32,5 @@ __decorate([
     index_1.propChanged(compositions_model_1.Engine, 'car')
 ], CarEngineRules, "afterCarChanged", null);
 exports.CarEngineRules = CarEngineRules;
+
+//# sourceMappingURL=car-engine-rules.js.map

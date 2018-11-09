@@ -42,3 +42,5 @@ __decorate([
     index_1.title(view_one_model_1.UserDetail, 'Calculate:  FullName = FirstName + LastName')
 ], UserDetailRules, "updateFullName", null);
 exports.UserDetailRules = UserDetailRules;
+
+//# sourceMappingURL=user-detail-rules.js.map

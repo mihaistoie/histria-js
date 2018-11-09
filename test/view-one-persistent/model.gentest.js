@@ -15,3 +15,5 @@ describe('View Has One', () => {
         });
     });
 });
+
+//# sourceMappingURL=model.gentest.js.map

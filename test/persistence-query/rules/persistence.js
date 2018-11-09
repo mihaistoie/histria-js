@@ -27,3 +27,5 @@ __decorate([
     index_1.editing(persistence_query_model_1.User)
 ], UserRules, "canModifyUser", null);
 exports.UserRules = UserRules;
+
+//# sourceMappingURL=persistence.js.map

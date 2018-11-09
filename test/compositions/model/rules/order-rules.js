@@ -47,3 +47,5 @@ __decorate([
     index_1.init(compositions_model_1.OrderItem)
 ], OrderRules, "initOrderItem", null);
 exports.OrderRules = OrderRules;
+
+//# sourceMappingURL=order-rules.js.map

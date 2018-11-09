@@ -21,3 +21,5 @@ __decorate([
     index_1.propChanged(references_model_1.Order, 'customer')
 ], OrderRules, "afterCustomerChanged", null);
 exports.OrderRules = OrderRules;
+
+//# sourceMappingURL=order-rules.js.map

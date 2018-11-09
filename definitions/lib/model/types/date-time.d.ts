@@ -6,5 +6,6 @@ export declare class DateTimeValue {
     protected init(): void;
     destroy(): void;
     readonly value: string;
-    private _setValue(value);
+    private _setValue;
 }
+//# sourceMappingURL=date-time.d.ts.map

@@ -17,3 +17,5 @@ index_1.modelManager().registerClass(car_1.Car, car_1.CAR_SCHEMA);
 index_1.modelManager().registerClass(cd_1.Cd, cd_1.CD_SCHEMA);
 index_1.modelManager().registerClass(driver_1.Driver, driver_1.DRIVER_SCHEMA);
 index_1.modelManager().registerClass(song_1.Song, song_1.SONG_SCHEMA);
+
+//# sourceMappingURL=aggregations-model.js.map

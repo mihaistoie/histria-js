@@ -34,8 +34,8 @@ export declare class HasOneAggregation<T extends ObservableObject> extends HasOn
 export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
     protected _value: T;
     constructor(parent: ObservableObject, propertyName: string, relation: any);
-    private _notifyHooks(value, eventType);
-    private _subscribe();
+    private _notifyHooks;
+    private _subscribe;
     unsubscribe(instance: T): void;
     enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
     readonly syncValue: T;
@@ -45,3 +45,4 @@ export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<
     protected _lazyLoad(): Promise<void>;
     remove(instance: T): Promise<void>;
 }
+//# sourceMappingURL=role-has-one.d.ts.map

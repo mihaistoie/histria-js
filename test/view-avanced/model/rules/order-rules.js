@@ -47,3 +47,5 @@ __decorate([
     index_1.init(view_avanced_model_1.VAOrderItem)
 ], OrderRules, "initOrderItem", null);
 exports.OrderRules = OrderRules;
+
+//# sourceMappingURL=order-rules.js.map

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/test/generators/model/salesorder-model.ts"],"names":[],"mappings":";;AAAA,0CAA8C;AAE9C,+CAA8D;AAC9D,6CAA2C;AAAlC,mCAAA,UAAU,CAAA;AACnB,iCAA2C;AAC3C,+BAA8B;AAArB,sBAAA,IAAI,CAAA;AACb,oBAAY,EAAE,CAAC,aAAa,CAAC,wBAAU,EAAE,+BAAiB,CAAC,CAAC;AAC5D,oBAAY,EAAE,CAAC,aAAa,CAAC,WAAI,EAAE,kBAAW,CAAC,CAAC","file":"salesorder-model.js"}

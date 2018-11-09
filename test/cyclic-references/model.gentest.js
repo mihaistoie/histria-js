@@ -15,3 +15,5 @@ describe('Generate Model for cyclic references', () => {
         });
     });
 });
+
+//# sourceMappingURL=model.gentest.js.map

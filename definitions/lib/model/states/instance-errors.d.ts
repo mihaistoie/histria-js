@@ -6,3 +6,4 @@ export declare class InstanceErrors {
     constructor(parent: ObservableObject, schema: any);
     destroy(): void;
 }
+//# sourceMappingURL=instance-errors.d.ts.map

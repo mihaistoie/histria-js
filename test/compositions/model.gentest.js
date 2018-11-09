@@ -15,3 +15,5 @@ describe('Generate Model', () => {
         });
     });
 });
+
+//# sourceMappingURL=model.gentest.js.map

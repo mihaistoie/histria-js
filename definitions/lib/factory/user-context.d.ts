@@ -8,3 +8,4 @@ export declare class TranContext implements UserContext {
     readonly locale: any;
     formatNumber(value: number, decimals: number): string;
 }
+//# sourceMappingURL=user-context.d.ts.map

@@ -72,3 +72,5 @@ exports.CUSTOMER_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=customer.js.map

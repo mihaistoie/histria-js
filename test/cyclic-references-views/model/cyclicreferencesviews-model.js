@@ -9,3 +9,5 @@ var item_2 = require("./item");
 exports.Item = item_2.Item;
 index_1.modelManager().registerClass(group_1.Group, group_1.GROUP_SCHEMA);
 index_1.modelManager().registerClass(item_1.Item, item_1.ITEM_SCHEMA);
+
+//# sourceMappingURL=cyclicreferencesviews-model.js.map

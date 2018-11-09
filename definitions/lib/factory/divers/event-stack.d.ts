@@ -8,3 +8,4 @@ export declare class EventInfoStack implements EventInfo {
     isTriggeredBy(propertyName: string, target: any): boolean;
     destroy(): void;
 }
+//# sourceMappingURL=event-stack.d.ts.map

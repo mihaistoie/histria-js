@@ -15,3 +15,5 @@ describe('Persistence Query', () => {
         });
     });
 });
+
+//# sourceMappingURL=model.gentest.js.map

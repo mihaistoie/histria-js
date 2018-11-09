@@ -15,3 +15,5 @@ describe('Generate model for generators', () => {
         });
     });
 });
+
+//# sourceMappingURL=model.gentest.js.map

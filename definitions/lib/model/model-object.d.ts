@@ -54,9 +54,9 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     restored(): void;
     status: ObjectStatus;
     getSchema(propName?: string): any;
-    private _createRelations();
-    private _createViewRelations();
-    private _createProperties();
+    private _createRelations;
+    private _createViewRelations;
+    private _createProperties;
     isArrayComposition(propName: string): boolean;
     modelErrors(propName: string): {
         message: string;
@@ -67,16 +67,16 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     setInstanceOptions(options: {
         external: boolean;
     }): void;
-    private beforePropertyChanged(propName, oldValue, newValue);
-    private _remove(rootIsPersistant);
+    private beforePropertyChanged;
+    private _remove;
     remove(): Promise<void>;
     notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
     viewOfMe<T extends ObservableObject>(classOfView: any): T;
     notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
-    private _viewFactory(hook, propName, op, source);
+    private _viewFactory;
     execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;
-    private _addException(ex);
-    private _emitInstanceEvent(event);
+    private _addException;
+    private _emitInstanceEvent;
     changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
     getOrSetProperty(propName: string, value?: any): Promise<any>;
     getPropertyByName(propName: string): any;
@@ -87,7 +87,7 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     validate(options?: {
         full: boolean;
     }): Promise<void>;
-    private _errorByName(propName);
+    private _errorByName;
     constructor(transaction: TransactionContainer, parent: ObservableObject, propertyName: string, value: any, options: {
         isRestore: boolean;
     });
@@ -95,3 +95,4 @@ export declare class ModelObject extends BaseInstance implements ObservableObjec
     readonly $states: InstanceState;
     readonly $errors: InstanceErrors;
 }
+//# sourceMappingURL=model-object.d.ts.map

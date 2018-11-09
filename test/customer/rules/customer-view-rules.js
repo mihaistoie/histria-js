@@ -41,3 +41,5 @@ __decorate([
     index_1.title(customer_view_sample_model_1.CustomerView, 'Calculate:  FullName = FirstName + LastName')
 ], CustomerViewRules, "updateFullName", null);
 exports.CustomerViewRules = CustomerViewRules;
+
+//# sourceMappingURL=customer-view-rules.js.map

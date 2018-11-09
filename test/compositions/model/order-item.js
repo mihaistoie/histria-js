@@ -125,3 +125,5 @@ exports.ORDERITEM_SCHEMA = {
         "parentRelation": "order"
     }
 };
+
+//# sourceMappingURL=order-item.js.map

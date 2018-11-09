@@ -138,3 +138,5 @@ exports.VAORDERITEM_SCHEMA = {
         }
     }
 };
+
+//# sourceMappingURL=vaorder-item.js.map

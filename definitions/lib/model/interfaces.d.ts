@@ -1,16 +1,16 @@
 export declare enum ObjectStatus {
     idle = 0,
     restoring = 1,
-    creating = 2,
+    creating = 2
 }
 export declare enum LogModule {
     hooks = 0,
-    views = 1,
+    views = 1
 }
 export declare enum DebugLevel {
     message = 0,
     error = 1,
-    debug = 2,
+    debug = 2
 }
 export declare enum EventType {
     propChanged = 0,
@@ -25,12 +25,12 @@ export declare enum EventType {
     editing = 9,
     edited = 10,
     saving = 11,
-    saved = 12,
+    saved = 12
 }
 export declare enum MessageServerity {
     error = 0,
     warning = 1,
-    success = 2,
+    success = 2
 }
 export interface EventInfo {
     push(info: any): void;
@@ -124,3 +124,4 @@ export interface ObservableArray {
     getRoot(): ObservableObject;
     destroy(): void;
 }
+//# sourceMappingURL=interfaces.d.ts.map

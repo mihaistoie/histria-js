@@ -125,3 +125,5 @@ exports.SONG_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=song.js.map

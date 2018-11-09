@@ -14,3 +14,4 @@ export declare class CompositionBelongsTo<T extends ObservableObject> extends Ba
     internalSetValue(value: any): void;
     protected _setValue(value: T): Promise<void>;
 }
+//# sourceMappingURL=role-belongs-to.d.ts.map

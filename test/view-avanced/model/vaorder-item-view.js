@@ -93,3 +93,5 @@ exports.VAORDERITEMVIEW_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=vaorder-item-view.js.map

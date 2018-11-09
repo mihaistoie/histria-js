@@ -7,3 +7,4 @@ export declare class BaseInstance {
     readonly transaction: TransactionContainer;
     destroy(): void;
 }
+//# sourceMappingURL=base-instance.d.ts.map

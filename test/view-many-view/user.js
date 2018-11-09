@@ -144,3 +144,5 @@ exports.USER_SCHEMA = {
         "parentRelation": "list"
     }
 };
+
+//# sourceMappingURL=user.js.map

@@ -128,3 +128,5 @@ exports.USER_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=user.js.map

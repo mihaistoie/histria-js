@@ -6,3 +6,4 @@ export declare class InstanceState {
     constructor(parent: ObservableObject, schema: any);
     destroy(): void;
 }
+//# sourceMappingURL=instance-state.d.ts.map

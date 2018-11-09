@@ -6,6 +6,7 @@ export declare class DateValue {
     protected init(): void;
     destroy(): void;
     readonly value: string;
-    private _setValue(dateAsString);
+    private _setValue;
     today(): Promise<void>;
 }
+//# sourceMappingURL=date.d.ts.map

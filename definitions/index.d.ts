@@ -14,3 +14,4 @@ export { DateTimeValue } from './lib/model/types/date-time';
 export { IdValue } from './lib/model/types/id';
 export { classGenerator } from './lib/generators/classgen';
 export { serializeInstance } from './lib/serialization/serialization';
+//# sourceMappingURL=index.d.ts.map

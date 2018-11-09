@@ -21,3 +21,5 @@ index_1.modelManager().registerClass(department_1.Department, department_1.DEPAR
 index_1.modelManager().registerClass(employee_1.Employee, employee_1.EMPLOYEE_SCHEMA);
 index_1.modelManager().registerClass(employee_address_1.EmployeeAddress, employee_address_1.EMPLOYEEADDRESS_SCHEMA);
 index_1.modelManager().registerClass(order_1.Order, order_1.ORDER_SCHEMA);
+
+//# sourceMappingURL=references-model.js.map

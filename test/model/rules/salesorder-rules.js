@@ -44,3 +44,5 @@ __decorate([
     index_1.title(model_model_1.SalesOrder, 'grossAmount => vat,  netAmount')
 ], SalesOrderRules, "grossAmountChanged", null);
 exports.SalesOrderRules = SalesOrderRules;
+
+//# sourceMappingURL=salesorder-rules.js.map

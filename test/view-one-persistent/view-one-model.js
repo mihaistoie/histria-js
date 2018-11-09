@@ -9,3 +9,5 @@ var user_2 = require("./user");
 exports.User = user_2.User;
 index_1.modelManager().registerClass(user_detail_1.UserDetail, user_detail_1.USERDETAIL_SCHEMA);
 index_1.modelManager().registerClass(user_1.User, user_1.USER_SCHEMA);
+
+//# sourceMappingURL=view-one-model.js.map

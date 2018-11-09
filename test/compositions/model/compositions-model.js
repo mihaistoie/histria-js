@@ -21,3 +21,5 @@ index_1.modelManager().registerClass(engine_1.Engine, engine_1.ENGINE_SCHEMA);
 index_1.modelManager().registerClass(order_1.Order, order_1.ORDER_SCHEMA);
 index_1.modelManager().registerClass(order_item_1.OrderItem, order_item_1.ORDERITEM_SCHEMA);
 index_1.modelManager().registerClass(tree_1.Tree, tree_1.TREE_SCHEMA);
+
+//# sourceMappingURL=compositions-model.js.map

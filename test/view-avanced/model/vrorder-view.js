@@ -91,3 +91,5 @@ exports.VRORDERVIEW_SCHEMA = {
     },
     meta: {}
 };
+
+//# sourceMappingURL=vrorder-view.js.map

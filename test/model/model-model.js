@@ -9,3 +9,5 @@ var user_2 = require("./user");
 exports.User = user_2.User;
 index_1.modelManager().registerClass(sales_order_1.SalesOrder, sales_order_1.SALESORDER_SCHEMA);
 index_1.modelManager().registerClass(user_1.User, user_1.USER_SCHEMA);
+
+//# sourceMappingURL=model-model.js.map

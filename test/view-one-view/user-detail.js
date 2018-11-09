@@ -147,3 +147,5 @@ exports.USERDETAIL_SCHEMA = {
     },
     "meta": {}
 };
+
+//# sourceMappingURL=user-detail.js.map

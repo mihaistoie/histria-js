@@ -18,3 +18,4 @@ export declare class Role<T extends ObservableObject> extends RoleBase<T> {
     protected _checkValueBeforeSet(value: T): void;
     destroy(): void;
 }
+//# sourceMappingURL=role.d.ts.map

@@ -104,3 +104,5 @@ describe('ViewOne Model Test', () => {
         });
     });
 });
+
+//# sourceMappingURL=view-one.specs.js.map

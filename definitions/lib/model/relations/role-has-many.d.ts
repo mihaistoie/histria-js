@@ -6,9 +6,9 @@ export declare class BaseHasMany<T extends ObservableObject> extends ObjectArray
 export declare class HasManyComposition<T extends ObservableObject> extends BaseHasMany<T> {
     constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]);
     length(): Promise<number>;
-    private _notifyHooks(value, eventType);
-    private _removed(item, notifyRemove);
-    private _added(item, notifyAdd);
+    private _notifyHooks;
+    private _removed;
+    private _added;
     protected _afterItemRemoved(item: T, ii: number): Promise<void>;
     protected _afterItemAdded(item: T): Promise<void>;
     set(items: T[]): Promise<void>;
@@ -21,16 +21,16 @@ export declare class HasManyAggregation<T extends ObservableObject> extends Base
     protected _afterItemAdded(item: T): Promise<void>;
     set(items: T[]): Promise<void>;
     protected lazyLoad(): Promise<void>;
-    private _updateInvSideAfterLazyLoading(newValue);
+    private _updateInvSideAfterLazyLoading;
 }
 export declare class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T> {
     length(): Promise<number>;
-    private _subscribe(value);
-    private _notifyHooks(value, eventType);
+    private _subscribe;
+    private _notifyHooks;
     restoreFromCache(): void;
     unsubscribe(instance: T): void;
-    private _removed(item, notifyRemove);
-    private _added(item, notifyAdd);
+    private _removed;
+    private _added;
     protected _afterItemRemoved(item: T, ii: number): Promise<void>;
     protected _afterItemAdded(item: T): Promise<void>;
     protected lazyLoad(): Promise<void>;
@@ -38,3 +38,4 @@ export declare class HasManyRefObject<T extends ObservableObject> extends BaseHa
     set(items: T[]): Promise<void>;
     destroy(): void;
 }
+//# sourceMappingURL=role-has-many.d.ts.map

@@ -29,3 +29,5 @@ __decorate([
     index_1.setItems(view_many_view_model_1.UserList, 'users')
 ], UserListRules, "afterSetUsers", null);
 exports.UserListRules = UserListRules;
+
+//# sourceMappingURL=user-list-rules.js.map

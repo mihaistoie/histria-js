@@ -101,3 +101,5 @@ exports.VAORDERVIEW_SCHEMA = {
     ],
     "meta": {}
 };
+
+//# sourceMappingURL=vaorder-view.js.map

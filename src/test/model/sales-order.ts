@@ -28,23 +28,20 @@ export class SalesOrder extends Instance {
         return this._children.id.value;
     }
     public get $states(): SalesOrderState {
-        return <SalesOrderState>this._states;
+        return this._states as SalesOrderState;
     }
     public get $errors(): SalesOrderErrors {
-        return <SalesOrderErrors>this._errors;
+        return this._errors as SalesOrderErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = SALESORDER_SCHEMA;
+        this._schema = SALESORDER_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new SalesOrderState(that, that._schema);
+        this._states = new SalesOrderState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new SalesOrderErrors(that, that._schema);
+        this._errors = new SalesOrderErrors(this, this._schema);
     }
 }
 
@@ -112,7 +109,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
         "states": {
@@ -126,5 +124,8 @@ export const
                 "decimals": 2
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {}
     };

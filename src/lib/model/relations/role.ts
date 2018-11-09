@@ -1,32 +1,30 @@
-import { ObservableObject } from '../interfaces';
+import { IObservableObject } from '../interfaces';
 import { modelManager } from '../model-manager';
 
-export class RoleBase<T extends ObservableObject> {
-    protected _parent: ObservableObject;
+export class RoleBase<T extends IObservableObject> {
+    protected _parent: IObservableObject;
     protected _relation: any;
     protected _propertyName: any;
     protected _refClass: any;
-    constructor(parent: ObservableObject, propertyName: string, relation: any) {
-        const that = this;
-        that._propertyName = propertyName;
-        that._relation = relation;
-        that._parent = parent;
-        that._refClass = modelManager().classByName(that._relation.model, that._relation.nameSpace);
+    constructor(parent: IObservableObject, propertyName: string, relation: any) {
+        this._propertyName = propertyName;
+        this._relation = relation;
+        this._parent = parent;
+        this._refClass = modelManager().classByName(this._relation.model, this._relation.nameSpace);
     }
 
     public destroy() {
-        const that = this;
-        that._relation = null;
-        that._parent = null;
-        that._refClass = null;
+        this._relation = null;
+        this._parent = null;
+        this._refClass = null;
     }
     public get refIsPersistent(): boolean {
-        const that = this;
-        return that._refClass.isPersistent;
+        return this._refClass.isPersistent;
     }
 }
 
-export class Role<T extends ObservableObject> extends RoleBase<T> {
+// tslint:disable-next-line:max-classes-per-file
+export class Role<T extends IObservableObject> extends RoleBase<T> {
     protected _value: T;
     public internalSetValue(value: T) {
         this._value = value;
@@ -38,19 +36,17 @@ export class Role<T extends ObservableObject> extends RoleBase<T> {
     public setValue(value: T): Promise<void> {
         return this._setValue(value);
     }
+    public destroy() {
+        this._value = null;
+        super.destroy();
+    }
     protected async _getValue(): Promise<T> {
-        let that = this;
-        return Promise.resolve(that._value);
+        return Promise.resolve(this._value);
     }
     protected async _setValue(value: T): Promise<void> {
         return Promise.resolve();
     }
+    // tslint:disable-next-line:no-empty
     protected _checkValueBeforeSet(value: T) {
-    }
-
-    public destroy() {
-        const that = this;
-        that._value = null;
-        super.destroy();
     }
 }

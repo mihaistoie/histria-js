@@ -9,7 +9,6 @@ export enum LogModule {
     views = 1
 }
 
-
 export enum DebugLevel {
     message = 0,
     error = 1,
@@ -38,95 +37,89 @@ export enum MessageServerity {
     success = 2
 }
 
-export interface EventInfo {
-    push(info: any): void
+export interface IEventInfo {
+    isLazyLoading: boolean;
+    push(info: any): void;
     pop(): void;
     destroy(): void;
     isTriggeredBy(peopertyName: string, target: any): boolean;
-    isLazyLoading: boolean;
 }
 
-
-
-export interface UserContext {
+export interface IUserContext {
     lang: string;
     country: string;
     locale: any;
-    formatNumber(value: number, decimals: number): string
+    formatNumber(value: number, decimals: number): string;
 }
 
-export type ChangePropertyOptions = {
-    isLazyLoading: boolean
+export interface IChangePropertyOptions {
+    isLazyLoading: boolean;
 }
 
-export type FindOptions = { onlyInCache?: boolean };
-export interface TransactionContainer {
-    context: UserContext;
-    findOne<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T>;
-    findOneInCache<T extends ObservableObject>(filter: any, classOfInstance: any): T;
-    find<T extends ObservableObject>(filter: any, classOfInstance: any, options?: FindOptions): Promise<T[]>;
-    emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: any, ...args: any[]): Promise<boolean>;
-    notifyHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, propertyName: string): Promise<void>;
-    createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T;
-    removeInstance(instance: ObservableObject): void;
-    remove(instance: ObservableObject): void;
+export interface IFindOptions { onlyInCache?: boolean; }
+export interface ITransactionContainer {
+    context: IUserContext;
+    readonly eventInfo: IEventInfo;
+    findOne<T extends IObservableObject>(filter: any, classOfInstance: any, options?: IFindOptions): Promise<T>;
+    findOneInCache<T extends IObservableObject>(filter: any, classOfInstance: any): T;
+    find<T extends IObservableObject>(filter: any, classOfInstance: any, options?: IFindOptions): Promise<T[]>;
+    emitInstanceEvent(eventType: EventType, eventInfo: IEventInfo, instance: any, ...args: any[]): Promise<boolean>;
+    notifyHooks(eventType: EventType, instance: IObservableObject, source: IObservableObject, propertyName: string): Promise<void>;
+    createInstance<T extends IObservableObject>(classOfInstance: any, parent: IObservableObject, propertyName: string, data: any, isRestore: boolean): T;
+    removeInstance(instance: IObservableObject): void;
+    remove(instance: IObservableObject): void;
     log(module: LogModule, message: string, debugLevel?: DebugLevel): void;
-    create<T extends ObservableObject>(classOfInstance: any, options?: { external: boolean }): Promise<T>;
+    create<T extends IObservableObject>(classOfInstance: any, options?: { external: boolean }): Promise<T>;
 
     save(): Promise<void>;
     cancel(): Promise<void>;
-    readonly eventInfo: EventInfo;
 }
 
-export interface FrameworkObject {
-    notifyHooks(propName: string, op: EventType, instance: ObservableObject): Promise<void>;
-    execHooks(propName: string, op: EventType, source: ObservableObject): Promise<void>;
+export interface IFrameworkObject {
+    notifyHooks(propName: string, op: EventType, instance: IObservableObject): Promise<void>;
+    execHooks(propName: string, op: EventType, source: IObservableObject): Promise<void>;
     setInstanceOptions(options: { external: boolean }): void;
 }
 
-export interface ObservableObject {
-    changeState(stateName: string, value: any, oldValue: any, eventInfo?: EventInfo): void;
-    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: ChangePropertyOptions): Promise<void>;
-    notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
-    model(propName?: string): any;
-    modelState(propName: string): any;
-    modelErrors(propName: string): { message: string, severity: MessageServerity }[];
-    getPath(propName?: string): string;
-    getRoot(): ObservableObject;
-    destroy(): void;
-    getRoleByName(roleName: string): any;
-    isArrayComposition(propertyName: string): boolean
-    addObjectToRole(roleName: string, instance: ObservableObject): Promise<void>;
-    rmvObjectFromRole(roleName: string, instance: ObservableObject): Promise<void>;
-    changeParent(newParent: ObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
-    enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
-    viewOfMe<T extends ObservableObject>(classOfView: any): T
-    getPropertyByName(propName: string): any;
-    setPropertyByName(propName: string, value: any): Promise<any>;
-    addListener(listener: any, parent: ObservableObject, propertyName: string): void;
-    getListeners(noParent: boolean): { instance: ObservableObject, propertyName: string, isOwner: boolean }[];
-    rmvListener(listener: any): void;
-    restored(): void;
-    pushLoaded(cb: () => Promise<void>): void;
-    remove(): Promise<void>;
+export interface IObservableObject {
     readonly hasOwner: boolean;
-    readonly owner: ObservableObject;
+    readonly owner: IObservableObject;
     readonly propertyName: string;
-    readonly context: UserContext;
-    readonly transaction: TransactionContainer;
+    readonly context: IUserContext;
+    readonly transaction: ITransactionContainer;
     readonly uuid: string;
     readonly status: ObjectStatus;
     readonly isNew: boolean;
     readonly isDirty: boolean;
     readonly isDeleted: boolean;
     readonly isPersistent: boolean;
+    changeState(stateName: string, value: any, oldValue: any, eventInfo?: IEventInfo): void;
+    changeProperty(propName: string, oldValue: any, newValue: any, hnd: any, options: IChangePropertyOptions): Promise<void>;
+    notifyOperation(propName: string, op: EventType, param: any): Promise<void>;
+    model(propName?: string): any;
+    modelState(propName: string): any;
+    modelErrors(propName: string): Array<{ message: string, severity: MessageServerity }>;
+    getPath(propName?: string): string;
+    getRoot(): IObservableObject;
+    destroy(): void;
+    getRoleByName(roleName: string): any;
+    isArrayComposition(propertyName: string): boolean;
+    addObjectToRole(roleName: string, instance: IObservableObject): Promise<void>;
+    rmvObjectFromRole(roleName: string, instance: IObservableObject): Promise<void>;
+    changeParent(newParent: IObservableObject, foreignPropName: string, localPropName: string, notify: boolean): Promise<void>;
+    enumChildren(cb: (value: IObservableObject) => void, recursive: boolean): void;
+    viewOfMe<T extends IObservableObject>(classOfView: any): T;
+    getPropertyByName(propName: string): any;
+    setPropertyByName(propName: string, value: any): Promise<any>;
+    addListener(listener: any, parent: IObservableObject, propertyName: string): void;
+    getListeners(noParent: boolean): Array<{ instance: IObservableObject, propertyName: string, isOwner: boolean }>;
+    rmvListener(listener: any): void;
+    restored(): void;
+    pushLoaded(cb: () => Promise<void>): void;
+    remove(): Promise<void>;
 }
 
-
-
-export interface ObservableArray {
-    getRoot(): ObservableObject;
+export interface IObservableArray {
+    getRoot(): IObservableObject;
     destroy(): void;
 }
-
-

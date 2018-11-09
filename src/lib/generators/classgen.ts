@@ -2,17 +2,14 @@ import * as util from 'util';
 import * as path from 'path';
 import * as fs from 'fs';
 
-
-import { schemaUtils } from 'histria-utils';
-import { JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from 'histria-utils';
-
+import { schemaUtils, JSONTYPES, RELATION_TYPE, AGGREGATION_KIND } from 'histria-utils';
 
 async function saveCode(codeByClass: any, codeByNamespace: any, dstFolder: string) {
-    let writersClasses = Object.keys(codeByClass).map(name => {
+    const writersClasses = Object.keys(codeByClass).map(name => {
         const item = codeByClass[name];
         return util.promisify(fs.writeFile)(path.join(dstFolder, item.fileName + '.ts'), item.code.join('\n'));
     });
-    let writersNamespaces = Object.keys(codeByNamespace).map(name => {
+    const writersNamespaces = Object.keys(codeByNamespace).map(name => {
         const item = codeByNamespace[name];
         return util.promisify(fs.writeFile)(path.join(dstFolder, item.fileName + '.ts'), item.import.concat(item.code).join('\n'));
     });
@@ -20,15 +17,15 @@ async function saveCode(codeByClass: any, codeByNamespace: any, dstFolder: strin
 }
 
 function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib?: string) {
-    let baseClass = 'Instance';
-    let baseViewClass = 'View';
+    const baseClass = 'Instance';
+    const baseViewClass = 'View';
     Object.keys(model).forEach((fullName) => {
-        let schema: any = model[fullName];
-        let isView: boolean = schema.view ? true : false;
-        let className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
+        const schema: any = model[fullName];
+        const isView: boolean = schema.view ? true : false;
+        const className = schema.name.charAt(0).toUpperCase() + schema.name.substr(1);
         schema.nameSpace = schema.nameSpace || className;
         let code: string[] = [];
-        let imports: string[] = [];
+        const imports: string[] = [];
         let ns = codeByNameSpace[schema.nameSpace];
         if (!ns) {
             ns = { code: [], import: [], fileName: _extractFileName(schema.nameSpace) + '-model' };
@@ -36,9 +33,9 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
             ns.import.push('');
             codeByNameSpace[schema.nameSpace] = ns;
         }
-        let cc: any = {}
+        const cc: any = {};
 
-        pathToLib = pathToLib || 'histria--utils'
+        pathToLib = pathToLib || 'histria--utils';
         imports.push('import {');
         imports.push(_tab(1) + 'Instance, View, InstanceState, InstanceErrors, modelManager,');
         imports.push(_tab(1) + 'HasManyComposition, HasManyAggregation, HasManyRefObject,');
@@ -55,7 +52,6 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         code.push(util.format('export class %s extends %s {', className, isView ? baseViewClass : baseClass));
         code.push(_tab(1) + util.format('public static isPersistent: boolean = %s;', isView ? 'false' : 'true'));
 
-
         // Add public properties
         _genSchemaProperties(schema, code, model);
         if (schema.view)
@@ -63,75 +59,66 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         else
             _genSchemaRelations(schema, code, model);
 
-
         code.push(_tab(1) + util.format('public get $states(): %sState {', className));
-        code.push(_tab(2) + util.format('return <%sState>this._states;', className));
+        code.push(_tab(2) + util.format('return this._states as %sState;', className));
         code.push(_tab(1) + '}');
 
         code.push(_tab(1) + util.format('public get $errors(): %sErrors {', className));
-        code.push(_tab(2) + util.format('return <%sErrors>this._errors;', className));
+        code.push(_tab(2) + util.format('return this._errors as %sErrors;', className));
         code.push(_tab(1) + '}');
 
         // Add constructor
         code.push(_tab(1) + 'protected init() {');
         code.push(_tab(2) + 'super.init();');
-        code.push(_tab(2) + 'let that = this;');
-        code.push(_tab(2) + util.format('that._schema = %s_SCHEMA;', className.toUpperCase()));
+        code.push(_tab(2) + util.format('this._schema = %s_SCHEMA;', className.toUpperCase()));
         code.push(_tab(1) + '}');
 
-
         code.push(_tab(1) + 'protected createStates() {');
-        code.push(_tab(2) + 'let that = this;');
-        code.push(_tab(2) + util.format('that._states = new %sState(that, that._schema);', className, ));
+        code.push(_tab(2) + util.format('this._states = new %sState(this, this._schema);', className));
         code.push(_tab(1) + '}');
 
         code.push(_tab(1) + 'protected createErrors() {');
-        code.push(_tab(2) + 'let that = this;');
-        code.push(_tab(2) + util.format('that._errors = new %sErrors(that, that._schema);', className, ));
+        code.push(_tab(2) + util.format('this._errors = new %sErrors(this, this._schema);', className));
         code.push(_tab(1) + '}');
         code.push('}');
-
-
 
         _genClassErrors(schema, className, baseClass, code);
         _genClassState(schema, className, baseClass, code);
 
-
-
         // Generate
-
-        schema.relations && Object.keys(schema.relations).forEach(relName => {
-            let relation = schema.relations[relName];
-            if (relation.model !== schema.name) {
-                let s = util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() + relation.model.substr(1), _extractFileName(relation.model));
-                if (imports.indexOf(s) < 0) {
-                    imports.push(s);
+        if (schema.relations)
+            Object.keys(schema.relations).forEach(relName => {
+                const relation = schema.relations[relName];
+                if (relation.model !== schema.name) {
+                    const s = util.format('import { %s } from \'./%s\';', relation.model.charAt(0).toUpperCase() +
+                        relation.model.substr(1), _extractFileName(relation.model));
+                    if (imports.indexOf(s) < 0) {
+                        imports.push(s);
+                    }
                 }
-            }
-        });
+            });
         imports.push('');
 
-        _genSchema(schema, className, code)
+        _genSchema(schema, className, code);
 
         ns.code.push(util.format('modelManager().registerClass(%s, %s_SCHEMA);', className, className.toUpperCase()));
-
 
         code = imports.concat(code);
         codeByClass[schema.name.toLowerCase()] = {
             fileName: _extractFileName(schema.name),
             code: code,
             depends: []
-        }
+        };
     });
 
 }
 
 function _genSchemaProperties(schema: any, code: string[], model: any): void {
     Object.keys(schema.properties || {}).forEach(propertyName => {
-        let propSchema = schema.properties[propertyName];
+        const propSchema = schema.properties[propertyName];
         if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
-        let stype = schemaUtils.typeOfProperty(propSchema);
-        let isReadOnly = schemaUtils.isReadOnly(propSchema);
+        const stype = schemaUtils.typeOfProperty(propSchema);
+        const isReadOnly = schemaUtils.isReadOnly(propSchema);
         switch (stype) {
             case JSONTYPES.string:
                 code.push(_tab(1) + util.format('public get %s(): string {', propertyName));
@@ -178,74 +165,76 @@ function _genSchemaProperties(schema: any, code: string[], model: any): void {
 }
 
 function _genVewRelations(schema: any, code: string[], model: any): void {
-    schema.relations && Object.keys(schema.relations).forEach(relationName => {
-        const relation = schema.relations[relationName];
+    if (schema.relations)
+        Object.keys(schema.relations).forEach(relationName => {
+            const relation = schema.relations[relationName];
 
-        const refFullName = (relation.nameSpace || schema.nameSpace) + '.' + relation.model;
-        const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
-        switch (relation.type) {
-            case RELATION_TYPE.hasOne:
-                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
-                code.push(_tab(1) + '}');
-                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
-                code.push(_tab(1) + '}');
-                break;
-            case RELATION_TYPE.belongsTo:
-                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
-                code.push(_tab(1) + '}');
-                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
-                code.push(_tab(1) + '}');
-                break;
-            case RELATION_TYPE.hasMany:
-                const refModel = model[refFullName];
-                if (refModel.view) {
-                    code.push(_tab(1) + util.format('get %s(): HasManyComposition<%s> {', relationName, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+            const refFullName = (relation.nameSpace || schema.nameSpace) + '.' + relation.model;
+            const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1);
+            switch (relation.type) {
+                case RELATION_TYPE.hasOne:
+                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
                     code.push(_tab(1) + '}');
-                } else {
-                    code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));
-                    code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
                     code.push(_tab(1) + '}');
-                }
-                break;
-        }
-    });
+                    break;
+                case RELATION_TYPE.belongsTo:
+                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
+                    code.push(_tab(1) + '}');
+                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
+                    code.push(_tab(1) + '}');
+                    break;
+                case RELATION_TYPE.hasMany:
+                    const refModel = model[refFullName];
+                    if (refModel.view) {
+                        code.push(_tab(1) + util.format('get %s(): HasManyComposition<%s> {', relationName, refClass));
+                        code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                        code.push(_tab(1) + '}');
+                    } else {
+                        code.push(_tab(1) + util.format('get %s(): HasManyRefObject<%s> {', relationName, refClass));
+                        code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                        code.push(_tab(1) + '}');
+                    }
+                    break;
+            }
+        });
 }
 
 function _genSchemaRelations(schema: any, code: string[], model: any): void {
-    schema.relations && Object.keys(schema.relations).forEach(relationName => {
-        const relation = schema.relations[relationName];
-        const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1)
-        switch (relation.type) {
-            case RELATION_TYPE.hasOne:
-                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
-                code.push(_tab(1) + '}');
-                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
-                code.push(_tab(1) + '}');
-                break;
-            case RELATION_TYPE.belongsTo:
-                code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
-                code.push(_tab(1) + '}');
-                code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
-                code.push(_tab(1) + '}');
-                break;
-            case RELATION_TYPE.hasMany:
-                const cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';
-                code.push(_tab(1) + util.format('get %s(): %s<%s> {', relationName, cn, refClass));
-                code.push(_tab(2) + util.format('return this._children.%s;', relationName));
-                code.push(_tab(1) + '}');
-                break;
+    if (schema.relations)
+        Object.keys(schema.relations).forEach(relationName => {
+            const relation = schema.relations[relationName];
+            const refClass = relation.model.charAt(0).toUpperCase() + relation.model.substr(1);
+            switch (relation.type) {
+                case RELATION_TYPE.hasOne:
+                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
+                    code.push(_tab(1) + '}');
+                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
+                    code.push(_tab(1) + '}');
+                    break;
+                case RELATION_TYPE.belongsTo:
+                    code.push(_tab(1) + util.format('public %s(): Promise<%s> {', relationName, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.getValue();', relationName));
+                    code.push(_tab(1) + '}');
+                    code.push(_tab(1) + util.format('public set%s(value: %s): Promise<%s> {', _upperFirstLetter(relationName), refClass, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s.setValue(value);', relationName));
+                    code.push(_tab(1) + '}');
+                    break;
+                case RELATION_TYPE.hasMany:
+                    const cn = (relation.aggregationKind === AGGREGATION_KIND.shared) ? 'HasManyAggregation' : 'HasManyComposition';
+                    code.push(_tab(1) + util.format('get %s(): %s<%s> {', relationName, cn, refClass));
+                    code.push(_tab(2) + util.format('return this._children.%s;', relationName));
+                    code.push(_tab(1) + '}');
+                    break;
 
-        }
-    });
+            }
+        });
 
 }
 
@@ -278,26 +267,27 @@ function _genClassErrors(schema: any, className: string, baseClass: string, code
         code.push(_tab(2) + util.format('return this._messages.%s;', propName));
         code.push(_tab(1) + '}');
     });
-    schema.relations && Object.keys(schema.relations).forEach(relName => {
-        const relation = schema.relations[relName];
-        let generateError = false;
-        switch (relation.type) {
-            case RELATION_TYPE.hasMany:
-                generateError = (relation.aggregationKind === AGGREGATION_KIND.composite);
-                break;
-            case RELATION_TYPE.hasOne:
-                generateError = (relation.aggregationKind !== AGGREGATION_KIND.composite);
-                break;
-            case RELATION_TYPE.belongsTo:
-                generateError = false;
-                break;
-        }
-        if (generateError) {
-            code.push(_tab(1) + util.format('public get %s(): ErrorState {', relName));
-            code.push(_tab(2) + util.format('return this._messages.%s;', relName));
-            code.push(_tab(1) + '}');
-        }
-    });
+    if (schema.relations)
+        Object.keys(schema.relations).forEach(relName => {
+            const relation = schema.relations[relName];
+            let generateError = false;
+            switch (relation.type) {
+                case RELATION_TYPE.hasMany:
+                    generateError = (relation.aggregationKind === AGGREGATION_KIND.composite);
+                    break;
+                case RELATION_TYPE.hasOne:
+                    generateError = (relation.aggregationKind !== AGGREGATION_KIND.composite);
+                    break;
+                case RELATION_TYPE.belongsTo:
+                    generateError = false;
+                    break;
+            }
+            if (generateError) {
+                code.push(_tab(1) + util.format('public get %s(): ErrorState {', relName));
+                code.push(_tab(2) + util.format('return this._messages.%s;', relName));
+                code.push(_tab(1) + '}');
+            }
+        });
 
     code.push('}');
 }
@@ -306,9 +296,9 @@ function _genClassState(schema: any, className: string, baseClass: string, code:
     code.push('');
     code.push(util.format('export class %sState extends %sState {', className, baseClass));
     Object.keys(schema.properties || {}).forEach(propName => {
-        let propSchema = schema.properties[propName];
+        const propSchema = schema.properties[propName];
         if (schemaUtils.isHidden(propSchema) || schemaUtils.isComplex(propSchema)) return;
-        let stype = schemaUtils.typeOfProperty(propSchema);
+        const stype = schemaUtils.typeOfProperty(propSchema);
         if (propSchema.enum) {
             code.push(_tab(1) + util.format('public get %s(): EnumState {', propName));
             code.push(_tab(2) + util.format('return this._states.%s;', propName));
@@ -361,17 +351,16 @@ function _genClassState(schema: any, className: string, baseClass: string, code:
 }
 
 export async function classGenerator(srcFolder: string, dstFolder: string, pathToLib?: string) {
-    let model = {};
+    const model = {};
     await schemaUtils.loadModel(srcFolder, model);
-    let codeByClass = {};
-    let codeByNamespace = {};
+    const codeByClass = {};
+    const codeByNamespace = {};
     _generate(codeByClass, codeByNamespace, model, pathToLib);
     await saveCode(codeByClass, codeByNamespace, dstFolder);
 }
 
-
 function _tab(ident: number) {
-    let res = [];
+    const res = [];
     for (let i = 0; i < ident; i++)
         res.push('    ');
     return res.join('');
@@ -381,8 +370,8 @@ function _upperFirstLetter(value: string): string {
 }
 
 function _extractFileName(value: string): string {
-    let lc = value.toLowerCase();
-    let res = [lc.charAt(0)];
+    const lc = value.toLowerCase();
+    const res = [lc.charAt(0)];
     let isUpperCase = true;
     for (let i = 1; i < value.length; i++) {
         if (value.charAt(i) !== lc.charAt(i)) {

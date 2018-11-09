@@ -1,8 +1,8 @@
-import { EventInfo } from '../../model/interfaces';
-export declare class EventInfoStack implements EventInfo {
+import { IEventInfo } from '../../model/interfaces';
+export declare class EventInfoStack implements IEventInfo {
+    isLazyLoading: boolean;
     private _stack;
     constructor();
-    isLazyLoading: boolean;
     push(info: any): void;
     pop(): void;
     isTriggeredBy(propertyName: string, target: any): boolean;

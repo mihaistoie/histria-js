@@ -31,23 +31,20 @@ export class User extends Instance {
         return this._children.id.value;
     }
     public get $states(): UserState {
-        return <UserState>this._states;
+        return this._states as UserState;
     }
     public get $errors(): UserErrors {
-        return <UserErrors>this._errors;
+        return this._errors as UserErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = USER_SCHEMA;
+        this._schema = USER_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new UserState(that, that._schema);
+        this._states = new UserState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new UserErrors(that, that._schema);
+        this._errors = new UserErrors(this, this._schema);
     }
 }
 
@@ -105,9 +102,13 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {},
         "viewsOfMe": {
             "view-has-one-view.UserDetail": {

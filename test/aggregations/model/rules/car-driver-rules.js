@@ -10,7 +10,7 @@ const aggregations_model_1 = require("../aggregations-model");
 const index_1 = require("../../../../index");
 class CarEngineRules {
     static async afterEngineChanged(car, eventInfo) {
-        let driver = await car.drivenBy();
+        const driver = await car.drivenBy();
         await car.setDriverName(driver ? driver.name : '');
     }
     static async afterCarChanged(driver, eventInfo) {

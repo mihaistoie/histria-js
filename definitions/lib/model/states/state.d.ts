@@ -1,16 +1,16 @@
-import { ObservableObject } from '../interfaces';
+import { IObservableObject } from '../interfaces';
 export declare class State {
-    protected _parent: ObservableObject;
+    protected _parent: IObservableObject;
     protected _propertyName: string;
     protected _stateModel: any;
-    protected init(): void;
+    constructor(parent: IObservableObject, propertyName: string);
     serialize(): any;
-    constructor(parent: ObservableObject, propertyName: string);
     destroy(): void;
     isDisabled: boolean;
     isHidden: boolean;
     isMandatory: boolean;
     isReadOnly: boolean;
+    protected init(): void;
 }
 export declare class BooleanState extends State {
 }

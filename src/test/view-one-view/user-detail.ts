@@ -39,23 +39,20 @@ export class UserDetail extends View {
         return this._children.address.setValue(value);
     }
     public get $states(): UserDetailState {
-        return <UserDetailState>this._states;
+        return this._states as UserDetailState;
     }
     public get $errors(): UserDetailErrors {
-        return <UserDetailErrors>this._errors;
+        return this._errors as UserDetailErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = USERDETAIL_SCHEMA;
+        this._schema = USERDETAIL_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new UserDetailState(that, that._schema);
+        this._states = new UserDetailState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new UserDetailErrors(that, that._schema);
+        this._errors = new UserDetailErrors(this, this._schema);
     }
 }
 
@@ -106,17 +103,20 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "userId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "addressId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -153,5 +153,8 @@ export const
                 "isReadOnly": true
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {}
     };

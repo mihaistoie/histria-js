@@ -23,23 +23,20 @@ export class UserList extends View {
         return this._children.users;
     }
     public get $states(): UserListState {
-        return <UserListState>this._states;
+        return this._states as UserListState;
     }
     public get $errors(): UserListErrors {
-        return <UserListErrors>this._errors;
+        return this._errors as UserListErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = USERLIST_SCHEMA;
+        this._schema = USERLIST_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new UserListState(that, that._schema);
+        this._states = new UserListState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new UserListErrors(that, that._schema);
+        this._errors = new UserListErrors(this, this._schema);
     }
 }
 
@@ -81,14 +78,16 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "usersId": {
                 "type": "array",
                 "items": {
                     "type": "integer",
                     "isReadOnly": true,
-                    "format": "id"
+                    "format": "id",
+                    "transient": false
                 }
             }
         },
@@ -107,5 +106,8 @@ export const
                 ]
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {}
     };

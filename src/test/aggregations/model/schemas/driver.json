@@ -16,7 +16,10 @@
             "type": "belongsTo",
             "model": "car",
             "aggregationKind": "shared",
-            "invRel": "drivenBy"
+            "invRel": "drivenBy",
+            "localFields": ["carId"],
+            "foreignFields": ["id"]
+
         }
     }
 }

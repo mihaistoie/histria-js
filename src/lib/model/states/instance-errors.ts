@@ -1,33 +1,33 @@
 import { ErrorState } from './error-state';
-import { ObservableObject } from '../interfaces';
+import { IObservableObject } from '../interfaces';
 import { helper } from 'histria-utils';
 
 export class InstanceErrors {
     protected _messages: any;
     private _schema: any;
-    private _parent: ObservableObject;
+    private _parent: IObservableObject;
 
-    constructor(parent: ObservableObject, schema: any) {
-        let that = this;
-        that._messages = {};
-        that._schema = schema;
-        that._parent = parent;
-        that._messages.$ = new ErrorState(that._parent, '$');
-        schema && schema.properties && Object.keys(schema.properties).forEach(propName => {
-            that._messages[propName] = new ErrorState(that._parent, propName);
-        });
-        schema && schema.relations && Object.keys(schema.relations).forEach(relName => {
-            that._messages[relName] = new ErrorState(that._parent, relName);
-        });
+    constructor(parent: IObservableObject, schema: any) {
+        this._messages = {};
+        this._schema = schema;
+        this._parent = parent;
+        this._messages.$ = new ErrorState(this._parent, '$');
+        if (schema && schema.properties)
+            Object.keys(schema.properties).forEach(propName => {
+                this._messages[propName] = new ErrorState(this._parent, propName);
+            });
+        if (schema && schema.relations)
+            Object.keys(schema.relations).forEach(relName => {
+                this._messages[relName] = new ErrorState(this._parent, relName);
+            });
 
     }
     public destroy() {
-        let that = this;
-        if (that._messages) {
-            helper.destroy(that._messages);
-            that._messages = null;
+        if (this._messages) {
+            helper.destroy(this._messages);
+            this._messages = null;
         }
-        that._schema = null;
-        that._parent = null;
+        this._schema = null;
+        this._parent = null;
     }
 }

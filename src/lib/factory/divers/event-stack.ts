@@ -1,26 +1,22 @@
-import { EventInfo, EventType } from '../../model/interfaces';
+import { IEventInfo, EventType } from '../../model/interfaces';
 
-export class EventInfoStack implements EventInfo {
+export class EventInfoStack implements IEventInfo {
+    public isLazyLoading: boolean;
     private _stack: any[];
     constructor() {
-        let that = this;
-        that._stack = [];
+        this._stack = [];
     }
-    public isLazyLoading: boolean;
     public push(info: any): void {
-        let that = this;
-        that._stack.push(info);
+        this._stack.push(info);
     }
     public pop(): void {
-        let that = this;
-        that._stack.pop();
+        this._stack.pop();
     }
     public isTriggeredBy(propertyName: string, target: any): boolean {
-        let that = this;
-        let path = target.getPath();
-        let fp = path ? path + '.' + propertyName : propertyName;
-        for (let i = 0, len = that._stack.length; i < len; i++) {
-            let info = that._stack[i];
+        const path = target.getPath();
+        const fp = path ? path + '.' + propertyName : propertyName;
+        for (let i = 0, len = this._stack.length; i < len; i++) {
+            const info = this._stack[i];
             if (info && info.eventType === EventType.propChanged) {
                 if (fp === info.path) return true;
             }
@@ -28,7 +24,6 @@ export class EventInfoStack implements EventInfo {
         return false;
     }
     public destroy() {
-        let that = this;
-        that._stack = null;
+        this._stack = null;
     }
 }

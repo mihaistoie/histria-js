@@ -25,23 +25,20 @@ export class Customer extends Instance {
         return this._children.id.value;
     }
     public get $states(): CustomerState {
-        return <CustomerState>this._states;
+        return this._states as CustomerState;
     }
     public get $errors(): CustomerErrors {
-        return <CustomerErrors>this._errors;
+        return this._errors as CustomerErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = CUSTOMER_SCHEMA;
+        this._schema = CUSTOMER_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new CustomerState(that, that._schema);
+        this._states = new CustomerState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new CustomerErrors(that, that._schema);
+        this._errors = new CustomerErrors(this, this._schema);
     }
 }
 
@@ -89,9 +86,13 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {},
         "viewsOfMe": {
             "customer-view-sample.customerView": {

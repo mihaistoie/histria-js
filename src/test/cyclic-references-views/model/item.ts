@@ -26,23 +26,20 @@ export class Item extends View {
         return this._children.group.setValue(value);
     }
     public get $states(): ItemState {
-        return <ItemState>this._states;
+        return this._states as ItemState;
     }
     public get $errors(): ItemErrors {
-        return <ItemErrors>this._errors;
+        return this._errors as ItemErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = ITEM_SCHEMA;
+        this._schema = ITEM_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new ItemState(that, that._schema);
+        this._states = new ItemState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new ItemErrors(that, that._schema);
+        this._errors = new ItemErrors(this, this._schema);
     }
 }
 
@@ -79,12 +76,14 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "groupId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -118,6 +117,9 @@ export const
             }
         },
         "name": "item",
+        "primaryKey": [
+            "id"
+        ],
         "meta": {
             "parent": "group",
             "parentRelation": "group"

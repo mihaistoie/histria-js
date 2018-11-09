@@ -1,4 +1,3 @@
-import { ModelObject } from './model-object'
+import { ModelObject } from './model-object';
 export class Instance extends ModelObject {
 }
-

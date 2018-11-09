@@ -29,23 +29,20 @@ export class CustomerView extends View {
         return this._children.customer.setValue(value);
     }
     public get $states(): CustomerViewState {
-        return <CustomerViewState>this._states;
+        return this._states as CustomerViewState;
     }
     public get $errors(): CustomerViewErrors {
-        return <CustomerViewErrors>this._errors;
+        return this._errors as CustomerViewErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = CUSTOMERVIEW_SCHEMA;
+        this._schema = CUSTOMERVIEW_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new CustomerViewState(that, that._schema);
+        this._states = new CustomerViewState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new CustomerViewErrors(that, that._schema);
+        this._errors = new CustomerViewErrors(this, this._schema);
     }
 }
 
@@ -90,12 +87,14 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "customerId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -118,5 +117,8 @@ export const
                 "isReadOnly": true
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {}
     };

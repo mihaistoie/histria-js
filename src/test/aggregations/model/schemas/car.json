@@ -12,7 +12,9 @@
             "type": "hasOne",
             "model": "driver",
             "aggregationKind": "shared",
-            "invRel": "drives"
+            "invRel": "drives",
+            "localFields": ["id"],
+            "foreignFields": ["driverId"]
         }
     }
 }

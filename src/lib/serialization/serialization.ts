@@ -1,8 +1,7 @@
-import * as util from 'util'
-import { ModelObject } from '../model/model-object'
-import { State } from '../model/states/state'
-import { serialization, schemaManager } from 'histria-utils'
-
+import * as util from 'util';
+import { ModelObject } from '../model/model-object';
+import { State } from '../model/states/state';
+import { serialization, schemaManager } from 'histria-utils';
 
 export async function serializeInstance(instance: ModelObject, pattern: any): Promise<any> {
     const output = {};
@@ -11,11 +10,10 @@ export async function serializeInstance(instance: ModelObject, pattern: any): Pr
 }
 
 async function _serialize(instance: ModelObject, pattern: any, root: any, output: any, options: { states: boolean }): Promise<void> {
-    let sm = schemaManager();
+    const sm = schemaManager();
     const instanceSchema = instance.getSchema();
     if (options.states)
         output.$states = output.$states || {};
-
 
     for (const item of pattern.properties) {
         const segments = item.value.split('.');
@@ -57,7 +55,7 @@ async function _serialize(instance: ModelObject, pattern: any, root: any, output
             if (Array.isArray(currentInstance)) {
                 output[item.key] = output[item.key] || [];
                 for (const ci of currentInstance) {
-                    let oi = {};
+                    const oi = {};
                     output[item.key].push(oi);
                     await _serialize(ci, item, root, oi, options);
                 }
@@ -85,4 +83,3 @@ async function _serialize(instance: ModelObject, pattern: any, root: any, output
         delete output.$states;
 
 }
-

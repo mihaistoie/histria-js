@@ -13,7 +13,7 @@ class CdRules {
         await song.setCdChangedHits(song.cdChangedHits + 1);
     }
     static async afterDurationChanged(song, eventInfo, newValue, oldValue) {
-        let cd = await song.cd();
+        const cd = await song.cd();
         if (cd)
             await cd.setDuration(cd.duration - oldValue + newValue);
     }

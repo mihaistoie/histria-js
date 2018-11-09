@@ -1,52 +1,21 @@
-import { ObservableObject, MessageServerity } from '../interfaces';
+import { IObservableObject, MessageServerity } from '../interfaces';
 
 export class ErrorState {
-    private _errorModel: { message: string, severity: MessageServerity }[];
-    private _parent: ObservableObject;
-    private _propertyName: string;
-
-    constructor(parent: ObservableObject, propertyName: string) {
-        let that = this;
-        that._propertyName = propertyName;
-        that._parent = parent;
-        that._errorModel = that._parent.modelErrors(propertyName);
-
-    }
-    private _getLastMessage(severity: MessageServerity): string {
-        // return last error
-        let that = this;
-        for (let i = that._errorModel.length - 1; i >= 0; i--) {
-            let item = that._errorModel[i]
-            if (item.severity === severity) {
-                return item.message;
-            }
-        }
-        return '';
-    }
-    private _hasMessages(severity: MessageServerity): boolean {
-        // return last error
-        let that = this;
-        for (let i = that._errorModel.length - 1; i >= 0; i--) {
-            if (that._errorModel[i].severity === severity) {
-                return true;
-            }
-        }
-        return false;
-    }
-    private _setMessage(severity: MessageServerity, value: string): void {
-        let that = this;
-        if (value)
-            // add
-            that._errorModel.push({ message: value, severity: severity });
-        else
-            // clear
-            that._errorModel = that._errorModel.filter(item => item.severity !== severity);
-    }
     public get error(): string {
         return this._getLastMessage(MessageServerity.error);
     }
     public set error(value: string) {
         this._setMessage(MessageServerity.error, value);
+    }
+    private _errorModel: Array<{ message: string, severity: MessageServerity }>;
+    private _parent: IObservableObject;
+    private _propertyName: string;
+
+    constructor(parent: IObservableObject, propertyName: string) {
+        this._propertyName = propertyName;
+        this._parent = parent;
+        this._errorModel = this._parent.modelErrors(propertyName);
+
     }
     public hasErrors(): boolean {
         return this._hasMessages(MessageServerity.error);
@@ -56,9 +25,33 @@ export class ErrorState {
     }
 
     public destroy() {
-        let that = this;
-        that._parent = null;
-        that._errorModel = null;
+        this._parent = null;
+        this._errorModel = null;
+    }
+    private _getLastMessage(severity: MessageServerity): string {
+        // return last error
+        for (let i = this._errorModel.length - 1; i >= 0; i--) {
+            const item = this._errorModel[i];
+            if (item.severity === severity) {
+                return item.message;
+            }
+        }
+        return '';
+    }
+    private _hasMessages(severity: MessageServerity): boolean {
+        for (let i = this._errorModel.length - 1; i >= 0; i--) {
+            if (this._errorModel[i].severity === severity) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private _setMessage(severity: MessageServerity, value: string): void {
+        if (value)
+            // add
+            this._errorModel.push({ message: value, severity: severity });
+        else
+            // clear
+            this._errorModel = this._errorModel.filter(item => item.severity !== severity);
     }
 }
-

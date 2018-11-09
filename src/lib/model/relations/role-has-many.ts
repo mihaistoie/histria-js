@@ -1,211 +1,194 @@
-import { ObservableObject, FrameworkObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType, FindOptions } from '../interfaces';
+import { IObservableObject, IFrameworkObject, IObservableArray, IEventInfo, ObjectStatus, MessageServerity, IUserContext, ITransactionContainer, EventType, IFindOptions } from '../interfaces';
 import { ObjectArray, BaseObjectArray } from './base-array';
-import { schemaUtils } from 'histria-utils';
-import { DEFAULT_PARENT_NAME } from 'histria-utils';
+import { schemaUtils, DEFAULT_PARENT_NAME } from 'histria-utils';
 
-
-export class BaseHasMany<T extends ObservableObject> extends ObjectArray<T> {
-    public enumChildren(cb: (value: ObservableObject) => void, recursive: boolean) {
-        let that = this;
-        that._items && that._items.forEach(item => {
-            if (recursive) item.enumChildren(cb, true);
-            cb(item)
-        });
+export class BaseHasMany<T extends IObservableObject> extends ObjectArray<T> {
+    public enumChildren(cb: (value: IObservableObject) => void, recursive: boolean) {
+        if (this._items)
+            this._items.forEach(item => {
+                if (recursive) item.enumChildren(cb, true);
+                cb(item);
+            });
     }
 
 }
 
-export class HasManyComposition<T extends ObservableObject> extends BaseHasMany<T> {
-    constructor(parent: ObservableObject, propertyName: string, relation: any, model: any[]) {
+// tslint:disable-next-line:max-classes-per-file
+export class HasManyComposition<T extends IObservableObject> extends BaseHasMany<T> {
+    constructor(parent: IObservableObject, propertyName: string, relation: any, model: any[]) {
         super(parent, propertyName, relation, model);
-        const that = this;
-        const isRestore = that._parent.status === ObjectStatus.restoring;
-        if (!that._isNull && !that._isUndefined) {
-            let pmodel = that._parent.model();
-            that._items = new Array(model.length);
-            that._model.forEach((itemModel: any, index: number) => {
-                let item = that._parent.transaction.createInstance<T>(that._refClass, that._parent, that._propertyName, itemModel, isRestore);
-                that._items[index] = item;
+        const isRestore = this._parent.status === ObjectStatus.restoring;
+        if (!this._isNull && !this._isUndefined) {
+            const pmodel = this._parent.model();
+            this._items = new Array(model.length);
+            this._model.forEach((itemModel: any, index: number) => {
+                const item = this._parent.transaction.createInstance<T>(this._refClass, this._parent, this._propertyName, itemModel, isRestore);
+                this._items[index] = item;
                 if (!isRestore)
-                    schemaUtils.updateRoleRefs(that._relation, itemModel, pmodel, true);
+                    schemaUtils.updateRoleRefs(this._relation, itemModel, pmodel, true);
             });
             if (!isRestore) {
-                for (const item of that._items) {
-                    parent.pushLoaded(() => that._notifyHooks(item, EventType.addItem));
+                for (const item of this._items) {
+                    parent.pushLoaded(() => this._notifyHooks(item, EventType.addItem));
                 }
             }
         }
     }
 
-    async length(): Promise<number> {
-        const that = this;
-        await that.lazyLoad();
-        return that._items ? that._items.length : 0;
+    public async length(): Promise<number> {
+        await this.lazyLoad();
+        return this._items ? this._items.length : 0;
     }
-    private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
-        const that = this;
-        const inst: FrameworkObject = <any>that._parent;
-        await inst.notifyHooks(that._propertyName, eventType, value);
+    public async set(items: T[]): Promise<void> {
+        await this.lazyLoad();
+        for (const item of this._items) {
+            await this._removed(item, false);
+            await this._notifyHooks(item, EventType.removeItem);
+        }
+        this._items = [];
+        if (items && items.length) {
+            this._model = [];
+            for (const item of items) {
+                const imodel = this._itemModel(item);
+                this._model.push(imodel);
+                this._items.push(item);
+                await this._added(item, false);
+            }
+
+        } else {
+            this._model = null;
+        }
+        this._isNull = (this._model === null);
+        this._parent.model()[this._propertyName] = this._model;
+        await this._parent.notifyOperation(this._propertyName, EventType.setItems, null);
+        for (const item of items) {
+            await this._notifyHooks(item, EventType.addItem);
+        }
+    }
+    public destroy() {
+        if (this._items)
+            this._items.forEach(item => {
+                item.destroy();
+            });
+        this._items = null;
+        super.destroy();
+    }
+    protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
+        this._model.splice(ii, 1);
+        if (!this._model.length) {
+            this._model = null;
+            this._parent.model()[this._propertyName] = this._model;
+        }
+        if (item)
+            await this._removed(item, true);
+        this._isNull = (this._model === null);
+    }
+    protected async _afterItemAdded(item: T): Promise<void> {
+        await this._added(item, true);
+
+    }
+
+    protected async lazyLoad(): Promise<void> {
+        if (!this._parent) return;
+        if (this._isUndefined) {
+            const lmodel = this._parent.model();
+            const query = schemaUtils.roleToQuery(this._relation, lmodel);
+            if (query) {
+                const opts: IFindOptions = { onlyInCache: this._parent.isNew || this.refIsPersistent };
+                const items = await this._parent.transaction.find<T>(this._refClass, query, opts);
+                if (items.length) {
+                    this._model = new Array(items.length);
+                    this._items = new Array(items.length);
+                    for (let index = 0; index < items.length; index++) {
+                        const item = items[index];
+                        const model = item.model();
+                        this._model[index] = model;
+                        this._items[index] = item;
+                        await item.changeParent(this._parent, this._propertyName, this._relation.invRel || DEFAULT_PARENT_NAME, false);
+                    }
+                } else
+                    this._model = null;
+            } else
+                this._model = null;
+            this._isUndefined = false;
+            this._isNull = this._model === null;
+            lmodel[this._propertyName] = this._model;
+            for (const item of this._items) {
+                await this._notifyHooks(item, EventType.addItem);
+            }
+        }
+
+    }
+    private async _notifyHooks(value: IObservableObject, eventType: EventType): Promise<void> {
+        const inst: IFrameworkObject = this._parent as any;
+        await inst.notifyHooks(this._propertyName, eventType, value);
     }
     private async _removed(item: T, notifyRemove: boolean): Promise<void> {
-        const that = this;
         const lmodel = item.model();
-        schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
-        await item.changeParent(null, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+        schemaUtils.updateRoleRefs(this._relation, lmodel, null, true);
+        await item.changeParent(null, this._propertyName, this._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyRemove) {
-            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
-            await that._notifyHooks(item, EventType.removeItem);
+            await this._parent.notifyOperation(this._propertyName, EventType.removeItem, item);
+            await this._notifyHooks(item, EventType.removeItem);
         }
 
     }
     private async _added(item: T, notifyAdd: boolean): Promise<void> {
-        const that = this;
         const lmodel = item.model();
-        const rmodel = that._parent.model();
-        schemaUtils.updateRoleRefs(that._relation, lmodel, rmodel, true);
-        await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, true);
+        const rmodel = this._parent.model();
+        schemaUtils.updateRoleRefs(this._relation, lmodel, rmodel, true);
+        await item.changeParent(this._parent, this._propertyName, this._relation.invRel || DEFAULT_PARENT_NAME, true);
         if (notifyAdd) {
-            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-            await that._notifyHooks(item, EventType.addItem);
+            await this._parent.notifyOperation(this._propertyName, EventType.addItem, item);
+            await this._notifyHooks(item, EventType.addItem);
         }
     }
-    protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
-        const that = this;
-        that._model.splice(ii, 1);
-        if (!that._model.length) {
-            that._model = null;
-            that._parent.model()[that._propertyName] = that._model;
-        }
-        if (item)
-            await that._removed(item, true);
-        that._isNull = (that._model === null);
-    }
-    protected async _afterItemAdded(item: T): Promise<void> {
-        const that = this;
-        await that._added(item, true);
-
-    }
-    public async set(items: T[]): Promise<void> {
-        const that = this;
-        await that.lazyLoad();
-        for (const item of that._items) {
-            await that._removed(item, false);
-            await that._notifyHooks(item, EventType.removeItem);
-        }
-        that._items = [];
-        if (items && items.length) {
-            that._model = [];
-            for (let item of items) {
-                let imodel = that._itemModel(item);
-                that._model.push(imodel);
-                that._items.push(item);
-                await that._added(item, false);
-            }
-
-        } else {
-            that._model = null
-        }
-        that._isNull = (that._model === null);
-        that._parent.model()[that._propertyName] = that._model;
-        await that._parent.notifyOperation(that._propertyName, EventType.setItems, null);
-        for (let item of items) {
-            await that._notifyHooks(item, EventType.addItem);
-        }
-    }
-
-    protected async lazyLoad(): Promise<void> {
-        const that = this;
-        if (!that._parent) return;
-        if (that._isUndefined) {
-            const lmodel = that._parent.model();
-            const query = schemaUtils.roleToQuery(that._relation, lmodel)
-            if (query) {
-                const opts: FindOptions = { onlyInCache: that._parent.isNew || that.refIsPersistent };
-                const items = await that._parent.transaction.find<T>(that._refClass, query, opts);
-                if (items.length) {
-                    that._model = new Array(items.length);
-                    that._items = new Array(items.length);
-                    for (let index = 0; index < items.length; index++) {
-                        let item = items[index];
-                        let model = item.model();
-                        that._model[index] = model;
-                        that._items[index] = item;
-                        await item.changeParent(that._parent, that._propertyName, that._relation.invRel || DEFAULT_PARENT_NAME, false);
-                    }
-                } else
-                    that._model = null;
-            } else
-                that._model = null;
-            that._isUndefined = false;
-            that._isNull = that._model === null;
-            lmodel[that._propertyName] = that._model;
-            for (let item of that._items) {
-                await that._notifyHooks(item, EventType.addItem);
-            }
-        }
-
-    }
-    public destroy() {
-        const that = this;
-        that._items && that._items.forEach(item => {
-            item.destroy();
-        });
-        that._items = null;
-        super.destroy();
-    }
-
 
 }
 
-export class HasManyAggregation<T extends ObservableObject> extends BaseObjectArray<T> {
+// tslint:disable-next-line:max-classes-per-file
+export class HasManyAggregation<T extends IObservableObject> extends BaseObjectArray<T> {
     private _loaded: boolean;
 
+    public async set(items: T[]): Promise<void> {
+        await this.lazyLoad();
+        while (this._items && this._items.length)
+            await this.remove(0);
+        if (items) {
+            for (const item of items)
+                await this.add(item);
+        }
+    }
+
     protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
-        const that = this;
         if (item) {
             const lmodel = item.model();
-            schemaUtils.updateRoleRefs(that._relation, lmodel, null, true);
-            let r = item.getRoleByName(that._relation.invRel, );
+            schemaUtils.updateRoleRefs(this._relation, lmodel, null, true);
+            const r = item.getRoleByName(this._relation.invRel);
             if (r) await r.internalSetValueAndNotify(null, item);
-            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
+            await this._parent.notifyOperation(this._propertyName, EventType.removeItem, item);
         }
     }
     protected async _afterItemAdded(item: T): Promise<void> {
-        const that = this;
-        const lmodel = item.model();
-        const rmodel = that._parent.model();
-        const r = item.getRoleByName(that._relation.invRel);
-        if (r) await r.internalSetValueAndNotify(that._parent, item);
-        await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-
-    }
-
-    public async set(items: T[]): Promise<void> {
-        const that = this;
-        await that.lazyLoad();
-        while (that._items && that._items.length)
-            await that.remove(0);
-        if (items) {
-            for (let item of items)
-                await that.add(item);
-        }
+        const r = item.getRoleByName(this._relation.invRel);
+        if (r) await r.internalSetValueAndNotify(this._parent, item);
+        await this._parent.notifyOperation(this._propertyName, EventType.addItem, item);
     }
 
     protected async lazyLoad(): Promise<void> {
-        const that = this;
-        if (!that._parent) return;
-        if (!that._loaded) {
-            that._loaded = true;
-            const query = schemaUtils.roleToQuery(that._relation, that._parent.model());
+        if (!this._parent) return;
+        if (!this._loaded) {
+            this._loaded = true;
+            const query = schemaUtils.roleToQuery(this._relation, this._parent.model());
             if (query) {
-                const opts: FindOptions = { onlyInCache: false };
-                const items = await that._parent.transaction.find<T>(that._refClass, query);
+                const opts: IFindOptions = { onlyInCache: false };
+                const items = await this._parent.transaction.find<T>(this._refClass, query);
                 if (items.length) {
-                    that._items = new Array(items.length);
+                    this._items = new Array(items.length);
                     for (let index = 0; index < items.length; index++) {
-                        let item = items[index];
-                        that._items[index] = item;
-                        await that._updateInvSideAfterLazyLoading(item);
+                        const item = items[index];
+                        this._items[index] = item;
+                        await this._updateInvSideAfterLazyLoading(item);
                     }
                 }
             }
@@ -213,117 +196,114 @@ export class HasManyAggregation<T extends ObservableObject> extends BaseObjectAr
     }
     private async _updateInvSideAfterLazyLoading(newValue: T): Promise<void> {
         // After lazy loading
-        const that = this;
         if (newValue) {
             // roleInv is AggregationBelongsTo
-            const roleInv = newValue.getRoleByName(that._relation.invRel);
-            if (roleInv) roleInv.internalSetValue(that._parent);
+            const roleInv = newValue.getRoleByName(this._relation.invRel);
+            if (roleInv) roleInv.internalSetValue(this._parent);
         }
     }
 }
 
-
-export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T> {
-    async length(): Promise<number> {
-        const that = this;
-        await that.lazyLoad();
-        return that._items ? that._items.length : 0;
-    }
-    private _subscribe(value: ObservableObject): void {
-        const that = this;
-        if (value)
-            value.addListener(that, that._parent, that._propertyName);
-    }
-    private async _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void> {
-        const that = this;
-        const inst: FrameworkObject = <any>that._parent;
-        await inst.notifyHooks(that._propertyName, eventType, value);
+// tslint:disable-next-line:max-classes-per-file
+export class HasManyRefObject<T extends IObservableObject> extends BaseHasMany<T> {
+    public async length(): Promise<number> {
+        await this.lazyLoad();
+        return this._items ? this._items.length : 0;
     }
     public restoreFromCache() {
-        const that = this;
-        that._items = that._items || [];
-        if (that._model && that._model.length && !that._items.length) {
-            that._items = [];
-            that._model.forEach((idItem: any) => {
-                const item: any = that._parent.transaction.findOneInCache<T>(that._refClass, { id: idItem }) || null;
-                that._items.push(item);
-                that._subscribe(item);
-            })
+        this._items = this._items || [];
+        if (this._model && this._model.length && !this._items.length) {
+            this._items = [];
+            this._model.forEach((idItem: any) => {
+                const item: any = this._parent.transaction.findOneInCache<T>(this._refClass, { id: idItem }) || null;
+                this._items.push(item);
+                this._subscribe(item);
+            });
         }
-        if (that._model && !that._model.length) {
-            that._model = null;
-            that._isNull = (that._model === null);
+        if (this._model && !this._model.length) {
+            this._model = null;
+            this._isNull = (this._model === null);
         }
 
     }
-    // Called by ObservableObject (that._items) on destroy
+    // Called by ObservableObject (this._items) on destroy
     public unsubscribe(instance: T): void {
-        const that = this;
-        if (that && that._items) {
-            let ii = that._items.indexOf(instance);
+        if (this && this._items) {
+            const ii = this._items.indexOf(instance);
             if (ii >= 0) {
-                that._items.splice(ii, 1);
+                this._items.splice(ii, 1);
                 // do not :
-                // that._model.splice(ii, 1)
+                // this._model.splice(ii, 1)
             }
         }
     }
+    public async set(items: T[]): Promise<void> {
+        await this.lazyLoad();
+        for (const item of this._items) {
+            await this._removed(item, false);
+        }
+        this._items = [];
+        if (items && items.length) {
+            this._model = [];
+            for (const item of items) {
+                const imodel = this._itemModel(item);
+                this._model.push(imodel);
+                this._items.push(item);
+                await this._added(item, false);
+            }
 
-    private async _removed(item: T, notifyRemove: boolean): Promise<void> {
-        const that = this;
-        item.rmvListener(that);
-        if (notifyRemove)
-            await that._parent.notifyOperation(that._propertyName, EventType.removeItem, item);
-        await that._notifyHooks(item, EventType.removeItem);
+        } else {
+            this._model = null;
+        }
+        this._isNull = (this._model === null);
+        this._parent.model()[this._propertyName] = this._model;
+        await this._parent.notifyOperation(this._propertyName, EventType.setItems, null);
     }
 
-    private async _added(item: T, notifyAdd: boolean): Promise<void> {
-        const that = this;
-        that._subscribe(item);
-        if (notifyAdd)
-            await that._parent.notifyOperation(that._propertyName, EventType.addItem, item);
-        await that._notifyHooks(item, EventType.addItem);
+    public destroy() {
+        if (this._items)
+            this._items.forEach(item => {
+                item.rmvListener(this);
+            });
+        super.destroy();
     }
 
     protected async _afterItemRemoved(item: T, ii: number): Promise<void> {
-        const that = this;
-        that._model.splice(ii, 1);
-        if (!that._model.length) {
-            that._model = null;
-            that._parent.model()[that._propertyName] = that._model;
+        this._model.splice(ii, 1);
+        if (!this._model.length) {
+            this._model = null;
+            this._parent.model()[this._propertyName] = this._model;
         }
         if (item)
-            await that._removed(item, true);
-        that._isNull = (that._model === null);
+            await this._removed(item, true);
+        this._isNull = (this._model === null);
     }
     protected async _afterItemAdded(item: T): Promise<void> {
-        const that = this;
-        await that._added(item, true);
+        await this._added(item, true);
     }
 
     protected async lazyLoad(): Promise<void> {
-        const that = this;
-        that._items = that._items || [];
+        this._items = this._items || [];
 
-        if (that._model && that._model.length && !that._items.length) {
-            let promises: Promise<T>[] = [];
-            that._model.forEach((idItem: any) => {
-                promises.push(that._parent.transaction.findOne<T>(that._refClass, { id: idItem }))
+        if (this._model && this._model.length && !this._items.length) {
+            const promises: Array<Promise<T>> = [];
+            this._model.forEach((idItem: any) => {
+                promises.push(this._parent.transaction.findOne<T>(this._refClass, { id: idItem }));
             });
             const res = await Promise.all(promises);
             let model: any[] = [];
             res.forEach((item, index) => {
                 if (item) {
-                    model.push(that._model[index]);
-                    that._items.push(item);
-                    that._subscribe(item);
+                    model.push(this._model[index]);
+                    this._items.push(item);
+                    this._subscribe(item);
                 }
             });
             if (!model.length) model = null;
-            that._model = model;
-            that._parent.model()[that._propertyName] = that._model;
-            for (let item of that._items)
-                await that._notifyHooks(item, EventType.addItem);
+            this._model = model;
+            this._parent.model()[this._propertyName] = this._model;
+            for (const item of this._items)
+                await this._notifyHooks(item, EventType.addItem);
 
         }
 
@@ -331,35 +311,26 @@ export class HasManyRefObject<T extends ObservableObject> extends BaseHasMany<T>
     protected _itemModel(item: T): any {
         return item.uuid;
     }
-    public async set(items: T[]): Promise<void> {
-        const that = this;
-        await that.lazyLoad();
-        for (const item of that._items) {
-            await that._removed(item, false);
-        }
-        that._items = [];
-        if (items && items.length) {
-            that._model = [];
-            for (let item of items) {
-                const imodel = that._itemModel(item);
-                that._model.push(imodel);
-                that._items.push(item);
-                await that._added(item, false);
-            }
-
-        } else {
-            that._model = null
-        }
-        that._isNull = (that._model === null);
-        that._parent.model()[that._propertyName] = that._model;
-        await that._parent.notifyOperation(that._propertyName, EventType.setItems, null);
+    private _subscribe(value: IObservableObject): void {
+        if (value)
+            value.addListener(this, this._parent, this._propertyName);
+    }
+    private async _notifyHooks(value: IObservableObject, eventType: EventType): Promise<void> {
+        const inst: IFrameworkObject = this._parent as any;
+        await inst.notifyHooks(this._propertyName, eventType, value);
     }
 
-    public destroy() {
-        const that = this;
-        that._items && that._items.forEach(item => {
-            item.rmvListener(that);
-        })
-        super.destroy();
+    private async _removed(item: T, notifyRemove: boolean): Promise<void> {
+        item.rmvListener(this);
+        if (notifyRemove)
+            await this._parent.notifyOperation(this._propertyName, EventType.removeItem, item);
+        await this._notifyHooks(item, EventType.removeItem);
+    }
+
+    private async _added(item: T, notifyAdd: boolean): Promise<void> {
+        this._subscribe(item);
+        if (notifyAdd)
+            await this._parent.notifyOperation(this._propertyName, EventType.addItem, item);
+        await this._notifyHooks(item, EventType.addItem);
     }
 }

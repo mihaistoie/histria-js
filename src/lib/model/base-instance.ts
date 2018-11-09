@@ -1,28 +1,25 @@
-import { ObservableObject, ObservableArray, EventInfo, ObjectStatus, MessageServerity, UserContext, TransactionContainer, EventType } from './interfaces';
+import { IObservableObject, IObservableArray, IEventInfo, ObjectStatus, MessageServerity, IUserContext, ITransactionContainer, EventType } from './interfaces';
 
 export class BaseInstance {
-    protected _transaction: TransactionContainer;
+    protected _transaction: ITransactionContainer;
     protected _destroyCount: number;
-    constructor(transaction: TransactionContainer) {
-        let that = this;
-        that._transaction = transaction;
+    constructor(transaction: ITransactionContainer) {
+        this._transaction = transaction;
     }
-    public get context(): UserContext {
+    public get context(): IUserContext {
         return this.transaction.context;
     }
-    public get transaction(): TransactionContainer {
+    public get transaction(): ITransactionContainer {
         return this._transaction;
     }
     public destroy() {
-        const that = this;
-        that._transaction = null;
-        that._destroyCount = that._destroyCount || 0;
-        that._destroyCount++;
-        if (that._destroyCount > 1) {
-            const constr: any = that.constructor;
-            const inst: any = that;
+        this._transaction = null;
+        this._destroyCount = this._destroyCount || 0;
+        this._destroyCount++;
+        if (this._destroyCount > 1) {
+            const constr: any = this.constructor;
             const instanceName = constr.nameSpace + '.' + constr.entityName;
-            throw 'Destroy called more than once (' + instanceName + ').';
+            throw new Error(`'Destroy called more than once (${instanceName}).`);
         }
     }
 

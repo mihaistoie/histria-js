@@ -31,23 +31,20 @@ export class Tree extends View {
         return this._children.parent.setValue(value);
     }
     public get $states(): TreeState {
-        return <TreeState>this._states;
+        return this._states as TreeState;
     }
     public get $errors(): TreeErrors {
-        return <TreeErrors>this._errors;
+        return this._errors as TreeErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = TREE_SCHEMA;
+        this._schema = TREE_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new TreeState(that, that._schema);
+        this._states = new TreeState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new TreeErrors(that, that._schema);
+        this._errors = new TreeErrors(this, this._schema);
     }
 }
 
@@ -94,12 +91,14 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "parentId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -132,6 +131,9 @@ export const
                 ]
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {
             "parent": "tree",
             "parentRelation": "parent"

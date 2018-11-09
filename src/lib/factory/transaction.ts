@@ -8,71 +8,68 @@ import { validateAfterPropChanged } from './validation';
 import { findInMap, IStore, dbManager, helper } from 'histria-utils';
 
 import { TranContext } from './user-context';
-import { UserContext, TransactionContainer, EventType, EventInfo, ObservableObject, FindOptions, LogModule, DebugLevel, FrameworkObject } from '../model/interfaces';
-import { EventInfoStack } from './divers/event-stack'
+import { IUserContext, ITransactionContainer, EventType, IEventInfo, IObservableObject, IFindOptions, LogModule, DebugLevel, IFrameworkObject } from '../model/interfaces';
+import { EventInfoStack } from './divers/event-stack';
 
-export class Transaction implements TransactionContainer {
+export class Transaction implements ITransactionContainer {
+    public get context(): IUserContext {
+        return this._ctx;
+    }
+    public get eventInfo(): IEventInfo {
+        if (!this._eventInfo)
+            this._eventInfo = new EventInfoStack();
+        return this._eventInfo;
+    }
     private _id: any;
-    private _eventInfo: EventInfo;
+    private _eventInfo: IEventInfo;
 
     private _subscribers: Map<EventType, any[]>;
-    private _removedInstances: Map<any, Map<string, ObservableObject>>;
-    private _instances: Map<any, Map<string, ObservableObject>>;
-    private _ctx: UserContext;
-    constructor(ctx?: UserContext) {
-        let that = this;
-        that._id = uuid.v1();
-        that._ctx = ctx || new TranContext();
-        that._subscribers = new Map();
-        that.subscribe(EventType.propChanged, propagationRules);
-        that.subscribe(EventType.addItem, addItemRules);
-        that.subscribe(EventType.removeItem, rmvItemRules);
-        that.subscribe(EventType.setItems, setItemsRules);
-        that.subscribe(EventType.propValidate, validateAfterPropChanged);
-        that.subscribe(EventType.propValidate, propValidateRules);
-        that.subscribe(EventType.objValidate, objValidateRules);
-        that.subscribe(EventType.init, initRules);
-        that.subscribe(EventType.saving, savingRules);
-        that.subscribe(EventType.saved, savedRules);
-        that.subscribe(EventType.editing, editingRules);
-        that.subscribe(EventType.edited, editedRules);
-        that.subscribe(EventType.removing, removingRules);
-        that.subscribe(EventType.removed, removedRules);
-    }
-    public get context(): UserContext {
-        return this._ctx;
+    private _removedInstances: Map<any, Map<string, IObservableObject>>;
+    private _instances: Map<any, Map<string, IObservableObject>>;
+    private _ctx: IUserContext;
+    constructor(ctx?: IUserContext) {
+        this._id = uuid.v1();
+        this._ctx = ctx || new TranContext();
+        this._subscribers = new Map();
+        this.subscribe(EventType.propChanged, propagationRules);
+        this.subscribe(EventType.addItem, addItemRules);
+        this.subscribe(EventType.removeItem, rmvItemRules);
+        this.subscribe(EventType.setItems, setItemsRules);
+        this.subscribe(EventType.propValidate, validateAfterPropChanged);
+        this.subscribe(EventType.propValidate, propValidateRules);
+        this.subscribe(EventType.objValidate, objValidateRules);
+        this.subscribe(EventType.init, initRules);
+        this.subscribe(EventType.saving, savingRules);
+        this.subscribe(EventType.saved, savedRules);
+        this.subscribe(EventType.editing, editingRules);
+        this.subscribe(EventType.edited, editedRules);
+        this.subscribe(EventType.removing, removingRules);
+        this.subscribe(EventType.removed, removedRules);
     }
     public log(module: LogModule, message: string, debugLevel?: DebugLevel) {
         if (debugLevel === undefined)
             debugLevel = DebugLevel.message;
         console.log(message);
     }
-    public get eventInfo(): EventInfo {
-        let that = this;
-        if (!that._eventInfo)
-            that._eventInfo = new EventInfoStack()
-        return this._eventInfo;
-    }
+
     public saveToJson(): any {
-        const that = this;
         const res: any = { instances: [], removed: [] };
-        const mm = modelManager();
-        if (that._removedInstances) {
+        if (this._removedInstances) {
             // Classname must be saved
             res.removed = [];
-            for (let item of that._removedInstances) {
-                for (let instance of item[1]) {
+            for (const item of this._removedInstances) {
+                for (const instance of item[1]) {
                     res.removed.push(helper.clone(instance[1].model()));
                 }
             }
         }
-        if (that._instances) {
-            let mm = modelManager();
+        if (this._instances) {
+            const mm = modelManager();
             mm.enumClasses(item => {
-                let instances = that._instances.get(item.classOfInstance);
+                const instances = this._instances.get(item.classOfInstance);
                 if (instances) {
-                    for (let ii of instances) {
-                        const instance: ObservableObject = ii[1];
+                    for (const ii of instances) {
+                        const instance: IObservableObject = ii[1];
                         if (!instance.owner)
                             res.instances.push({ className: item.className, data: helper.clone(instance.model()) });
                     }
@@ -84,93 +81,58 @@ export class Transaction implements TransactionContainer {
     }
 
     public async loadFromJson(data: any, reload: boolean): Promise<void> {
-        const that = this;
         const mm = modelManager();
-        const restoreList: Promise<ObservableObject>[] = [];
-        const npList: { factory: any, data: any }[] = [];
-        data && data.instances.forEach((item: { className: string, data: any }) => {
-            const cn = item.className.split('.');
-            const factory = mm.classByName(cn[1], cn[0]);
-            if (!factory)
-                throw util.format('Class not found "%s".', item.className);
-            if (factory.isPersistent)
-                restoreList.push(that.restore(factory, item.data, reload))
-            else
-                npList.push({ factory: factory, data: item.data });
-        });
+        const restoreList: Array<Promise<IObservableObject>> = [];
+        const npList: Array<{ factory: any, data: any }> = [];
+        if (data && data.instances)
+            data.instances.forEach((item: { className: string, data: any }) => {
+                const cn = item.className.split('.');
+                const factory = mm.classByName(cn[1], cn[0]);
+                if (!factory)
+                    throw util.format('Class not found "%s".', item.className);
+                if (factory.isPersistent)
+                    restoreList.push(this.restore(factory, item.data, reload));
+                else
+                    npList.push({ factory: factory, data: item.data });
+            });
         const instances = await Promise.all(restoreList);
         for (const view of npList)
-            instances.push(await that.restore(view.factory, view.data, reload));
+            instances.push(await this.restore(view.factory, view.data, reload));
 
         instances.forEach(instance => {
             instance.restored();
         });
 
-
-
     }
-    private async _propagateEvent(list: any[], eventInfo: EventInfo, instance: ObservableObject, nInstances: ObservableObject[], args: any[], argIndex: number): Promise<boolean> {
-        const that = this;
-        let res = true;
+    public async emitInstanceEvent(eventType: EventType, eventInfo: IEventInfo, instance: IObservableObject, ...args: any[]): Promise<boolean> {
 
-        for (let item of list) {
-            if (!await item(eventInfo, instance.constructor, nInstances, args))
-                res = false;
-        }
-        const listeners = instance.getListeners(eventInfo.isLazyLoading);
-        for (let listener of listeners) {
-            let children = nInstances.slice();
-            let newArgs = args.slice();
-            newArgs[argIndex] = listener.propertyName + '.' + newArgs[argIndex];
-            children.unshift(listener.instance);
-            if (!await that._propagateEvent(list, eventInfo, listener.instance, children, newArgs, argIndex))
-                res = false;
-        }
-        return res;
-    }
-    public async emitInstanceEvent(eventType: EventType, eventInfo: EventInfo, instance: ObservableObject, ...args: any[]): Promise<boolean> {
-        let that = this;
         args = args || [];
-        let propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems, EventType.editing, EventType.removing].indexOf(eventType) >= 0;
+        const propagate = [EventType.propChanged, EventType.removeItem, EventType.addItem, EventType.setItems, EventType.editing, EventType.removing].indexOf(eventType) >= 0;
         const pi = propagate && args && args.length ? 0 : -1;
-        const list = that._subscribers.get(eventType);
+        const list = this._subscribers.get(eventType);
         if (!list) return true;
         let res = true;
         if (propagate)
-            res = await that._propagateEvent(list, eventInfo, instance, [instance], args, pi);
+            res = await this._propagateEvent(list, eventInfo, instance, [instance], args, pi);
         else {
-            for (let item of list)
+            for (const item of list)
                 if (!await item(eventInfo, instance.constructor, [instance], args))
                     res = false;
 
         }
         return res;
     }
-    public async notifyHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, propertyName: string): Promise<void> {
-        const that = this;
-        await that._execHooks(eventType, instance, source, [instance], propertyName);
+    public async notifyHooks(eventType: EventType, instance: IObservableObject, source: IObservableObject, propertyName: string): Promise<void> {
+
+        await this._execHooks(eventType, instance, source, [instance], propertyName);
     }
 
-    private async _execHooks(eventType: EventType, instance: ObservableObject, source: ObservableObject, nInstances: ObservableObject[], propertyName: string): Promise<void> {
-        const that = this;
-        const inst: FrameworkObject = <any>instance;
-        await inst.execHooks(propertyName, eventType, source);
-        const listeners = instance.getListeners(false);
-        for (let listener of listeners) {
-            let children = nInstances.slice();
-            const pn = listener.propertyName + '.' + propertyName;
-            children.unshift(listener.instance);
-            await that._execHooks(eventType, listener.instance, source, children, pn);
-        }
+    public subscribe(eventType: EventType, handler: (eventInfo: IEventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>) {
 
-    }
-
-    public subscribe(eventType: EventType, handler: (eventInfo: EventInfo, classOfInstance: any, instance: any, args?: any[]) => Promise<boolean>) {
-        let that = this;
-        let list = that._subscribers.get(eventType);
+        let list = this._subscribers.get(eventType);
         if (!list) {
             list = [];
-            that._subscribers.set(eventType, list);
+            this._subscribers.set(eventType, list);
         }
         list.push(handler);
     }
@@ -182,62 +144,62 @@ export class Transaction implements TransactionContainer {
         return Promise.resolve();
     }
 
-    public async create<T extends ObservableObject>(classOfInstance: any, options?: { external: true }): Promise<T> {
-        let that = this;
-        let mm = modelManager();
-        let instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { _isNew: true }, { isRestore: false });
-        that._addInstance(instance, classOfInstance);
-        let instances: any[] = []
+    public async create<T extends IObservableObject>(classOfInstance: any, options?: { external: true }): Promise<T> {
+
+        const mm = modelManager();
+        const instance: T = mm.createInstance<T>(classOfInstance, this, null, '', { _isNew: true }, { isRestore: false });
+        this._addInstance(instance, classOfInstance);
+        const instances: any[] = [];
         instance.enumChildren((child: any) => {
             instances.push(child);
         }, true);
         instances.push(instance);
-        for (let inst of instances) {
+        for (const inst of instances) {
             await inst.afterCreated();
         }
         if (options) {
-            const inst: FrameworkObject = <any>instance;
+            const inst: IFrameworkObject = instance as any;
             inst.setInstanceOptions(options);
 
         }
         return instance;
     }
 
-    public async load<T extends ObservableObject>(classOfInstance: any, data: any, options?: { external: true }): Promise<T> {
-        let mm = modelManager();
-        let that = this;
-        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
-        that._addInstance(instance, classOfInstance);
-        let instances: any[] = []
+    public async load<T extends IObservableObject>(classOfInstance: any, data: any, options?: { external: true }): Promise<T> {
+        const mm = modelManager();
+
+        const instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: false });
+        this._addInstance(instance, classOfInstance);
+        const instances: any[] = [];
         instance.enumChildren((child: any) => {
             instances.push(child);
         }, true);
         instances.push(instance);
-        for (let inst of instances) {
+        for (const inst of instances) {
             await inst.afterCreated();
         }
         if (options) {
-            const inst: FrameworkObject = <any>instance;
+            const inst: IFrameworkObject = instance as any;
             inst.setInstanceOptions(options);
 
         }
         return instance;
     }
-    public createInstance<T extends ObservableObject>(classOfInstance: any, parent: ObservableObject, propertyName: string, data: any, isRestore: boolean): T {
-        let mm = modelManager();
-        let that = this;
-        let instance: any = mm.createInstance<T>(classOfInstance, this, parent, propertyName, data, { isRestore: isRestore });
-        that._addInstance(instance, classOfInstance);
+    public createInstance<T extends IObservableObject>(classOfInstance: any, parent: IObservableObject, propertyName: string, data: any, isRestore: boolean): T {
+        const mm = modelManager();
+
+        const instance: any = mm.createInstance<T>(classOfInstance, this, parent, propertyName, data, { isRestore: isRestore });
+        this._addInstance(instance, classOfInstance);
         return instance;
     }
     public clear() {
-        const that = this;
+
         const mm = modelManager();
-        if (that._instances) {
+        if (this._instances) {
             mm.enumClasses(item => {
-                let instances = that._instances.get(item.classOfInstance);
+                const instances = this._instances.get(item.classOfInstance);
                 if (instances) {
-                    const toDestroy: ObservableObject[] = [];
+                    const toDestroy: IObservableObject[] = [];
                     for (const ii of instances) {
                         if (!ii[1].owner)
                             toDestroy.push(ii[1]);
@@ -248,9 +210,9 @@ export class Transaction implements TransactionContainer {
 
                 }
             });
-            for (let classOfInstance of that._instances) {
-                let map = classOfInstance[1];
-                let toDestroy: ObservableObject[] = [];
+            for (const classOfInstance of this._instances) {
+                const map = classOfInstance[1];
+                const toDestroy: IObservableObject[] = [];
                 for (const ii of map) {
                     if (!ii[1].owner)
                         toDestroy.push(ii[1]);
@@ -259,13 +221,13 @@ export class Transaction implements TransactionContainer {
                     instance.destroy();
                 });
             }
-            that._instances = null;
+            this._instances = null;
         }
 
-        if (that._removedInstances) {
-            for (let classOfInstance of that._removedInstances) {
-                let map = classOfInstance[1];
-                let toDestroy: ObservableObject[] = [];
+        if (this._removedInstances) {
+            for (const classOfInstance of this._removedInstances) {
+                const map = classOfInstance[1];
+                const toDestroy: IObservableObject[] = [];
                 for (const ii of map) {
                     if (!ii[1].owner)
                         toDestroy.push(ii[1]);
@@ -274,189 +236,222 @@ export class Transaction implements TransactionContainer {
                     instance.destroy();
                 });
             }
-            that._removedInstances = null;
+            this._removedInstances = null;
         }
 
     }
     public destroy() {
-        let that = this;
-        that.clear();
-        if (that._eventInfo) {
-            that._eventInfo.destroy();
-            that._eventInfo = null;
-        }
-        that._subscribers = null;
-        that._ctx = null;
-    }
-    private _addInstance(instance: ObservableObject, classOfInstance: any) {
-        let that = this;
-        that._instances = that._instances || new Map<any, Map<string, ObservableObject>>();
-        let instances = that._instances.get(classOfInstance);
-        if (!instances) {
-            instances = new Map<string, ObservableObject>();
-            that._instances.set(classOfInstance, instances);
-        }
-        instances.set(instance.uuid, instance);
 
+        this.clear();
+        if (this._eventInfo) {
+            this._eventInfo.destroy();
+            this._eventInfo = null;
+        }
+        this._subscribers = null;
+        this._ctx = null;
     }
-    public async find<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T[]> {
-        let that = this;
-        let res = await that._find<T>(filter, classOfInstance);
+    public async find<T extends IObservableObject>(classOfInstance: any, filter: any, options?: IFindOptions): Promise<T[]> {
+
+        let res = await this._find<T>(filter, classOfInstance);
         if (!classOfInstance.isPersistent)
             return res || [];
         if (!options || !options.onlyInCache) {
-            let store = that._store(classOfInstance);
+            const store = this._store(classOfInstance);
             if (store) {
-                let list = await store.find(classOfInstance.entityName, filter, { compositions: false });
+                const list = await store.find(classOfInstance.entityName, filter, { compositions: false });
                 if (list && list.length) {
-                    let map: any = {};
-                    let instances = that._getInstances(classOfInstance);
-                    let promises: Promise<T>[] = [];
-                    let byClass: Map<string, ObservableObject>;
-                    if (that._removedInstances) {
-                        byClass = that._removedInstances.get(classOfInstance);
+                    const map: any = {};
+                    const instances = this._getInstances(classOfInstance);
+                    const promises: Array<Promise<T>> = [];
+                    let byClass: Map<string, IObservableObject>;
+                    if (this._removedInstances) {
+                        byClass = this._removedInstances.get(classOfInstance);
                     }
                     list.forEach(item => {
                         const key = item.id + '';
                         if (byClass && byClass.get(key))
                             return;
-                        let o = instances ? <T>instances.get(key) : null;
+                        const o = instances ? instances.get(key) as T : null;
                         if (o && res.indexOf(o) < 0)
                             return;
                         map[key] = true;
-                        promises.push(o ? Promise.resolve(o) : that.load<T>(classOfInstance, item));
+                        promises.push(o ? Promise.resolve(o) : this.load<T>(classOfInstance, item));
                     });
-                    let dbList = await Promise.all(promises);
-                    res && res.forEach(item => {
-                        if (!map[item.uuid])
-                            dbList.push(item)
-                    });
+                    const dbList = await Promise.all(promises);
+                    if (res)
+                        res.forEach(item => {
+                            if (!map[item.uuid])
+                                dbList.push(item);
+                        });
                     res = dbList;
                 }
             }
         }
         return res || [];
     }
-    public findOneInCache<T extends ObservableObject>(classOfInstance: any, filter: any): T {
+    public findOneInCache<T extends IObservableObject>(classOfInstance: any, filter: any): T {
         return this._findOne<T>(filter, classOfInstance);
     }
 
-    public async findOne<T extends ObservableObject>(classOfInstance: any, filter: any, options?: FindOptions): Promise<T> {
-        const that = this;
+    public async findOne<T extends IObservableObject>(classOfInstance: any, filter: any, options?: IFindOptions): Promise<T> {
+
         options = options || {};
-        let res = that._findOne<T>(filter, classOfInstance);
+        const res = this._findOne<T>(filter, classOfInstance);
         if (res) return res;
         if (!classOfInstance.isPersistent)
             return res;
         if (!options || !options.onlyInCache) {
-            let store = that._store(classOfInstance);
+            const store = this._store(classOfInstance);
             if (store) {
-                let instances = that._getInstances(classOfInstance);
-                let data = await store.findOne(classOfInstance.entityName, filter, { compositions: true });
+                const instances = this._getInstances(classOfInstance);
+                const data = await store.findOne(classOfInstance.entityName, filter, { compositions: true });
                 if (data) {
-                    const key = data.id + ''
-                    if (that._removedInstances) {
-                        const byClass = that._removedInstances.get(classOfInstance);
+                    const key = data.id + '';
+                    if (this._removedInstances) {
+                        const byClass = this._removedInstances.get(classOfInstance);
                         if (byClass) {
                             const inst = byClass.get(key);
                             if (inst)
                                 return null;
                         }
                     }
-                    let o = instances ? <T>instances.get(key) : null;
+                    const o = instances ? instances.get(key) as T : null;
                     if (o) return null;
-                    return await that.load<T>(classOfInstance, data);
+                    return this.load<T>(classOfInstance, data);
                 }
             }
         }
         return null;
     }
-    public removeInstance(instance: ObservableObject) {
-        const that = this;
-        if (that._instances) {
-            const byClass = that._instances.get(instance.constructor);
+    public removeInstance(instance: IObservableObject) {
+
+        if (this._instances) {
+            const byClass = this._instances.get(instance.constructor);
             if (byClass)
-                byClass.delete(instance.uuid)
+                byClass.delete(instance.uuid);
         }
-        if (that._removedInstances) {
-            const byClass = that._removedInstances.get(instance.constructor);
+        if (this._removedInstances) {
+            const byClass = this._removedInstances.get(instance.constructor);
             if (byClass)
-                byClass.delete(instance.uuid)
+                byClass.delete(instance.uuid);
         }
 
     }
-    public remove(instance: ObservableObject): void {
-        let that = this;
-        that._removedInstances = that._removedInstances || new Map<any, Map<string, ObservableObject>>();
-        let instances = that._removedInstances.get(instance.constructor);
+    public remove(instance: IObservableObject): void {
+
+        this._removedInstances = this._removedInstances || new Map<any, Map<string, IObservableObject>>();
+        let instances = this._removedInstances.get(instance.constructor);
         if (!instances) {
-            instances = new Map<string, ObservableObject>();
-            that._removedInstances.set(instance.constructor, instances);
+            instances = new Map<string, IObservableObject>();
+            this._removedInstances.set(instance.constructor, instances);
         }
         instances.set(instance.uuid, instance);
     }
-    public async restore<T extends ObservableObject>(classOfInstance: any, data: any, reload: boolean): Promise<T> {
-        const that = this;
+    public async restore<T extends IObservableObject>(classOfInstance: any, data: any, reload: boolean): Promise<T> {
+
         const mm = modelManager();
         data = data || {};
         if (reload && classOfInstance.isPersistent && !data._isDirty) {
-            let store = that._store(classOfInstance);
+            const store = this._store(classOfInstance);
             if (store) {
-                let cd = await store.find(classOfInstance.entityName, { id: data.id }, { compositions: true });
+                const cd = await store.find(classOfInstance.entityName, { id: data.id }, { compositions: true });
                 if (cd)
-                    return that.restore<T>(classOfInstance, cd, false);
+                    return this.restore<T>(classOfInstance, cd, false);
             }
         }
 
-        let instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
-        that._addInstance(instance, classOfInstance);
-        let instances: any[] = []
+        const instance: any = mm.createInstance<T>(classOfInstance, this, null, '', data, { isRestore: true });
+        this._addInstance(instance, classOfInstance);
+        const instances: any[] = [];
         instance.enumChildren((child: any) => {
             instances.push(child);
         }, true);
         instances.push(instance);
-        for (let inst of instances)
+        for (const inst of instances)
             inst.afterRestore();
         return instance;
     }
+    private async _propagateEvent(list: any[], eventInfo: IEventInfo, instance: IObservableObject, nInstances: IObservableObject[], args: any[], argIndex: number): Promise<boolean> {
 
-    private _getInstances(classOfInstance: any): Map<string, ObservableObject> {
-        let that = this;
-        if (!that._instances) return null;
-        return that._instances.get(classOfInstance);
+        let res = true;
+
+        for (const item of list) {
+            if (!await item(eventInfo, instance.constructor, nInstances, args))
+                res = false;
+        }
+        const listeners = instance.getListeners(eventInfo.isLazyLoading);
+        for (const listener of listeners) {
+            const children = nInstances.slice();
+            const newArgs = args.slice();
+            newArgs[argIndex] = listener.propertyName + '.' + newArgs[argIndex];
+            children.unshift(listener.instance);
+            if (!await this._propagateEvent(list, eventInfo, listener.instance, children, newArgs, argIndex))
+                res = false;
+        }
+        return res;
     }
 
-    private _getRemovedInstances(classOfInstance: any): Map<string, ObservableObject> {
-        let that = this;
-        if (!that._removedInstances) return null;
-        return that._removedInstances.get(classOfInstance);
+    private async _execHooks(eventType: EventType, instance: IObservableObject, source: IObservableObject, nInstances: IObservableObject[], propertyName: string): Promise<void> {
+
+        const inst: IFrameworkObject = instance as any;
+        await inst.execHooks(propertyName, eventType, source);
+        const listeners = instance.getListeners(false);
+        for (const listener of listeners) {
+            const children = nInstances.slice();
+            const pn = listener.propertyName + '.' + propertyName;
+            children.unshift(listener.instance);
+            await this._execHooks(eventType, listener.instance, source, children, pn);
+        }
+
+    }
+    private _addInstance(instance: IObservableObject, classOfInstance: any) {
+
+        this._instances = this._instances || new Map<any, Map<string, IObservableObject>>();
+        let instances = this._instances.get(classOfInstance);
+        if (!instances) {
+            instances = new Map<string, IObservableObject>();
+            this._instances.set(classOfInstance, instances);
+        }
+        instances.set(instance.uuid, instance);
+
     }
 
-    private _findById<T extends ObservableObject>(id: string, classOfInstance: any): T {
-        let that = this;
-        let instances = that._getInstances(classOfInstance);
-        return instances ? <any>instances.get(id + '') : null;
+    private _getInstances(classOfInstance: any): Map<string, IObservableObject> {
+
+        if (!this._instances) return null;
+        return this._instances.get(classOfInstance);
     }
 
-    private _findOne<T extends ObservableObject>(query: any, classOfInstance: any): T {
-        let that = this;
+    private _getRemovedInstances(classOfInstance: any): Map<string, IObservableObject> {
+
+        if (!this._removedInstances) return null;
+        return this._removedInstances.get(classOfInstance);
+    }
+
+    private _findById<T extends IObservableObject>(id: string, classOfInstance: any): T {
+
+        const instances = this._getInstances(classOfInstance);
+        return instances ? instances.get(id + '') as any : null;
+    }
+
+    private _findOne<T extends IObservableObject>(query: any, classOfInstance: any): T {
+
         if (query.id && typeof query.id !== 'object')
-            return that._findById<T>(query.id, classOfInstance);
-        let instances = that._getInstances(classOfInstance);
+            return this._findById<T>(query.id, classOfInstance);
+        const instances = this._getInstances(classOfInstance);
         if (!instances) return null;
-        return findInMap(query, instances, { findFirst: true, transform: (item) => { return item.model(); } });
+        return findInMap(query, instances, { findFirst: true, transform: (item) => item.model() });
     }
 
-    private async _find<T extends ObservableObject>(filter: any, classOfInstance: any): Promise<T[]> {
-        let that = this;
-        let instances = that._getInstances(classOfInstance);
+    private async _find<T extends IObservableObject>(filter: any, classOfInstance: any): Promise<T[]> {
+
+        const instances = this._getInstances(classOfInstance);
         if (!instances) return [];
-        return findInMap(filter, instances, { findFirst: false, transform: (item) => { return item.model(); } });
+        return findInMap(filter, instances, { findFirst: false, transform: (item) => item.model() });
     }
     private _store(classOfInstance: any): IStore {
-        let nameSpace = classOfInstance.nameSpace;
+        const nameSpace = classOfInstance.nameSpace;
         if (!nameSpace) return null;
         return dbManager().store(nameSpace);
     }
 }
-

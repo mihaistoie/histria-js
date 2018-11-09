@@ -76,5 +76,6 @@ gulp.task('test-compile', () => {
 });
 
 gulp.task('test', gulp.series('test-compile'));
+gulp.task('compile', gulp.series('clean', 'ts', 'test'));
 gulp.task('build', gulp.series('clean', 'tslint', 'ts', 'test'));
 gulp.task('default', gulp.series('build'));

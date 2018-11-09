@@ -26,23 +26,20 @@ export class AddressView extends View {
         return this._children.user.setValue(value);
     }
     public get $states(): AddressViewState {
-        return <AddressViewState>this._states;
+        return this._states as AddressViewState;
     }
     public get $errors(): AddressViewErrors {
-        return <AddressViewErrors>this._errors;
+        return this._errors as AddressViewErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = ADDRESSVIEW_SCHEMA;
+        this._schema = ADDRESSVIEW_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new AddressViewState(that, that._schema);
+        this._states = new AddressViewState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new AddressViewErrors(that, that._schema);
+        this._errors = new AddressViewErrors(this, this._schema);
     }
 }
 
@@ -81,7 +78,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -100,6 +98,9 @@ export const
                 ]
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {
             "parent": "UserDetail",
             "parentRelation": "user"

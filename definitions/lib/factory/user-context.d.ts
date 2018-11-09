@@ -1,5 +1,5 @@
-import { UserContext } from '../model/interfaces';
-export declare class TranContext implements UserContext {
+import { IUserContext } from '../model/interfaces';
+export declare class TranContext implements IUserContext {
     private _lang;
     private _country;
     constructor();

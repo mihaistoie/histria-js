@@ -1,48 +1,48 @@
-import { ObservableObject, EventType } from '../interfaces';
+import { IObservableObject, EventType } from '../interfaces';
 import { Role } from './role';
-export declare class HasOne<T extends ObservableObject> extends Role<T> {
+export declare class HasOne<T extends IObservableObject> extends Role<T> {
     protected _value: T;
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
+    constructor(parent: IObservableObject, propertyName: string, relation: any);
     protected _getValue(): Promise<T>;
     protected _lazyLoad(): Promise<void>;
 }
-export declare class HasOneRef<T extends ObservableObject> extends HasOne<T> {
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
+export declare class HasOneRef<T extends IObservableObject> extends HasOne<T> {
+    constructor(parent: IObservableObject, propertyName: string, relation: any);
     protected _lazyLoad(): Promise<void>;
     protected _setValue(value: T): Promise<void>;
 }
-export declare class HasOneAC<T extends ObservableObject> extends HasOne<T> {
-    protected _notifyHooks(value: ObservableObject, eventType: EventType): Promise<void>;
-    protected _setValue(value: T): Promise<void>;
+export declare class HasOneAC<T extends IObservableObject> extends HasOne<T> {
     remove(instance: T): Promise<void>;
+    protected _notifyHooks(value: IObservableObject, eventType: EventType): Promise<void>;
+    protected _setValue(value: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }
-export declare class HasOneComposition<T extends ObservableObject> extends HasOneAC<T> {
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
-    enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
-    protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
-    protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
+export declare class HasOneComposition<T extends IObservableObject> extends HasOneAC<T> {
+    constructor(parent: IObservableObject, propertyName: string, relation: any);
+    enumChildren(cb: (value: IObservableObject) => void, recursive: boolean): void;
     destroy(): void;
-}
-export declare class HasOneAggregation<T extends ObservableObject> extends HasOneAC<T> {
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
     protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
     protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
 }
-export declare class HasOneRefObject<T extends ObservableObject> extends HasOne<T> {
-    protected _value: T;
-    constructor(parent: ObservableObject, propertyName: string, relation: any);
-    private _notifyHooks;
-    private _subscribe;
-    unsubscribe(instance: T): void;
-    enumChildren(cb: (value: ObservableObject) => void, recursive: boolean): void;
+export declare class HasOneAggregation<T extends IObservableObject> extends HasOneAC<T> {
+    constructor(parent: IObservableObject, propertyName: string, relation: any);
+    protected _afterSetValue(newValue: T, oldValue: T): Promise<void>;
+    protected _updateInvSideAfterLazyLoading(newValue: T): Promise<void>;
+}
+export declare class HasOneRefObject<T extends IObservableObject> extends HasOne<T> {
     readonly syncValue: T;
+    protected _value: T;
+    constructor(parent: IObservableObject, propertyName: string, relation: any);
+    unsubscribe(instance: T): void;
+    enumChildren(cb: (value: IObservableObject) => void, recursive: boolean): void;
     restoreFromCache(): void;
     destroy(): void;
+    remove(instance: T): Promise<void>;
     protected _setValue(value: T): Promise<void>;
     protected _lazyLoad(): Promise<void>;
-    remove(instance: T): Promise<void>;
+    private _notifyHooks;
+    private _subscribe;
 }
 //# sourceMappingURL=role-has-one.d.ts.map

@@ -1,10 +1,10 @@
-import { UserContext, TransactionContainer } from './interfaces';
+import { IUserContext, ITransactionContainer } from './interfaces';
 export declare class BaseInstance {
-    protected _transaction: TransactionContainer;
+    protected _transaction: ITransactionContainer;
     protected _destroyCount: number;
-    constructor(transaction: TransactionContainer);
-    readonly context: UserContext;
-    readonly transaction: TransactionContainer;
+    constructor(transaction: ITransactionContainer);
+    readonly context: IUserContext;
+    readonly transaction: ITransactionContainer;
     destroy(): void;
 }
 //# sourceMappingURL=base-instance.d.ts.map

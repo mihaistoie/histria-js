@@ -22,16 +22,13 @@ class VAOrderItemView extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.VAORDERITEMVIEW_SCHEMA;
+        this._schema = exports.VAORDERITEMVIEW_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new VAOrderItemViewState(that, that._schema);
+        this._states = new VAOrderItemViewState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new VAOrderItemViewErrors(that, that._schema);
+        this._errors = new VAOrderItemViewErrors(this, this._schema);
     }
 }
 VAOrderItemView.isPersistent = false;
@@ -57,6 +54,7 @@ class VAOrderItemViewState extends index_1.InstanceState {
     }
 }
 exports.VAOrderItemViewState = VAOrderItemViewState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.VAORDERITEMVIEW_SCHEMA = {
     "name": "VAOrderItemView",
@@ -67,12 +65,14 @@ exports.VAORDERITEMVIEW_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         },
         "orderItemId": {
             "type": "integer",
             "isReadOnly": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -91,6 +91,9 @@ exports.VAORDERITEMVIEW_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {}
 };
 

@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { Cd } from './cd';
 
-
 export class Song extends Instance {
     public static isPersistent: boolean = true;
     public get duration(): number {
@@ -35,23 +34,20 @@ export class Song extends Instance {
         return this._children.cd.setValue(value);
     }
     public get $states(): SongState {
-        return <SongState>this._states;
+        return this._states as SongState;
     }
     public get $errors(): SongErrors {
-        return <SongErrors>this._errors;
+        return this._errors as SongErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = SONG_SCHEMA;
+        this._schema = SONG_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new SongState(that, that._schema);
+        this._states = new SongState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new SongErrors(that, that._schema);
+        this._errors = new SongErrors(this, this._schema);
     }
 }
 
@@ -87,6 +83,7 @@ export class SongState extends InstanceState {
         return this._states.cdId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     SONG_SCHEMA = {
@@ -105,7 +102,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             },
             "cdId": {
                 "type": "integer",
@@ -130,5 +128,8 @@ export const
                 ]
             }
         },
-        "meta": {}
+        "meta": {},
+        "primaryKey": [
+            "id"
+        ]
     };

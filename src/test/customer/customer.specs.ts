@@ -1,15 +1,14 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
 import { Customer, CustomerView } from './customer-view-sample-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function viewOfCustomerTest(): Promise<void> {
-    let transaction = new Transaction();
-    let viewOfCustomer = await transaction.create<CustomerView>(CustomerView);
-    let customer = await transaction.create<Customer>(Customer);
+    const transaction = new Transaction();
+    const viewOfCustomer = await transaction.create<CustomerView>(CustomerView);
+    const customer = await transaction.create<Customer>(Customer);
     await viewOfCustomer.setCustomer(customer);
     await customer.setFirstName('John');
 
@@ -25,11 +24,8 @@ async function viewOfCustomerTest(): Promise<void> {
 
 }
 
-
-
-
 describe('View of Customer Model Test', () => {
-    before(function (done) {
+    before((done) => {
 
         loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
@@ -37,19 +33,15 @@ describe('View of Customer Model Test', () => {
             done(ex);
         });
 
-
     });
 
-
-
-    it('View of Customer test', function (done) {
-        viewOfCustomerTest().then(function () {
+    it('View of Customer test', (done) => {
+        viewOfCustomerTest().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
 
     });
-
 
 });

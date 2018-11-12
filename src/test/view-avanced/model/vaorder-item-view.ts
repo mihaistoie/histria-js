@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { VAOrderItem } from './vaorder-item';
 
-
 export class VAOrderItemView extends View {
     public static isPersistent: boolean = false;
     public get id(): any {
@@ -23,23 +22,20 @@ export class VAOrderItemView extends View {
         return this._children.orderItem.setValue(value);
     }
     public get $states(): VAOrderItemViewState {
-        return <VAOrderItemViewState>this._states;
+        return this._states as VAOrderItemViewState;
     }
     public get $errors(): VAOrderItemViewErrors {
-        return <VAOrderItemViewErrors>this._errors;
+        return this._errors as VAOrderItemViewErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = VAORDERITEMVIEW_SCHEMA;
+        this._schema = VAORDERITEMVIEW_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new VAOrderItemViewState(that, that._schema);
+        this._states = new VAOrderItemViewState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new VAOrderItemViewErrors(that, that._schema);
+        this._errors = new VAOrderItemViewErrors(this, this._schema);
     }
 }
 
@@ -63,6 +59,7 @@ export class VAOrderItemViewState extends InstanceState {
         return this._states.orderItemId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     VAORDERITEMVIEW_SCHEMA = {
@@ -74,12 +71,14 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "orderItemId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -98,5 +97,8 @@ export const
                 ]
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {}
     };

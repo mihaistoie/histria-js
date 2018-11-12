@@ -5,6 +5,16 @@
     "properties": {
         "title": {
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "parentId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -12,13 +22,35 @@
             "type": "hasMany",
             "model": "tree",
             "aggregationKind": "composite",
-            "invRel": "parent"
+            "invRel": "parent",
+            "nameSpace": "compositions",
+            "title": "leafs",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "parentId"
+            ]
         },
         "parent": {
             "type": "belongsTo",
             "model": "tree",
             "aggregationKind": "composite",
-            "invRel": "leafs"
+            "invRel": "leafs",
+            "nameSpace": "compositions",
+            "title": "parent",
+            "invType": "hasMany",
+            "localFields": [
+                "parentId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
+    },
+    "meta": {
+        "parent": "tree",
+        "parentRelation": "parent"
     }
 }

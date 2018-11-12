@@ -8,7 +8,6 @@ import {
 import { User } from './user';
 import { AddressView } from './address-view';
 
-
 export class UserDetail extends View {
     public static isPersistent: boolean = false;
     public get fullName(): string {
@@ -88,6 +87,7 @@ export class UserDetailState extends InstanceState {
         return this._states.addressId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     USERDETAIL_SCHEMA = {

@@ -19,16 +19,13 @@ class VAOrder extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.VAORDER_SCHEMA;
+        this._schema = exports.VAORDER_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new VAOrderState(that, that._schema);
+        this._states = new VAOrderState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new VAOrderErrors(that, that._schema);
+        this._errors = new VAOrderErrors(this, this._schema);
     }
 }
 VAOrder.isPersistent = true;
@@ -57,6 +54,7 @@ class VAOrderState extends index_1.InstanceState {
     }
 }
 exports.VAOrderState = VAOrderState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.VAORDER_SCHEMA = {
     "type": "object",
@@ -70,7 +68,8 @@ exports.VAORDER_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
     "relations": {
@@ -90,6 +89,9 @@ exports.VAORDER_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {},
     "viewsOfMe": {
         "view-avanced.VAOrderView": {

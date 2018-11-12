@@ -25,16 +25,13 @@ class Item extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.ITEM_SCHEMA;
+        this._schema = exports.ITEM_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new ItemState(that, that._schema);
+        this._states = new ItemState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new ItemErrors(that, that._schema);
+        this._errors = new ItemErrors(this, this._schema);
     }
 }
 Item.isPersistent = true;
@@ -63,6 +60,7 @@ class ItemState extends index_1.InstanceState {
     }
 }
 exports.ItemState = ItemState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.ITEM_SCHEMA = {
     "type": "object",
@@ -72,7 +70,8 @@ exports.ITEM_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "groupId": {
             "type": "integer",
@@ -112,6 +111,9 @@ exports.ITEM_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {
         "parent": "group",
         "parentRelation": "group"

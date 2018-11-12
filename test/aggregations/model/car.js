@@ -25,16 +25,13 @@ class Car extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.CAR_SCHEMA;
+        this._schema = exports.CAR_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new CarState(that, that._schema);
+        this._states = new CarState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new CarErrors(that, that._schema);
+        this._errors = new CarErrors(this, this._schema);
     }
 }
 Car.isPersistent = true;
@@ -63,6 +60,7 @@ class CarState extends index_1.InstanceState {
     }
 }
 exports.CarState = CarState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.CAR_SCHEMA = {
     "type": "object",
@@ -75,7 +73,8 @@ exports.CAR_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
     "relations": {
@@ -95,7 +94,10 @@ exports.CAR_SCHEMA = {
             ]
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=car.js.map

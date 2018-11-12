@@ -52,16 +52,13 @@ class EmployeeAddress extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.EMPLOYEEADDRESS_SCHEMA;
+        this._schema = exports.EMPLOYEEADDRESS_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new EmployeeAddressState(that, that._schema);
+        this._states = new EmployeeAddressState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new EmployeeAddressErrors(that, that._schema);
+        this._errors = new EmployeeAddressErrors(this, this._schema);
     }
 }
 EmployeeAddress.isPersistent = true;
@@ -117,6 +114,7 @@ class EmployeeAddressState extends index_1.InstanceState {
     }
 }
 exports.EmployeeAddressState = EmployeeAddressState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.EMPLOYEEADDRESS_SCHEMA = {
     "type": "object",
@@ -146,7 +144,8 @@ exports.EMPLOYEEADDRESS_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "employeeId": {
             "type": "integer",
@@ -174,7 +173,10 @@ exports.EMPLOYEEADDRESS_SCHEMA = {
     "meta": {
         "parent": "employee",
         "parentRelation": "employee"
-    }
+    },
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=employee-address.js.map

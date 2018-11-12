@@ -18,6 +18,11 @@
         "grossAmount": {
             "title": "Gross Amount (including VAT)",
             "type": "number"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
     "states": {
@@ -30,5 +35,6 @@
         "grossAmount": {
             "decimals": 2
         }
-    }
+    },
+    "meta": {}
 }

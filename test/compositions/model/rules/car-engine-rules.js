@@ -13,7 +13,7 @@ class CarEngineRules {
         await car.setEngineChangedHits(car.engineChangedHits + 1);
     }
     static async afterEngineNameChanged(car, engine, eventInfo) {
-        let ce = await car.engine();
+        const ce = await car.engine();
         if (ce !== ce)
             throw 'Invalid rule propagation';
         await car.setEngineName(engine.name);

@@ -13,7 +13,6 @@ export class BaseBelongsTo<T extends IObservableObject> extends Role<T> {
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class AggregationBelongsTo<T extends IObservableObject> extends BaseBelongsTo<T> {
     public internalSetValue(value: any) {
         this._value = value;
@@ -58,7 +57,6 @@ export class AggregationBelongsTo<T extends IObservableObject> extends BaseBelon
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class CompositionBelongsTo<T extends IObservableObject> extends BaseBelongsTo<T> {
 
     // tslint:disable-next-line:no-empty

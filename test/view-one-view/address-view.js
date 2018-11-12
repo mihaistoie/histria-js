@@ -25,16 +25,13 @@ class AddressView extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.ADDRESSVIEW_SCHEMA;
+        this._schema = exports.ADDRESSVIEW_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new AddressViewState(that, that._schema);
+        this._states = new AddressViewState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new AddressViewErrors(that, that._schema);
+        this._errors = new AddressViewErrors(this, this._schema);
     }
 }
 AddressView.isPersistent = false;
@@ -60,6 +57,7 @@ class AddressViewState extends index_1.InstanceState {
     }
 }
 exports.AddressViewState = AddressViewState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.ADDRESSVIEW_SCHEMA = {
     "name": "AddressView",
@@ -74,7 +72,8 @@ exports.ADDRESSVIEW_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -93,6 +92,9 @@ exports.ADDRESSVIEW_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {
         "parent": "UserDetail",
         "parentRelation": "user"

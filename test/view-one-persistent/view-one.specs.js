@@ -6,11 +6,11 @@ const index_1 = require("../../index");
 const view_one_model_1 = require("./view-one-model");
 const histria_utils_1 = require("histria-utils");
 async function viewOfUserTest() {
-    let transaction = new index_1.Transaction();
-    let userDetail = await transaction.create(view_one_model_1.UserDetail, { external: true });
+    const transaction = new index_1.Transaction();
+    const userDetail = await transaction.create(view_one_model_1.UserDetail, { external: true });
     let user1 = await transaction.findOne(view_one_model_1.User, { id: 101 });
-    let user2 = await transaction.findOne(view_one_model_1.User, { id: 101 });
-    let user3 = await transaction.findOne(view_one_model_1.User, { id: 101 }, { onlyInCache: true });
+    const user2 = await transaction.findOne(view_one_model_1.User, { id: 101 });
+    const user3 = await transaction.findOne(view_one_model_1.User, { id: 101 }, { onlyInCache: true });
     assert.equal(user1, user2, 'Same User (1)');
     assert.equal(user1, user3, 'Same User (2)');
     let user = await transaction.create(view_one_model_1.User);
@@ -23,21 +23,21 @@ async function viewOfUserTest() {
     assert.equal(userDetail.fullName, '', 'User is null');
     await userDetail.setUser(user);
     assert.equal(userDetail.fullName, 'John DOE', 'User is not null');
-    let det = await transaction.load(view_one_model_1.UserDetail, { id: 10, userId: 101 }, { external: true });
+    const det = await transaction.load(view_one_model_1.UserDetail, { id: 10, userId: 101 }, { external: true });
     user = await det.user();
     assert.notEqual(user, null, 'Lazy loading (1)');
     assert.equal(user.firstName, 'John', 'Lazy loading (2)');
     assert.equal(det.fullName, 'John SMITH', 'Rule called after lazy loading');
-    let userDetId = det.id;
-    let userId = det.userId;
-    let transactionData = transaction.saveToJson();
+    const userDetId = det.id;
+    const userId = det.userId;
+    const transactionData = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(transactionData, false);
-    let data2 = transaction.saveToJson();
+    const data2 = transaction.saveToJson();
     assert.deepEqual(transactionData, data2, 'Restore Test');
     // Test that det.user is loaded
-    let cuser = await transaction.findOne(view_one_model_1.User, { id: userId });
-    let duser = await transaction.findOne(view_one_model_1.UserDetail, { id: userDetId });
+    const cuser = await transaction.findOne(view_one_model_1.User, { id: userId });
+    const duser = await transaction.findOne(view_one_model_1.UserDetail, { id: userDetId });
     assert.equal(!!cuser, true, 'User found');
     assert.equal(!!duser, true, 'User Detail found');
     user1 = await transaction.findOne(view_one_model_1.User, { id: 101 });
@@ -66,9 +66,9 @@ async function viewOfUserTestRemove() {
 }
 describe('ViewOne Model Test', () => {
     before((done) => {
-        let dm = histria_utils_1.dbManager();
+        const dm = histria_utils_1.dbManager();
         dm.registerNameSpace('view-one', 'memory', { compositionsInParent: true });
-        let store = dm.store('view-one');
+        const store = dm.store('view-one');
         store.initNameSpace('view-one', {
             user: [
                 {
@@ -89,17 +89,17 @@ describe('ViewOne Model Test', () => {
             done(ex);
         });
     });
-    it('View of User test', function (done) {
-        viewOfUserTest().then(function () {
+    it('View of User test', (done) => {
+        viewOfUserTest().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });
-    it('View of User test remove', function (done) {
-        viewOfUserTestRemove().then(function () {
+    it('View of User test remove', (done) => {
+        viewOfUserTestRemove().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });

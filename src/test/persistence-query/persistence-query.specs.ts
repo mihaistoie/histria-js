@@ -6,7 +6,7 @@ import { User } from './persistence-query-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function testFindOne(): Promise<void> {
-    let transaction = new Transaction();
+    const transaction = new Transaction();
     let user = await transaction.findOne<User>(User, { id: 100 });
     assert.notEqual(user, null, '(1) User Found');
     user = await transaction.findOne<User>(User, { firstName: 'Joe' });
@@ -37,7 +37,6 @@ async function testFindOne(): Promise<void> {
     await user.setFirstName('Jack');
     assert.equal(user.firstName, 'Albert', 'Rule editing called : can\'t modify Albert');
 
-
     transaction.destroy();
 }
 
@@ -65,10 +64,7 @@ async function testFindMany(): Promise<void> {
     users = await transaction.find<User>(User, { firstName: 'Jack' });
     assert.notEqual(users.length, 0, '(4) User Found');
 
-
-
     transaction.destroy();
-
 
     transaction = new Transaction();
     users = await transaction.find<User>(User, { firstName: 'Joe' });
@@ -78,16 +74,14 @@ async function testFindMany(): Promise<void> {
     users = await transaction.find<User>(User, { firstName: 'John' });
     assert.equal(users.length, 2, '(6) User Found');
 
-
     transaction.destroy();
 }
 
-
 describe('Persistence Test', () => {
-    before(function (done) {
-        let dm: DbManager = dbManager();
+    before((done) => {
+        const dm: DbManager = dbManager();
         dm.registerNameSpace('persistence-query', 'memory', { compositionsInParent: true });
-        let store = dm.store('persistence-query');
+        const store = dm.store('persistence-query');
         store.initNameSpace('persistence-query', {
             user: [
                 {
@@ -115,19 +109,19 @@ describe('Persistence Test', () => {
         });
     });
 
-    it('Persistence Find One', function (done) {
-        testFindOne().then(function () {
+    it('Persistence Find One', (done) => {
+        testFindOne().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
 
     });
-    it('Persistence Find Many', function (done) {
-        testFindMany().then(function () {
+    it('Persistence Find Many', (done) => {
+        testFindMany().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
     });
 });

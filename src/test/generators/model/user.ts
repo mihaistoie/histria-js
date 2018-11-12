@@ -6,7 +6,6 @@ import {
     NumberValue
 } from '../../../index';
 
-
 export class User extends Instance {
     public static isPersistent: boolean = true;
     public get age(): number {
@@ -92,6 +91,7 @@ export class UserState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     USER_SCHEMA = {
@@ -130,8 +130,8 @@ export const
                 "isReadOnly": true
             }
         },
+        "meta": {},
         "primaryKey": [
             "id"
-        ],
-        "meta": {}
+        ]
     };

@@ -1,10 +1,7 @@
-
-
 import { State, EnumState, IntegerState, NumberState, DateState, DateTimeState, RefObjectState, RefArrayState, StringState } from '../model/states/state';
 import { ErrorState } from '../model/states/error-state';
 import { JSONTYPES, JSONFORMATS, schemaUtils, messages, helper } from 'histria-utils';
 import { IUserContext, IEventInfo } from '../model/interfaces';
-
 
 function _validateEmail(email: string): boolean {
     const re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
@@ -22,11 +19,9 @@ function _validateJson(value: string, error: any): boolean {
 
 }
 
-
-
 function _validateInteger(value: number, propTitle: string, ctx: IUserContext, error: ErrorState, state: IntegerState): boolean {
     let res = true;
-    let msg = messages(ctx.lang);
+    const msg = messages(ctx.lang);
     if (state.exclusiveMinimum) {
         if (state.minimum !== undefined && value <= state.minimum) {
             error.error = helper.format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, 0));
@@ -53,7 +48,8 @@ function _validateInteger(value: number, propTitle: string, ctx: IUserContext, e
 }
 
 function _validateNumber(value: number, propTitle: string, ctx: IUserContext, error: ErrorState, state: NumberState): boolean {
-    let res = true, msg = messages(ctx.lang);
+    let res = true;
+    const msg = messages(ctx.lang);
     if (state.exclusiveMinimum) {
         if (state.minimum !== undefined && value <= state.minimum) {
             error.error = helper.format(msg.schema.minNumberExclusive, propTitle, ctx.formatNumber(state.minimum, state.decimals));
@@ -80,7 +76,8 @@ function _validateNumber(value: number, propTitle: string, ctx: IUserContext, er
 }
 
 function _validateString(value: string, schema: any, propTitle: string, ctx: IUserContext, error: ErrorState, state: StringState): boolean {
-    let res = true, msg = messages(ctx.lang);
+    let res = true;
+    const msg = messages(ctx.lang);
     if (state.isMandatory && !value && (value === '' || value === undefined || value === null)) {
         error.error = helper.format(msg.schema.required, propTitle);
         res = false;
@@ -92,9 +89,9 @@ function _validateString(value: string, schema: any, propTitle: string, ctx: IUs
                 res = false;
             }
         } else if (schema.format === JSONFORMATS.json) {
-            let error: any = {};
-            if (value && !_validateJson(value, error)) {
-                error.error = error;
+            const lError: any = {};
+            if (value && !_validateJson(value, lError)) {
+                error.error = lError;
                 res = false;
             }
         }
@@ -104,7 +101,7 @@ function _validateString(value: string, schema: any, propTitle: string, ctx: IUs
 }
 
 function validateProp(value: any, propName: string, propSchema: any, ctx: IUserContext, error: ErrorState, state: State) {
-    let propType = schemaUtils.typeOfProperty(propSchema);
+    const propType = schemaUtils.typeOfProperty(propSchema);
     switch (propType) {
         case JSONTYPES.id:
             // TODO
@@ -113,23 +110,22 @@ function validateProp(value: any, propName: string, propSchema: any, ctx: IUserC
             // TODO
             break;
         case JSONTYPES.integer:
-            _validateInteger(value, propSchema.title || propName, ctx, error, <IntegerState>state);
+            _validateInteger(value, propSchema.title || propName, ctx, error, state as IntegerState);
             break;
         case JSONTYPES.number:
-            _validateNumber(value, propSchema.title || propName, ctx, error, <NumberState>state);
+            _validateNumber(value, propSchema.title || propName, ctx, error, state as NumberState);
             break;
         case JSONTYPES.string:
-            _validateString(value, propSchema, propSchema.title || propName, ctx, error, <StringState>state);
+            _validateString(value, propSchema, propSchema.title || propName, ctx, error, state as StringState);
             break;
     }
 }
 
 export async function validateAfterPropChanged(eventInfo: IEventInfo, classOfInstance: any, instances: any, args?: any[]): Promise<boolean> {
-    let propName = args[0];
-    let instance = instances[0];
-    let propSchema = instance.getSchema(propName);
+    const propName = args[0];
+    const instance = instances[0];
+    const propSchema = instance.getSchema(propName);
     if (!propSchema) return true;
-    validateProp(args[1], propName, propSchema, <IUserContext>instance.context, <ErrorState>instance.$errors[propName], <State>instance.$states[propName]);
+    validateProp(args[1], propName, propSchema, instance.context as IUserContext, instance.$errors[propName] as ErrorState, instance.$states[propName] as State);
     return true;
 }
-

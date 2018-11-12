@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { Employee } from './employee';
 
-
 export class EmployeeAddress extends Instance {
     public static isPersistent: boolean = true;
     public get street(): string {
@@ -53,23 +52,20 @@ export class EmployeeAddress extends Instance {
         return this._children.employee.setValue(value);
     }
     public get $states(): EmployeeAddressState {
-        return <EmployeeAddressState>this._states;
+        return this._states as EmployeeAddressState;
     }
     public get $errors(): EmployeeAddressErrors {
-        return <EmployeeAddressErrors>this._errors;
+        return this._errors as EmployeeAddressErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = EMPLOYEEADDRESS_SCHEMA;
+        this._schema = EMPLOYEEADDRESS_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new EmployeeAddressState(that, that._schema);
+        this._states = new EmployeeAddressState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new EmployeeAddressErrors(that, that._schema);
+        this._errors = new EmployeeAddressErrors(this, this._schema);
     }
 }
 
@@ -123,6 +119,7 @@ export class EmployeeAddressState extends InstanceState {
         return this._states.employeeId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     EMPLOYEEADDRESS_SCHEMA = {
@@ -153,7 +150,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             },
             "employeeId": {
                 "type": "integer",
@@ -181,5 +179,8 @@ export const
         "meta": {
             "parent": "employee",
             "parentRelation": "employee"
-        }
+        },
+        "primaryKey": [
+            "id"
+        ]
     };

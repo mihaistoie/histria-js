@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { VAOrderItem } from './vaorder-item';
 
-
 export class VAOrder extends Instance {
     public static isPersistent: boolean = true;
     public get totalAmount(): NumberValue {
@@ -20,23 +19,20 @@ export class VAOrder extends Instance {
         return this._children.items;
     }
     public get $states(): VAOrderState {
-        return <VAOrderState>this._states;
+        return this._states as VAOrderState;
     }
     public get $errors(): VAOrderErrors {
-        return <VAOrderErrors>this._errors;
+        return this._errors as VAOrderErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = VAORDER_SCHEMA;
+        this._schema = VAORDER_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new VAOrderState(that, that._schema);
+        this._states = new VAOrderState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new VAOrderErrors(that, that._schema);
+        this._errors = new VAOrderErrors(this, this._schema);
     }
 }
 
@@ -63,6 +59,7 @@ export class VAOrderState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     VAORDER_SCHEMA = {
@@ -77,7 +74,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
         "relations": {
@@ -97,6 +95,9 @@ export const
                 ]
             }
         },
+        "primaryKey": [
+            "id"
+        ],
         "meta": {},
         "viewsOfMe": {
             "view-avanced.VAOrderView": {

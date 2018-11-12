@@ -31,16 +31,13 @@ class User extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.USER_SCHEMA;
+        this._schema = exports.USER_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new UserState(that, that._schema);
+        this._states = new UserState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new UserErrors(that, that._schema);
+        this._errors = new UserErrors(this, this._schema);
     }
 }
 User.isPersistent = true;
@@ -78,6 +75,7 @@ class UserState extends index_1.InstanceState {
     }
 }
 exports.UserState = UserState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.USER_SCHEMA = {
     "name": "user",
@@ -99,9 +97,13 @@ exports.USER_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {},
     "viewsOfMe": {
         "view-one.UserDetail": {

@@ -6,15 +6,29 @@
         "duration": {
             "type": "integer",
             "default": 0
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
-
     },
     "relations": {
         "songs": {
             "type": "hasMany",
             "model": "song",
             "aggregationKind": "shared",
-            "invRel": "cd"
+            "invRel": "cd",
+            "nameSpace": "aggregations",
+            "title": "songs",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "cdId"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

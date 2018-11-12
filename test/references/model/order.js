@@ -28,16 +28,13 @@ class Order extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.ORDER_SCHEMA;
+        this._schema = exports.ORDER_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new OrderState(that, that._schema);
+        this._states = new OrderState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new OrderErrors(that, that._schema);
+        this._errors = new OrderErrors(this, this._schema);
     }
 }
 Order.isPersistent = true;
@@ -72,6 +69,7 @@ class OrderState extends index_1.InstanceState {
     }
 }
 exports.OrderState = OrderState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.ORDER_SCHEMA = {
     "type": "object",
@@ -84,7 +82,8 @@ exports.ORDER_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "customerId": {
             "type": "integer",
@@ -107,7 +106,10 @@ exports.ORDER_SCHEMA = {
             ]
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=order.js.map

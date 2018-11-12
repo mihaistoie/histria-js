@@ -23,7 +23,6 @@ export class RoleBase<T extends IObservableObject> {
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class Role<T extends IObservableObject> extends RoleBase<T> {
     protected _value: T;
     public internalSetValue(value: T) {

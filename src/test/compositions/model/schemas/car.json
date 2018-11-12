@@ -9,15 +9,29 @@
         },
         "engineName": {
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
-        
     },
     "relations": {
         "engine": {
             "type": "hasOne",
             "model": "engine",
             "aggregationKind": "composite",
-            "invRel": "car"
+            "invRel": "car",
+            "nameSpace": "compositions",
+            "title": "engine",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "carId"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

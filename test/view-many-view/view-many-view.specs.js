@@ -31,14 +31,14 @@ async function testCreate() {
 async function testRestore() {
     let transaction = new index_1.Transaction();
     let userList = await transaction.create(view_many_view_model_1.UserList);
-    let user1 = await transaction.create(view_many_view_model_1.User);
-    let user2 = await transaction.create(view_many_view_model_1.User);
+    const user1 = await transaction.create(view_many_view_model_1.User);
+    const user2 = await transaction.create(view_many_view_model_1.User);
     await userList.users.add(user1);
     await userList.users.add(user2);
     let users = await userList.users.toArray();
     assert.equal(users.length, 2, '(1) Two users');
-    let data = transaction.saveToJson();
-    let idView = userList.uuid;
+    const data = transaction.saveToJson();
+    const idView = userList.uuid;
     transaction.destroy();
     transaction = new index_1.Transaction();
     await transaction.loadFromJson(data, false);
@@ -47,9 +47,9 @@ async function testRestore() {
     assert.equal(users.length, 2, '(2) Two users');
 }
 async function testRemove() {
-    let transaction = new index_1.Transaction();
-    let userList = await transaction.create(view_many_view_model_1.UserList);
-    let user = await transaction.create(view_many_view_model_1.User);
+    const transaction = new index_1.Transaction();
+    const userList = await transaction.create(view_many_view_model_1.UserList);
+    const user = await transaction.create(view_many_view_model_1.User);
     await userList.users.add(user);
     let users = await userList.users.toArray();
     assert.equal(users.length, 1, '(1-1) One users');
@@ -59,10 +59,10 @@ async function testRemove() {
     transaction.destroy();
 }
 describe('View Many <View> Model Test', () => {
-    before(function (done) {
-        let dm = histria_utils_1.dbManager();
+    before((done) => {
+        const dm = histria_utils_1.dbManager();
         dm.registerNameSpace('view-many-view', 'memory', { compositionsInParent: true });
-        let store = dm.store('view-many-view');
+        const store = dm.store('view-many-view');
         store.initNameSpace('view-many-view', {});
         index_1.loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
@@ -70,24 +70,24 @@ describe('View Many <View> Model Test', () => {
             done(ex);
         });
     });
-    it('View of users (view) test', function (done) {
-        testCreate().then(function () {
+    it('View of users (view) test', (done) => {
+        testCreate().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });
-    it('View of users (view) test remove', function (done) {
-        testRemove().then(function () {
+    it('View of users (view) test remove', (done) => {
+        testRemove().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });
-    it('View of users (view) test restore', function (done) {
-        testRestore().then(function () {
+    it('View of users (view) test restore', (done) => {
+        testRestore().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });

@@ -28,16 +28,13 @@ class CustomerView extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.CUSTOMERVIEW_SCHEMA;
+        this._schema = exports.CUSTOMERVIEW_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new CustomerViewState(that, that._schema);
+        this._states = new CustomerViewState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new CustomerViewErrors(that, that._schema);
+        this._errors = new CustomerViewErrors(this, this._schema);
     }
 }
 CustomerView.isPersistent = false;
@@ -69,6 +66,7 @@ class CustomerViewState extends index_1.InstanceState {
     }
 }
 exports.CustomerViewState = CustomerViewState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.CUSTOMERVIEW_SCHEMA = {
     "name": "customerView",
@@ -83,12 +81,14 @@ exports.CUSTOMERVIEW_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         },
         "customerId": {
             "type": "integer",
             "isReadOnly": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -111,6 +111,9 @@ exports.CUSTOMERVIEW_SCHEMA = {
             "isReadOnly": true
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {}
 };
 

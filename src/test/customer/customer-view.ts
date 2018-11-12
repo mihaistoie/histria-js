@@ -7,7 +7,6 @@ import {
 } from '../../index';
 import { Customer } from './customer';
 
-
 export class CustomerView extends View {
     public static isPersistent: boolean = false;
     public get fullName(): string {
@@ -72,6 +71,7 @@ export class CustomerViewState extends InstanceState {
         return this._states.customerId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     CUSTOMERVIEW_SCHEMA = {

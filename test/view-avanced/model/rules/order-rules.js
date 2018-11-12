@@ -19,9 +19,9 @@ class OrderRules {
         await order.totalAmount.setValue(order.totalAmount.value - item.amount.value);
     }
     static async aftersetItems(order, eventInfo) {
-        let items = await order.items.toArray();
+        const items = await order.items.toArray();
         let total = 0;
-        for (let item of items)
+        for (const item of items)
             total = total + await item.amount.value;
         await order.totalAmount.setValue(total);
     }

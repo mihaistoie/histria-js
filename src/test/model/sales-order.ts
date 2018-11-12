@@ -6,7 +6,6 @@ import {
     NumberValue
 } from '../../index';
 
-
 export class SalesOrder extends Instance {
     public static isPersistent: boolean = true;
     public get ruleCount(): number {
@@ -83,12 +82,13 @@ export class SalesOrderState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     SALESORDER_SCHEMA = {
         "name": "salesOrder",
         "type": "object",
-        "nameSpace": "model",
+        "nameSpace": "salesorder",
         "properties": {
             "ruleCount": {
                 "title": "Rule call count",
@@ -124,8 +124,8 @@ export const
                 "decimals": 2
             }
         },
+        "meta": {},
         "primaryKey": [
             "id"
-        ],
-        "meta": {}
+        ]
     };

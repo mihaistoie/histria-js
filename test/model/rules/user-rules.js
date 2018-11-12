@@ -10,9 +10,9 @@ const model_model_1 = require("../model-model");
 const index_1 = require("../../../index");
 class UserRules {
     static async updateFullName(user, eventInfo) {
-        let fn = user.firstName;
-        let ln = user.lastName;
-        let fullName = [];
+        const fn = user.firstName;
+        const ln = user.lastName;
+        const fullName = [];
         if (fn)
             fullName.push(fn);
         if (ln)
@@ -25,14 +25,14 @@ class UserRules {
         }
     }
     static async check(user, eventInfo) {
-        let fn = user.firstName;
-        let ln = user.lastName;
+        const fn = user.firstName;
+        const ln = user.lastName;
         if (fn === ln) {
             throw new Error('FirstName === LastName');
         }
     }
     static async checkLastName(user, eventInfo) {
-        let ln = user.lastName;
+        const ln = user.lastName;
         if (ln && ln.charAt(0) === '$')
             user.$errors.lastName.error = 'Last Name starts with $.';
     }

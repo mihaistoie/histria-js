@@ -5,8 +5,8 @@ const path = require("path");
 const index_1 = require("../../index");
 const model_model_1 = require("./model-model");
 async function testSales() {
-    let transaction = new index_1.Transaction();
-    let so = await transaction.create(model_model_1.SalesOrder);
+    const transaction = new index_1.Transaction();
+    const so = await transaction.create(model_model_1.SalesOrder);
     await so.setRuleCount(0);
     await so.netAmount.setValue(100);
     let na = so.netAmount.value;
@@ -29,7 +29,7 @@ async function testSales() {
     assert.equal(na, 276.61, 'NetAmount after set Vat');
     assert.equal(vat, 53.39, 'Vat after set Vat');
     assert.equal(ga, 330, 'GrossAmount after set Vat');
-    let rc = so.ruleCount;
+    const rc = so.ruleCount;
     assert.equal(rc, 3, 'calculateVatAndAmont was called 3 times');
     // decimals tests
     await so.vat.setValue(33.33);
@@ -50,17 +50,17 @@ async function testSales() {
     assert.equal(so.$errors.netAmount.error, '', 'No error');
 }
 describe('Sales Orders Test', () => {
-    before(function (done) {
+    before((done) => {
         index_1.loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
     });
-    it('Sales Order test', function (done) {
-        testSales().then(function () {
+    it('Sales Order test', (done) => {
+        testSales().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });

@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { OrderItem } from './order-item';
 
-
 export class Order extends Instance {
     public static isPersistent: boolean = true;
     public get totalAmount(): NumberValue {
@@ -20,23 +19,20 @@ export class Order extends Instance {
         return this._children.items;
     }
     public get $states(): OrderState {
-        return <OrderState>this._states;
+        return this._states as OrderState;
     }
     public get $errors(): OrderErrors {
-        return <OrderErrors>this._errors;
+        return this._errors as OrderErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = ORDER_SCHEMA;
+        this._schema = ORDER_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new OrderState(that, that._schema);
+        this._states = new OrderState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new OrderErrors(that, that._schema);
+        this._errors = new OrderErrors(this, this._schema);
     }
 }
 
@@ -63,6 +59,7 @@ export class OrderState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     ORDER_SCHEMA = {
@@ -77,7 +74,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
         "relations": {
@@ -97,5 +95,8 @@ export const
                 ]
             }
         },
-        "meta": {}
+        "meta": {},
+        "primaryKey": [
+            "id"
+        ]
     };

@@ -34,16 +34,13 @@ class Engine extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.ENGINE_SCHEMA;
+        this._schema = exports.ENGINE_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new EngineState(that, that._schema);
+        this._states = new EngineState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new EngineErrors(that, that._schema);
+        this._errors = new EngineErrors(this, this._schema);
     }
 }
 Engine.isPersistent = true;
@@ -81,6 +78,7 @@ class EngineState extends index_1.InstanceState {
     }
 }
 exports.EngineState = EngineState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.ENGINE_SCHEMA = {
     "type": "object",
@@ -97,7 +95,8 @@ exports.ENGINE_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "carId": {
             "type": "integer",
@@ -125,7 +124,10 @@ exports.ENGINE_SCHEMA = {
     "meta": {
         "parent": "car",
         "parentRelation": "car"
-    }
+    },
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=engine.js.map

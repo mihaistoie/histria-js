@@ -1,23 +1,22 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
 import { User } from './model-model';
 
 async function testUser(): Promise<void> {
-    let transaction = new Transaction();
+    const transaction = new Transaction();
     let user = await transaction.create<User>(User);
     await user.setFirstName('John');                   // user.firstName = 'John';
     let fullName = user.fullName;
     assert.equal(fullName, 'John', 'Rules call ');
     await user.setAge(10.25);
-    let age = user.age;
+    const age = user.age;
     assert.equal(age, 10, 'Age set/get');
 
     await user.setLastName('Doe');          // user.lastName = 'Doe';
-    let fn = user.firstName;                // fn = user.firstName;
-    let ln = user.lastName;                 // ln = user.lastName;
+    const fn = user.firstName;                // fn = user.firstName;
+    const ln = user.lastName;                 // ln = user.lastName;
     fullName = user.fullName;               // fullName = user.fullName;
 
     assert.equal(fn, 'John', 'First Name set/get');
@@ -41,22 +40,20 @@ async function testUser(): Promise<void> {
     assert.equal(user.$errors.$.error, 'FirstName === LastName', 'Has error ');
 }
 
-
-
 describe('User Model Test', () => {
-    before(function (done) {
+    before((done) => {
         loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
     });
-    it('User test', function (done) {
-        testUser().then(function () {
+    it('User test', (done) => {
+        testUser().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
 
     });
 

@@ -22,16 +22,13 @@ class UserList extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.USERLIST_SCHEMA;
+        this._schema = exports.USERLIST_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new UserListState(that, that._schema);
+        this._states = new UserListState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new UserListErrors(that, that._schema);
+        this._errors = new UserListErrors(this, this._schema);
     }
 }
 UserList.isPersistent = false;
@@ -60,6 +57,7 @@ class UserListState extends index_1.InstanceState {
     }
 }
 exports.UserListState = UserListState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.USERLIST_SCHEMA = {
     "name": "UserList",
@@ -74,7 +72,8 @@ exports.USERLIST_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -93,6 +92,9 @@ exports.USERLIST_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {}
 };
 

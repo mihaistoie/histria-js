@@ -31,16 +31,13 @@ class Tree extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.TREE_SCHEMA;
+        this._schema = exports.TREE_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new TreeState(that, that._schema);
+        this._states = new TreeState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new TreeErrors(that, that._schema);
+        this._errors = new TreeErrors(this, this._schema);
     }
 }
 Tree.isPersistent = false;
@@ -75,6 +72,7 @@ class TreeState extends index_1.InstanceState {
     }
 }
 exports.TreeState = TreeState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.TREE_SCHEMA = {
     "type": "object",
@@ -88,12 +86,14 @@ exports.TREE_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         },
         "parentId": {
             "type": "integer",
             "isReadOnly": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -126,6 +126,9 @@ exports.TREE_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {
         "parent": "tree",
         "parentRelation": "parent"

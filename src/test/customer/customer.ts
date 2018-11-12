@@ -6,7 +6,6 @@ import {
     NumberValue
 } from '../../index';
 
-
 export class Customer extends Instance {
     public static isPersistent: boolean = true;
     public get firstName(): string {
@@ -68,6 +67,7 @@ export class CustomerState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     CUSTOMER_SCHEMA = {

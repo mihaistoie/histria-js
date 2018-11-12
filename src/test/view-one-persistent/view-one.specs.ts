@@ -1,20 +1,18 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
 import { User, UserDetail } from './view-one-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
 
 async function viewOfUserTest(): Promise<void> {
-    let transaction = new Transaction();
-    let userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
+    const transaction = new Transaction();
+    const userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
     let user1 = await transaction.findOne<User>(User, { id: 101 });
-    let user2 = await transaction.findOne<User>(User, { id: 101 });
-    let user3 = await transaction.findOne<User>(User, { id: 101 }, { onlyInCache: true });
+    const user2 = await transaction.findOne<User>(User, { id: 101 });
+    const user3 = await transaction.findOne<User>(User, { id: 101 }, { onlyInCache: true });
     assert.equal(user1, user2, 'Same User (1)');
     assert.equal(user1, user3, 'Same User (2)');
-
 
     let user = await transaction.create<User>(User);
     await userDetail.setUser(user);
@@ -31,7 +29,7 @@ async function viewOfUserTest(): Promise<void> {
     await userDetail.setUser(user);
     assert.equal(userDetail.fullName, 'John DOE', 'User is not null');
 
-    let det = await transaction.load<UserDetail>(UserDetail, { id: 10, userId: 101 }, { external: true });
+    const det = await transaction.load<UserDetail>(UserDetail, { id: 10, userId: 101 }, { external: true });
 
     user = await det.user();
 
@@ -39,17 +37,17 @@ async function viewOfUserTest(): Promise<void> {
     assert.equal(user.firstName, 'John', 'Lazy loading (2)');
     assert.equal(det.fullName, 'John SMITH', 'Rule called after lazy loading');
 
-    let userDetId = det.id;
-    let userId = det.userId;
-    let transactionData = transaction.saveToJson();
+    const userDetId = det.id;
+    const userId = det.userId;
+    const transactionData = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(transactionData, false);
-    let data2 = transaction.saveToJson();
+    const data2 = transaction.saveToJson();
 
     assert.deepEqual(transactionData, data2, 'Restore Test');
     // Test that det.user is loaded
-    let cuser = await transaction.findOne<User>(User, { id: userId })
-    let duser = await transaction.findOne<UserDetail>(UserDetail, { id: userDetId })
+    const cuser = await transaction.findOne<User>(User, { id: userId });
+    const duser = await transaction.findOne<UserDetail>(UserDetail, { id: userDetId });
 
     assert.equal(!!cuser, true, 'User found');
     assert.equal(!!duser, true, 'User Detail found');
@@ -58,11 +56,9 @@ async function viewOfUserTest(): Promise<void> {
     await user1.setLastName('Doe');
     assert.equal(duser.fullName, 'John DOE', 'User suser.user is loaded after transaction restore');
 
-
     transaction.destroy();
 
 }
-
 
 async function viewOfUserTestRemove(): Promise<void> {
     let transaction = new Transaction();
@@ -77,7 +73,7 @@ async function viewOfUserTestRemove(): Promise<void> {
 
     transaction = new Transaction();
     userDetail = await transaction.create<UserDetail>(UserDetail, { external: true });
-    user = await transaction.findOne<User>(User, { id: 100 })
+    user = await transaction.findOne<User>(User, { id: 100 });
     await userDetail.setUser(user);
     assert.notEqual(await userDetail.user(), null, '(2) User is not null');
 
@@ -89,14 +85,11 @@ async function viewOfUserTestRemove(): Promise<void> {
 
 }
 
-
-
-
 describe('ViewOne Model Test', () => {
     before((done) => {
-        let dm: DbManager = dbManager();
+        const dm: DbManager = dbManager();
         dm.registerNameSpace('view-one', 'memory', { compositionsInParent: true });
-        let store = dm.store('view-one');
+        const store = dm.store('view-one');
         store.initNameSpace('view-one', {
             user: [
                 {
@@ -113,34 +106,29 @@ describe('ViewOne Model Test', () => {
             ]
         });
 
-
         loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
 
-
     });
 
-
-
-    it('View of User test', function (done) {
-        viewOfUserTest().then(function () {
+    it('View of User test', (done) => {
+        viewOfUserTest().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
 
     });
-    it('View of User test remove', function (done) {
-        viewOfUserTestRemove().then(function () {
+    it('View of User test remove', (done) => {
+        viewOfUserTestRemove().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
 
     });
-
 
 });

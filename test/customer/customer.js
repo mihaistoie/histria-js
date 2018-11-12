@@ -25,16 +25,13 @@ class Customer extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.CUSTOMER_SCHEMA;
+        this._schema = exports.CUSTOMER_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new CustomerState(that, that._schema);
+        this._states = new CustomerState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new CustomerErrors(that, that._schema);
+        this._errors = new CustomerErrors(this, this._schema);
     }
 }
 Customer.isPersistent = true;
@@ -66,6 +63,7 @@ class CustomerState extends index_1.InstanceState {
     }
 }
 exports.CustomerState = CustomerState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.CUSTOMER_SCHEMA = {
     "name": "customer",
@@ -83,9 +81,13 @@ exports.CUSTOMER_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {},
     "viewsOfMe": {
         "customer-view-sample.customerView": {

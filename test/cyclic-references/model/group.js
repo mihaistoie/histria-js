@@ -25,16 +25,13 @@ class Group extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.GROUP_SCHEMA;
+        this._schema = exports.GROUP_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new GroupState(that, that._schema);
+        this._states = new GroupState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new GroupErrors(that, that._schema);
+        this._errors = new GroupErrors(this, this._schema);
     }
 }
 Group.isPersistent = true;
@@ -63,6 +60,7 @@ class GroupState extends index_1.InstanceState {
     }
 }
 exports.GroupState = GroupState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.GROUP_SCHEMA = {
     "type": "object",
@@ -72,7 +70,8 @@ exports.GROUP_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "itemId": {
             "type": "integer",
@@ -112,6 +111,9 @@ exports.GROUP_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {
         "parent": "item",
         "parentRelation": "item"

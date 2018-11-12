@@ -1,7 +1,6 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import * as mochaUtils from 'mocha';
 import { Transaction, loadRules } from '../../index';
 import { User, UserList } from './view-many-view-model';
 import { DbDriver, dbManager, DbManager, IStore } from 'histria-utils';
@@ -12,7 +11,7 @@ async function testCreate(): Promise<void> {
     let user1 = await transaction.create<User>(User);
     let user2 = await transaction.create<User>(User);
     await userList.users.set([user1, user2]);
-    assert.equal(userList.userCount, 2, '(0) Rules')
+    assert.equal(userList.userCount, 2, '(0) Rules');
     transaction.destroy();
     transaction = new Transaction();
 
@@ -35,14 +34,14 @@ async function testCreate(): Promise<void> {
 async function testRestore(): Promise<void> {
     let transaction = new Transaction();
     let userList = await transaction.create<UserList>(UserList);
-    let user1 = await transaction.create<User>(User);
-    let user2 = await transaction.create<User>(User);
+    const user1 = await transaction.create<User>(User);
+    const user2 = await transaction.create<User>(User);
     await userList.users.add(user1);
     await userList.users.add(user2);
     let users = await userList.users.toArray();
     assert.equal(users.length, 2, '(1) Two users');
-    let data = transaction.saveToJson();
-    let idView = userList.uuid;
+    const data = transaction.saveToJson();
+    const idView = userList.uuid;
 
     transaction.destroy();
     transaction = new Transaction();
@@ -53,9 +52,9 @@ async function testRestore(): Promise<void> {
 }
 
 async function testRemove(): Promise<void> {
-    let transaction = new Transaction();
-    let userList = await transaction.create<UserList>(UserList);
-    let user = await transaction.create<User>(User);
+    const transaction = new Transaction();
+    const userList = await transaction.create<UserList>(UserList);
+    const user = await transaction.create<User>(User);
     await userList.users.add(user);
     let users = await userList.users.toArray();
     assert.equal(users.length, 1, '(1-1) One users');
@@ -65,17 +64,13 @@ async function testRemove(): Promise<void> {
     assert.equal(users.length, 0, '(2-2) No users');
     transaction.destroy();
 
-
 }
 
-
-
-
 describe('View Many <View> Model Test', () => {
-    before(function (done) {
-        let dm: DbManager = dbManager();
+    before((done) => {
+        const dm: DbManager = dbManager();
         dm.registerNameSpace('view-many-view', 'memory', { compositionsInParent: true });
-        let store = dm.store('view-many-view');
+        const store = dm.store('view-many-view');
         store.initNameSpace('view-many-view', {});
 
         loadRules(path.join(__dirname, 'rules')).then(() => {
@@ -86,28 +81,27 @@ describe('View Many <View> Model Test', () => {
 
     });
 
-    it('View of users (view) test', function (done) {
-        testCreate().then(function () {
+    it('View of users (view) test', (done) => {
+        testCreate().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
 
     });
-    it('View of users (view) test remove', function (done) {
-        testRemove().then(function () {
+    it('View of users (view) test remove', (done) => {
+        testRemove().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
     });
-    it('View of users (view) test restore', function (done) {
-        testRestore().then(function () {
+    it('View of users (view) test restore', (done) => {
+        testRestore().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
-        })
+        });
     });
-
 
 });

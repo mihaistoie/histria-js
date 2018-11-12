@@ -1,7 +1,7 @@
 {
     "name": "user",
     "type": "object",
-    "nameSpace": "model",
+    "nameSpace": "salesorder",
     "properties": {
         "age": {
             "title": "Age",
@@ -18,6 +18,11 @@
         "fullName": {
             "title": "Full Name",
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
     "states": {
@@ -27,5 +32,6 @@
         "fullName": {
             "isReadOnly": true
         }
-    }
+    },
+    "meta": {}
 }

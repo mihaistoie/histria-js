@@ -13,7 +13,6 @@ export class BaseHasMany<T extends IObservableObject> extends ObjectArray<T> {
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class HasManyComposition<T extends IObservableObject> extends BaseHasMany<T> {
     constructor(parent: IObservableObject, propertyName: string, relation: any, model: any[]) {
         super(parent, propertyName, relation, model);
@@ -146,7 +145,6 @@ export class HasManyComposition<T extends IObservableObject> extends BaseHasMany
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class HasManyAggregation<T extends IObservableObject> extends BaseObjectArray<T> {
     private _loaded: boolean;
 
@@ -204,7 +202,6 @@ export class HasManyAggregation<T extends IObservableObject> extends BaseObjectA
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class HasManyRefObject<T extends IObservableObject> extends BaseHasMany<T> {
     public async length(): Promise<number> {
         await this.lazyLoad();

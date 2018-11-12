@@ -31,16 +31,13 @@ class VAOrderItem extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.VAORDERITEM_SCHEMA;
+        this._schema = exports.VAORDERITEM_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new VAOrderItemState(that, that._schema);
+        this._states = new VAOrderItemState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new VAOrderItemErrors(that, that._schema);
+        this._errors = new VAOrderItemErrors(this, this._schema);
     }
 }
 VAOrderItem.isPersistent = true;
@@ -78,6 +75,7 @@ class VAOrderItemState extends index_1.InstanceState {
     }
 }
 exports.VAOrderItemState = VAOrderItemState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.VAORDERITEM_SCHEMA = {
     "type": "object",
@@ -95,7 +93,8 @@ exports.VAORDERITEM_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "orderId": {
             "type": "integer",
@@ -120,6 +119,9 @@ exports.VAORDERITEM_SCHEMA = {
             ]
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {
         "parent": "VAOrder",
         "parentRelation": "order"

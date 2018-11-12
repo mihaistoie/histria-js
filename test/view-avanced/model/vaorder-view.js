@@ -22,16 +22,13 @@ class VAOrderView extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.VAORDERVIEW_SCHEMA;
+        this._schema = exports.VAORDERVIEW_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new VAOrderViewState(that, that._schema);
+        this._states = new VAOrderViewState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new VAOrderViewErrors(that, that._schema);
+        this._errors = new VAOrderViewErrors(this, this._schema);
     }
 }
 VAOrderView.isPersistent = false;
@@ -57,6 +54,7 @@ class VAOrderViewState extends index_1.InstanceState {
     }
 }
 exports.VAOrderViewState = VAOrderViewState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.VAORDERVIEW_SCHEMA = {
     "name": "VAOrderView",
@@ -67,12 +65,14 @@ exports.VAORDERVIEW_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         },
         "orderId": {
             "type": "integer",
             "isReadOnly": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -98,6 +98,9 @@ exports.VAORDERVIEW_SCHEMA = {
             "relation": "orderItem",
             "nameSpace": "view-avanced"
         }
+    ],
+    "primaryKey": [
+        "id"
     ],
     "meta": {}
 };

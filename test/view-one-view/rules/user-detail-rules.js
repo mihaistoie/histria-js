@@ -18,9 +18,9 @@ class UserDetailRules {
     }
     static async updateFullName(ud, user) {
         if (user) {
-            let fn = user.firstName;
-            let ln = user.lastName;
-            let fullName = [];
+            const fn = user.firstName;
+            const ln = user.lastName;
+            const fullName = [];
             if (fn)
                 fullName.push(fn);
             if (ln)

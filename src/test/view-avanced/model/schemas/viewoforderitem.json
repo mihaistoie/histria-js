@@ -4,13 +4,31 @@
     "view": true,
     "nameSpace": "view-avanced",
     "properties": {
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "orderItemId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
+        }
     },
     "relations": {
         "orderItem": {
             "default": true,
             "type": "hasOne",
             "model": "VAOrderItem",
-            "aggregationKind": "composite"
+            "aggregationKind": "composite",
+            "nameSpace": "view-avanced",
+            "title": "orderItem",
+            "localFields": [
+                "orderItemId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
     }
 }

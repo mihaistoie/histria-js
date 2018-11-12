@@ -10,6 +10,16 @@
         "cdChangedHits": {
             "type": "integer",
             "default": 0
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "cdId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -17,7 +27,17 @@
             "type": "belongsTo",
             "model": "cd",
             "aggregationKind": "shared",
-            "invRel": "songs"
+            "invRel": "songs",
+            "nameSpace": "aggregations",
+            "title": "cd",
+            "invType": "hasMany",
+            "localFields": [
+                "cdId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

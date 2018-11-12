@@ -6,6 +6,12 @@
         "title": {
             "title": "title",
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
-    }
+    },
+    "meta": {}
 }

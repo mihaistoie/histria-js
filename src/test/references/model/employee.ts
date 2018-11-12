@@ -8,7 +8,6 @@ import {
 import { Department } from './department';
 import { EmployeeAddress } from './employee-address';
 
-
 export class Employee extends Instance {
     public static isPersistent: boolean = true;
     public get firstName(): string {
@@ -48,23 +47,20 @@ export class Employee extends Instance {
         return this._children.address.setValue(value);
     }
     public get $states(): EmployeeState {
-        return <EmployeeState>this._states;
+        return this._states as EmployeeState;
     }
     public get $errors(): EmployeeErrors {
-        return <EmployeeErrors>this._errors;
+        return this._errors as EmployeeErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = EMPLOYEE_SCHEMA;
+        this._schema = EMPLOYEE_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new EmployeeState(that, that._schema);
+        this._states = new EmployeeState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new EmployeeErrors(that, that._schema);
+        this._errors = new EmployeeErrors(this, this._schema);
     }
 }
 
@@ -109,6 +105,7 @@ export class EmployeeState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     EMPLOYEE_SCHEMA = {
@@ -135,7 +132,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
         "relations": {
@@ -168,5 +166,8 @@ export const
                 ]
             }
         },
-        "meta": {}
+        "meta": {},
+        "primaryKey": [
+            "id"
+        ]
     };

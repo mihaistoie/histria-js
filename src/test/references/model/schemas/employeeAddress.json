@@ -22,6 +22,16 @@
         "country": {
             "title": "Country",
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "employeeId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -30,7 +40,19 @@
             "type": "belongsTo",
             "model": "employee",
             "aggregationKind": "composite",
-            "invRel": "address"
+            "invRel": "address",
+            "nameSpace": "references",
+            "invType": "hasOne",
+            "localFields": [
+                "employeeId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
+    },
+    "meta": {
+        "parent": "employee",
+        "parentRelation": "employee"
     }
 }

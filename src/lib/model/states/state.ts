@@ -1,4 +1,3 @@
-// tslint:disable:max-classes-per-file
 import { IObservableObject } from '../interfaces';
 import { helper } from 'histria-utils';
 

@@ -28,16 +28,13 @@ class SalesOrder extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.SALESORDER_SCHEMA;
+        this._schema = exports.SALESORDER_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new SalesOrderState(that, that._schema);
+        this._states = new SalesOrderState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new SalesOrderErrors(that, that._schema);
+        this._errors = new SalesOrderErrors(this, this._schema);
     }
 }
 SalesOrder.isPersistent = true;
@@ -81,6 +78,7 @@ class SalesOrderState extends index_1.InstanceState {
     }
 }
 exports.SalesOrderState = SalesOrderState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.SALESORDER_SCHEMA = {
     "name": "salesOrder",
@@ -106,7 +104,8 @@ exports.SALESORDER_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
     "states": {
@@ -120,7 +119,10 @@ exports.SALESORDER_SCHEMA = {
             "decimals": 2
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=sales-order.js.map

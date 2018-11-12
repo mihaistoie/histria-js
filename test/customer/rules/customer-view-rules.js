@@ -17,9 +17,9 @@ class CustomerViewRules {
     }
     static async updateFullName(viewOfCustomer, customer) {
         if (customer) {
-            let fn = customer.firstName;
-            let ln = customer.lastName;
-            let fullName = [];
+            const fn = customer.firstName;
+            const ln = customer.lastName;
+            const fullName = [];
             if (fn)
                 fullName.push(fn);
             if (ln)

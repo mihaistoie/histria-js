@@ -1,4 +1,3 @@
-// tslint:disable:max-classes-per-file
 import { ModelObject } from '../model-object';
 import { NumberState } from '../states/state';
 import { ApplicationError, messages } from 'histria-utils';

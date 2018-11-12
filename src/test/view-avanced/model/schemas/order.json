@@ -6,6 +6,11 @@
         "totalAmount": {
             "type": "number",
             "default": 0
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -13,7 +18,16 @@
             "type": "hasMany",
             "model": "VAOrderItem",
             "aggregationKind": "composite",
-            "invRel": "order"
+            "invRel": "order",
+            "nameSpace": "view-avanced",
+            "title": "items",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "orderId"
+            ]
         }
     }
 }

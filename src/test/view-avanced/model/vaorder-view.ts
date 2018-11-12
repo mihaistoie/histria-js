@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { VAOrder } from './vaorder';
 
-
 export class VAOrderView extends View {
     public static isPersistent: boolean = false;
     public get id(): any {
@@ -23,23 +22,20 @@ export class VAOrderView extends View {
         return this._children.order.setValue(value);
     }
     public get $states(): VAOrderViewState {
-        return <VAOrderViewState>this._states;
+        return this._states as VAOrderViewState;
     }
     public get $errors(): VAOrderViewErrors {
-        return <VAOrderViewErrors>this._errors;
+        return this._errors as VAOrderViewErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = VAORDERVIEW_SCHEMA;
+        this._schema = VAORDERVIEW_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new VAOrderViewState(that, that._schema);
+        this._states = new VAOrderViewState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new VAOrderViewErrors(that, that._schema);
+        this._errors = new VAOrderViewErrors(this, this._schema);
     }
 }
 
@@ -63,6 +59,7 @@ export class VAOrderViewState extends InstanceState {
         return this._states.orderId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     VAORDERVIEW_SCHEMA = {
@@ -74,12 +71,14 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             },
             "orderId": {
                 "type": "integer",
                 "isReadOnly": true,
-                "format": "id"
+                "format": "id",
+                "transient": false
             }
         },
         "relations": {
@@ -105,6 +104,9 @@ export const
                 "relation": "orderItem",
                 "nameSpace": "view-avanced"
             }
+        ],
+        "primaryKey": [
+            "id"
         ],
         "meta": {}
     };

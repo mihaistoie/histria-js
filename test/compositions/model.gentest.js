@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const index_1 = require("../../index");
 async function generateModel() {
-    let pathToModel = path.join(__dirname, 'model', 'schemas');
+    const pathToModel = path.join(__dirname, 'model', 'schemas');
     await index_1.classGenerator(pathToModel, path.join(__dirname, 'model'), '../../../index');
 }
 describe('Generate Model', () => {

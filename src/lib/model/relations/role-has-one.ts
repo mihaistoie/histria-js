@@ -21,7 +21,6 @@ export class HasOne<T extends IObservableObject> extends Role<T> {
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class HasOneRef<T extends IObservableObject> extends HasOne<T> {
     constructor(parent: IObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
@@ -50,7 +49,6 @@ export class HasOneRef<T extends IObservableObject> extends HasOne<T> {
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class HasOneAC<T extends IObservableObject> extends HasOne<T> {
     public async remove(instance: T): Promise<void> {
         const oldValue = await this.getValue();
@@ -117,7 +115,6 @@ export class HasOneAC<T extends IObservableObject> extends HasOne<T> {
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class HasOneComposition<T extends IObservableObject> extends HasOneAC<T> {
     constructor(parent: IObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
@@ -177,7 +174,6 @@ export class HasOneComposition<T extends IObservableObject> extends HasOneAC<T> 
             await newValue.changeParent(this._parent, this._propertyName, this._relation.invRel || DEFAULT_PARENT_NAME, false);
     }
 }
-// tslint:disable-next-line:max-classes-per-file
 export class HasOneAggregation<T extends IObservableObject> extends HasOneAC<T> {
     constructor(parent: IObservableObject, propertyName: string, relation: any) {
         super(parent, propertyName, relation);
@@ -205,7 +201,6 @@ export class HasOneAggregation<T extends IObservableObject> extends HasOneAC<T> 
 
     }
 }
-// tslint:disable-next-line:max-classes-per-file
 export class HasOneRefObject<T extends IObservableObject> extends HasOne<T> {
 
     public get syncValue(): T {

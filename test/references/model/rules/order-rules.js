@@ -10,7 +10,7 @@ const references_model_1 = require("../references-model");
 const index_1 = require("../../../../index");
 class OrderRules {
     static async afterCustomerChanged(order, eventInfo) {
-        let customer = await order.customer();
+        const customer = await order.customer();
         if (customer)
             await order.setCustomerStatus('not null');
         else

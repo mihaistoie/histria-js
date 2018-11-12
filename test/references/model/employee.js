@@ -46,16 +46,13 @@ class Employee extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.EMPLOYEE_SCHEMA;
+        this._schema = exports.EMPLOYEE_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new EmployeeState(that, that._schema);
+        this._states = new EmployeeState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new EmployeeErrors(that, that._schema);
+        this._errors = new EmployeeErrors(this, this._schema);
     }
 }
 Employee.isPersistent = true;
@@ -102,6 +99,7 @@ class EmployeeState extends index_1.InstanceState {
     }
 }
 exports.EmployeeState = EmployeeState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.EMPLOYEE_SCHEMA = {
     "type": "object",
@@ -127,7 +125,8 @@ exports.EMPLOYEE_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
     "relations": {
@@ -160,7 +159,10 @@ exports.EMPLOYEE_SCHEMA = {
             ]
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=employee.js.map

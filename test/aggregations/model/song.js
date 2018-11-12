@@ -34,16 +34,13 @@ class Song extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.SONG_SCHEMA;
+        this._schema = exports.SONG_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new SongState(that, that._schema);
+        this._states = new SongState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new SongErrors(that, that._schema);
+        this._errors = new SongErrors(this, this._schema);
     }
 }
 Song.isPersistent = true;
@@ -81,6 +78,7 @@ class SongState extends index_1.InstanceState {
     }
 }
 exports.SongState = SongState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.SONG_SCHEMA = {
     "type": "object",
@@ -98,7 +96,8 @@ exports.SONG_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "cdId": {
             "type": "integer",
@@ -123,7 +122,10 @@ exports.SONG_SCHEMA = {
             ]
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=song.js.map

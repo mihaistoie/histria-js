@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { Car } from './car';
 
-
 export class Engine extends Instance {
     public static isPersistent: boolean = true;
     public get carChangedHits(): number {
@@ -35,23 +34,20 @@ export class Engine extends Instance {
         return this._children.car.setValue(value);
     }
     public get $states(): EngineState {
-        return <EngineState>this._states;
+        return this._states as EngineState;
     }
     public get $errors(): EngineErrors {
-        return <EngineErrors>this._errors;
+        return this._errors as EngineErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = ENGINE_SCHEMA;
+        this._schema = ENGINE_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new EngineState(that, that._schema);
+        this._states = new EngineState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new EngineErrors(that, that._schema);
+        this._errors = new EngineErrors(this, this._schema);
     }
 }
 
@@ -87,6 +83,7 @@ export class EngineState extends InstanceState {
         return this._states.carId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     ENGINE_SCHEMA = {
@@ -104,7 +101,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             },
             "carId": {
                 "type": "integer",
@@ -132,5 +130,8 @@ export const
         "meta": {
             "parent": "car",
             "parentRelation": "car"
-        }
+        },
+        "primaryKey": [
+            "id"
+        ]
     };

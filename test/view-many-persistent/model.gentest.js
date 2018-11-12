@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const index_1 = require("../../index");
 async function generateClasses() {
-    let pathToModel = path.join(__dirname, 'schemas');
+    const pathToModel = path.join(__dirname, 'schemas');
     await index_1.classGenerator(pathToModel, path.join(__dirname), '../../index');
 }
 describe('View Has Many', () => {
-    it('Generate class code', function (done) {
+    it('Generate class code', (done) => {
         generateClasses().then(() => {
             done();
         }).catch((ex) => {

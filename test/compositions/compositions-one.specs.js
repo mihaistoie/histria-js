@@ -8,8 +8,8 @@ const compositions_model_1 = require("./model/compositions-model");
 const pattern1 = {
     properties: [
         'id',
-        { 'engineId': 'engine.id' },
-        { 'engineCode': 'engine.name' }
+        { engineId: 'engine.id' },
+        { engineCode: 'engine.name' }
     ]
 };
 const pattern2 = {
@@ -25,9 +25,9 @@ const pattern2 = {
     ]
 };
 async function testCreate() {
-    let transaction = new index_1.Transaction();
-    let car = await transaction.create(compositions_model_1.Car);
-    let engine = await transaction.create(compositions_model_1.Engine);
+    const transaction = new index_1.Transaction();
+    const car = await transaction.create(compositions_model_1.Car);
+    const engine = await transaction.create(compositions_model_1.Engine);
     await engine.setName('FA321');
     await car.setEngine(engine);
     let o = await index_1.serializeInstance(car, pattern1);
@@ -57,42 +57,42 @@ async function testCreate() {
     await car.setEngine(null);
     assert.equal(engine.carId, undefined, 'Owner of engine null 2 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 2');
-    let car2 = await transaction.create(compositions_model_1.Car);
+    const car2 = await transaction.create(compositions_model_1.Car);
     await engine.setCar(car);
     await engine.setCar(car2);
     assert.equal(await car.engine(), null, 'Car1 hasn\'t engine');
     assert.equal(await car2.engine(), engine, 'Car2 has engine');
-    let engine2 = await transaction.create(compositions_model_1.Engine);
+    const engine2 = await transaction.create(compositions_model_1.Engine);
     await car2.setEngine(engine2);
     assert.equal(engine.carId, undefined, 'Owner of engine null 3 ');
     assert.equal(await engine.car(), null, 'Owner of engine null 3');
     assert.equal(await car2.engine(), engine2, 'Car2 has engine2');
     transaction.clear();
-    let car3 = await transaction.create(compositions_model_1.Car);
-    let engine3 = await transaction.create(compositions_model_1.Engine);
+    const car3 = await transaction.create(compositions_model_1.Car);
+    const engine3 = await transaction.create(compositions_model_1.Engine);
     await engine3.setCar(car3);
-    let data1 = transaction.saveToJson();
+    const data1 = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(data1, false);
-    let data2 = transaction.saveToJson();
+    const data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 1');
     transaction.destroy();
 }
 async function testLoad() {
     let transaction = new index_1.Transaction();
-    let car1 = await transaction.create(compositions_model_1.Car);
-    let engine1 = await transaction.load(compositions_model_1.Engine, { carId: car1.uuid });
+    const car1 = await transaction.create(compositions_model_1.Car);
+    const engine1 = await transaction.load(compositions_model_1.Engine, { carId: car1.uuid });
     assert.equal(await car1.engine(), engine1, '(1) Owner of engine is car 1');
     assert.equal(await engine1.car(), car1, '(2) Owner of engine is car 1');
-    let car2 = await transaction.create(compositions_model_1.Car);
-    let engine2 = await transaction.load(compositions_model_1.Engine, { carId: car2.uuid });
+    const car2 = await transaction.create(compositions_model_1.Car);
+    const engine2 = await transaction.load(compositions_model_1.Engine, { carId: car2.uuid });
     assert.equal(await engine2.car(), car2, '(1) Owner of engine 2  is car 2');
     assert.equal(await car2.engine(), engine2, '(2) Owner of engine 2 is car 2');
-    let car3 = await transaction.load(compositions_model_1.Car, { id: 12, engine: { id: 10 } });
-    let engine3 = await car3.engine();
+    const car3 = await transaction.load(compositions_model_1.Car, { id: 12, engine: { id: 10 } });
+    const engine3 = await car3.engine();
     assert.notEqual(engine3, null, 'Engine loaded');
     assert.equal(engine3.carId, car3.id, 'After load engine.carId === car.id');
-    let engine4 = await transaction.findOne(compositions_model_1.Engine, { id: 10 });
+    const engine4 = await transaction.findOne(compositions_model_1.Engine, { id: 10 });
     assert.equal(engine3, engine4, 'Engine found');
     let i = 0;
     car3.enumChildren(children => {
@@ -121,15 +121,15 @@ async function testLoad() {
         }
     }, 'Serialization load 2');
     await engine.setName('v3');
-    let cars = await transaction.find(compositions_model_1.Car, {});
-    let lc = cars.find(car => { return car.id === 1001; });
+    const cars = await transaction.find(compositions_model_1.Car, {});
+    let lc = cars.find(car => car.id === 1001);
     assert.equal(scar, lc, 'Car found in cache');
-    lc = cars.find(car => { return car.id === 1002; });
+    lc = cars.find(car => car.id === 1002);
     assert.notEqual(lc, null, 'Car found in db');
-    let data1 = transaction.saveToJson();
+    const data1 = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(data1, false);
-    let data2 = transaction.saveToJson();
+    const data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 2');
     transaction.destroy();
     transaction = new index_1.Transaction();
@@ -141,9 +141,9 @@ async function testLoad() {
     assert.equal(engine, null, 'Engine not found after remove');
 }
 async function testRules() {
-    let transaction = new index_1.Transaction();
-    let car = await transaction.create(compositions_model_1.Car);
-    let engine = await transaction.create(compositions_model_1.Engine);
+    const transaction = new index_1.Transaction();
+    const car = await transaction.create(compositions_model_1.Car);
+    const engine = await transaction.create(compositions_model_1.Engine);
     await car.setEngine(engine);
     assert.equal(car.engineChangedHits, 1, '(1) Rule called one time');
     assert.equal(engine.carChangedHits, 1, '(2) Rule called one time');
@@ -159,10 +159,10 @@ async function testRules() {
     await engine.setCar(car);
     await engine.setName('v8');
     assert.equal(await car.engineName, 'v8', 'Rule propagation');
-    let data1 = transaction.saveToJson();
+    const data1 = transaction.saveToJson();
     transaction.clear();
     await transaction.loadFromJson(data1, false);
-    let data2 = transaction.saveToJson();
+    const data2 = transaction.saveToJson();
     assert.deepEqual(data1, data2, 'Restore test 3');
     transaction.destroy();
 }
@@ -194,9 +194,9 @@ describe('Relation One to One, Composition', () => {
     before(() => {
         histria_utils_1.serialization.check(pattern1);
         histria_utils_1.serialization.check(pattern2);
-        let dm = histria_utils_1.dbManager();
+        const dm = histria_utils_1.dbManager();
         dm.registerNameSpace('compositions', 'memory', { compositionsInParent: true });
-        let store = dm.store('compositions');
+        const store = dm.store('compositions');
         store.initNameSpace('compositions', {
             car: [
                 {

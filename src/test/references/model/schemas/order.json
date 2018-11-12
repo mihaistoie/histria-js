@@ -5,12 +5,32 @@
     "properties": {
         "customerStatus": {
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "customerId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
         "customer": {
             "type": "hasOne",
-            "model": "customer"
+            "model": "customer",
+            "nameSpace": "references",
+            "title": "customer",
+            "aggregationKind": "none",
+            "localFields": [
+                "customerId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

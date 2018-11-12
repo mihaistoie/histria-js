@@ -3,20 +3,50 @@
     "name": "group",
     "view": true,
     "nameSpace": "cyclicreferencesviews",
-    "properties": {},
+    "properties": {
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "itemId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
+        }
+    },
     "relations": {
         "items": {
             "type": "hasMany",
             "model": "item",
             "aggregationKind": "composite",
-            "invRel": "group"
+            "invRel": "group",
+            "nameSpace": "cyclicreferencesviews",
+            "title": "items",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "groupId"
+            ]
         },
         "item": {
             "type": "belongsTo",
             "model": "item",
             "aggregationKind": "composite",
-            "invRel": "groups"
+            "invRel": "groups",
+            "nameSpace": "cyclicreferencesviews",
+            "title": "item",
+            "localFields": [
+                "itemId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
-        
+    },
+    "meta": {
+        "parent": "item",
+        "parentRelation": "item"
     }
 }

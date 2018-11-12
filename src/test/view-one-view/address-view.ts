@@ -7,7 +7,6 @@ import {
 } from '../../index';
 import { UserDetail } from './user-detail';
 
-
 export class AddressView extends View {
     public static isPersistent: boolean = false;
     public get street(): string {
@@ -63,6 +62,7 @@ export class AddressViewState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     ADDRESSVIEW_SCHEMA = {

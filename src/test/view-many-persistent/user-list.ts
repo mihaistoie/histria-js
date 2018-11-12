@@ -7,7 +7,6 @@ import {
 } from '../../index';
 import { User } from './user';
 
-
 export class UserList extends View {
     public static isPersistent: boolean = false;
     public get userCount(): number {
@@ -63,6 +62,7 @@ export class UserListState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     USERLIST_SCHEMA = {

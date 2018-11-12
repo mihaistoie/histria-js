@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { Engine } from './engine';
 
-
 export class Car extends Instance {
     public static isPersistent: boolean = true;
     public get engineChangedHits(): number {
@@ -32,23 +31,20 @@ export class Car extends Instance {
         return this._children.engine.setValue(value);
     }
     public get $states(): CarState {
-        return <CarState>this._states;
+        return this._states as CarState;
     }
     public get $errors(): CarErrors {
-        return <CarErrors>this._errors;
+        return this._errors as CarErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = CAR_SCHEMA;
+        this._schema = CAR_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new CarState(that, that._schema);
+        this._states = new CarState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new CarErrors(that, that._schema);
+        this._errors = new CarErrors(this, this._schema);
     }
 }
 
@@ -78,6 +74,7 @@ export class CarState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     CAR_SCHEMA = {
@@ -95,7 +92,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             }
         },
         "relations": {
@@ -115,5 +113,8 @@ export const
                 ]
             }
         },
-        "meta": {}
+        "meta": {},
+        "primaryKey": [
+            "id"
+        ]
     };

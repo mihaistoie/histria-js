@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { Item } from './item';
 
-
 export class Group extends View {
     public static isPersistent: boolean = false;
     public get id(): any {
@@ -66,6 +65,7 @@ export class GroupState extends InstanceState {
         return this._states.itemId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     GROUP_SCHEMA = {
@@ -117,11 +117,11 @@ export const
                 ]
             }
         },
-        "primaryKey": [
-            "id"
-        ],
         "meta": {
             "parent": "item",
             "parentRelation": "item"
-        }
+        },
+        "primaryKey": [
+            "id"
+        ]
     };

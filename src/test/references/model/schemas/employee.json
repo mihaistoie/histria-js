@@ -18,6 +18,11 @@
         "departmentCode": {
             "title": "Department Code",
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -30,14 +35,25 @@
             ],
             "foreignFields": [
                 "code"
-            ]
+            ],
+            "nameSpace": "references",
+            "aggregationKind": "none"
         },
         "address": {
             "title": "Address",
             "type": "hasOne",
             "model": "employeeAddress",
             "aggregationKind": "composite",
-            "invRel": "employee"
+            "invRel": "employee",
+            "nameSpace": "references",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "employeeId"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

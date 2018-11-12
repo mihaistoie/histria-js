@@ -48,7 +48,7 @@ function _generate(codeByClass: any, codeByNameSpace: any, model: any, pathToLib
         ns.import.push(util.format('import { %s, %s_SCHEMA } from \'./%s\';', className, className.toUpperCase(), _extractFileName(schema.name)));
         ns.import.push(util.format('export { %s } from \'./%s\';', className, _extractFileName(schema.name)));
 
-        code.push('');
+        // code.push('');
         code.push(util.format('export class %s extends %s {', className, isView ? baseViewClass : baseClass));
         code.push(_tab(1) + util.format('public static isPersistent: boolean = %s;', isView ? 'false' : 'true'));
 
@@ -240,6 +240,7 @@ function _genSchemaRelations(schema: any, code: string[], model: any): void {
 
 function _genSchema(schema: any, className: string, code: string[]): void {
 
+    code.push('/* tslint:disable:object-literal-key-quotes */');
     code.push('/* tslint:disable:quotemark */');
     code.push('export const');
     // const schemaStr = JSON.stringify(schema, null, _tab(1)).replace(/\"([^(\")"]+)\":/g, '$1:').replace(/\"/g, '\'').split('\n');

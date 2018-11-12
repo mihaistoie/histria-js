@@ -16,13 +16,13 @@ class SalesOrderRules {
     static async vatChanged(so, eventInfo) {
         if (eventInfo.isTriggeredBy('netAmount', so))
             return;
-        let vat = so.vat.value;
+        const vat = so.vat.value;
         await so.netAmount.setValue(vat / VAT_TAX);
     }
     static async grossAmountChanged(so, eventInfo) {
         if (eventInfo.isTriggeredBy('netAmount', so))
             return;
-        let ga = so.grossAmount.value;
+        const ga = so.grossAmount.value;
         await so.netAmount.setValue(ga / (1 + VAT_TAX));
     }
     static async calculateVatAndAmont(so, eventInfo) {

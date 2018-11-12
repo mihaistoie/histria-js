@@ -8,6 +8,16 @@
         },
         "name": {
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "drivesId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "nameSpace": "aggregations",
@@ -17,9 +27,16 @@
             "model": "car",
             "aggregationKind": "shared",
             "invRel": "drivenBy",
-            "localFields": ["carId"],
-            "foreignFields": ["id"]
-
+            "nameSpace": "aggregations",
+            "title": "drives",
+            "invType": "hasOne",
+            "localFields": [
+                "drivesId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

@@ -6,7 +6,7 @@ const index_1 = require("../../index");
 const persistence_query_model_1 = require("./persistence-query-model");
 const histria_utils_1 = require("histria-utils");
 async function testFindOne() {
-    let transaction = new index_1.Transaction();
+    const transaction = new index_1.Transaction();
     let user = await transaction.findOne(persistence_query_model_1.User, { id: 100 });
     assert.notEqual(user, null, '(1) User Found');
     user = await transaction.findOne(persistence_query_model_1.User, { firstName: 'Joe' });
@@ -58,10 +58,10 @@ async function testFindMany() {
     transaction.destroy();
 }
 describe('Persistence Test', () => {
-    before(function (done) {
-        let dm = histria_utils_1.dbManager();
+    before((done) => {
+        const dm = histria_utils_1.dbManager();
         dm.registerNameSpace('persistence-query', 'memory', { compositionsInParent: true });
-        let store = dm.store('persistence-query');
+        const store = dm.store('persistence-query');
         store.initNameSpace('persistence-query', {
             user: [
                 {
@@ -87,17 +87,17 @@ describe('Persistence Test', () => {
             done(ex);
         });
     });
-    it('Persistence Find One', function (done) {
-        testFindOne().then(function () {
+    it('Persistence Find One', (done) => {
+        testFindOne().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });
-    it('Persistence Find Many', function (done) {
-        testFindMany().then(function () {
+    it('Persistence Find Many', (done) => {
+        testFindMany().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });

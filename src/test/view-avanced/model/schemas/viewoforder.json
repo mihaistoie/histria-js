@@ -3,12 +3,31 @@
     "type": "object",
     "view": true,
     "nameSpace": "view-avanced",
-    "properties": {},
+    "properties": {
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "orderId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
+        }
+    },
     "relations": {
         "order": {
             "type": "hasOne",
             "model": "VAOrder",
-            "aggregationKind": "composite"
+            "aggregationKind": "composite",
+            "nameSpace": "view-avanced",
+            "title": "order",
+            "localFields": [
+                "orderId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
     },
     "hooks": [
@@ -16,7 +35,8 @@
             "type": "factory",
             "property": "order.items",
             "model": "VAOrderItemView",
-            "relation": "orderItem"
+            "relation": "orderItem",
+            "nameSpace": "view-avanced"
         }
     ]
 }

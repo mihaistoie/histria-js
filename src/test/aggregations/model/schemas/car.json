@@ -5,6 +5,11 @@
     "properties": {
         "driverName": {
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -13,8 +18,16 @@
             "model": "driver",
             "aggregationKind": "shared",
             "invRel": "drives",
-            "localFields": ["id"],
-            "foreignFields": ["driverId"]
+            "nameSpace": "aggregations",
+            "title": "drivenBy",
+            "invType": "belongsTo",
+            "localFields": [
+                "id"
+            ],
+            "foreignFields": [
+                "drivesId"
+            ]
         }
-    }
+    },
+    "meta": {}
 }

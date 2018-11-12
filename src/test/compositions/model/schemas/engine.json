@@ -9,6 +9,16 @@
         },
         "name": {
             "type": "string"
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "carId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -16,7 +26,20 @@
             "type": "belongsTo",
             "model": "car",
             "aggregationKind": "composite",
-            "invRel": "engine"
+            "invRel": "engine",
+            "nameSpace": "compositions",
+            "title": "car",
+            "invType": "hasOne",
+            "localFields": [
+                "carId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
+    },
+    "meta": {
+        "parent": "car",
+        "parentRelation": "car"
     }
 }

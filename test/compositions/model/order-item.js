@@ -31,16 +31,13 @@ class OrderItem extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.ORDERITEM_SCHEMA;
+        this._schema = exports.ORDERITEM_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new OrderItemState(that, that._schema);
+        this._states = new OrderItemState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new OrderItemErrors(that, that._schema);
+        this._errors = new OrderItemErrors(this, this._schema);
     }
 }
 OrderItem.isPersistent = true;
@@ -78,6 +75,7 @@ class OrderItemState extends index_1.InstanceState {
     }
 }
 exports.OrderItemState = OrderItemState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.ORDERITEM_SCHEMA = {
     "type": "object",
@@ -95,7 +93,8 @@ exports.ORDERITEM_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "orderId": {
             "type": "integer",
@@ -123,7 +122,10 @@ exports.ORDERITEM_SCHEMA = {
     "meta": {
         "parent": "order",
         "parentRelation": "order"
-    }
+    },
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=order-item.js.map

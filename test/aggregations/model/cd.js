@@ -22,16 +22,13 @@ class Cd extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.CD_SCHEMA;
+        this._schema = exports.CD_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new CdState(that, that._schema);
+        this._states = new CdState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new CdErrors(that, that._schema);
+        this._errors = new CdErrors(this, this._schema);
     }
 }
 Cd.isPersistent = true;
@@ -57,6 +54,7 @@ class CdState extends index_1.InstanceState {
     }
 }
 exports.CdState = CdState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.CD_SCHEMA = {
     "type": "object",
@@ -70,7 +68,8 @@ exports.CD_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         }
     },
     "relations": {
@@ -90,7 +89,10 @@ exports.CD_SCHEMA = {
             ]
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=cd.js.map

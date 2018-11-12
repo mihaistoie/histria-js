@@ -31,16 +31,13 @@ class Tree extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.TREE_SCHEMA;
+        this._schema = exports.TREE_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new TreeState(that, that._schema);
+        this._states = new TreeState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new TreeErrors(that, that._schema);
+        this._errors = new TreeErrors(this, this._schema);
     }
 }
 Tree.isPersistent = true;
@@ -75,6 +72,7 @@ class TreeState extends index_1.InstanceState {
     }
 }
 exports.TreeState = TreeState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.TREE_SCHEMA = {
     "type": "object",
@@ -87,7 +85,8 @@ exports.TREE_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "parentId": {
             "type": "integer",
@@ -130,7 +129,10 @@ exports.TREE_SCHEMA = {
     "meta": {
         "parent": "tree",
         "parentRelation": "parent"
-    }
+    },
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=tree.js.map

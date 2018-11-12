@@ -70,7 +70,6 @@ export class BaseObjectArray<T extends IObservableObject> extends RoleBase<T> {
 
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class ObjectArray<T extends IObservableObject> extends BaseObjectArray<T> implements IObservableArray {
     protected _model: any;
     protected _isNull: boolean;

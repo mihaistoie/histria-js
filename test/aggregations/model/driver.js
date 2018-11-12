@@ -34,16 +34,13 @@ class Driver extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.DRIVER_SCHEMA;
+        this._schema = exports.DRIVER_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new DriverState(that, that._schema);
+        this._states = new DriverState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new DriverErrors(that, that._schema);
+        this._errors = new DriverErrors(this, this._schema);
     }
 }
 Driver.isPersistent = true;
@@ -81,6 +78,7 @@ class DriverState extends index_1.InstanceState {
     }
 }
 exports.DriverState = DriverState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.DRIVER_SCHEMA = {
     "type": "object",
@@ -96,7 +94,8 @@ exports.DRIVER_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": true
         },
         "drivesId": {
             "type": "integer",
@@ -122,7 +121,10 @@ exports.DRIVER_SCHEMA = {
             ]
         }
     },
-    "meta": {}
+    "meta": {},
+    "primaryKey": [
+        "id"
+    ]
 };
 
 //# sourceMappingURL=driver.js.map

@@ -28,16 +28,13 @@ class UserDetail extends index_1.View {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.USERDETAIL_SCHEMA;
+        this._schema = exports.USERDETAIL_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new UserDetailState(that, that._schema);
+        this._states = new UserDetailState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new UserDetailErrors(that, that._schema);
+        this._errors = new UserDetailErrors(this, this._schema);
     }
 }
 UserDetail.isPersistent = false;
@@ -69,6 +66,7 @@ class UserDetailState extends index_1.InstanceState {
     }
 }
 exports.UserDetailState = UserDetailState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.USERDETAIL_SCHEMA = {
     "name": "UserDetail",
@@ -83,12 +81,14 @@ exports.USERDETAIL_SCHEMA = {
         "id": {
             "type": "integer",
             "generated": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         },
         "userId": {
             "type": "integer",
             "isReadOnly": true,
-            "format": "id"
+            "format": "id",
+            "transient": false
         }
     },
     "relations": {
@@ -112,6 +112,9 @@ exports.USERDETAIL_SCHEMA = {
             "isReadOnly": true
         }
     },
+    "primaryKey": [
+        "id"
+    ],
     "meta": {}
 };
 

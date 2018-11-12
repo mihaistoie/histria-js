@@ -7,7 +7,6 @@ import {
 } from '../../../index';
 import { Car } from './car';
 
-
 export class Driver extends Instance {
     public static isPersistent: boolean = true;
     public get carChangedHits(): number {
@@ -35,23 +34,20 @@ export class Driver extends Instance {
         return this._children.drives.setValue(value);
     }
     public get $states(): DriverState {
-        return <DriverState>this._states;
+        return this._states as DriverState;
     }
     public get $errors(): DriverErrors {
-        return <DriverErrors>this._errors;
+        return this._errors as DriverErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = DRIVER_SCHEMA;
+        this._schema = DRIVER_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new DriverState(that, that._schema);
+        this._states = new DriverState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new DriverErrors(that, that._schema);
+        this._errors = new DriverErrors(this, this._schema);
     }
 }
 
@@ -87,6 +83,7 @@ export class DriverState extends InstanceState {
         return this._states.drivesId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     DRIVER_SCHEMA = {
@@ -103,7 +100,8 @@ export const
             "id": {
                 "type": "integer",
                 "generated": true,
-                "format": "id"
+                "format": "id",
+                "transient": true
             },
             "drivesId": {
                 "type": "integer",
@@ -129,5 +127,8 @@ export const
                 ]
             }
         },
-        "meta": {}
+        "meta": {},
+        "primaryKey": [
+            "id"
+        ]
     };

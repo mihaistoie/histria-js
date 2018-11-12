@@ -10,6 +10,16 @@
         "loaded": {
             "type": "boolean",
             "default": false
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "orderId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -17,7 +27,16 @@
             "type": "belongsTo",
             "model": "VAOrder",
             "aggregationKind": "composite",
-            "invRel": "items"
+            "invRel": "items",
+            "nameSpace": "view-avanced",
+            "title": "order",
+            "invType": "hasMany",
+            "localFields": [
+                "orderId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
     }
 }

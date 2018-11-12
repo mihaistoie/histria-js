@@ -10,6 +10,16 @@
         "loaded": {
             "type": "boolean",
             "default": false
+        },
+        "id": {
+            "type": "integer",
+            "generated": true,
+            "format": "id"
+        },
+        "orderId": {
+            "type": "integer",
+            "isReadOnly": true,
+            "format": "id"
         }
     },
     "relations": {
@@ -17,7 +27,20 @@
             "type": "belongsTo",
             "model": "order",
             "aggregationKind": "composite",
-            "invRel": "items"
+            "invRel": "items",
+            "nameSpace": "compositions",
+            "title": "order",
+            "invType": "hasMany",
+            "localFields": [
+                "orderId"
+            ],
+            "foreignFields": [
+                "id"
+            ]
         }
+    },
+    "meta": {
+        "parent": "order",
+        "parentRelation": "order"
     }
 }

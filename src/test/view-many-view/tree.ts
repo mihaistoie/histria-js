@@ -6,7 +6,6 @@ import {
     NumberValue
 } from '../../index';
 
-
 export class Tree extends View {
     public static isPersistent: boolean = false;
     public get title(): string {
@@ -77,6 +76,7 @@ export class TreeState extends InstanceState {
         return this._states.parentId;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     TREE_SCHEMA = {

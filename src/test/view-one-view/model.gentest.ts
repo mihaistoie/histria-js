@@ -1,18 +1,13 @@
-
-import * as fs from 'fs';
 import * as path from 'path';
-import * as assert from 'assert';
-import * as mochaUtils from 'mocha';
 import { classGenerator } from '../../index';
 
-
 async function userAndSalesorder() {
-    let pathToModel = path.join(__dirname, 'schemas');
+    const pathToModel = path.join(__dirname, 'schemas');
     await classGenerator(pathToModel, path.join(__dirname), '../../index');
 }
 
 describe('View Has One <View>', () => {
-    it('View hasOne<View> class code', function (done) {
+    it('View hasOne<View> class code', (done) => {
         userAndSalesorder().then(() => {
             done();
         }).catch((ex) => {
@@ -20,6 +15,3 @@ describe('View Has One <View>', () => {
         });
     });
 });
-
-
-

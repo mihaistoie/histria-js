@@ -5,17 +5,17 @@ const path = require("path");
 const index_1 = require("../../index");
 const model_model_1 = require("./model-model");
 async function testUser() {
-    let transaction = new index_1.Transaction();
+    const transaction = new index_1.Transaction();
     let user = await transaction.create(model_model_1.User);
     await user.setFirstName('John'); // user.firstName = 'John';
     let fullName = user.fullName;
     assert.equal(fullName, 'John', 'Rules call ');
     await user.setAge(10.25);
-    let age = user.age;
+    const age = user.age;
     assert.equal(age, 10, 'Age set/get');
     await user.setLastName('Doe'); // user.lastName = 'Doe';
-    let fn = user.firstName; // fn = user.firstName;
-    let ln = user.lastName; // ln = user.lastName;
+    const fn = user.firstName; // fn = user.firstName;
+    const ln = user.lastName; // ln = user.lastName;
     fullName = user.fullName; // fullName = user.fullName;
     assert.equal(fn, 'John', 'First Name set/get');
     assert.equal(ln, 'Doe', 'Last Name set/get');
@@ -35,17 +35,17 @@ async function testUser() {
     assert.equal(user.$errors.$.error, 'FirstName === LastName', 'Has error ');
 }
 describe('User Model Test', () => {
-    before(function (done) {
+    before((done) => {
         index_1.loadRules(path.join(__dirname, 'rules')).then(() => {
             done();
         }).catch((ex) => {
             done(ex);
         });
     });
-    it('User test', function (done) {
-        testUser().then(function () {
+    it('User test', (done) => {
+        testUser().then(() => {
             done();
-        }).catch(function (ex) {
+        }).catch((ex) => {
             done(ex);
         });
     });

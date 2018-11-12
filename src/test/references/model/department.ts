@@ -6,7 +6,6 @@ import {
     NumberValue
 } from '../../../index';
 
-
 export class Department extends Instance {
     public static isPersistent: boolean = true;
     public get code(): string {
@@ -25,23 +24,20 @@ export class Department extends Instance {
         return this._children.id.value;
     }
     public get $states(): DepartmentState {
-        return <DepartmentState>this._states;
+        return this._states as DepartmentState;
     }
     public get $errors(): DepartmentErrors {
-        return <DepartmentErrors>this._errors;
+        return this._errors as DepartmentErrors;
     }
     protected init() {
         super.init();
-        let that = this;
-        that._schema = DEPARTMENT_SCHEMA;
+        this._schema = DEPARTMENT_SCHEMA;
     }
     protected createStates() {
-        let that = this;
-        that._states = new DepartmentState(that, that._schema);
+        this._states = new DepartmentState(this, this._schema);
     }
     protected createErrors() {
-        let that = this;
-        that._errors = new DepartmentErrors(that, that._schema);
+        this._errors = new DepartmentErrors(this, this._schema);
     }
 }
 
@@ -71,6 +67,7 @@ export class DepartmentState extends InstanceState {
         return this._states.id;
     }
 }
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 export const
     DEPARTMENT_SCHEMA = {

@@ -25,16 +25,13 @@ class Department extends index_1.Instance {
     }
     init() {
         super.init();
-        let that = this;
-        that._schema = exports.DEPARTMENT_SCHEMA;
+        this._schema = exports.DEPARTMENT_SCHEMA;
     }
     createStates() {
-        let that = this;
-        that._states = new DepartmentState(that, that._schema);
+        this._states = new DepartmentState(this, this._schema);
     }
     createErrors() {
-        let that = this;
-        that._errors = new DepartmentErrors(that, that._schema);
+        this._errors = new DepartmentErrors(this, this._schema);
     }
 }
 Department.isPersistent = true;
@@ -66,6 +63,7 @@ class DepartmentState extends index_1.InstanceState {
     }
 }
 exports.DepartmentState = DepartmentState;
+/* tslint:disable:object-literal-key-quotes */
 /* tslint:disable:quotemark */
 exports.DEPARTMENT_SCHEMA = {
     "type": "object",

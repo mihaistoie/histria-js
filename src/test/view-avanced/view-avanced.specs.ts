@@ -6,7 +6,6 @@ import { DbDriver, dbManager, DbManager, IStore, serialization } from 'histria-u
 
 import { VAOrder, VAOrderItem, VAOrderView, VAOrderItemView } from './model/view-avanced-model';
 
-
 const pattern1 = {
     properties: [
         'totalAmount',
@@ -28,9 +27,9 @@ describe('View Avanced', () => {
     before(() => {
         serialization.check(pattern1);
 
-        let dm: DbManager = dbManager();
+        const dm: DbManager = dbManager();
         dm.registerNameSpace('view-avanced', 'memory', { compositionsInParent: true });
-        let store = dm.store('view-avanced');
+        const store = dm.store('view-avanced');
         store.initNameSpace('view-avanced', {
             order: [
                 {
@@ -79,8 +78,8 @@ describe('View Avanced', () => {
 
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
-        let orderId = order.id;
-        let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView, { external: true });
+        const orderId = order.id;
+        const viewOfOrder = await transaction.create<VAOrderView>(VAOrderView, { external: true });
         await viewOfOrder.setOrder(order);
         let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         await order.items.add(item1);
@@ -89,22 +88,21 @@ describe('View Avanced', () => {
         assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
 
         // Restore transaction
-        let data1 = transaction.saveToJson();
+        const data1 = transaction.saveToJson();
         transaction.clear();
         await transaction.loadFromJson(data1, false);
-        let data2 = transaction.saveToJson();
+        const data2 = transaction.saveToJson();
         assert.deepEqual(data1, data2, 'Restore test 1');
 
         viewOfOrderItem = await transaction.findOne<VAOrderItemView>(VAOrderItemView, { orderItemId: item1Id });
         assert.notEqual(viewOfOrderItem, null, '(2) View of OrderItem found');
-
 
         let list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
         assert.equal(list.length, 1, '(1) #VAOrderItemView === 1');
 
         // Remove orderItem
         order = await transaction.findOne<VAOrder>(VAOrder, { id: orderId });
-        let items = await order.items.toArray();
+        const items = await order.items.toArray();
         item1 = items[0];
         await item1.remove();
 
@@ -113,7 +111,6 @@ describe('View Avanced', () => {
 
         list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
         assert.equal(list.length, 0, '(1) #VAOrderItemView === 0');
-
 
         item1 = await transaction.create<VAOrderItem>(VAOrderItem);
         item1Id = item1.id;
@@ -131,37 +128,34 @@ describe('View Avanced', () => {
         list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
         assert.equal(list.length, 0, '(2) #VAOrderItemView === 0');
 
-
-
         transaction.destroy();
 
     });
-
 
     it('View avanced - autocreate - complex', async () => {
 
         const transaction = new Transaction();
         let order = await transaction.create<VAOrder>(VAOrder);
-        let orderId = order.id;
+        const orderId = order.id;
         let viewOfOrder = await transaction.create<VAOrderView>(VAOrderView, { external: true });
-        let viewOrderId = viewOfOrder.id;
-        let item1 = await transaction.create<VAOrderItem>(VAOrderItem);
-        let item2 = await transaction.create<VAOrderItem>(VAOrderItem);
+        const viewOrderId = viewOfOrder.id;
+        const item1 = await transaction.create<VAOrderItem>(VAOrderItem);
+        const item2 = await transaction.create<VAOrderItem>(VAOrderItem);
         await order.items.add(item1);
         await order.items.add(item2);
-        let item1Id = item1.id;
+        const item1Id = item1.id;
         await viewOfOrder.setOrder(order);
 
-        let viewOfOrderItem = item1.viewOfMe<VAOrderItemView>(VAOrderItemView);
+        const viewOfOrderItem = item1.viewOfMe<VAOrderItemView>(VAOrderItemView);
         assert.notEqual(viewOfOrderItem, null, '(1) View of OrderItem found');
 
         let list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
         assert.equal(list.length, 2, '(1) #VAOrderItemView === 2');
 
-        let data1 = transaction.saveToJson();
+        const data1 = transaction.saveToJson();
         transaction.clear();
         await transaction.loadFromJson(data1, false);
-        let data2 = transaction.saveToJson();
+        const data2 = transaction.saveToJson();
         assert.deepEqual(data1, data2, 'Restore test 1');
 
         list = await transaction.find<VAOrderItemView>(VAOrderItemView, {});
